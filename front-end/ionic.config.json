@@ -1,0 +1,7 @@
+{
+  "name": "kenzo-workout-suite",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
