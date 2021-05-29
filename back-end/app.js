@@ -23,8 +23,8 @@ app.use((req,res,next) =>
 })
 
 // Routes which should handle requests
-app.use('/products' , productRoutes);
-app.use('/orders' , orderRoutes);
+// app.use('/products' , productRoutes);
+// app.use('/orders' , orderRoutes);
 
 app.use((req, res, next)=>
 {
