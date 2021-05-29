@@ -1,3 +1,41 @@
 <ion-content class="sign-up-background">
-  <ion-img src=".\assets\kenzo\Kenzo_logo.png"></ion-img>
+  <ion-img src=".\assets\kenzo\Kenzo_logo.png" id="Sign-up-Kenzo-Logo"></ion-img>
+  <ion-item lines="none">
+    <ion-label class="sign-up-label" position= "stacked">First Name</ion-label>
+    <ion-input class="sign-up-input" placeholder=" Steve" type="text"></ion-input>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-label class="sign-up-label" position= "stacked">Last Name</ion-label>
+    <ion-input class="sign-up-input" placeholder=" Jobs" type="text"></ion-input>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-label class="sign-up-label" position= "stacked">Email</ion-label>
+    <ion-input class="sign-up-input" placeholder=" your@email.com" type="email"></ion-input>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-label class="sign-up-label" position= "stacked">Password</ion-label>
+    <ion-input class="sign-up-input" placeholder="  ***********" type="password"></ion-input>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-label class="sign-up-label" position= "stacked">Confirm Password</ion-label>
+    <ion-input class="sign-up-input" placeholder="  ***********" type="password"></ion-input>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-segment  (ionChange)="segmentChanged($event)">
+      <ion-segment-button value="Planner" id="PlannerBtn" class="SignUpSelectionBtn">
+      Planner
+      </ion-segment-button>
+      <ion-segment-button value="Client" id="ClientBtn" class="SignUpSelectionBtn">
+      Client
+      </ion-segment-button>
+    </ion-segment>
+  </ion-item>
+
+    <ion-button id="SignUpButton" expand="block">
+      Sign up
+    </ion-button>
+
+  <ion-item lines="none">
+    <ion-anchor [routerLink]="sign-in" routerDirection="foward">Already have an account? Sign in</ion-anchor>
+  </ion-item>
 </ion-content>
