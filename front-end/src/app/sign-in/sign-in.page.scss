@@ -1,3 +1,21 @@
 .sign-in-background{
-  --background:#FF6868;
+  --background: var(--ion-color-primary);
+}
+
+.kenzo-input{
+  font-family: "SF Pro";
+  display: block;
+  width: 80%;
+  height: 50px;
+  border-radius: 9px;
+  background-color: white;
+  margin-left: auto;
+  margin-right: auto;
+  color: var(--ion-color-tertiary);
+  --padding-start: 10px;
+  --padding-top: 15px;
+}
+
+::placeholder{
+  color: #FF6868;
 }
