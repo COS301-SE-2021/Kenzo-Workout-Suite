@@ -61,8 +61,49 @@ exports.signUp=(req,res,next) =>
     })
 }
 
-exports.signIn=(req,res,next) =>
-{
+exports.signIn=async (req, res, next) => {
+    let password = req.body.password;
+
+    const user = await prisma.client.findUnique({
+        where: {
+            email: req.body.email
+        },
+    })
+        .catch(err=>
+        {
+            console.log(err);
+            res.status(500).json(
+                {
+                    error:err
+                }
+            );
+        });
+
+    console.log(user.password);
+
+    bcrypt.compare(req.body.password, user.password, (err,result) =>{
+       if(err)
+       {
+           return res.status(401).json({
+               message: 'Auth failed'
+           });
+       }
+
+       if(result)
+       {
+           return res.status(200).json(
+               {
+                   message:'Auth successful'
+               }
+           )
+       }
+
+        return res.status(401).json(
+            {
+                message:'Auth failed'
+            }
+        )
+    });
 
 }
 
