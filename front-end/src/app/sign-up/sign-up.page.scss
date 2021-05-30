@@ -1,3 +1,55 @@
 .sign-up-background{
-    --background: red;
+    --background: var(--ion-color-primary);
+}
+.sing-up-label{
+    color: var(--ion-color-secondary);
+}
+.sign-up-input{
+    --background: var(--ion-color-secondary);
+    border-radius: 7px;
+    color: var(--ion-color-primary);
+    width: 88vw;
+    height: 20vh;
+    text-indent: 2vw;
+}
+ion-item{
+    --background: var(--ion-color-primary);
+}
+
+#Sign-up-Kenzo-Logo{
+    width:100vw;
+    height:18vh;
+}
+
+.SignUpSelectionBtn{
+    --background: var(--ion-color-secondary);
+    --border-radius: 25px;
+    color: var(--ion-color-tertiary);
+    margin-top: 3vh;
+    width: 30vw;
+    height: 4.5vh;
+}
+
+#PlannerBtn{
+    margin-left: 10vw;
+    margin-right: 15vw;
+}
+
+
+#SignUpButton{
+    --background: rgb(46, 46, 46);
+    width:89vw;
+    margin-left:5vw;
+    margin-top:3vh;
+}
+
+a{
+    background: transparent;
+    color: white;
+    margin-left: 10vw;
+}
+
+.container{
+    align-content: center;
+    align-items: center;
 }
