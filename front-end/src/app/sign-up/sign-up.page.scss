@@ -1,6 +1,5 @@
 .sign-up-background{
-    --background: rgb(255, 79, 79);
-    //--background: var(--ion-color-primary);
+    --background: var(--ion-color-primary);
 }
 .sing-up-label{
     color: var(--ion-color-secondary);
@@ -11,10 +10,10 @@
     color: var(--ion-color-primary);
     width: 88vw;
     height: 20vh;
+    text-indent: 2vw;
 }
 ion-item{
-    --background: rgb(255, 79, 79);
-    //--background: var(--ion-color-primary);
+    --background: var(--ion-color-primary);
 }
 
 #Sign-up-Kenzo-Logo{
@@ -24,9 +23,11 @@ ion-item{
 
 .SignUpSelectionBtn{
     --background: var(--ion-color-secondary);
+    --border-radius: 25px;
     color: var(--ion-color-tertiary);
-    border-radius: 50px;
-    
+    margin-top: 3vh;
+    width: 30vw;
+    height: 4.5vh;
 }
 
 #PlannerBtn{
@@ -34,17 +35,6 @@ ion-item{
     margin-right: 15vw;
 }
 
-ion-segment{
-    margin-top:5vw;
-    width: 80vw;
-    height:5vh;
-}
-
-ion-segment-button{
-    --indicator-box-shadow: transparent !important;
-    --background-checked: linear-gradient(to right, #2d2e87, #0083CB)!important;
-    --color-checked: white;
-}
 
 #SignUpButton{
     --background: rgb(46, 46, 46);
@@ -53,7 +43,13 @@ ion-segment-button{
     margin-top:3vh;
 }
 
-ion-anchor{
-    --background: transparent;
-    --color: white;
+a{
+    background: transparent;
+    color: white;
+    margin-left: 10vw;
+}
+
+.container{
+    align-content: center;
+    align-items: center;
 }

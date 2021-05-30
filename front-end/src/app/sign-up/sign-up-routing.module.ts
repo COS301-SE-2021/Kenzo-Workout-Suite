@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { SignUpPage } from './sign-up.page';
-import { SignInPage } from 'd:/Work/University/GitHub/Kenzo-Workout-Suite/front-end/src/app/sign-in/sign-in.page';
+import { SignInPage } from '../sign-in/sign-in.page';
 
 
 const routes: Routes = [

@@ -1,4 +1,5 @@
-<ion-content class="sign-up-background">
+<ion-content scroll-y="false" class="sign-up-background">
+<div class="container">
   <ion-img src=".\assets\kenzo\Kenzo_logo.png" id="Sign-up-Kenzo-Logo"></ion-img>
   <ion-item lines="none">
     <ion-label class="sign-up-label" position= "stacked">First Name</ion-label>
@@ -21,14 +22,12 @@
     <ion-input class="sign-up-input" placeholder="  ***********" type="password"></ion-input>
   </ion-item>
   <ion-item lines="none">
-    <ion-segment  (ionChange)="segmentChanged($event)">
-      <ion-segment-button value="Planner" id="PlannerBtn" class="SignUpSelectionBtn">
+      <ion-button value="Planner" id="PlannerBtn" class="SignUpSelectionBtn">
       Planner
-      </ion-segment-button>
-      <ion-segment-button value="Client" id="ClientBtn" class="SignUpSelectionBtn">
+      </ion-button>
+      <ion-button value="Client" id="ClientBtn" class="SignUpSelectionBtn">
       Client
-      </ion-segment-button>
-    </ion-segment>
+      </ion-button>
   </ion-item>
 
     <ion-button id="SignUpButton" expand="block">
@@ -36,6 +35,7 @@
     </ion-button>
 
   <ion-item lines="none">
-    <ion-anchor [routerLink]="sign-in" routerDirection="foward">Already have an account? Sign in</ion-anchor>
+    <a routerLink="/sign-in">Already have an account? Sign in</a>
   </ion-item>
+  </div>
 </ion-content>
