@@ -36,3 +36,33 @@ exports.createExercise = async (req,res,next) =>{
 
 }
 
+exports.createWorkout = async (req,res,next) =>{
+    //console.log("Hello we are here2");
+
+    try{
+        await prisma.workout.create({
+            data: {
+                workoutTitle: req.body.workoutTitle,
+                workoutDescription: req.body.workoutDescription,
+                exercises : req.body.exercises,
+                difficulty: req.body.difficulty,
+                planner: req.body.planner,
+                planner_Email: req.body.planner_Email
+            },
+        })
+        res.status(201).json(
+            {
+                message: 'Workout Created'
+            }
+        )
+    }catch(error){
+        //console.log(error.body);
+        res.status(500).json(
+            {
+                problem: error.name,
+                error: error.message,
+            }
+        );
+    }
+
+}
