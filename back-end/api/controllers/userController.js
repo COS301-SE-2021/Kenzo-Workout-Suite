@@ -25,6 +25,7 @@ async function countPlanner(myEmail) {
     });
 }
 
+
 exports.signUpClient=async(req,res,next) =>
 {
     if(await countClient(req.body.email)===1)
