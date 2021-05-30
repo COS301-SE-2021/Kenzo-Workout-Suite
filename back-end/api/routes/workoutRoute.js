@@ -4,8 +4,8 @@ const router = express.Router();
 
 const workoutController = require("../controllers/workoutController")
 
-router.post('/getworkoutbytitle', workoutController.getWorkoutByTitle);
-router.post('/getexercisebytitle', workoutController.getExerciseByTitle);
-router.post('/getworkoutbyplanner', workoutController.getWorkoutByPlanner);
+router.get('/getworkoutbytitle', workoutController.getWorkoutByTitle);
+router.get('/getexercisebytitle', workoutController.getExerciseByTitle);
+router.get('/getworkoutbyplanner', workoutController.getWorkoutByPlanner);
 
 module.exports = router;
