@@ -3,7 +3,6 @@ const { PrismaClient } = require("@prisma/client")
 const prisma = new PrismaClient()
 
 exports.createExercise = async (req,res,next) =>{
-    //console.log("Hello we are here");
 
     try{
         await prisma.exercise.create({
@@ -37,7 +36,6 @@ exports.createExercise = async (req,res,next) =>{
 }
 
 exports.createWorkout = async (req,res,next) =>{
-    //console.log("Hello we are here2");
 
     try{
         await prisma.workout.create({
