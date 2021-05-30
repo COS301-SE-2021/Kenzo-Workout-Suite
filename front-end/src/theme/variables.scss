@@ -3,6 +3,14 @@
 
 /** Ionic CSS Variables **/
 :root {
+
+  /** DIMENSIONS **/
+  --input-width: 300px;
+  --button-width: 300px;
+  --card-width: 300px;
+  --card-height: 100px;
+  --radius: 9px;
+
   /** primary **/
   --ion-color-primary: #FF6868;
   --ion-color-primary-contrast: #ffffff;
