@@ -6,13 +6,19 @@ const userController=require("../controllers/userController")
 
 /**
  * @swagger
- * /books:
- *  get:
- *      summary: signs in a client
- *      responses:
- *          200:
- *              description:response
+ *  /signupClient:
+ *      post:
+ *          description: Creates a new entry for a client in the database
+ *          parameters:
+ *          - name: firstName
+ *            description: Name of the client
+ *            in: formData
+ *            required: true
+ *            type: String
  *
+ *          responses:
+ *              201:
+ *                  description: Success
  */
 router.post('/signupClient', userController.signUpClient);
 router.post('/signupPlanner', userController.signUpPlanner);
