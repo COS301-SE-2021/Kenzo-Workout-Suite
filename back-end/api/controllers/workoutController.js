@@ -8,7 +8,7 @@ exports.getWorkoutByTitle=async (req,res,next) =>
 {
     const workouts = await prisma.workout.findMany({
         where: {
-            workoutTitle: req.body.title
+            workoutTitle: req.params.title
         },
         select: {
             workoutTitle: true,
@@ -27,9 +27,9 @@ exports.getWorkoutByTitle=async (req,res,next) =>
 
 exports.getExerciseByTitle=async (req,res,next) =>
 {
-    const workouts = await prisma.exercise.findMany({
+    const exercise = await prisma.exercise.findMany({
         where: {
-            title : req.body.title
+            title : req.params.title
         },
         select: {
             title: true,
@@ -47,11 +47,27 @@ exports.getExerciseByTitle=async (req,res,next) =>
 
     res.status(200).json({
         message: "Successfully retrieved exercise",
-        data: workouts
+        data: exercise
     });
 }
 
 exports.getWorkoutByPlanner=async (req,res,next) =>
 {
+    const workouts = await prisma.workout.findMany({
+        where: {
+            planner_Email : req.params.email
+        },
+        select: {
+            workoutTitle: true,
+            workoutDescription: true,
+            exercises: true,
+            difficulty: true,
+            planner_Email: true
+        }
+    });
 
+    res.status(200).json({
+        message: "Successfully retrieved workouts",
+        data: workouts
+    });
 }
