@@ -1,9 +1,31 @@
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
 
+/** Imported fonts **/
+@font-face {
+  font-family: 'SF Pro';
+  src: url('../assets/fonts/SF-Pro.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SF Pro Medium';
+  src: url('../assets/fonts/SF-Pro-Text-Medium.otf');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SF Pro Regular';
+  src: url('../assets/fonts/SF-Pro-Text-Regular.otf');
+  font-weight: 200;
+  font-style: normal;
+}
+
+
 /** Ionic CSS Variables **/
 :root {
-
   /** DIMENSIONS **/
   --input-width: 300px;
   --button-width: 300px;
