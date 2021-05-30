@@ -9,9 +9,23 @@ function validateEmail(email) {
     return re.test(String(email).toLowerCase());
 }
 
-exports.signUp=(req,res,next) =>
+exports.signUpClient=async(req,res,next) =>
 {
-    if( validateEmail(req.body.email)===false)
+    if(await countClient(req.body.email)===1)
+    {
+        return res.status(500).json({
+            error:"Client with email already exists"
+        });
+    }
+
+    if(await countPlanner(req.body.email)===1)
+    {
+        return res.status(500).json({
+            error:"Planner with email already exists"
+        });
+    }
+
+    if(validateEmail(req.body.email)===false)
     {
         return res.status(500).json({
             error:"Invalid email passed in"
@@ -35,7 +49,6 @@ exports.signUp=(req,res,next) =>
                         email: req.body.email.toLowerCase(),
                         firstName:req.body.firstName,
                         lastName:req.body.lastName,
-                        userType:req.body.userType,
                         password:hash
                     }
                 }
@@ -53,7 +66,8 @@ exports.signUp=(req,res,next) =>
                  console.log(err);
                  res.status(500).json(
                      {
-                         error:err
+                         error:err,
+                         description:"Database error"
                      }
                  );
              });
@@ -61,45 +75,174 @@ exports.signUp=(req,res,next) =>
     })
 }
 
-exports.signIn=async (req, res, next) => {
-    const user = await prisma.client.findUnique({
-        where: {
-            email: req.body.email
-        },
-    })
-        .catch(err=>
-        {
-            console.log(err);
-            res.status(500).json(
-                {
-                    error:err
-                }
-            );
+exports.signUpPlanner=async (req, res, next) => {
+    if (await countClient(req.body.email) === 1) {
+        return res.status(500).json({
+            error: "Client with email already exists"
         });
+    }
 
-    bcrypt.compare(req.body.password, user.password, (err,result) =>{
-       if(err)
-       {
-           return res.status(401).json({
-               message: 'Auth failed'
-           });
-       }
+    if (await countPlanner(req.body.email) === 1) {
+        return res.status(500).json({
+            error: "Planner with email already exists"
+        });
+    }
 
-       if(result)
-       {
-           return res.status(200).json(
-               {
-                   message:'Auth successful'
-               }
-           )
-       }
+    if (validateEmail(req.body.email) === false) {
+        return res.status(500).json({
+            error: "Invalid email passed in"
+        });
+    }
 
+    bcrypt.hash(req.body.password, 10, async (err, hash) => {
+        if (err) {
+            return res.status(500).json({
+                error: err
+            });
+        } else {
+            await prisma.planner.create(
+                {
+                    data: {
+                        email: req.body.email.toLowerCase(),
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
+                        password: hash
+                    }
+                }
+            )
+                .then(result => {
+                    res.status(201).json(
+                        {
+                            message: 'Planner created'
+                        }
+                    );
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.status(500).json(
+                        {
+                            error: err
+                        }
+                    );
+                });
+        }
+    })
+}
+
+async function countClient(myEmail) {
+    return await prisma.client.count({
+        where: {
+            email: myEmail
+        },
+    });
+}
+
+async function countPlanner(myEmail) {
+    return await prisma.planner.count({
+        where: {
+            email: myEmail
+        },
+    });
+}
+
+exports.signIn=async (req, res, next) => {
+
+    let clientNumber=await countClient(req.body.email)
+     let plannerCount=await countPlanner(req.body.email)
+
+    if(clientNumber===1)
+    {
+        const user = await prisma.client.findUnique({
+            where: {
+                email: req.body.email
+            },
+        })
+            .catch(err=>
+            {
+                console.log(err);
+                res.status(500).json(
+                    {
+                        error:err
+                    }
+                );
+            });
+
+        bcrypt.compare(req.body.password, user.password, (err,result) =>{
+            if(err)
+            {
+                return res.status(401).json({
+                    message: 'Auth failed'
+                });
+            }
+
+            if(result)
+            {
+                return res.status(200).json(
+                    {
+                        message:'Client Authentication successful'
+                    }
+                )
+            }
+
+            return res.status(401).json(
+                {
+                    message:'Auth failed'
+                }
+            )
+        });
+    }
+
+    else if(plannerCount === 1)
+    {
+        const user = await prisma.planner.findUnique({
+            where: {
+                email: req.body.email
+            },
+        })
+            .catch(err=>
+            {
+                console.log(err);
+                res.status(500).json(
+                    {
+                        error:err
+                    }
+                );
+            });
+
+        bcrypt.compare(req.body.password, user.password, (err,result) =>{
+            if(err)
+            {
+                return res.status(401).json({
+                    message: 'Auth failed'
+                });
+            }
+
+            if(result)
+            {
+                return res.status(200).json(
+                    {
+                        message:'Planner Authentication successful'
+                    }
+                )
+            }
+
+            return res.status(401).json(
+                {
+                    message:'Auth failed'
+                }
+            )
+        });
+    }
+
+    else
+    {
         return res.status(401).json(
             {
                 message:'Auth failed'
             }
         )
-    });
+    }
+
 
 }
 
