@@ -9,6 +9,22 @@ function validateEmail(email) {
     return re.test(String(email).toLowerCase());
 }
 
+async function countClient(myEmail) {
+    return await prisma.client.count({
+        where: {
+            email: myEmail
+        },
+    });
+}
+
+async function countPlanner(myEmail) {
+    return await prisma.planner.count({
+        where: {
+            email: myEmail
+        },
+    });
+}
+
 exports.signUpClient=async(req,res,next) =>
 {
     if(await countClient(req.body.email)===1)
@@ -57,7 +73,7 @@ exports.signUpClient=async(req,res,next) =>
                  {
                      res.status(201).json(
                          {
-                             message: 'User created'
+                             message: 'Client created'
                          }
                      );
                  })
@@ -129,21 +145,7 @@ exports.signUpPlanner=async (req, res, next) => {
     })
 }
 
-async function countClient(myEmail) {
-    return await prisma.client.count({
-        where: {
-            email: myEmail
-        },
-    });
-}
 
-async function countPlanner(myEmail) {
-    return await prisma.planner.count({
-        where: {
-            email: myEmail
-        },
-    });
-}
 
 exports.signIn=async (req, res, next) => {
 
@@ -171,7 +173,7 @@ exports.signIn=async (req, res, next) => {
             if(err)
             {
                 return res.status(401).json({
-                    message: 'Auth failed'
+                    message: 'Authorisation failed'
                 });
             }
 
@@ -186,7 +188,7 @@ exports.signIn=async (req, res, next) => {
 
             return res.status(401).json(
                 {
-                    message:'Auth failed'
+                    message:'Authorisation failed'
                 }
             )
         });
@@ -213,7 +215,7 @@ exports.signIn=async (req, res, next) => {
             if(err)
             {
                 return res.status(401).json({
-                    message: 'Auth failed'
+                    message: 'Authorisation failed'
                 });
             }
 
@@ -228,7 +230,7 @@ exports.signIn=async (req, res, next) => {
 
             return res.status(401).json(
                 {
-                    message:'Auth failed'
+                    message:'Authorisation failed'
                 }
             )
         });
@@ -238,12 +240,10 @@ exports.signIn=async (req, res, next) => {
     {
         return res.status(401).json(
             {
-                message:'Auth failed'
+                message:'Authorisation failed'
             }
         )
     }
-
-
 }
 
 exports.updateUserDetails=async (req, res, next) => {
