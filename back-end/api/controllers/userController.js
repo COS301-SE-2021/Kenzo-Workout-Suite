@@ -62,8 +62,6 @@ exports.signUp=(req,res,next) =>
 }
 
 exports.signIn=async (req, res, next) => {
-    let password = req.body.password;
-
     const user = await prisma.client.findUnique({
         where: {
             email: req.body.email
@@ -78,8 +76,6 @@ exports.signIn=async (req, res, next) => {
                 }
             );
         });
-
-    console.log(user.password);
 
     bcrypt.compare(req.body.password, user.password, (err,result) =>{
        if(err)
@@ -107,37 +103,31 @@ exports.signIn=async (req, res, next) => {
 
 }
 
-exports.setUserName=(req,res,next) =>
-{
+exports.updateUserDetails=async (req, res, next) => {
+    const updateUser = await prisma.client.update({
+        where: {
+            email: req.body.email,
+        },
 
+        data: {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            dateOfBirth: req.body.dateOfBirth,
+        },
+    })
+        .then(res.status(201).json(
+            {
+                message: 'User details updated',
+            },
+        ))
+        .catch(err=>
+        {
+            console.log(err);
+            res.status(500).json(
+                {
+                    error:err
+                }
+            );
+        });
 }
 
-exports.setLastName=(req,res,next) =>
-{
-
-}
-
-exports.setDateOfBirth=(req,res,next) =>
-{
-
-}
-
-exports.setPassword=(req,res,next) =>
-{
-
-}
-
-exports.getUserName=(req,res,next) =>
-{
-
-}
-
-exports.getLastName=(req,res,next) =>
-{
-
-}
-
-exports.getDateOfBirth=(req,res,next) =>
-{
-
-}
