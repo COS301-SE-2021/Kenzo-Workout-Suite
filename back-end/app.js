@@ -3,6 +3,7 @@ const app= express();
 const morgan= require('morgan');
 const bodyParser= require('body-parser');
 const exampleRoute= require('./api/routes/exampleRoute');
+const userRoute= require('./api/routes/userRoute');
 
 // This is middleware. incoming requests have to go through the middelware.
 
@@ -24,6 +25,7 @@ app.use((req,res,next) =>
 
 
 app.use('/example' , exampleRoute);
+app.use('/user' , userRoute);
 
 app.use((req, res, next)=>
 {

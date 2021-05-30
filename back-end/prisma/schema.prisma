@@ -26,13 +26,18 @@ model Avatar{
     avatarEmail String @id
 }
 
+enum UserType{
+    ADMIN
+    CLIENT
+}
+
 model Client{
     email String @id
     firstName String
     lastName String
     password String
+    userType UserType
     dateOfBirth DateTime?
-    userType Int
     avatar Avatar?
 }
 
