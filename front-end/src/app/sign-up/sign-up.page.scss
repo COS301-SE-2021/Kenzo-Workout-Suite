@@ -1,8 +1,8 @@
 .sign-up-background{
     --background: var(--ion-color-primary);
 }
-.sing-up-label{
-    font-family: "SF Pro Medium";
+.sign-up-label{
+    font-family: "SF Pro Medium", serif;
     display: block;
     padding-left: 5px;
     padding-bottom: 5px;
@@ -10,7 +10,7 @@
     color: var(--ion-color-secondary);
 }
 .sign-up-input{
-    font-family: "SF Pro Regular";
+    font-family: "SF Pro Regular", serif;
     display: block;
     height: 50px;
     border-radius: var(--radius);
@@ -21,6 +21,7 @@
     --color: black;
 }
 .input-div{
+    font-family: "SF Pro Regular", serif;
     display: block;
     width: var(--input-width);
     margin-left: auto;
@@ -36,12 +37,13 @@
 }
 
 .SignUpSelectionBtn{
+    font-family: "SF Pro Regular", serif;
     margin-right: auto;
     margin-bottom: 15px;
     --background: var(--ion-color-secondary);
     --border-radius: var(--secondary-radius);
     color: var(--ion-color-tertiary);
-    margin-top: 20px;
+    margin-top: 5px;
     width: 100px;
     height: 40px;
     --background-activated: var(--ion-color-secondary);
@@ -49,8 +51,9 @@
 }
 
 .SignUpSelectionBtn:hover{
+    font-family: "SF Pro Regular", serif;
     border: 5px;
-    border-color: black;
+    border-color: var(--ion-color-tertiary);
     border-style: solid;
     border-radius: var(--secondary-radius);;
 }
@@ -64,6 +67,7 @@
 }
 
 #SignUpButton{
+    font-family: "SF Pro Regular", serif;
     display: block;
     width: var(--button-width);
     margin-left: auto;
@@ -76,6 +80,7 @@
 }
 
 a{
+    font-family: "SF Pro Regular", serif;
     width: var(--text-width);
     display: block;
     margin-left: auto;
