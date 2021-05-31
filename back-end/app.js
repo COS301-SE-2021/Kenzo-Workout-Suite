@@ -4,6 +4,7 @@ const morgan= require('morgan');
 const bodyParser= require('body-parser');
 const exampleRoute= require('./api/routes/exampleRoute');
 const userRoute= require('./api/routes/userRoute');
+
 const swaggerJsDoc= require('swagger-jsdoc');
 const swaggerUi= require('swagger-ui-express');
 // This is middleware. incoming requests have to go through the middelware.
