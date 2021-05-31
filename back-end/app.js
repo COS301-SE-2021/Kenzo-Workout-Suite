@@ -6,11 +6,26 @@ const exampleRoute= require('./api/routes/exampleRoute');
 const userRoute= require('./api/routes/userRoute');
 const workoutRoute = require('./api/routes/workoutRoute');
 
-// This is middleware. incoming requests have to go through the middelware.
+const swaggerJsDoc= require('swagger-jsdoc');
+const swaggerUI= require('swagger-ui-express');
+// This is middleware. incoming requests have to go through the middleware.
+const swaggerOptions = {
+    swaggerDefinition:{
+        info:{
+            title: 'Kenzo Workout Creation API',
+            servers: ["http://localhost:5500"]
+        }
+    },
+    apis: ["./api/routes/*.js"]
+};
+
+const swaggerDocs= swaggerJsDoc(swaggerOptions);
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs))
+
 app.use((req,res,next) =>
 {
     res.header('Access-Control-Allow', '*');

@@ -3,7 +3,7 @@ const { PrismaClient } = require("@prisma/client")
 const prisma = new PrismaClient()
 
 exports.createExercise = async (req,res,next) =>{
-
+    //console.log(req.body);
     try{
         await prisma.exercise.create({
             data: {
@@ -25,6 +25,7 @@ exports.createExercise = async (req,res,next) =>{
             }
         )
     }catch(error){
+        //console.log(error);
         res.status(500).json(
             {
                 problem: error.name,
