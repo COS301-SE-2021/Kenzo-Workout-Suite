@@ -8,6 +8,7 @@ const workoutController = require("../controllers/workoutController")
  * @swagger
  *  /getworkoutbytitle:
  *      get:
+ *          summary: Returns a list of workouts
  *          description: Gets all the workouts in the database that have the same title provided
  *          parameters:
  *          - title: title of the workout
