@@ -53,8 +53,8 @@ model Workout {
   exercises  Exercise[]
   difficulty Difficulty
 
-  planner       Planner @relation(fields: [planner_Email], references: [email])
-  planner_Email String
+  planner       Planner? @relation(fields: [planner_Email], references: [email])
+  planner_Email String?
 }
 
 model Exercise {

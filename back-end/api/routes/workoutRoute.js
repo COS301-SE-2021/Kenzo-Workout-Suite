@@ -49,9 +49,47 @@ const workoutController=require("../controllers/workoutController")
  *          responses:
  *              201:
  *                  description: Created
+ *              500:
+ *                  description: Creation failed
  */
 router.post('/createExercise', workoutController.createExercise);
-
+/**
+ * @swagger
+ *  /workout/createWorkout:
+ *      post:
+ *          summary: Creates a new Workout.
+ *          consumes:
+ *              - application/json
+ *          parameters:
+ *            - in: body
+ *              name: user
+ *              description: This use case creates a new Exercise
+ *              schema:
+ *                  type: object
+ *                  required:
+ *                      - workoutTitle
+ *                      - workoutDescription
+ *                      - difficulty
+ *                  properties:
+ *                      workoutTitle:
+ *                          type: string
+ *                      workoutDescription:
+ *                          type: string
+ *                      exercises:
+ *                          type: Exercises
+ *                      difficulty:
+ *                          type: string
+ *                          enum: ["EASY", "MEDIUM", "HARD", "EXTREME"]
+ *                      planner:
+ *                          type: Planner
+ *                      planner_Email:
+ *                          type: string
+ *          responses:
+ *              201:
+ *                  description: Workout Created
+ *              500:
+ *                  description: Creation failed
+ */
 router.post('/createWorkout', workoutController.createWorkout);
 
 module.exports = router;
