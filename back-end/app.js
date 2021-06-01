@@ -7,7 +7,7 @@ const userRoute= require('./api/routes/userRoute');
 
 const swaggerJsDoc= require('swagger-jsdoc');
 const swaggerUi= require('swagger-ui-express');
-// This is middleware. incoming requests have to go through the middelware.
+
 
 const swaggerOptions = {
     swaggerDefinition:{

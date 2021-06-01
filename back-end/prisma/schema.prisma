@@ -41,7 +41,6 @@ model Planner{
     lastName String
     password String
     dateOfBirth DateTime?
-
     workouts Workout[]
 }
 
