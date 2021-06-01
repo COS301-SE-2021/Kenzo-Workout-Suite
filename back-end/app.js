@@ -31,7 +31,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
 app.use((req,res,next) =>
 {
