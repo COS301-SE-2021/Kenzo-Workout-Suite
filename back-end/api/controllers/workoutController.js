@@ -62,7 +62,6 @@ exports.getExerciseByTitle=async (req,res,next) =>
                 sets: true,
                 Posedescription: true,
                 restPeriod: true,
-                wasSkipped: true,
                 difficulty: true,
                 duratime: true,
                 workout_id: true

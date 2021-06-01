@@ -91,17 +91,16 @@ router.get('/getworkoutbytitle/:title', workoutController.getWorkoutByTitle);
  *                                       type: string
  *                                       example: default
  *                                   restPeriod:
- *                                       type: string
- *                                       example: YYYY-MM-DD hh:mm:ss
- *                                   wasSkipped:
- *                                       type: boolean
- *                                       example: true/false
+ *                                       type: integer
+ *                                       format: int64
+ *                                       example: 15 (seconds)
  *                                   difficulty:
  *                                      type: string
  *                                      example: EASY/MEDIUM/HARD/EXTREME
  *                                   duratime:
- *                                      type: string
- *                                      example: YYYY-MM-DD hh:mm:ss
+ *                                      type: integer
+ *                                      format: int64
+ *                                      example: 30 (seconds)
  *                                   workout_id:
  *                                      type: string
  *                                      example: 1
