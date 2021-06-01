@@ -10,8 +10,8 @@ function validateEmail(email) {
 }
 
 function validatePassword(password) {
-    const re =/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-    return re.test(String(password).toLowerCase());
+    var re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+    return re.test(password);
 }
 
 async function countClient(myEmail) {
@@ -32,6 +32,20 @@ async function countPlanner(myEmail) {
 
 exports.signUpClient=async(req,res,next) =>
 {
+    if (req.body.firstName==="")
+    {
+        return res.status(400).json({
+            error:"User with empty name"
+        });
+    }
+
+    if (req.body.lastName==="")
+    {
+        return res.status(400).json({
+            error:"User with empty lastname"
+        });
+    }
+
     if(await countClient(req.body.email)===1)
     {
         return res.status(400).json({
@@ -105,6 +119,21 @@ exports.signUpClient=async(req,res,next) =>
 }
 
 exports.signUpPlanner=async (req, res, next) => {
+
+    if (req.body.firstName==="")
+    {
+        return res.status(400).json({
+            error:"User with empty name"
+        });
+    }
+
+    if (req.body.lastName==="")
+    {
+        return res.status(400).json({
+            error:"User with empty lastname"
+        });
+    }
+
     if (await countClient(req.body.email) === 1) {
         return res.status(500).json({
             error: "Client with email already exists"
@@ -168,8 +197,6 @@ exports.signUpPlanner=async (req, res, next) => {
     })
 }
 
-
-
 exports.signIn=async (req, res, next) => {
 
     if(await countClient(req.body.email)===1)
@@ -220,6 +247,7 @@ exports.signIn=async (req, res, next) => {
 
     else if(await countPlanner(req.body.email)===1)
     {
+
         try
         {
             const user = await prisma.planner.findUnique({
@@ -227,41 +255,44 @@ exports.signIn=async (req, res, next) => {
                     email: req.body.email
                 },
             })
+
+            bcrypt.compare(req.body.password, user.password, (err,result) =>{
+                if(err)
+                {
+                    return res.status(401).json({
+                        message: 'Authorisation failed'
+                    });
+                }
+
+                if(result)
+                {
+                    return res.status(200).json(
+                        {
+                            message:'Planner Authentication successful'
+                        }
+                    )
+                }
+
+                return res.status(401).json(
+                    {
+                        message:'Authorisation failed'
+                    }
+                )
+            });
         }
 
         catch(err)
         {
             res.status(500).json(
                 {
-                    error:err
+                    error:err,
+                    description:"Internal database error"
                 }
             );
         }
 
 
-        bcrypt.compare(req.body.password, user.password, (err,result) =>{
-            if(err)
-            {
-                return res.status(401).json({
-                    message: 'Authorisation failed'
-                });
-            }
 
-            if(result)
-            {
-                return res.status(200).json(
-                    {
-                        message:'Planner Authentication successful'
-                    }
-                )
-            }
-
-            return res.status(401).json(
-                {
-                    message:'Authorisation failed'
-                }
-            )
-        });
     }
 
     else
@@ -277,7 +308,6 @@ exports.signIn=async (req, res, next) => {
 exports.updateUserDetails=async (req, res, next) => {
 
     if(await countClient(req.body.email)===1) {
-
         try
         {
             const updateUser = await prisma.client.update({
@@ -294,7 +324,7 @@ exports.updateUserDetails=async (req, res, next) => {
 
             res.status(201).json(
                 {
-                    message: 'User details updated'
+                    message: 'Client user details updated'
                 }
             )
         }
@@ -303,7 +333,8 @@ exports.updateUserDetails=async (req, res, next) => {
         {
             res.status(500).json(
                 {
-                    error:err
+                    error:err,
+                    description:"Internal database error"
                 }
             );
         }
@@ -327,7 +358,7 @@ exports.updateUserDetails=async (req, res, next) => {
 
             (res.status(201).json(
                 {
-                    message: 'User details updated',
+                    message: 'Planner user details updated',
                 },
             ))
         }
@@ -347,7 +378,7 @@ exports.updateUserDetails=async (req, res, next) => {
     {
         return res.status(401).json(
             {
-                message:'Authorisation failed'
+                message:'User with such email does not exist'
             }
         )
     }
@@ -358,18 +389,21 @@ exports.updateUserDetails=async (req, res, next) => {
 exports.getUserByEmail=async (req, res, next) => {
 
     if(await countClient(req.body.email)===1) {
-
         try
         {
             const user = await prisma.client.findUnique({
                 where: {
                     email: req.body.email
                 },
+
             })
 
             res.status(201).json(
                 {
-                    User: user
+                            email : user.email,
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                            dateOfBirth: user.dateOfBirth
                 }
             )
         }
@@ -396,7 +430,10 @@ exports.getUserByEmail=async (req, res, next) => {
 
             res.status(201).json(
                 {
-                    User: user
+                    email : user.email,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    dateOfBirth: user.dateOfBirth
                 }
             )
         }
@@ -416,7 +453,7 @@ exports.getUserByEmail=async (req, res, next) => {
     {
         return res.status(401).json(
             {
-                message:'No user with email exists'
+                message:'No user with email address exists'
             }
         )
     }
