@@ -65,7 +65,6 @@ model Exercise {
   sets            Int
   Posedescription String
   restPeriod      Int
-  wasSkipped      Boolean
   difficulty      Difficulty
 
   duratime Int

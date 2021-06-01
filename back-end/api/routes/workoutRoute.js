@@ -23,7 +23,6 @@ const workoutController=require("../controllers/workoutController")
  *                      - sets
  *                      - Posedescription
  *                      - restPeriod
- *                      - wasSkipped
  *                      - difficulty
  *                      - duratime
  *                  properties:
@@ -39,8 +38,6 @@ const workoutController=require("../controllers/workoutController")
  *                          type: string
  *                      restPeriod:
  *                          type: integer
- *                      wasSkipped:
- *                          type: boolean
  *                      difficulty:
  *                          type: string
  *                          enum: ["EASY", "MEDIUM", "HARD", "EXTREME"]
@@ -75,15 +72,9 @@ router.post('/createExercise', workoutController.createExercise);
  *                          type: string
  *                      workoutDescription:
  *                          type: string
- *                      exercises:
- *                          type: Exercises
  *                      difficulty:
  *                          type: string
  *                          enum: ["EASY", "MEDIUM", "HARD", "EXTREME"]
- *                      planner:
- *                          type: Planner
- *                      planner_Email:
- *                          type: string
  *          responses:
  *              201:
  *                  description: Workout Created

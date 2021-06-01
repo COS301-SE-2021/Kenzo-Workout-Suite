@@ -4,35 +4,43 @@ const prisma = new PrismaClient()
 
 exports.createExercise = async (req,res,next) =>{
     //console.log(req.body);
-    try{
-        await prisma.exercise.create({
-            data: {
-                title: req.body.title,
-                description: req.body.description,
-                repRange: req.body.repRange,
-                sets: req.body.sets,
-                Posedescription: req.body.Posedescription,
-                restPeriod: req.body.restPeriod,
-                wasSkipped: req.body.wasSkipped,
-                difficulty: req.body.difficulty,
-                duratime: req.body.duratime,
-                workout: req.body.workout,
-            },
-        })
-        res.status(201).json(
-            {
-                message: 'Workout Created'
-            }
-        )
-    }catch(error){
-        //console.log(error);
+    if(req.body.title === null || req.body.description === null || req.body.repRange === null || req.body.sets === null || req.body.Posedescription === null || req.body.restPeriod === null || req.body.wasSkipped === null || req.body.difficulty === null || req.body.duratime === null ){
         res.status(500).json(
             {
-                problem: error.name,
-                error: error.message
+                error: "Required fields cannot be left empty."
             }
         );
+    }else{
+        try{
+            await prisma.exercise.create({
+                data: {
+                    title: req.body.title,
+                    description: req.body.description,
+                    repRange: req.body.repRange,
+                    sets: req.body.sets,
+                    Posedescription: req.body.Posedescription,
+                    restPeriod: req.body.restPeriod,
+                    difficulty: req.body.difficulty,
+                    duratime: req.body.duratime,
+                    workout: req.body.workout,
+                },
+            })
+            res.status(201).json(
+                {
+                    message: 'Workout Created'
+                }
+            )
+        }catch(error){
+            //console.log(error);
+            res.status(500).json(
+                {
+                    problem: error.name,
+                    error: error.message
+                }
+            );
+        }
     }
+
 
 }
 
@@ -59,7 +67,7 @@ exports.createWorkout = async (req,res,next) =>{
         res.status(500).json(
             {
                 problem: error.name,
-                error: error.message,
+                error: error
             }
         );
     }
