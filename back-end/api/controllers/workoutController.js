@@ -15,76 +15,10 @@ function isEmptyObject(obj) {//function to check whether a JSON object is empty 
 
 exports.getWorkoutByTitle=async (req,res,next) =>
 {
-    const workouts = await prisma.workout.findMany({//search for workouts that meet the requirement
-        where: {
-            workoutTitle: req.params.title
-        },
-        select: {
-            workoutTitle: true,
-            workoutDescription: true,
-            exercises: true,
-            difficulty: true,
-            planner_Email: true
-        }
-    });
-
-    if(isEmptyObject(workouts)){//if JSON object is empty, send error code
-        res.status(404).json({
-            message: "Unsuccessful. Workout does not exist in the database."
-        });
-    }
-    else{
-        res.status(200).json({//else send retrieved workouts
-            message: "Successfully retrieved workouts",
-            data: workouts
-        });
-    }
-}
-
-exports.getExerciseByTitle=async (req,res,next) =>
-{
-    const exercise = await prisma.exercise.findMany({//search for exercises that meet the requirement
-        where: {
-            title : req.params.title
-        },
-        select: {
-            title: true,
-            description: true,
-            repRange: true,
-            sets: true,
-            Posedescription: true,
-            restPeriod: true,
-            wasSkipped: true,
-            difficulty: true,
-            duratime: true,
-            workout_id: true
-        }
-    });
-
-    if(isEmptyObject(exercise)){//if JSON object is empty, send error code
-        res.status(404).json({
-            message: "Unsuccessful. Exercise does not exist in the database."
-        });
-    }
-    else{
-        res.status(200).json({//else send retrieved workouts
-            message: "Successfully retrieved exercise",
-            data: exercise
-        });
-    }
-}
-
-exports.getWorkoutByPlanner=async (req,res,next) =>
-{
-    if(validateEmail(req.params.email)==false){//first check if email passed is valid
-        res.status(400).json({
-            error:"Invalid email passed in."
-        });
-    }
-    else{
+    try{
         const workouts = await prisma.workout.findMany({//search for workouts that meet the requirement
             where: {
-                planner_Email : req.params.email
+                workoutTitle: req.params.title
             },
             select: {
                 workoutTitle: true,
@@ -97,13 +31,100 @@ exports.getWorkoutByPlanner=async (req,res,next) =>
 
         if(isEmptyObject(workouts)){//if JSON object is empty, send error code
             res.status(404).json({
-                message: "Unsuccessful. Planner does not exist in the database."
+                message: "Unsuccessful. Workout does not exist in the database."
             });
         }
         else{
             res.status(200).json({//else send retrieved workouts
-                message: "Successfully retrieved workouts.",
+                message: "Successfully retrieved workouts",
                 data: workouts
+            });
+        }
+    }
+    catch(err){
+        res.status(500).json({//database error
+            error: err
+        });
+    }
+}
+
+exports.getExerciseByTitle=async (req,res,next) =>
+{
+    try{
+        const exercise = await prisma.exercise.findMany({//search for exercises that meet the requirement
+            where: {
+                title : req.params.title
+            },
+            select: {
+                title: true,
+                description: true,
+                repRange: true,
+                sets: true,
+                Posedescription: true,
+                restPeriod: true,
+                wasSkipped: true,
+                difficulty: true,
+                duratime: true,
+                workout_id: true
+            }
+        });
+
+        if(isEmptyObject(exercise)){//if JSON object is empty, send error code
+            res.status(404).json({
+                message: "Unsuccessful. Exercise does not exist in the database."
+            });
+        }
+        else{
+            res.status(200).json({//else send retrieved workouts
+                message: "Successfully retrieved exercise",
+                data: exercise
+            });
+        }
+    }
+    catch(err){
+        res.status(500).json({//database error
+            error: err
+        });
+    }
+}
+
+exports.getWorkoutByPlanner=async (req,res,next) =>
+{
+    if(validateEmail(req.params.email)==false){//first check if email passed is valid
+        res.status(400).json({
+            error:"Invalid email passed in."
+        });
+    }
+    else{
+        try{
+            const workouts = await prisma.workout.findMany({//search for workouts that meet the requirement
+                where: {
+                    planner_Email : req.params.email
+                },
+                select: {
+                    workoutTitle: true,
+                    workoutDescription: true,
+                    exercises: true,
+                    difficulty: true,
+                    planner_Email: true
+                }
+            });
+
+            if(isEmptyObject(workouts)){//if JSON object is empty, send error code
+                res.status(404).json({
+                    message: "Unsuccessful. Planner does not exist in the database."
+                });
+            }
+            else{
+                res.status(200).json({//else send retrieved workouts
+                    message: "Successfully retrieved workouts.",
+                    data: workouts
+                });
+            }
+        }
+        catch(err){
+            res.status(500).json({//database error
+                error: err
             });
         }
     }
