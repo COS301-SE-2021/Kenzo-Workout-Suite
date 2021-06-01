@@ -6,7 +6,7 @@ const workoutController = require("../controllers/workoutController")
 
 /**
  * @swagger
- *  /getworkoutbytitle:
+ *  /workout/getworkoutbytitle/{title}:
  *      get:
  *          summary: Returns a list of workouts
  *          description: Gets all the workouts in the database that have the same title provided
@@ -48,7 +48,12 @@ const workoutController = require("../controllers/workoutController")
 *              default:
 *                   description: Unexpected error
  *
- * /getexercisebytitle:
+ */
+router.get('/getworkoutbytitle/:title', workoutController.getWorkoutByTitle);
+
+/**
+ * @swagger
+ * /workout/getexercisebytitle/{title}:
  *      get:
  *          summary: Returns a list of exercises
  *          description: Gets all the exercises in the database that have the same title provided
@@ -106,8 +111,12 @@ const workoutController = require("../controllers/workoutController")
  *                   description: An exercise with the specified title was not found.
  *              default:
  *                   description: Unexpected error
- *
- * /getworkoutbyplanner:
+ */
+router.get('/getexercisebytitle/:title', workoutController.getExerciseByTitle);
+
+/**
+ * @swagger
+ * /workout/getworkoutbyplanner/{email}:
  *      get:
  *          summary: Returns a list of workouts
  *          description: Gets all the workouts in the database that have been created by the same planner, using the email provided
@@ -149,8 +158,6 @@ const workoutController = require("../controllers/workoutController")
  *              default:
  *                   description: Unexpected error
  */
-router.get('/getworkoutbytitle/:title', workoutController.getWorkoutByTitle);
-router.get('/getexercisebytitle/:title', workoutController.getExerciseByTitle);
 router.get('/getworkoutbyplanner/:email', workoutController.getWorkoutByPlanner);
 
 module.exports = router;
