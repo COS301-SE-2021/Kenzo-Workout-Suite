@@ -15,6 +15,10 @@ const routes: Routes = [
     redirectTo: 'sign-in',
     pathMatch: 'full'
   },
+  {
+    path: 'create-workout',
+    loadChildren: () => import('./create-workout/create-workout.module').then( m => m.CreateWorkoutPageModule)
+  },
 ];
 
 @NgModule({
