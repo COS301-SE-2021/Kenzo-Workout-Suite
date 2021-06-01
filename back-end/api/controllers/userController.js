@@ -208,6 +208,30 @@ exports.signIn=async (req, res, next) => {
                     email: req.body.email
                 },
             })
+
+            bcrypt.compare(req.body.password, user.password, (err,result) =>{
+                if(err)
+                {
+                    return res.status(401).json({
+                        message: 'Authorisation failed'
+                    });
+                }
+
+                if(result)
+                {
+                    return res.status(200).json(
+                        {
+                            message:'Client Authentication successful'
+                        }
+                    )
+                }
+
+                return res.status(401).json(
+                    {
+                        message:'Authorisation failed'
+                    }
+                )
+            });
         }
 
         catch (err)
@@ -220,29 +244,7 @@ exports.signIn=async (req, res, next) => {
             );
         }
 
-        bcrypt.compare(req.body.password, user.password, (err,result) =>{
-            if(err)
-            {
-                return res.status(401).json({
-                    message: 'Authorisation failed'
-                });
-            }
 
-            if(result)
-            {
-                return res.status(200).json(
-                    {
-                        message:'Client Authentication successful'
-                    }
-                )
-            }
-
-            return res.status(401).json(
-                {
-                    message:'Authorisation failed'
-                }
-            )
-        });
     }
 
     else if(await countPlanner(req.body.email)===1)
@@ -290,9 +292,6 @@ exports.signIn=async (req, res, next) => {
                 }
             );
         }
-
-
-
     }
 
     else
@@ -306,7 +305,6 @@ exports.signIn=async (req, res, next) => {
 }
 
 exports.updateUserDetails=async (req, res, next) => {
-
     if(await countClient(req.body.email)===1) {
         try
         {
