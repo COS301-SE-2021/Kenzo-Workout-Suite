@@ -52,7 +52,7 @@ app.use('/user' , userRoute);
 
 app.use((req, res, next)=>
 {
-    const error= new Error('Not found');
+    const error= new Error('Invalid routing parameters.');
     error.status=404;
     next(error);
 })

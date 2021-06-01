@@ -9,6 +9,11 @@ function validateEmail(email) {
     return re.test(String(email).toLowerCase());
 }
 
+function validatePassword(password) {
+    const re =/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+    return re.test(String(password).toLowerCase());
+}
+
 async function countClient(myEmail) {
     return await prisma.client.count({
         where: {
@@ -30,22 +35,29 @@ exports.signUpClient=async(req,res,next) =>
 {
     if(await countClient(req.body.email)===1)
     {
-        return res.status(500).json({
+        return res.status(400).json({
             error:"Client with email already exists"
         });
     }
 
     if(await countPlanner(req.body.email)===1)
     {
-        return res.status(500).json({
+        return res.status(400).json({
             error:"Planner with email already exists"
         });
     }
 
     if(validateEmail(req.body.email)===false)
     {
-        return res.status(500).json({
+        return res.status(400).json({
             error:"Invalid email passed in"
+        });
+    }
+
+    if (validatePassword(req.body.password)===false)
+    {
+        return res.status(400).json({
+            error:"Invalid password"
         });
     }
 
@@ -54,7 +66,7 @@ exports.signUpClient=async(req,res,next) =>
         if(err)
         {
             return res.status(500).json({
-                error:err
+                error:"Password hashing error."
             });
         }
 
@@ -80,11 +92,10 @@ exports.signUpClient=async(req,res,next) =>
                  })
                  .catch(err=>
              {
-                 console.log(err);
                  res.status(500).json(
                      {
                          error:err,
-                         description:"Database error"
+                         description:"Internal database error"
                      }
                  );
              });
@@ -108,6 +119,13 @@ exports.signUpPlanner=async (req, res, next) => {
     if (validateEmail(req.body.email) === false) {
         return res.status(500).json({
             error: "Invalid email passed in"
+        });
+    }
+
+    if (validatePassword(req.body.password)===false)
+    {
+        return res.status(400).json({
+            error:"Invalid password"
         });
     }
 
@@ -138,7 +156,8 @@ exports.signUpPlanner=async (req, res, next) => {
                     console.log(err);
                     res.status(500).json(
                         {
-                            error: err
+                            error:err,
+                            description:"Internal database error"
                         }
                     );
                 });
@@ -150,10 +169,7 @@ exports.signUpPlanner=async (req, res, next) => {
 
 exports.signIn=async (req, res, next) => {
 
-    let clientNumber=await countClient(req.body.email)
-     let plannerCount=await countPlanner(req.body.email)
-
-    if(clientNumber===1)
+    if(await countClient(req.body.email)===1)
     {
         const user = await prisma.client.findUnique({
             where: {
@@ -195,7 +211,7 @@ exports.signIn=async (req, res, next) => {
         });
     }
 
-    else if(plannerCount === 1)
+    else if(await countPlanner(req.body.email)===1)
     {
         const user = await prisma.planner.findUnique({
             where: {
@@ -248,30 +264,72 @@ exports.signIn=async (req, res, next) => {
 }
 
 exports.updateUserDetails=async (req, res, next) => {
-    const updateUser = await prisma.client.update({
-        where: {
-            email: req.body.email,
-        },
 
-        data: {
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            dateOfBirth: req.body.dateOfBirth,
-        },
-    })
-        .then(res.status(201).json(
-            {
-                message: 'User details updated',
+    if(await countClient(req.body.email)===1) {
+        const updateUser = await prisma.client.update({
+            where: {
+                email: req.body.email,
             },
-        ))
-        .catch(err=>
-        {
-            console.log(err);
-            res.status(500).json(
+
+            data: {
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                dateOfBirth: req.body.dateOfBirth,
+            },
+        })
+            .then(res.status(201).json(
                 {
-                    error:err
-                }
-            );
-        });
+                    message: 'User details updated',
+                },
+            ))
+            .catch(err=>
+            {
+                console.log(err);
+                res.status(500).json(
+                    {
+                        error:err
+                    }
+                );
+            });
+    }
+
+    else if(await countPlanner(req.body.email)===1)
+    {
+        const updateUser = await prisma.client.update({
+            where: {
+                email: req.body.email,
+            },
+
+            data: {
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                dateOfBirth: req.body.dateOfBirth,
+            },
+        })
+            .then(res.status(201).json(
+                {
+                    message: 'User details updated',
+                },
+            ))
+            .catch(err=>
+            {
+                console.log(err);
+                res.status(500).json(
+                    {
+                        error:err
+                    }
+                );
+            });
+    }
+
+    else
+    {
+        return res.status(401).json(
+            {
+                message:'Authorisation failed'
+            }
+        )
+    }
+
 }
 
