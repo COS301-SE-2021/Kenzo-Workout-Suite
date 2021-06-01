@@ -16,18 +16,19 @@ export class SignInPage implements OnInit {
   }
 
   signIn() {
-    const url : string = "https://jsonplaceholder.typicode.com/posts";
+    const url : string = "http://localhost:5500/user/signIn";
     const body:Object = {
-      title: 'foo',
-      body: 'bar',
-      userId: 1,
+      "email": "luca@me.com",
+      "password": "Test123!"
     };
 
 
     this.http.post(url, body).subscribe(data =>{
+      // Success State
       console.log(data)
       this.route.navigate(['/create-exercise']);
     }, error => {
+      // Invalid Sign In
       console.log(error)
     });
 
