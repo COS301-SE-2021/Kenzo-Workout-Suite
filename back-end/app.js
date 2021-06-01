@@ -4,19 +4,18 @@ const morgan= require('morgan');
 const bodyParser= require('body-parser');
 const exampleRoute= require('./api/routes/exampleRoute');
 const userRoute= require('./api/routes/userRoute');
+
 const workoutRoute= require('./api/routes/workoutRoute');
 const swaggerJsDoc= require('swagger-jsdoc');
 const swaggerUi= require('swagger-ui-express');
 // This is middleware. incoming requests have to go through the middelware.
 
+
 const swaggerOptions = {
     swaggerDefinition:{
         info:{
-            title: 'Kenzo API',
+            title: 'Kenzo Workout API',
             description: 'Subsystems divided',
-            contact: {
-                name: "Kenzo"
-            },
             servers: ["http://localhost:5500"]
         }
     },
@@ -32,6 +31,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs))
+
 app.use((req,res,next) =>
 {
     res.header('Access-Control-Allow', '*');

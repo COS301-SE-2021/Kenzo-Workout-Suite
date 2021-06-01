@@ -2,7 +2,6 @@ const { PrismaClient } = require("@prisma/client")
 
 const prisma = new PrismaClient()
 
-const bcrypt= require('bcrypt');
 
 function validateEmail(email) {//function to validate an email
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -127,4 +126,80 @@ exports.getWorkoutByPlanner=async (req,res,next) =>
             });
         }
     }
+}
+exports.createExercise = async (req,res,next) =>{
+    if(req.body.title === null || req.body.description === null || req.body.repRange === null || req.body.sets === null || req.body.Posedescription === null || req.body.restPeriod === null || req.body.wasSkipped === null || req.body.difficulty === null || req.body.duratime === null ){
+        res.status(500).json(
+            {
+                error: "Required fields cannot be left empty."
+            }
+        );
+    }else{
+        try{
+            await prisma.exercise.create({
+                data: {
+                    title: req.body.title,
+                    description: req.body.description,
+                    repRange: req.body.repRange,
+                    sets: req.body.sets,
+                    Posedescription: req.body.Posedescription,
+                    restPeriod: req.body.restPeriod,
+                    difficulty: req.body.difficulty,
+                    duratime: req.body.duratime,
+                    workout: req.body.workout,
+                },
+            })
+            res.status(201).json(
+                {
+                    message: 'Workout Created'
+                }
+            )
+        }catch(error){
+            res.status(500).json(
+                {
+                    problem: error.name,
+                    error: error.message
+                }
+            );
+        }
+    }
+
+
+}
+
+exports.createWorkout = async (req,res,next) =>{
+
+    if(req.body.workoutTitle === null || req.body.workoutDescription === null || req.body.difficulty === null ){
+        res.status(500).json(
+            {
+                error: "Required fields cannot be left empty."
+            }
+        );
+    }else{
+        try{
+            await prisma.workout.create({
+                data: {
+                    workoutTitle: req.body.workoutTitle,
+                    workoutDescription: req.body.workoutDescription,
+                    exercises : req.body.exercises,
+                    difficulty: req.body.difficulty,
+                    planner: req.body.planner,
+                    planner_Email: req.body.planner_Email
+                },
+            })
+            res.status(201).json(
+                {
+                    message: 'Workout Created'
+                }
+            )
+        }catch(error){
+            res.status(500).json(
+                {
+                    problem: error.name,
+                    error: error
+                }
+            );
+        }
+    }
+
 }
