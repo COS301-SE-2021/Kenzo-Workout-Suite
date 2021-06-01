@@ -28,10 +28,17 @@ exports.getWorkoutByTitle=async (req,res,next) =>
         }
     });
 
-    res.status(200).json({
-        message: "Successfully retrieved workouts",
-        data: workouts
-    });
+    if(isEmptyObject(workouts)){
+        res.status(404).json({
+            message: "Unsuccessful. Workout does not exist in the database."
+        });
+    }
+    else{
+        res.status(200).json({
+            message: "Successfully retrieved workouts",
+            data: workouts
+        });
+    }
 }
 
 exports.getExerciseByTitle=async (req,res,next) =>
@@ -54,10 +61,17 @@ exports.getExerciseByTitle=async (req,res,next) =>
         }
     });
 
-    res.status(200).json({
-        message: "Successfully retrieved exercise",
-        data: exercise
-    });
+    if(isEmptyObject(exercise)){
+        res.status(404).json({
+            message: "Unsuccessful. Exercise does not exist in the database."
+        });
+    }
+    else{
+        res.status(200).json({
+            message: "Successfully retrieved exercise",
+            data: exercise
+        });
+    }
 }
 
 exports.getWorkoutByPlanner=async (req,res,next) =>
