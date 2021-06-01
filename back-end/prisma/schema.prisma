@@ -10,66 +10,67 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum Difficulty{
-    EASY
-    MEDIUM
-    HARD
-    EXTREME
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+  EXTREME
 }
 
-model Avatar{
-    torsoColour String @default("blue")
-    armColour String @default("blue")
-    legColour String @default("blue")
-    headColour String @default("blue")
-    client Client @relation(fields: [avatarEmail], references:[email])
-    avatarEmail String @id
+model Avatar {
+  torsoColour String @default("blue")
+  armColour   String @default("blue")
+  legColour   String @default("blue")
+  headColour  String @default("blue")
+  client      Client @relation(fields: [avatarEmail], references: [email])
+  avatarEmail String @id
 }
 
-model Client{
-    email String @id
-    firstName String
-    lastName String
-    password String
-    dateOfBirth DateTime?
-    avatar Avatar?
+model Client {
+  email       String    @id
+  firstName   String
+  lastName    String
+  password    String
+  dateOfBirth DateTime?
+  avatar      Avatar?
 }
 
-model Planner{
-    email String @unique
-    firstName String
-    lastName String
-    password String
-    dateOfBirth DateTime?
-    workouts Workout[]
+
+model Planner {
+  email       String    @unique
+  firstName   String
+  lastName    String
+  password    String
+  dateOfBirth DateTime?
+
+  workouts Workout[]
 }
 
-model Workout{
-    workoutID String @default(uuid()) @id
-    workoutTitle String @db.VarChar(20)
-    workoutDescription String @db.VarChar(200)
+model Workout {
+  workoutID          String @id @default(uuid())
+  workoutTitle       String
+  workoutDescription String
 
-    exercises Exercise[]
-    difficulty Difficulty
+  exercises  Exercise[]
+  difficulty Difficulty
 
-    planner Planner @relation(fields: [planner_Email], references:[email])
-    planner_Email String
+  planner       Planner? @relation(fields: [planner_Email], references: [email])
+  planner_Email String?
 }
 
 model Exercise {
-  exercise String @default(uuid()) @id
-  title String @db.VarChar(255)
-  description String @db.VarChar(255)
-  repRange String @db.VarChar(255)
-  sets Int
-  Posedescription String @db.VarChar(255)
-  restPeriod DateTime
-  wasSkipped Boolean
-  difficulty Difficulty
+  exercise        String     @id @default(uuid())
+  title           String
+  description     String
+  repRange        String
+  sets            Int
+  Posedescription String
+  restPeriod      Int
+  difficulty      Difficulty
 
-  duratime DateTime
+  duratime Int
 
-  workout Workout @relation(fields: [workout_id], references:[workoutID])
-  workout_id String
+
+  Workout          Workout? @relation(fields: [workoutWorkoutID], references: [workoutID])
+  workoutWorkoutID String?
 }
-
