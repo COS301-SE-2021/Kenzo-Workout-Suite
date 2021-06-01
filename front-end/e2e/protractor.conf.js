@@ -2,7 +2,7 @@
 // Protractor configuration file, see link for more information
 // https://github.com/angular/protractor/blob/master/lib/config.ts
 
-const { SpecReporter, StacktraceOption } = require('jasmine-spec-reporter');
+const { SpecReporter, StacktraceOption } = require('jasmine-Tests-reporter');
 
 /**
  * @type { import("protractor").Config }
@@ -10,7 +10,7 @@ const { SpecReporter, StacktraceOption } = require('jasmine-spec-reporter');
 exports.config = {
   allScriptsTimeout: 11000,
   specs: [
-    './src/**/*.e2e-spec.ts'
+    './src/**/*.e2e-Tests.ts'
   ],
   capabilities: {
     browserName: 'chrome'
