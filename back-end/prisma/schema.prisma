@@ -32,7 +32,6 @@ model Client{
     lastName String
     password String
     dateOfBirth DateTime?
-    userType Int
     avatar Avatar?
 }
 
@@ -42,15 +41,20 @@ model Planner{
     lastName String
     password String
     dateOfBirth DateTime?
-    userType Int
+
+    workouts Workout[]
 }
 
 model Workout{
     workoutID String @default(uuid()) @id
     workoutTitle String @db.VarChar(20)
     workoutDescription String @db.VarChar(200)
+
     exercises Exercise[]
     difficulty Difficulty
+
+    planner Planner @relation(fields: [planner_Email], references:[email])
+    planner_Email String
 }
 
 model Exercise {
