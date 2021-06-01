@@ -3,7 +3,7 @@
 }
 
 .kenzo-input{
-  font-family: "SF Pro";
+  font-family: "SF Pro Regular", serif;
   display: block;
   height: 50px;
   border-radius: 9px;
@@ -21,6 +21,7 @@
 }
 
 .input-description{
+  font-family: "SF Pro Medium", serif;
   display: block;
   padding-left: 5px;
   padding-bottom: 5px;
@@ -37,6 +38,7 @@
 
 .send-req-button{
   display: block;
+  font-family: "SF Pro Regular", serif;
   width: var(--button-width);
   margin-left: auto;
   margin-right: auto;
@@ -50,6 +52,8 @@
 .text-link{
   width: var(--text-width);
   display: block;
+  font-family: "SF Pro Regular", serif;
+  color: white;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
@@ -70,14 +74,16 @@
 }
 .sign-in-with-text{
   text-align: center;
-  padding-top: 10px;
+  font-family: "SF Pro Regular", serif;
+  display: block;
+  margin: 10px auto;
   color: var(--ion-color-tertiary);
 }
 .img-container{
   margin-left: auto;
   margin-right: auto;
   display: block;
-  width: 90px;
+  width: 82px;
 }
 .sign-in-with-img{
   display: inline-block;

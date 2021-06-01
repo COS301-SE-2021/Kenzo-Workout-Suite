@@ -1,3 +1,100 @@
 .sign-up-background{
-    --background: red;
+    --background: var(--ion-color-primary);
+}
+.sign-up-label{
+    font-family: "SF Pro Medium", serif;
+    display: block;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    font-weight: 500;
+    color: var(--ion-color-secondary);
+}
+.sign-up-input{
+    font-family: "SF Pro Regular", serif;
+    display: block;
+    height: 50px;
+    border-radius: var(--radius);
+    --background: var(--ion-color-secondary);
+    --padding-start: 10px;
+    --padding-top: 15px;
+    text-indent: 1px;
+    --color: black;
+}
+.input-div{
+    font-family: "SF Pro Regular", serif;
+    display: block;
+    width: var(--input-width);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#Sign-up-Kenzo-Logo{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width:100vw;
+    height:18vh;
+}
+
+.SignUpSelectionBtn{
+    font-family: "SF Pro Regular", serif;
+    margin-right: auto;
+    margin-bottom: 15px;
+    --background: var(--ion-color-secondary);
+    --border-radius: var(--secondary-radius);
+    color: var(--ion-color-tertiary);
+    margin-top: 5px;
+    width: 100px;
+    height: 40px;
+    --background-activated: var(--ion-color-secondary);
+    --background-hover: var(--ion-color-secondary);
+}
+
+.SignUpSelectionBtn:hover{
+    font-family: "SF Pro Regular", serif;
+    border: 5px;
+    border-color: var(--ion-color-tertiary);
+    border-style: solid;
+    border-radius: var(--secondary-radius);;
+}
+
+#PlannerBtn{
+    margin-left: 35px;
+}
+
+#ClientBtn{
+    margin-left: 30px;
+}
+
+#SignUpButton{
+    font-family: "SF Pro Regular", serif;
+    display: block;
+    width: var(--button-width);
+    margin-left: auto;
+    margin-right: auto;
+    --background: var(--ion-color-tertiary);
+    --background-actived: var(--ion-color-tertiary);
+    --color-activated: var(--ion-color-primary);
+    --background-hover: var(--ion-color-tertiary);
+    --color-hover: var(--ion-color-primary);
+}
+
+a{
+    font-family: "SF Pro Regular", serif;
+    width: var(--text-width);
+    display: block;
+    margin-left: auto;
+    margin-top: 30px;
+    margin-right: auto;
+    text-align: center;
+    background: var(--ion-color-primary);
+    color: var(--ion-color-secondary);
+    --background-hover: var(--ion-color-primary);
+    --color-hover: var(--ion-color-tertiary);
+    text-decoration: none;
+}
+
+.container{
+    align-content: center;
+    align-items: center;
 }

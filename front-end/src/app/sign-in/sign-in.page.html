@@ -1,5 +1,5 @@
 <ion-content scroll-y="false" class="sign-in-background">
-  <ion-img class="kenzo-logo" src="./assets/kenzo/Kenzo_logo.svg" alt="Kenzo"></ion-img>
+  <ion-img class="kenzo-logo" src="./assets/kenzo/Kenzo_logo.png" alt="Kenzo"></ion-img>
   <div class="input-div">
     <ion-label class="input-description">Email</ion-label>
     <ion-input placeholder="your@email.com" class="kenzo-input"></ion-input>
@@ -11,15 +11,14 @@
   </div>
   <br>
   <ion-button mode="ios" class="send-req-button">Sign in</ion-button>
-  <ion-button mode="ios" class="text-link">Don't have an account? Sign up</ion-button>
+  <br>
+  <a routerLink="/sign-up" mode="ios" class="text-link">Don't have an account? Sign up</a>
 
   <ion-card class="sign-in-with">
-    <ion-header class="sign-in-with-text"> Or sign in with:</ion-header>
-    <ion-card-content>
+      <ion-label class="sign-in-with-text"> Or sign in with:</ion-label>
       <div class="img-container">
         <ion-img class="sign-in-with-img" src="./assets/apple/appleid_logo_button@2x.png" alt="Kenzo"></ion-img>
         <ion-img class="sign-in-with-img" src="./assets/google/btn_google_light_normal_ios@2x.png" alt="Kenzo"></ion-img>
       </div>
-      </ion-card-content>
   </ion-card>
 </ion-content>

@@ -1,3 +1,41 @@
-<ion-content class="sign-up-background">
-  <ion-img src=".\assets\kenzo\Kenzo_logo.png"></ion-img>
+<ion-content scroll-y="false" class="sign-up-background">
+<div class="container">
+  <ion-img src=".\assets\kenzo\Kenzo_logo.png" id="Sign-up-Kenzo-Logo"></ion-img>
+  <div class="input-div">
+    <ion-label class="sign-up-label" position= "stacked">First Name</ion-label>
+    <ion-input class="sign-up-input" placeholder=" Steve" type="text"></ion-input>
+  </div>
+  <br>
+  <div class="input-div">
+    <ion-label class="sign-up-label" position= "stacked">Last Name</ion-label>
+    <ion-input class="sign-up-input" placeholder=" Jobs" type="text"></ion-input>
+  </div>
+  <br>
+  <div class="input-div">
+    <ion-label class="sign-up-label" position= "stacked">Email</ion-label>
+    <ion-input class="sign-up-input" placeholder=" your@email.com" type="email"></ion-input>
+  </div>
+  <br>
+  <div class="input-div">
+    <ion-label class="sign-up-label" position= "stacked">Password</ion-label>
+    <ion-input class="sign-up-input" placeholder="  ***********" type="password"></ion-input>
+  </div>
+  <br>
+  <div class="input-div">
+    <ion-label class="sign-up-label" position= "stacked">Confirm Password</ion-label>
+    <ion-input class="sign-up-input" placeholder="  ***********" type="password"></ion-input>
+  </div>
+  <br>
+  <div class="input-div">
+      <ion-button mode="ios" value="Planner" id="PlannerBtn" class="SignUpSelectionBtn">
+      Planner
+      </ion-button>
+      <ion-button mode="ios" value="Client" id="ClientBtn" class="SignUpSelectionBtn">
+      Client
+      </ion-button>
+  </div>
+
+    <ion-button mode="ios" id="SignUpButton" expand="block">Sign up</ion-button>
+    <a mode="ios" routerLink="/sign-in">Already have an account? Sign in</a>
+</div>
 </ion-content>
