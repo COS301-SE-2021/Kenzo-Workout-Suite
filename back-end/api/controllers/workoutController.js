@@ -3,7 +3,6 @@ const { PrismaClient } = require("@prisma/client")
 const prisma = new PrismaClient()
 
 exports.createExercise = async (req,res,next) =>{
-    //console.log(req.body);
     if(req.body.title === null || req.body.description === null || req.body.repRange === null || req.body.sets === null || req.body.Posedescription === null || req.body.restPeriod === null || req.body.wasSkipped === null || req.body.difficulty === null || req.body.duratime === null ){
         res.status(500).json(
             {
@@ -31,7 +30,6 @@ exports.createExercise = async (req,res,next) =>{
                 }
             )
         }catch(error){
-            //console.log(error);
             res.status(500).json(
                 {
                     problem: error.name,
@@ -46,30 +44,37 @@ exports.createExercise = async (req,res,next) =>{
 
 exports.createWorkout = async (req,res,next) =>{
 
-    try{
-        await prisma.workout.create({
-            data: {
-                workoutTitle: req.body.workoutTitle,
-                workoutDescription: req.body.workoutDescription,
-                exercises : req.body.exercises,
-                difficulty: req.body.difficulty,
-                planner: req.body.planner,
-                planner_Email: req.body.planner_Email
-            },
-        })
-        res.status(201).json(
-            {
-                message: 'Workout Created'
-            }
-        )
-    }catch(error){
-        //console.log(error.body);
+    if(req.body.workoutTitle === null || req.body.workoutDescription === null || req.body.difficulty === null ){
         res.status(500).json(
             {
-                problem: error.name,
-                error: error
+                error: "Required fields cannot be left empty."
             }
         );
+    }else{
+        try{
+            await prisma.workout.create({
+                data: {
+                    workoutTitle: req.body.workoutTitle,
+                    workoutDescription: req.body.workoutDescription,
+                    exercises : req.body.exercises,
+                    difficulty: req.body.difficulty,
+                    planner: req.body.planner,
+                    planner_Email: req.body.planner_Email
+                },
+            })
+            res.status(201).json(
+                {
+                    message: 'Workout Created'
+                }
+            )
+        }catch(error){
+            res.status(500).json(
+                {
+                    problem: error.name,
+                    error: error
+                }
+            );
+        }
     }
 
 }
