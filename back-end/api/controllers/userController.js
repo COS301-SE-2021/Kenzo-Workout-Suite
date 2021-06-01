@@ -30,7 +30,6 @@ async function countPlanner(myEmail) {
     });
 }
 
-
 exports.signUpClient=async(req,res,next) =>
 {
     if(await countClient(req.body.email)===1)
@@ -72,33 +71,35 @@ exports.signUpClient=async(req,res,next) =>
 
         else
         {
-             await prisma.client.create(
-                {
-                    data:{
-                        email: req.body.email.toLowerCase(),
-                        firstName:req.body.firstName,
-                        lastName:req.body.lastName,
-                        password:hash
+            try
+            {
+                await prisma.client.create(
+                    {
+                        data:{
+                            email: req.body.email.toLowerCase(),
+                            firstName:req.body.firstName,
+                            lastName:req.body.lastName,
+                            password:hash
+                        }
                     }
-                }
-            )
-                 .then(result=>
-                 {
-                     res.status(201).json(
-                         {
-                             message: 'Client created'
-                         }
-                     );
-                 })
-                 .catch(err=>
-             {
-                 res.status(500).json(
-                     {
-                         error:err,
-                         description:"Internal database error"
-                     }
-                 );
-             });
+                )
+
+                res.status(201).json(
+                    {
+                        message: 'Client created'
+                    }
+                );
+            }
+
+            catch(err)
+            {
+                res.status(500).json(
+                    {
+                        error:err,
+                        description:"Internal database error"
+                    }
+                );
+            }
         }
     })
 }
@@ -135,32 +136,34 @@ exports.signUpPlanner=async (req, res, next) => {
                 error: err
             });
         } else {
-            await prisma.planner.create(
-                {
-                    data: {
-                        email: req.body.email.toLowerCase(),
-                        firstName: req.body.firstName,
-                        lastName: req.body.lastName,
-                        password: hash
+            try
+            {
+                await prisma.planner.create(
+                    {
+                        data: {
+                            email: req.body.email.toLowerCase(),
+                            firstName: req.body.firstName,
+                            lastName: req.body.lastName,
+                            password: hash
+                        }
                     }
-                }
-            )
-                .then(result => {
-                    res.status(201).json(
-                        {
-                            message: 'Planner created'
-                        }
-                    );
-                })
-                .catch(err => {
-                    console.log(err);
-                    res.status(500).json(
-                        {
-                            error:err,
-                            description:"Internal database error"
-                        }
-                    );
-                });
+                )
+                res.status(201).json(
+                    {
+                        message: 'Planner created'
+                    }
+                );
+
+            }
+            catch (err)
+            {
+                res.status(500).json(
+                    {
+                        error:err,
+                        description:"Internal database error"
+                    }
+                );
+            }
         }
     })
 }
@@ -171,20 +174,24 @@ exports.signIn=async (req, res, next) => {
 
     if(await countClient(req.body.email)===1)
     {
-        const user = await prisma.client.findUnique({
-            where: {
-                email: req.body.email
-            },
-        })
-            .catch(err=>
-            {
-                console.log(err);
-                res.status(500).json(
-                    {
-                        error:err
-                    }
-                );
-            });
+        try
+        {
+            const user = await prisma.client.findUnique({
+                where: {
+                    email: req.body.email
+                },
+            })
+        }
+
+        catch (err)
+        {
+            res.status(500).json(
+                {
+                    error:err,
+                    description:"Internal database error"
+                }
+            );
+        }
 
         bcrypt.compare(req.body.password, user.password, (err,result) =>{
             if(err)
@@ -213,20 +220,24 @@ exports.signIn=async (req, res, next) => {
 
     else if(await countPlanner(req.body.email)===1)
     {
-        const user = await prisma.planner.findUnique({
-            where: {
-                email: req.body.email
-            },
-        })
-            .catch(err=>
-            {
-                console.log(err);
-                res.status(500).json(
-                    {
-                        error:err
-                    }
-                );
-            });
+        try
+        {
+            const user = await prisma.planner.findUnique({
+                where: {
+                    email: req.body.email
+                },
+            })
+        }
+
+        catch(err)
+        {
+            res.status(500).json(
+                {
+                    error:err
+                }
+            );
+        }
+
 
         bcrypt.compare(req.body.password, user.password, (err,result) =>{
             if(err)
@@ -266,60 +277,70 @@ exports.signIn=async (req, res, next) => {
 exports.updateUserDetails=async (req, res, next) => {
 
     if(await countClient(req.body.email)===1) {
-        const updateUser = await prisma.client.update({
-            where: {
-                email: req.body.email,
-            },
 
-            data: {
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                dateOfBirth: req.body.dateOfBirth,
-            },
-        })
-            .then(res.status(201).json(
-                {
-                    message: 'User details updated',
+        try
+        {
+            const updateUser = await prisma.client.update({
+                where: {
+                    email: req.body.email,
                 },
-            ))
-            .catch(err=>
-            {
-                console.log(err);
-                res.status(500).json(
-                    {
-                        error:err
-                    }
-                );
-            });
+
+                data: {
+                    firstName: req.body.firstName,
+                    lastName: req.body.lastName,
+                    dateOfBirth: req.body.dateOfBirth,
+                },
+            })
+
+            res.status(201).json(
+                {
+                    message: 'User details updated'
+                }
+            )
+        }
+
+        catch(err)
+        {
+            res.status(500).json(
+                {
+                    error:err
+                }
+            );
+        }
     }
 
     else if(await countPlanner(req.body.email)===1)
     {
-        const updateUser = await prisma.client.update({
-            where: {
-                email: req.body.email,
-            },
+        try
+        {
+            const updateUser = await prisma.planner.update({
+                where: {
+                    email: req.body.email,
+                },
 
-            data: {
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                dateOfBirth: req.body.dateOfBirth,
-            },
-        })
-            .then(res.status(201).json(
+                data: {
+                    firstName: req.body.firstName,
+                    lastName: req.body.lastName,
+                    dateOfBirth: req.body.dateOfBirth,
+                },
+            })
+
+            (res.status(201).json(
                 {
                     message: 'User details updated',
                 },
             ))
-            .catch(err=>
-            {
-                console.log(err);
-                res.status(500).json(
-                    {
-                        error:err
-                    }
-                );
-            });
+        }
+
+        catch (err)
+        {
+            res.status(500).json(
+                {
+                    error:err,
+                    description:"Internal database error"
+                }
+            );
+        }
     }
 
     else
@@ -332,4 +353,74 @@ exports.updateUserDetails=async (req, res, next) => {
     }
 
 }
+
+
+exports.getUserByEmail=async (req, res, next) => {
+
+    if(await countClient(req.body.email)===1) {
+
+        try
+        {
+            const user = await prisma.client.findUnique({
+                where: {
+                    email: req.body.email
+                },
+            })
+
+            res.status(201).json(
+                {
+                    User: user
+                }
+            )
+        }
+
+        catch(err)
+        {
+            res.status(500).json(
+                {
+                    error:err
+                }
+            );
+        }
+    }
+
+    else if(await countPlanner(req.body.email)===1)
+    {
+        try
+        {
+            const user = await prisma.planner.findUnique({
+                where: {
+                    email: req.body.email
+                },
+            })
+
+            res.status(201).json(
+                {
+                    User: user
+                }
+            )
+        }
+
+        catch (err)
+        {
+            res.status(500).json(
+                {
+                    error:err,
+                    description:"Internal database error"
+                }
+            );
+        }
+    }
+
+    else
+    {
+        return res.status(401).json(
+            {
+                message:'No user with email exists'
+            }
+        )
+    }
+
+}
+
 
