@@ -64,7 +64,7 @@ exports.getExerciseByTitle=async (req,res,next) =>
                 restPeriod: true,
                 difficulty: true,
                 duratime: true,
-                workout_id: true
+                workoutWorkoutID: true
             }
         });
 
