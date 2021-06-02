@@ -98,7 +98,7 @@ exports.signUpClient=async(req,res,next) =>
                     }
                 )
 
-                res.status(201).json(
+                return res.status(201).json(
                     {
                         message: 'Client created'
                     }
@@ -107,7 +107,7 @@ exports.signUpClient=async(req,res,next) =>
 
             catch(err)
             {
-                res.status(500).json(
+                return res.status(500).json(
                     {
                         error:err,
                         description:"Internal database error"
@@ -141,13 +141,13 @@ exports.signUpPlanner=async (req, res, next) => {
     }
 
     if (await countPlanner(req.body.email) === 1) {
-        return res.status(500).json({
+        return res.status(400).json({
             error: "Planner with email already exists"
         });
     }
 
     if (validateEmail(req.body.email) === false) {
-        return res.status(500).json({
+        return res.status(400).json({
             error: "Invalid email passed in"
         });
     }
@@ -177,7 +177,7 @@ exports.signUpPlanner=async (req, res, next) => {
                         }
                     }
                 )
-                res.status(201).json(
+                return res.status(201).json(
                     {
                         message: 'Planner created'
                     }
@@ -186,7 +186,7 @@ exports.signUpPlanner=async (req, res, next) => {
             }
             catch (err)
             {
-                res.status(500).json(
+                return res.status(500).json(
                     {
                         error:err,
                         description:"Internal database error"
@@ -199,7 +199,17 @@ exports.signUpPlanner=async (req, res, next) => {
 
 exports.signIn=async (req, res, next) => {
 
-    if(await countClient(req.body.email)===1)
+    if(req.body.email==="" || req.body.password==="")
+    {
+        return res.status(400).json(
+            {
+                message: "empty email address"
+            }
+        );
+    }
+
+
+    else if(await countClient(req.body.email)===1)
     {
         try
         {
@@ -217,7 +227,7 @@ exports.signIn=async (req, res, next) => {
                     });
                 }
 
-                if(result)
+                else if(result)
                 {
                     return res.status(200).json(
                         {
@@ -226,17 +236,20 @@ exports.signIn=async (req, res, next) => {
                     )
                 }
 
-                return res.status(401).json(
-                    {
-                        message:'Authorisation failed'
-                    }
-                )
+                else
+                {
+                    return res.status(401).json(
+                        {
+                            message:'Authorisation failed'
+                        }
+                    )
+                }
             });
         }
 
         catch (err)
         {
-            res.status(500).json(
+            return res.status(500).json(
                 {
                     error:err,
                     description:"Internal database error"
@@ -266,7 +279,7 @@ exports.signIn=async (req, res, next) => {
                     });
                 }
 
-                if(result)
+                else if(result)
                 {
                     return res.status(200).json(
                         {
@@ -275,17 +288,21 @@ exports.signIn=async (req, res, next) => {
                     )
                 }
 
-                return res.status(401).json(
-                    {
-                        message:'Authorisation failed'
-                    }
-                )
+                else
+                {
+                    return res.status(401).json(
+                        {
+                            message:'Authorisation failed'
+                        }
+                    )
+                }
+
             });
         }
 
         catch(err)
         {
-            res.status(500).json(
+            return res.status(500).json(
                 {
                     error:err,
                     description:"Internal database error"
@@ -305,6 +322,17 @@ exports.signIn=async (req, res, next) => {
 }
 
 exports.updateUserDetails=async (req, res, next) => {
+
+    if(req.body.email==='' || req.body.firstName==='' || req.body.lastName==='' || req.body.dateOfBirth==='')
+    {
+        return res.status(400).json(
+            {
+                message: "empty parameters passed in"
+            }
+        );
+    }
+
+
     if(await countClient(req.body.email)===1) {
         try
         {
@@ -320,7 +348,7 @@ exports.updateUserDetails=async (req, res, next) => {
                 },
             })
 
-            res.status(201).json(
+            return res.status(201).json(
                 {
                     message: 'Client user details updated'
                 }
@@ -329,7 +357,7 @@ exports.updateUserDetails=async (req, res, next) => {
 
         catch(err)
         {
-            res.status(500).json(
+            return res.status(500).json(
                 {
                     error:err,
                     description:"Internal database error"
@@ -354,16 +382,16 @@ exports.updateUserDetails=async (req, res, next) => {
                 },
             })
 
-            (res.status(201).json(
+            return res.status(201).json(
                 {
                     message: 'Planner user details updated',
                 },
-            ))
+            )
         }
 
         catch (err)
         {
-            res.status(500).json(
+            return res.status(500).json(
                 {
                     error:err,
                     description:"Internal database error"
@@ -386,6 +414,15 @@ exports.updateUserDetails=async (req, res, next) => {
 
 exports.getUserByEmail=async (req, res, next) => {
 
+    if(req.body.email==="" || req.body.email===null)
+    {
+        return res.status(400).json(
+            {
+                message: "empty email address"
+            }
+        );
+    }
+
     if(await countClient(req.body.email)===1) {
         try
         {
@@ -396,7 +433,7 @@ exports.getUserByEmail=async (req, res, next) => {
 
             })
 
-            res.status(201).json(
+            return res.status(201).json(
                 {
                             email : user.email,
                             firstName: user.firstName,
@@ -408,7 +445,7 @@ exports.getUserByEmail=async (req, res, next) => {
 
         catch(err)
         {
-            res.status(500).json(
+            return res.status(500).json(
                 {
                     error:err
                 }
@@ -426,7 +463,7 @@ exports.getUserByEmail=async (req, res, next) => {
                 },
             })
 
-            res.status(201).json(
+            return res.status(201).json(
                 {
                     email : user.email,
                     firstName: user.firstName,
@@ -438,7 +475,7 @@ exports.getUserByEmail=async (req, res, next) => {
 
         catch (err)
         {
-            res.status(500).json(
+            return res.status(500).json(
                 {
                     error:err,
                     description:"Internal database error"
