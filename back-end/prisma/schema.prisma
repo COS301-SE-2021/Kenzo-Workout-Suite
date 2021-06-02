@@ -35,6 +35,7 @@ model Client {
   avatar      Avatar?
 }
 
+
 model Planner {
   email       String    @unique
   firstName   String
