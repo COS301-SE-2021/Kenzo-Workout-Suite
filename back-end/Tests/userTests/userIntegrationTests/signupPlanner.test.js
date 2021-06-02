@@ -10,6 +10,7 @@ beforeEach(async ()=>{
     await prisma.client.deleteMany({where: {}}) //
 })
 
+
 test('Should sign up a planner', async () =>
 {
     await request(app).post('/user/signupPlanner')
