@@ -201,7 +201,8 @@ exports.signIn=async (req, res, next) => {
 
     if(req.body.email==="" || req.body.password==="")
     {
-        res.status(400).json(
+
+        return res.status(400).json(
             {
                 message: "empty email address"
             }

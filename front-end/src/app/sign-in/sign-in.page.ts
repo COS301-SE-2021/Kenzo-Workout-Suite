@@ -44,7 +44,6 @@ export class SignInPage implements OnInit {
     }, async error => {
       if(error.status==401 || error.status==400) {
         // Invalid Sign In
-        console.log(error.status);
         const alert = await this.alertController.create({
           cssClass: 'kenzo-alert',
           header: 'Incorrect login',
