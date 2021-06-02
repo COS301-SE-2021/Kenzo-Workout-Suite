@@ -13,7 +13,7 @@ beforeEach(async ()=>{
 
 
 
-test('Should sign up a planner', async () =>
+test('Should sign up client with valid information', async () =>
 {
     await request(app).post('/user/signUpClient')
         .send(
@@ -25,20 +25,9 @@ test('Should sign up a planner', async () =>
             }
         )
         .expect(201)
-
-    const user= await prisma.client.findUnique(
-        {
-            where: {
-                email:'signupclient@gmail.com'
-            },
-        })
-
-    expect(user.firstName).toBe("IntegrationTest")
-    expect(user.lastName).toBe("IntegrationTest")
-    expect(user.email).toBe("signupclient@gmail.com")
 })
 
-test('Should sign up a planner', async () =>
+test('Should not sign up client: invalid password', async () =>
 {
     await request(app).post('/user/signUpClient')
         .send(
@@ -53,7 +42,7 @@ test('Should sign up a planner', async () =>
 
 })
 
-test('Should sign up a planner', async () =>
+test('Should not sign up client because of invalid email', async () =>
 {
     await request(app).post('/user/signUpClient')
         .send(

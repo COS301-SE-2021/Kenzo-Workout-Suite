@@ -31,31 +31,8 @@ beforeEach(async ()=>{
         )
 })
 
-test('Should sign in client', async () =>
-{
-    await request(app).post('/user/signIn')
-        .send(
-            {
-                email: 'signinclient@gmail.com',
-                password: 'Zelu2000#'
-            }
-        )
-        .expect(200)
-})
 
-test('Should sign in planner', async () =>
-{
-    await request(app).post('/user/signIn')
-        .send(
-            {
-                email: 'signinplanner@gmail.com',
-                password: 'Zelu2000#'
-            }
-        )
-        .expect(200)
-})
-
-test('Should sign in planner', async () =>
+test('Should return error because of invalid email', async () =>
 {
     await request(app).post('/user/signIn')
         .send(
@@ -68,7 +45,7 @@ test('Should sign in planner', async () =>
 })
 
 
-test('Should sign in planner', async () =>
+test('Should return error because of invalid email', async () =>
 {
     await request(app).post('/user/signIn')
         .send(
@@ -80,7 +57,7 @@ test('Should sign in planner', async () =>
         .expect(401)
 })
 
-test('Should sign in planner', async () =>
+test('Should return error because of empty email', async () =>
 {
     await request(app).post('/user/signIn')
         .send(

@@ -20,30 +20,8 @@ beforeEach(async ()=>{
         )
 })
 
-test('Should update users details', async () =>
-{
-    await request(app).post('/user/updateUser')
-        .send(
-            {
-                firstName: 'updateTest1',
-                lastName: 'updateTest',
-                email: 'updatetest@gmail.com',
-                dateOfBirth: null
-            }
-        )
-        .expect(201)
 
-    const user= await prisma.client.findUnique(
-    {
-        where: {
-            email:'updatetest@gmail.com'
-    },
-    })
-
-    expect(user.firstName).toBe('updateTest1');
-})
-
-test('Should update users details', async () =>
+test('Should not update users details because of invalid email', async () =>
 {
     await request(app).post('/user/updateUser')
         .send(
@@ -55,19 +33,9 @@ test('Should update users details', async () =>
             }
         )
         .expect(401)
-
-    const user= await prisma.client.findUnique(
-        {
-            where: {
-                email:'updatetest@gmail.com'
-            },
-        })
-
-    expect(user.firstName).toBe('updateTest');
-
 })
 
-test('Should update users details', async () =>
+test('Should not update due to null value passed in ', async () =>
 {
     await request(app).post('/user/updateUser')
         .send(

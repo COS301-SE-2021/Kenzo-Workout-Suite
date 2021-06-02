@@ -19,18 +19,7 @@ beforeEach(async ()=>{
 })
 
 
-test('Sould retrieve valid detail about user with corresponding email', async () =>
-{
-    await request(app).post('/user/getUserByEmail')
-        .send(
-            {
-                email: 'emailTest@gmail.com'
-            }
-        )
-        .expect(201)
-})
-
-test('Should not retrieve data about corresponding email', async () =>
+test('Should not retrieve data about corresponding email because of non existent email.', async () =>
 {
     await request(app).post('/user/getUserByEmail')
         .send(
@@ -41,7 +30,7 @@ test('Should not retrieve data about corresponding email', async () =>
         .expect(401)
 })
 
-test('Passing in empty string into getUserByEmail', async () =>
+test('Should not retrieve user email because of empty email.', async () =>
 {
     await request(app).post('/user/getUserByEmail')
         .send(

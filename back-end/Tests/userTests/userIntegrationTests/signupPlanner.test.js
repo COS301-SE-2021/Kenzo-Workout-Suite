@@ -11,7 +11,7 @@ beforeEach(async ()=>{
 })
 
 
-test('Should sign up a planner', async () =>
+test('Should sign up a planner with valid details', async () =>
 {
     await request(app).post('/user/signupPlanner')
         .send(
@@ -36,14 +36,29 @@ test('Should sign up a planner', async () =>
     expect(user.email).toBe("planner@gmail.com")
 })
 
-test('Should sign up a planner', async () =>
+test('Should not sign up planner because of invalid email', async () =>
 {
-    await request(app).post('/user/signupPlanner')
+    await request(app).post('/user/signUpPlanner')
         .send(
             {
                 firstName: 'IntegrationTest',
                 lastName: 'IntegrationTest',
-                email: 'planner@gmail.com',
+                email: 'signupclient.com',
+                password: 'Zelu2000#'
+            }
+        )
+        .expect(400)
+
+})
+
+test('Should not sign up planner: invalid password', async () =>
+{
+    await request(app).post('/user/signUpPlanner')
+        .send(
+            {
+                firstName: 'IntegrationTest',
+                lastName: 'IntegrationTest',
+                email: 'signupclient@gmail.com',
                 password: 'Zelu2000'
             }
         )
@@ -51,17 +66,4 @@ test('Should sign up a planner', async () =>
 
 })
 
-test('Should sign up a planner', async () =>
-{
-    await request(app).post('/user/signupPlanner')
-        .send(
-            {
-                firstName: 'IntegrationTest',
-                lastName: 'IntegrationTest',
-                email: 'plannersgmail.com',
-                password: 'Zelu2000#'
-            }
-        )
-        .expect(400)
 
-})
