@@ -8,13 +8,13 @@ const prisma = new PrismaClient()
 describe('Matching a given email to workouts planner - success', () => {
 
     beforeEach(async () => {
-        await request(app).post('/user/signupPlanner') //not working
+        await request(app).post('/user/signupPlanner')
             .send(
                 {
                     firstName: "test",
                     lastName: "test",
-                    email: "testing@gmail.com",
-                    password: "test2000#"
+                    email: "testing2@gmail.com",
+                    password: "Test2000#"
                 }
             )
         await request(app).post('/workout/createWorkout')
@@ -22,13 +22,14 @@ describe('Matching a given email to workouts planner - success', () => {
                 {
                     workoutTitle: 'Pull-ups',
                     workoutDescription: 'Working muscle on the back',
-                    difficulty: 'MEDIUM'
+                    difficulty: 'MEDIUM',
+                    planner_Email: 'testing2@gmail.com'
                 }
             )
     });
 
     test('Should receive valid information about workout with corresponding planner', async () => {
-        await request(app).get('/workout/getworkoutbyplanner/planner@email.com')
+        await request(app).get('/workout/getworkoutbyplanner/testing2@gmail.com')
             .expect(200)
     });
 
