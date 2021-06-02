@@ -145,13 +145,12 @@ exports.createExercise = async (req,res,next) =>{
                     Posedescription: req.body.Posedescription,
                     restPeriod: req.body.restPeriod,
                     difficulty: req.body.difficulty,
-                    duratime: req.body.duratime,
-                    workout: req.body.workout,
+                    duratime: req.body.duratime
                 },
             })
             res.status(201).json(
                 {
-                    message: 'Workout Created'
+                    message: 'Exercise Created'
                 }
             )
         }catch(error){
