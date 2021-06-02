@@ -1,4 +1,4 @@
-<ion-content scroll-y="false" class="your-workout-background">
+<ion-content class="your-workout-background">
 <div class="container">
   <div class="Spacing-div">
     <ion-label id="WorkoutHeading" >Your Workouts</ion-label>
@@ -6,6 +6,16 @@
   </div>
   <div class="Spacing-div" id="SearchBarDiv">
   <ion-searchbar id="workout-searchbar"  mode="ios" showCancelButton="never" inputmode="search"></ion-searchbar>
+  </div>
+  <div class="Spacing-div" id="ItemsDiv">
+    <ion-virtual-scroll [items]="workouts" approxItemHeight="320px">
+      <ion-card *virtualItem="let workout; let itemBounds = bounds;">
+        <ion-card-header>
+          <ion-card-title>{{ workout.workoutTitle }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>{{ workout.workoutDescription}}</ion-card-content>
+      </ion-card>
+    </ion-virtual-scroll>
   </div>
 </div>
 </ion-content>
