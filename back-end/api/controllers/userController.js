@@ -98,7 +98,7 @@ exports.signUpClient=async(req,res,next) =>
                     }
                 )
 
-                res.status(201).json(
+                return res.status(201).json(
                     {
                         message: 'Client created'
                     }
@@ -107,7 +107,7 @@ exports.signUpClient=async(req,res,next) =>
 
             catch(err)
             {
-                res.status(500).json(
+                return res.status(500).json(
                     {
                         error:err,
                         description:"Internal database error"
@@ -154,7 +154,7 @@ exports.signUpPlanner=async (req, res, next) => {
 
     if (validatePassword(req.body.password)===false)
     {
-        return res.status(500).json({
+        return res.status(400).json({
             error:"Invalid password"
         });
     }
@@ -177,7 +177,7 @@ exports.signUpPlanner=async (req, res, next) => {
                         }
                     }
                 )
-                res.status(201).json(
+                return res.status(201).json(
                     {
                         message: 'Planner created'
                     }
@@ -186,7 +186,7 @@ exports.signUpPlanner=async (req, res, next) => {
             }
             catch (err)
             {
-                res.status(500).json(
+                return res.status(500).json(
                     {
                         error:err,
                         description:"Internal database error"
@@ -201,7 +201,6 @@ exports.signIn=async (req, res, next) => {
 
     if(req.body.email==="" || req.body.password==="")
     {
-
         return res.status(400).json(
             {
                 message: "empty email address"
@@ -210,7 +209,7 @@ exports.signIn=async (req, res, next) => {
     }
 
 
-    if(await countClient(req.body.email)===1)
+    else if(await countClient(req.body.email)===1)
     {
         try
         {
@@ -228,7 +227,7 @@ exports.signIn=async (req, res, next) => {
                     });
                 }
 
-                if(result)
+                else if(result)
                 {
                     return res.status(200).json(
                         {
@@ -237,17 +236,20 @@ exports.signIn=async (req, res, next) => {
                     )
                 }
 
-                return res.status(401).json(
-                    {
-                        message:'Authorisation failed'
-                    }
-                )
+                else
+                {
+                    return res.status(401).json(
+                        {
+                            message:'Authorisation failed'
+                        }
+                    )
+                }
             });
         }
 
         catch (err)
         {
-            res.status(500).json(
+            return res.status(500).json(
                 {
                     error:err,
                     description:"Internal database error"
@@ -277,7 +279,7 @@ exports.signIn=async (req, res, next) => {
                     });
                 }
 
-                if(result)
+                else if(result)
                 {
                     return res.status(200).json(
                         {
@@ -286,17 +288,21 @@ exports.signIn=async (req, res, next) => {
                     )
                 }
 
-                return res.status(401).json(
-                    {
-                        message:'Authorisation failed'
-                    }
-                )
+                else
+                {
+                    return res.status(401).json(
+                        {
+                            message:'Authorisation failed'
+                        }
+                    )
+                }
+
             });
         }
 
         catch(err)
         {
-            res.status(500).json(
+            return res.status(500).json(
                 {
                     error:err,
                     description:"Internal database error"
@@ -319,7 +325,7 @@ exports.updateUserDetails=async (req, res, next) => {
 
     if(req.body.email==='' || req.body.firstName==='' || req.body.lastName==='' || req.body.dateOfBirth==='')
     {
-        res.status(400).json(
+        return res.status(400).json(
             {
                 message: "empty parameters passed in"
             }
@@ -342,7 +348,7 @@ exports.updateUserDetails=async (req, res, next) => {
                 },
             })
 
-            res.status(201).json(
+            return res.status(201).json(
                 {
                     message: 'Client user details updated'
                 }
@@ -351,7 +357,7 @@ exports.updateUserDetails=async (req, res, next) => {
 
         catch(err)
         {
-            res.status(500).json(
+            return res.status(500).json(
                 {
                     error:err,
                     description:"Internal database error"
@@ -376,16 +382,16 @@ exports.updateUserDetails=async (req, res, next) => {
                 },
             })
 
-            (res.status(201).json(
+            return res.status(201).json(
                 {
                     message: 'Planner user details updated',
                 },
-            ))
+            )
         }
 
         catch (err)
         {
-            res.status(500).json(
+            return res.status(500).json(
                 {
                     error:err,
                     description:"Internal database error"
@@ -396,7 +402,7 @@ exports.updateUserDetails=async (req, res, next) => {
 
     else
     {
-        res.status(401).json(
+        return res.status(401).json(
             {
                 message:'User with such email does not exist'
             }
@@ -410,7 +416,7 @@ exports.getUserByEmail=async (req, res, next) => {
 
     if(req.body.email==="" || req.body.email===null)
     {
-        res.status(400).json(
+        return res.status(400).json(
             {
                 message: "empty email address"
             }
@@ -427,7 +433,7 @@ exports.getUserByEmail=async (req, res, next) => {
 
             })
 
-            res.status(201).json(
+            return res.status(201).json(
                 {
                             email : user.email,
                             firstName: user.firstName,
@@ -439,7 +445,7 @@ exports.getUserByEmail=async (req, res, next) => {
 
         catch(err)
         {
-            res.status(500).json(
+            return res.status(500).json(
                 {
                     error:err
                 }
@@ -457,7 +463,7 @@ exports.getUserByEmail=async (req, res, next) => {
                 },
             })
 
-            res.status(201).json(
+            return res.status(201).json(
                 {
                     email : user.email,
                     firstName: user.firstName,
@@ -469,7 +475,7 @@ exports.getUserByEmail=async (req, res, next) => {
 
         catch (err)
         {
-            res.status(500).json(
+            return res.status(500).json(
                 {
                     error:err,
                     description:"Internal database error"
@@ -480,7 +486,7 @@ exports.getUserByEmail=async (req, res, next) => {
 
     else
     {
-       res.status(401).json(
+        return res.status(401).json(
             {
                 message:'No user with email address exists'
             }

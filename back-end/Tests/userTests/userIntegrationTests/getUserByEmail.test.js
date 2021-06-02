@@ -6,6 +6,7 @@ const { PrismaClient } = require("@prisma/client")
 const prisma = new PrismaClient()
 
 beforeEach(async ()=>{
+
     await request(app).post('/user/signupClient')
         .send(
             {
@@ -16,6 +17,7 @@ beforeEach(async ()=>{
             }
         )
 })
+
 
 test('Sould retrieve valid detail about user with corresponding email', async () =>
 {
