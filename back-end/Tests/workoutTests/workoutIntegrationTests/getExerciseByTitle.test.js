@@ -5,7 +5,7 @@ const { PrismaClient } = require("@prisma/client")
 
 const prisma = new PrismaClient()
 
-describe('Matching a given title to exercises', () => {
+describe('Matching a given title to exercises - success',  () => {
 
     beforeEach(async () => {
         await request(app).post('/workout/createExercise')
@@ -27,7 +27,9 @@ describe('Matching a given title to exercises', () => {
         await request(app).get('/workout/getexercisebytitle/Deadlift')
             .expect(200)
     });
+});
 
+describe('Matching a given title to exercises - failure', () => {
     test('Should not recieve valid information about exercise with corresponding title as workout does not exist', async () => {
         await request(app).get('/workout/getexercisebytitle/ ')
             .expect(404)
