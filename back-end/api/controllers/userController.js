@@ -141,20 +141,20 @@ exports.signUpPlanner=async (req, res, next) => {
     }
 
     if (await countPlanner(req.body.email) === 1) {
-        return res.status(500).json({
+        return res.status(400).json({
             error: "Planner with email already exists"
         });
     }
 
     if (validateEmail(req.body.email) === false) {
-        return res.status(500).json({
+        return res.status(400).json({
             error: "Invalid email passed in"
         });
     }
 
     if (validatePassword(req.body.password)===false)
     {
-        return res.status(400).json({
+        return res.status(500).json({
             error:"Invalid password"
         });
     }
@@ -198,6 +198,16 @@ exports.signUpPlanner=async (req, res, next) => {
 }
 
 exports.signIn=async (req, res, next) => {
+
+    if(req.body.email==="" || req.body.password==="")
+    {
+        res.status(400).json(
+            {
+                message: "empty email address"
+            }
+        );
+    }
+
 
     if(await countClient(req.body.email)===1)
     {
@@ -305,6 +315,17 @@ exports.signIn=async (req, res, next) => {
 }
 
 exports.updateUserDetails=async (req, res, next) => {
+
+    if(req.body.email==='' || req.body.firstName==='' || req.body.lastName==='' || req.body.dateOfBirth==='')
+    {
+        res.status(400).json(
+            {
+                message: "empty parameters passed in"
+            }
+        );
+    }
+
+
     if(await countClient(req.body.email)===1) {
         try
         {
@@ -374,7 +395,7 @@ exports.updateUserDetails=async (req, res, next) => {
 
     else
     {
-        return res.status(401).json(
+        res.status(401).json(
             {
                 message:'User with such email does not exist'
             }
@@ -385,6 +406,15 @@ exports.updateUserDetails=async (req, res, next) => {
 
 
 exports.getUserByEmail=async (req, res, next) => {
+
+    if(req.body.email==="" || req.body.email===null)
+    {
+        res.status(400).json(
+            {
+                message: "empty email address"
+            }
+        );
+    }
 
     if(await countClient(req.body.email)===1) {
         try
@@ -449,7 +479,7 @@ exports.getUserByEmail=async (req, res, next) => {
 
     else
     {
-        return res.status(401).json(
+       res.status(401).json(
             {
                 message:'No user with email address exists'
             }

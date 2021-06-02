@@ -20,16 +20,12 @@ const swaggerOptions = {
             servers: ["http://localhost:5500"]
         }
     },
-
     apis: ["./api/routes/*.js"]
 };
 
 const swaggerDocs= swaggerJsDoc(swaggerOptions);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
-
-
-
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
