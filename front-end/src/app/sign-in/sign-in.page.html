@@ -2,12 +2,12 @@
   <ion-img class="kenzo-logo" src="./assets/kenzo/Kenzo_logo.png" alt="Kenzo"></ion-img>
   <div class="input-div">
     <ion-label class="input-description">Email</ion-label>
-    <ion-input placeholder="your@email.com" class="kenzo-input"></ion-input>
+    <ion-input [(ngModel)]="email" type="email" placeholder="your@email.com" class="kenzo-input"></ion-input>
   </div>
   <br>
   <div class="input-div">
     <ion-label class="input-description">Password</ion-label>
-    <ion-input type="password" placeholder="***********" class="kenzo-input"></ion-input>
+    <ion-input [(ngModel)]="password" type="password" placeholder="***********" class="kenzo-input"></ion-input>
   </div>
   <br>
   <ion-button (click)="signIn()" mode="ios" class="send-req-button">Sign in</ion-button>
