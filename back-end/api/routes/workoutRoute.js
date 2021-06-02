@@ -240,5 +240,42 @@ router.post('/createExercise', workoutController.createExercise);
  */
 router.post('/createWorkout', workoutController.createWorkout);
 
+/**
+ * @swagger
+ *  /workout/getworkout:
+ *      get:
+ *          summary: Returns a list of workouts
+ *          description: Gets all the workouts in the database
+ *
+ *          responses:
+ *              200:
+ *                   description: A workout object.
+ *                   content:
+ *                       application/json:
+ *                           schema:
+ *                               type: object
+ *                               properties:
+ *                                   workoutTitle:
+ *                                       type: string
+ *                                       example: Push/Pull
+ *                                   workoutDescription:
+ *                                       type: string
+ *                                       example: Exercises that focus on pushing the weight
+ *                                   exercises:
+ *                                       type: array
+ *                                   difficulty:
+ *                                      type: string
+ *                                      example: EASY/MEDIUM/HARD/EXTREME
+ *                                   planner_Email:
+ *                                      type: string
+ *                                      example: planner@email.com
+ *              404:
+ *                   description: No workouts were found in the database.
+ *              default:
+ *                   description: Unexpected error
+ *
+ */
+router.get('/getworkout', workoutController.getWorkout);
+
 
 module.exports = router;
