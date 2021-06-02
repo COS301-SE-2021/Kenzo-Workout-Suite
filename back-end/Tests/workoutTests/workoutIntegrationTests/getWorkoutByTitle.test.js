@@ -8,42 +8,26 @@ const prisma = new PrismaClient()
 describe('Matching a given title to workouts', () => {
 
     beforeEach(async () => {
-        await request(app).post('/user/signupClient')
-            .send(
-                {
-                    firstName: 'emailTest',
-                    lastName: 'emailTest',
-                    email: 'emailTest@gmail.com',
-                    password: '12345'
-                }
-            )
         await request(app).post('/workout/createWorkout')
             .send(
                 {
                     workoutTitle: 'Cardio',
                     workoutDescription: 'Increasing heart fitness',
-                    exercises : [],
                     difficulty: 'EASY',
-                    planner_Email: 'emailTest@gmail.com'
                 }
             )
     });
 
     test('Should recieve valid information about workout with corresponding title', async () => {
-        await request(app).post('/workout/getworkoutbytitle')
-            .send(
-                {
-                    email: 'emailTest@gmail.com'
-                }
-            )
+        await request(app).get('/workout/getworkoutbytitle/Push')
             .expect(200)
     });
 
     test('Should not recieve valid information about workout with corresponding title as workout does not exist', async () => {
-        await request(app).post('/workout/getworkoutbytitle')
+        await request(app).get('/workout/getworkoutbytitle/ ')
             .send(
                 {
-                    email: ' '
+                    title: ' '
                 }
             )
             .expect(404)
