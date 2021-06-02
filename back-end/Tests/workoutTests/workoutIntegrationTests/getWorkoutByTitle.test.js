@@ -19,7 +19,7 @@ describe('Matching a given title to workouts', () => {
     });
 
     test('Should recieve valid information about workout with corresponding title', async () => {
-        await request(app).get('/workout/getworkoutbytitle/Push')
+        await request(app).get('/workout/getworkoutbytitle/Cardio')
             .expect(200)
     });
 
