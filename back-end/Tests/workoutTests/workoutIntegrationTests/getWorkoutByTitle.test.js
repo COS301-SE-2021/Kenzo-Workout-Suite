@@ -25,11 +25,6 @@ describe('Matching a given title to workouts', () => {
 
     test('Should not recieve valid information about workout with corresponding title as workout does not exist', async () => {
         await request(app).get('/workout/getworkoutbytitle/ ')
-            .send(
-                {
-                    title: ' '
-                }
-            )
             .expect(404)
     });
 });
