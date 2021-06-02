@@ -5,7 +5,7 @@ const { PrismaClient } = require("@prisma/client")
 
 const prisma = new PrismaClient()
 
-describe('Matching a given email to workouts planner', () => {
+describe('Matching a given email to workouts planner - success', () => {
 
     beforeEach(async () => {
         await request(app).post('/user/signupPlanner') //not working
@@ -20,9 +20,9 @@ describe('Matching a given email to workouts planner', () => {
         await request(app).post('/workout/createWorkout')
             .send(
                 {
-                    workoutTitle: 'Pullups',
+                    workoutTitle: 'Pull-ups',
                     workoutDescription: 'Working muscle on the back',
-                    difficulty: 'MEDIUM',
+                    difficulty: 'MEDIUM'
                 }
             )
     });
@@ -32,6 +32,9 @@ describe('Matching a given email to workouts planner', () => {
             .expect(200)
     });
 
+});
+
+describe('Matching a given email to workouts planner - failure', () => {
     test('Should receive error for invalid email', async () => {
         await request(app).get('/workout/getworkoutbyplanner/invalid')
             .expect(400)
@@ -41,5 +44,4 @@ describe('Matching a given email to workouts planner', () => {
         await request(app).get('/workout/getworkoutbyplanner/ ')
             .expect(404)
     });
-
 });
