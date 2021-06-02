@@ -27,6 +27,12 @@ export class SignInPage implements OnInit {
 
   signIn() {
     const url : string = "http://localhost:5500/user/signIn";
+    if(this.email==null){
+      this.email="";
+    }
+    if(this.password==null){
+      this.password="";
+    }
     const body:Object = {
       "email": this.email,
       "password": this.password
