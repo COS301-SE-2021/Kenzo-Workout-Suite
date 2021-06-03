@@ -1,7 +1,9 @@
 version: 2.1
 jobs:
   build:
-    working_directory: ~/
+    working_directory: ~/Tests
+    docker:
+      -image: circleci/node:10.15.3
     steps:
       - checkout
       - run:
@@ -15,10 +17,10 @@ jobs:
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
-            ./node_modules
+            - ./node_modules
       - run:
           name: test
-          command: npm run test
+          command: npm test
       - store_artifacts:
           path: test-results.xml
           prefix: tests
