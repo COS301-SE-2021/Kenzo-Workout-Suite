@@ -32,7 +32,6 @@ async function countPlanner(myEmail) {
 
 exports.signUpClient=async(req,res,next) =>
 {
-    console.log("FUCK FUCK FUCK");
     if (req.body.firstName==="")
     {
         return res.status(400).json({
