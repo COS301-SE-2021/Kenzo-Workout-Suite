@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/back-end
     docker:
-      -image: circleci/node:10.15.3
+      -image: circleci/node:15.12.0
     steps:
       - checkout
       - run:
