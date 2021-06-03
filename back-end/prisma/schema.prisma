@@ -74,3 +74,4 @@ model Exercise {
   Workout          Workout? @relation(fields: [workoutWorkoutID], references: [workoutID])
   workoutWorkoutID String?
 }
+

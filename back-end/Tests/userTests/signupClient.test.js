@@ -1,9 +1,10 @@
 const request=require('supertest');
-const app= require('../../../app');
+const app= require('../../app');
 
 const { PrismaClient } = require("@prisma/client")
 
 const prisma = new PrismaClient()
+
 
 beforeEach(async ()=>{
     await prisma.planner.deleteMany({where: {}}) //delete posts first
@@ -11,39 +12,29 @@ beforeEach(async ()=>{
 })
 
 
-test('Should sign up a planner', async () =>
+
+test('Should sign up client with valid information', async () =>
 {
-    await request(app).post('/user/signupPlanner')
+    await request(app).post('/user/signUpClient')
         .send(
             {
                 firstName: 'IntegrationTest',
                 lastName: 'IntegrationTest',
-                email: 'planner@gmail.com',
+                email: 'signupclient@gmail.com',
                 password: 'Zelu2000#'
             }
         )
         .expect(201)
-
-    const user= await prisma.planner.findUnique(
-        {
-            where: {
-                email:'planner@gmail.com'
-            },
-        })
-
-    expect(user.firstName).toBe("IntegrationTest")
-    expect(user.lastName).toBe("IntegrationTest")
-    expect(user.email).toBe("planner@gmail.com")
 })
 
-test('Should sign up a planner', async () =>
+test('Should not sign up client: invalid password', async () =>
 {
-    await request(app).post('/user/signupPlanner')
+    await request(app).post('/user/signUpClient')
         .send(
             {
                 firstName: 'IntegrationTest',
                 lastName: 'IntegrationTest',
-                email: 'planner@gmail.com',
+                email: 'signupclient@gmail.com',
                 password: 'Zelu2000'
             }
         )
@@ -51,14 +42,14 @@ test('Should sign up a planner', async () =>
 
 })
 
-test('Should sign up a planner', async () =>
+test('Should not sign up client because of invalid email', async () =>
 {
-    await request(app).post('/user/signupPlanner')
+    await request(app).post('/user/signUpClient')
         .send(
             {
                 firstName: 'IntegrationTest',
                 lastName: 'IntegrationTest',
-                email: 'plannersgmail.com',
+                email: 'signupclient.com',
                 password: 'Zelu2000#'
             }
         )
