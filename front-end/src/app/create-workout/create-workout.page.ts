@@ -43,7 +43,9 @@ export class CreateWorkoutPage implements OnInit {
         buttons: ['Go Back']
       });
       await this.presentAlert(alert);
-      this.route.navigate(['/your-workouts']);
+      this.route.navigate(['/your-workouts']).then(success=>{
+        window.location.reload();
+      });
     }, async error => {
         // Invalid Sign In
         const alert = await this.alertController.create({
