@@ -118,7 +118,7 @@ router.post('/signIn', userController.signIn);
 /**
  * @swagger
  *  /user/updateUser:
- *      post:
+ *      put:
  *          summary: Used to update the details of a specific user
  *          consumes:
  *              - application/json
