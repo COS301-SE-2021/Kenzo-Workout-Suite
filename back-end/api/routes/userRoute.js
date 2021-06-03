@@ -152,7 +152,7 @@ router.post('/signIn', userController.signIn);
  *              500:
  *                  description: Internal database error
  */
-router.post('/updateUser', userController.updateUserDetails);
+router.put('/updateUser', userController.updateUserDetails);
 
 /**
  * @swagger

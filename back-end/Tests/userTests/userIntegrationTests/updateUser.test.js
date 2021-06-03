@@ -23,7 +23,7 @@ beforeEach(async ()=>{
 
 test('Should not update users details because of invalid email', async () =>
 {
-    await request(app).post('/user/updateUser')
+    await request(app).put('/user/updateUser')
         .send(
             {
                 firstName: 'updateTest1',
@@ -37,7 +37,7 @@ test('Should not update users details because of invalid email', async () =>
 
 test('Should not update due to null value passed in ', async () =>
 {
-    await request(app).post('/user/updateUser')
+    await request(app).put('/user/updateUser')
         .send(
             {
                 firstName: '',
