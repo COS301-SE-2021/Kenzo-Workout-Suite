@@ -1,9 +1,7 @@
 version: 2.1
 jobs:
   build:
-    working_directory: ~/project
-    docker:
-      -image: circleci/node:10.15.3
+    working_directory: ~/
     steps:
       - checkout
       - run:
@@ -20,7 +18,7 @@ jobs:
             ./node_modules
       - run:
           name: test
-          command: npm test
+          command: npm run test
       - store_artifacts:
           path: test-results.xml
           prefix: tests
