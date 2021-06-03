@@ -1,0 +1,24 @@
+<ion-content scroll-y="false" class="sign-in-background">
+  <ion-img class="kenzo-logo" src="./assets/kenzo/Kenzo_logo.png" alt="Kenzo"></ion-img>
+  <div class="input-div">
+    <ion-label class="input-description">Email</ion-label>
+    <ion-input [(ngModel)]="email" type="email" placeholder="your@email.com" class="kenzo-input"></ion-input>
+  </div>
+  <br>
+  <div class="input-div">
+    <ion-label class="input-description">Password</ion-label>
+    <ion-input [(ngModel)]="password" type="password" placeholder="***********" class="kenzo-input"></ion-input>
+  </div>
+  <br>
+  <ion-button (click)="signIn()" mode="ios" class="send-req-button">Sign in</ion-button>
+  <br>
+  <a routerLink="/sign-up" mode="ios" class="text-link">Don't have an account? Sign up</a>
+
+  <ion-card class="sign-in-with">
+      <ion-label class="sign-in-with-text"> Or sign in with:</ion-label>
+      <div class="img-container">
+        <ion-img class="sign-in-with-img" src="./assets/apple/appleid_logo_button@2x.png" alt="Kenzo"></ion-img>
+        <ion-img class="sign-in-with-img" src="./assets/google/btn_google_light_normal_ios@2x.png" alt="Kenzo"></ion-img>
+      </div>
+  </ion-card>
+</ion-content>

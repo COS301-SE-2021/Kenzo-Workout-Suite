@@ -1,0 +1,41 @@
+<ion-content scroll-y="false" class="sign-up-background">
+<div class="container">
+  <ion-img src=".\assets\kenzo\Kenzo_logo.png" id="Sign-up-Kenzo-Logo"></ion-img>
+  <div class="input-div">
+    <ion-label class="sign-up-label" >First Name</ion-label>
+    <ion-input [(ngModel)]="firstName" class="sign-up-input" placeholder=" Steve" type="text"></ion-input>
+  </div>
+  <br>
+  <div class="input-div">
+    <ion-label class="sign-up-label" >Last Name</ion-label>
+    <ion-input [(ngModel)]="lastName" class="sign-up-input" placeholder=" Jobs" type="text"></ion-input>
+  </div>
+  <br>
+  <div class="input-div">
+    <ion-label class="sign-up-label" >Email</ion-label>
+    <ion-input [(ngModel)]="email" class="sign-up-input" placeholder=" your@email.com" type="email"></ion-input>
+  </div>
+  <br>
+  <div class="input-div">
+    <ion-label class="sign-up-label" >Password</ion-label>
+    <ion-input [(ngModel)]="password" class="sign-up-input" placeholder="  ***********" type="password"></ion-input>
+  </div>
+  <br>
+  <div class="input-div">
+    <ion-label class="sign-up-label" >Confirm Password</ion-label>
+    <ion-input [(ngModel)]="confirmpassword" class="sign-up-input" placeholder="  ***********" type="password"></ion-input>
+  </div>
+  <br>
+  <div class="input-div">
+      <ion-button (click)="PlannerAccount()" mode="ios" id="PlannerBtn" class="SignUpSelectionBtn">
+      Planner
+      </ion-button>
+      <ion-button (click)="ClientAccount()" mode="ios" id="ClientBtn" class="SignUpSelectionBtn">
+      Client
+      </ion-button>
+  </div>
+
+    <ion-button (click)="signUp()" mode="ios" id="SignUpButton" expand="block">Sign up</ion-button>
+    <a routerLink="/sign-in">Already have an account? Sign in</a>
+</div>
+</ion-content>
