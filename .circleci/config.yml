@@ -1,191 +1,292 @@
-defaults: &defaults
-  working_directory: ~/repo
-  docker:
-    - image: circleci/node:8.0
-
-whitelist: &whitelist
-  paths:
-    - .npmignore
-    - coverage/*
-    - dist/*
-    - node_modules/*
-    - src/*
-    - test/*
-    - CODE_OF_CONDUCT.md
-    - LICENSE.md
-    - package.json
-    - README.md
-    - tsconfig.json
-    - tslint.json
 version: 2.1
-orbs:
-  typescript: vidsy/typescript@1.2.0
-jobs:
-  checkout:
-    <<: *defaults
+
+description: |
+  Create and send custom notifications and messages to Discord for CircleCI job statuses. This orb uses the certified slack orb as a base with commands changed for usage in Discord. View the orb's source: https://github.com/antonioned/circleci-discord-orb
+display:
+  source_url: https://github.com/antonioned/circleci-discord-orb
+
+commands:
+  status:
+    description: >
+      Send a status alert at the end of a job based on success or failure.
+      Must be the last step in a job.
+    parameters:
+      webhook:
+        type: string
+        default: ${https://discord.com/api/webhooks/850014719841402943/pkrPGAk_C1h6kRByNrnVi_CC2cDK8vX24e9MoMfuWyCLxrhJot0ktEnYoGIdYQ1QUh1W}
+        description: >
+          Enter either your Webhook value or use the CircleCI UI to add your
+          token under the 'DISCORD_WEBHOOK' env var
+      success_message:
+        type: string
+        default: ":tada: A $CIRCLE_JOB job has succeeded!"
+        description: Enter custom message.
+      failure_message:
+        type: string
+        default: ":red_circle: A $CIRCLE_JOB job has failed!"
+        description: Enter custom message.
+      success_only:
+        type: boolean
+        default: false
+        description: >
+          If `true`, notifications of failed jobs will not be sent.
+      fail_only:
+        type: boolean
+        default: false
+        description: >
+          If `true`, notifications of successful jobs will not be sent.   
+      mentions:
+        type: string
+        default: ""
+        description: >
+          A comma separated list of user IDs. No spaces.   
+      only_for_branches:
+        type: string
+        default: ""
+        description: >
+          If set, a comma-separated list of branches for which to send
+          notifications. No spaces.
+      channel:
+        type: string
+        default: ""
+        description: >
+          ID of channel if set, overrides webhook's default channel setting
+    steps:
+      - run:
+          name: Provide error if curl is not installed.
+          command: |
+            which curl > curl_exists; echo $? | grep -q '1' && echo curl not installed && rm curl_exists && exit 1
+            rm curl_exists
+      - run:
+          name: Discord - Setting Failure Condition
+          command: |
+            echo 'export DISCORD_BUILD_STATUS="fail"' >> $BASH_ENV
+          when: on_fail
+
+      - run:
+          name: Discord - Setting Success Condition
+          command: |
+            echo 'export DISCORD_BUILD_STATUS="success"' >> $BASH_ENV
+          when: on_success
+
+      - run:
+          name: Provide error if non-bash shell
+          command: |
+            if [ ! -x /bin/bash ]; then
+              echo Bash not installed.
+              exit 1
+            fi
+      - run:
+          name: Discord - Sending Status Alert
+          shell: /bin/bash
+          when: always
+          command: |
+            current_branch_in_filter=false
+            IFS="," read -ra BRANCH_FILTERS \<<< "<< parameters.only_for_branches >>"
+            for i in "${BRANCH_FILTERS[@]}"; do
+              if [ "${i}" == "${CIRCLE_BRANCH}" ]; then
+                current_branch_in_filter=true
+              fi
+            done
+            if [ "x" == "x<< parameters.only_for_branches>>" ] || [ "$current_branch_in_filter" = true ]; then
+              # Provide error if no webhook is set and error. Otherwise continue
+              if [ -z "<< parameters.webhook >>" ]; then
+                echo "NO DISCORD WEBHOOK SET"
+                echo "Please input your DISCORD_WEBHOOK value either in the settings for this project, or as a parameter for this orb."
+                exit 1
+              else
+                #Create Members string
+                if [ -n "<< parameters.mentions >>" ]; then
+                  IFS="," read -ra DISCORD_MEMBERS \<<< "<< parameters.mentions >>"
+                  for i in "${DISCORD_MEMBERS[@]}"; do
+                    if [ $(echo ${i} | head -c 1) == "S" ]; then
+                      DISCORD_MENTIONS="${DISCORD_MENTIONS}<!subteam^${i}> "
+                    elif echo ${i} | grep -E "^(here|channel|everyone)$" > /dev/null; then
+                      DISCORD_MENTIONS="${DISCORD_MENTIONS}<!${i}> "
+                    else
+                      DISCORD_MENTIONS="${DISCORD_MENTIONS}<@${i}> "
+                    fi
+                  done
+                fi
+                #If successful
+                if [ "$DISCORD_BUILD_STATUS" = "success" ]; then
+                  #Skip if fail_only
+                  if [ << parameters.fail_only >> = true ]; then
+                    echo "The job completed successfully"
+                    echo '"fail_only" is set to "true". No Discord notification sent.'
+                  else
+                    curl -H 'Content-Type: application/json' -X POST \
+                      -d "{ \
+                        \"embeds\": [ \
+                            { \
+                                \"description\": \"<< parameters.success_message >>\", \
+                                \"color\": 3394662, \
+                                \"fields\": [ \
+                                    { \
+                                        \"name\": \"Project\", \
+                                        \"value\": \"$CIRCLE_PROJECT_REPONAME\", \
+                                        \"inline\": true \
+                                    }, \
+                                    { \
+                                        \"name\": \"Job Number\", \
+                                        \"value\": \"$CIRCLE_BUILD_NUM\", \
+                                        \"inline\": true \
+                                    }, \
+                                    { \
+                                        \"name\": \"URL\", \
+                                        \"value\": \"[Visit Job]($CIRCLE_BUILD_URL)\" \
+                                    } \
+                                  ] \
+                            } \
+                          ] \
+                      } " << parameters.webhook >>
+                    echo "Job completed successfully. Alert sent."
+                  fi
+                else
+                  #If Failed
+                  #Skip if success_only
+                  if [ << parameters.success_only >> = true ]; then
+                    echo "The job failed"
+                    echo '"success_only" is set to "true". No Discord notification sent.'
+                  else
+                    curl -H "Content-Type: application/json" -X POST -d \
+                    "{ \
+                        \"embeds\": [ \
+                            { \
+                                \"description\": \"<< parameters.failure_message >>\", \
+                                \"color\": 15555676, \
+                                \"fields\": [ \
+                                    { \
+                                        \"name\": \"Project\", \
+                                        \"value\": \"$CIRCLE_PROJECT_REPONAME\", \
+                                        \"inline\": true \
+                                    }, \
+                                    { \
+                                        \"name\": \"Job Number\", \
+                                        \"value\": \"$CIRCLE_BUILD_NUM\", \
+                                        \"inline\": true \
+                                    }, \
+                                    { \
+                                        \"name\": \"URL\", \
+                                        \"value\": \"[Visit Job]($CIRCLE_BUILD_URL)\" \
+                                    } \
+                                  ] \
+                            } \
+                          ] \
+                      }" << parameters.webhook >>
+                    echo "Job failed. Alert sent."
+                  fi
+                fi
+              fi
+            else
+              echo "Current branch is not included in only_for_branches filter; no status alert will be sent"
+            fi
+  approval:
+    description: Send a notification that a manual approval job is ready
+    parameters:
+      channel:
+        default: ""
+        description: |
+          ID of channel if set, overrides webhook's default channel setting
+        type: string
+      color:
+        default: '3843043'
+        description: Decimal color value for notification attachment color.
+        type: string
+      mentions:
+        default: ""
+        description: A comma separated list of user IDs. No spaces.
+        type: string
+      message:
+        default: A workflow in CircleCI is awaiting your approval.
+        description: Enter custom message.
+        type: string
+      url:
+        default: https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}
+        description: The URL to link back to.
+        type: string
+      webhook:
+        default: ${https://discord.com/api/webhooks/850014719841402943/pkrPGAk_C1h6kRByNrnVi_CC2cDK8vX24e9MoMfuWyCLxrhJot0ktEnYoGIdYQ1QUh1W}
+        description: Enter either your Webhook value or use the CircleCI UI to add your token under the 'DISCORD_WEBHOOK_URL' env var
+        type: string
 
     steps:
-      - checkout
-
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
-
       - run:
-          name: Install Dependencies
-          command: yarn install
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-
-      - persist_to_workspace:
-          root: ~/repo
-          <<: *whitelist
-
-  lint:
-    <<: *defaults
-
-    steps:
-      - attach_workspace:
-          at: ~/repo
-
+          name: Provide error if non-bash shell
+          command: |
+            if [ ! -x /bin/bash ]; then
+              echo Bash not installed.
+              exit 1
+            fi
       - run:
-          name: Lint TypeScript code
-          command: yarn lint
+          name: Discord - Sending Approval Notification
+          command: |
+            # Provide error if no webhook is set and error. Otherwise continue
+            if [ -z "<< parameters.webhook >>" ]; then
+              echo "NO DISCORD WEBHOOK SET"
+              echo "Please input your DISCORD_WEBHOOK_URL value either in the settings for this project, or as a parameter for this orb."
+              exit 1
+            else
+              #Create Members string
+              if [ -n "<< parameters.mentions >>" ]; then
+                IFS="," read -ra DISCORD_MEMBERS \<<< "<< parameters.mentions >>"
+                for i in "${DISCORD_MEMBERS[@]}"; do
+                  if [ $(echo ${i} | head -c 1) == "S" ]; then
+                    DISCORD_MENTIONS="${DISCORD_MENTIONS}<!subteam^${i}> "
+                  elif echo ${i} | grep -E "^(here|channel|everyone)$" > /dev/null; then
+                    DISCORD_MENTIONS="${DISCORD_MENTIONS}<!${i}> "
+                  else
+                    DISCORD_MENTIONS="${DISCORD_MENTIONS}<@${i}> "
+                  fi
+                done
+              fi
+              curl -H "Content-Type: application/json" -X POST -d \
+                  "{ \
+                    \"embeds\": [ \
+                      { \
+                        \"description\": \"<< parameters.message >>\", \
+                        \"color\": 3843043, \
+                        \"fields\": [ \
+                          { \
+                            \"name\": \"Project\", \
+                            \"value\": \"$CIRCLE_PROJECT_REPONAME\", \
+                            \"inline\": true \
+                          }, \
+                          { \
+                            \"name\": \"Job Number\", \
+                            \"value\": \"$CIRCLE_BUILD_NUM\", \
+                            \"inline\": true \
+                          }, \
+                          { \
+                            \"name\": \"URL\", \
+                            \"value\": \"[Visit Workflow](https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID})\" \
+                          } \
+                        ] \
+                      } \
+                    ] \
+                }" << parameters.webhook >>
+              echo "Awaiting approval notified."
+            fi
+          shell: /bin/bash
 
-  test:
-    <<: *defaults
-
-    steps:
-      - attach_workspace:
-          at: ~/repo
-
-      - run:
-          name: Test TypeScript code
-          command: yarn test:cover
-
-      - persist_to_workspace:
-          root: ~/repo
-          <<: *whitelist
-
-  coveralls:
-    <<: *defaults
-
-    steps:
-      - attach_workspace:
-          at: ~/repo
-
-      - run:
-          name: Submit coverage report to Coveralls.io
-          command: yarn coveralls
-
-  build:
-    <<: *defaults
-
-    steps:
-      - attach_workspace:
-          at: ~/repo
-
-      - run:
-          name: Build TypeScript code
-          command: yarn build
-
-      - persist_to_workspace:
-          root: ~/repo
-          <<: *whitelist
-
-  deploy:
-    <<: *defaults
-
-    steps:
-      - attach_workspace:
-          at: ~/repo
-
-      - run:
-          name: Write NPM Token to ~/.npmrc
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-
-      - run:
-          name: Install dot-json package
-          command: npm install dot-json
-
-      - run:
-          name: Write version to package.json
-          command: $(yarn bin)/dot-json package.json version ${CIRCLE_TAG:1}
-
-      - run:
-          name: Publish to NPM
-          command: npm publish --access=public
-
-workflows:
-  version: 2.1
-
-  build:
-    jobs:
-      - checkout
-      - test:
-          requires:
-            - checkout
-      - lint:
-          requires:
-            - checkout
-      - coveralls:
-          requires:
-            - test
-      - build:
-          requires:
-            - test
-            - lint
-
-  release:
-    jobs:
-      - checkout:
-          filters:
-            tags:
-              only: /v[0-9]+(\.[0-9]+)*/
-            branches:
-              ignore: /.*/
-      - test:
-          filters:
-            tags:
-              only: /v[0-9]+(\.[0-9]+)*/
-            branches:
-              ignore: /.*/
-          requires:
-            - checkout
-      - lint:
-          filters:
-            tags:
-              only: /v[0-9]+(\.[0-9]+)*/
-            branches:
-              ignore: /.*/
-          requires:
-            - checkout
-      - coveralls:
-          filters:
-            tags:
-              only: /v[0-9]+(\.[0-9]+)*/
-            branches:
-              ignore: /.*/
-          requires:
-            - test
-      - build:
-          filters:
-            tags:
-              only: /v[0-9]+(\.[0-9]+)*/
-            branches:
-              ignore: /.*/
-          requires:
-            - test
-            - lint
-      - deploy:
-          filters:
-            tags:
-              only: /v[0-9]+(\.[0-9]+)*/
-            branches:
-              ignore: /.*/
-          requires:
-            - build
+example:
+  status:
+    description: Send a CircleCI job status.
+    usage:
+      version: 2.1
+      orbs:
+        discord: crackedstudios/discord@0.1.0
+      jobs:
+        tests:
+          steps:
+            - discord/status
+  approval:
+    description: Notify a Discord channel of a pending approval.
+    usage:
+      version: 2.1
+      orbs:
+        discord: crackedstudios/discord@0.1.0
+      jobs:
+        tests:
+          steps:
+            - discord/approval
