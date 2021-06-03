@@ -203,3 +203,35 @@ exports.createWorkout = async (req,res,next) =>{
     }
 
 }
+
+exports.getWorkout=async (req,res,next) =>
+{
+    try{
+        const workouts = await prisma.workout.findMany({//search for workouts that meet the requirement
+            select: {
+                workoutTitle: true,
+                workoutDescription: true,
+                exercises: true,
+                difficulty: true,
+                planner_Email: true
+            }
+        });
+
+        if(isEmptyObject(workouts)){//if JSON object is empty, send error code
+            res.status(404).json({
+                message: "Unsuccessful. No workouts in the database."
+            });
+        }
+        else{
+            res.status(200).json({//else send retrieved workouts
+                message: "Successfully retrieved workouts",
+                data: workouts
+            });
+        }
+    }
+    catch(err){
+        res.status(500).json({//database error
+            error: err
+        });
+    }
+}
