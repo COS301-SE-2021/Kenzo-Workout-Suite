@@ -24,7 +24,7 @@
     "prisma": "^2.23.0"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --watchAll --detectOpenHandles",
     "start": "nodemon server.js"
   },
   "author": "cracked studios",
