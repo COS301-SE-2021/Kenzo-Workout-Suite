@@ -1,0 +1,49 @@
+<ion-content class="background">
+  <ion-button routerLink="/your-workouts" mode="ios" class="back">Back</ion-button>
+  <br>
+  <ion-label class="title">Create a Workout</ion-label>
+  <br>
+  <div class="input-div">
+    <ion-label class="input-description">Title</ion-label>
+    <ion-input [(ngModel)]="title" id="title" placeholder="Shred Program" class="kenzo-input"></ion-input>
+  </div>
+  <br>
+  <div class="input-div">
+    <ion-label class="input-description">Description</ion-label>
+    <ion-input [(ngModel)]="description" id="desc" placeholder="3 week program to lose weight" class="kenzo-input"></ion-input>
+  </div>
+  <br>
+  <div class="input-div">
+    <ion-label class="input-description">Difficulty</ion-label>
+    <ion-list mode="ios">
+      <ion-radio-group [(ngModel)]="diff" value="easy">
+        <ion-item class="radios">
+          <ion-label>Easy</ion-label>
+          <ion-radio slot="start" value="EASY"></ion-radio>
+        </ion-item>
+
+        <ion-item class="radios">
+          <ion-label>Medium</ion-label>
+          <ion-radio slot="start" value="MEDIUM"></ion-radio>
+        </ion-item>
+
+        <ion-item class="radios">
+          <ion-label>Hard</ion-label>
+          <ion-radio slot="start" value="HARD"></ion-radio>
+        </ion-item>
+
+        <ion-item class="radios">
+          <ion-label>Extreme</ion-label>
+          <ion-radio slot="start" value="EXTREME"></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+    </ion-list>
+  </div>
+  <br>
+
+</ion-content>
+<ion-footer class="ion-no-border">
+  <ion-toolbar mode="ios" class="footer">
+    <ion-button (click)="submitCreateRequest()" mode="ios" class="submit">Submit</ion-button>
+  </ion-toolbar>
+</ion-footer>

@@ -106,7 +106,7 @@ router.post('/signupPlanner', userController.signUpPlanner);
  *              200:
  *                  description: Authorisation successful
  *              400:
- *                  description: Invalid entry or already existent client email
+ *                  description: Invalid data entry
  *              401:
  *                  description: Authorisation failed
  *              500:
@@ -146,9 +146,9 @@ router.post('/signIn', userController.signIn);
  *              201:
  *                  description: User has been updated
  *              400:
- *                  description: Invalid entry or already existent client email
+ *                  description: Empty fields
  *              401:
- *                  description: Authorisation failed
+ *                  description: User with such email does not exist
  *              500:
  *                  description: Internal database error
  */
@@ -174,11 +174,11 @@ router.post('/updateUser', userController.updateUserDetails);
  *                          type: string
  *          responses:
  *              201:
- *                  description: Valid user response
+ *                  description: Valid response with user detail
  *              400:
- *                  description: Invalid entry or already existent client email
+ *                  description: Invalid entry or empty values
  *              401:
- *                  description: Authorisation failed
+ *                  description: No user with such email exists
  *              500:
  *                  description: Internal database error
  */

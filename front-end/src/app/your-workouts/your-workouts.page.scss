@@ -1,0 +1,81 @@
+.your-workout-background{
+    --background: var(--ion-off-white);
+}
+
+.Spacing-div{
+    display: block;
+    width: var(--input-width);
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+}
+
+#SearchBarDiv, #ItemsDiv{
+    margin-top: 13px;
+}
+
+#WorkoutHeading{
+    font-family: "SF Pro Medium", serif;
+    font-size: 25px;
+    color: black;
+    font-weight: bold;
+}
+
+#AddWorkout{
+    width: var(--icon-size);
+    height: var(--icon-size);
+    float: right;
+}
+
+#workout-searchbar{
+    font-family: "SF Pro Medium", serif;
+    height: 40px;
+    --placeholder-font-weight: 590;
+    color: #707074;
+    --background: #e7e7e8;
+}
+
+#nav-div{
+    font-family: "SF Pro Regular", serif;
+    display: block;
+    width: var(--input-width);
+    margin-left: auto;
+    margin-right: auto;
+}
+.container{
+    align-content: center;
+    align-items: center;
+}
+
+.footer{
+    --background: #e7e8e7;
+    border-style: solid;
+    border-radius: var(--secondary-radius);
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.NavButtons{
+    display: block;
+    float: left;
+    margin-right: auto;
+    width: var(--icon-size);
+    height: var(--icon-size);
+}
+
+#WorkoutsBtn{
+    margin-left: 10%;
+}
+
+#SearchBtn{
+    margin-left: 15%;
+}
+
+#ContactsBtn{
+    margin-left: 15%;
+}
+
+#SettingsBtn{
+    margin-left: 15%;
+}
+
