@@ -4,10 +4,9 @@
 
 .back{
   --color: var(--ion-color-tertiary);
-  --background: var(--ion-off-white);
-  --background-activated: var(--ion-off-white);
+  --background-activated: var(--ion-color-secondary);
   --color-activated: var(--ion-color-primary);
-  --background-hover: var(--ion-off-white);
+  --background-hover: var(--ion-color-secondary);
   --color-hover: var(--ion-color-primary);
   text-decoration: underline;
 }
@@ -24,14 +23,7 @@
 }
 
 .title {
-  display: block;
-  font-family: "SF Pro", serif;
-  font-weight: bold;
-  font-size: 28px;
   color: var(--ion-color-tertiary);
-  display: block;
-  width: 100%;
-  text-align: center;
 }
 
 .kenzo-input{

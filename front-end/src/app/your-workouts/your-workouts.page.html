@@ -2,7 +2,21 @@
 <div class="container">
   <div class="Spacing-div">
     <ion-label id="WorkoutHeading" >Your Workouts</ion-label>
-    <ion-img routerLink="/create-workout" src=".\assets\clipart\Add.png" id="AddWorkout"></ion-img>
+    <div class="kenzo-fixed">
+      <ion-fab mode="ios" slot="fixed" size="small" vertical="bottom" horizontal="end">
+        <ion-fab-button>
+          <ion-icon name="create"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-list side="bottom">
+            <ion-fab-button>
+              <ion-icon name="body-outline" routerLink="/create-workout"></ion-icon>
+            </ion-fab-button>
+            <ion-fab-button>
+              <ion-icon name="barbell-outline" routerLink="/create-exercise"></ion-icon>
+            </ion-fab-button>
+        </ion-fab-list>
+      </ion-fab>
+    </div>
   </div>
   <div class="Spacing-div" id="SearchBarDiv">
   <ion-searchbar id="workout-searchbar"  mode="ios" showCancelButton="never" inputmode="search"></ion-searchbar>
@@ -19,8 +33,8 @@
   </div>
 </div>
 </ion-content>
-<ion-footer class="ion-no-border">
-  <ion-toolbar mode="ios" class="footer Spacing-div">
+<ion-footer>
+  <ion-toolbar mode="ios" class="footer">
     <ion-img src="../../assets/clipart/Clipboard_activated.png" class="NavButtons" id="WorkoutsBtn" mode="ios" routerLink="."></ion-img>
     <ion-img src="../../assets/clipart/Library.png" class="NavButtons" id="SearchBtn" mode="ios" routerLink="."></ion-img>
     <ion-img src="../../assets/clipart/Clients.png" class="NavButtons" id="ContactsBtn" mode="ios" routerLink="."></ion-img>

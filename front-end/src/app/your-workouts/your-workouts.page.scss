@@ -47,12 +47,20 @@
     align-items: center;
 }
 
+.kenzo-fixed{
+  position: fixed;
+  top: 150px;
+  right: 5px;
+  z-index: 100;
+}
+
 .footer{
-    --background: #e7e8e7;
-    border-style: solid;
-    border-radius: var(--secondary-radius);
-    margin-top: 20px;
-    margin-bottom: 20px;
+    --background: var(--ion-off-white);
+    padding-top: 10px;
+    //border-style: solid;
+    //border-radius: var(--secondary-radius);
+    //margin-top: 20px;
+    //margin-bottom: 20px;
 }
 
 .NavButtons{
