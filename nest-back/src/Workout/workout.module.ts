@@ -10,5 +10,5 @@ import {WorkoutService} from "./workoutService";
 )
 
 //testing
-export class UserModule{}
+export class WorkoutModule{}
 

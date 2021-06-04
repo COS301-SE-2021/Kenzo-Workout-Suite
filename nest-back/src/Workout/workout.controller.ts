@@ -7,7 +7,6 @@ export class WorkoutController {
     constructor(private readonly workoutService: WorkoutService) {
     }
 
-    //hello
     @Get('getWorkoutByTitle/:title')
     getWorkoutByTitle(
         @Param('title') title: string,
