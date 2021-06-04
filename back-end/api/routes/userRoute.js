@@ -118,7 +118,7 @@ router.post('/signIn', userController.signIn);
 /**
  * @swagger
  *  /user/updateUser:
- *      post:
+ *      put:
  *          summary: Used to update the details of a specific user
  *          consumes:
  *              - application/json
@@ -152,7 +152,7 @@ router.post('/signIn', userController.signIn);
  *              500:
  *                  description: Internal database error
  */
-router.post('/updateUser', userController.updateUserDetails);
+router.put('/updateUser', userController.updateUserDetails);
 
 /**
  * @swagger

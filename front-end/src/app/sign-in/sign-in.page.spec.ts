@@ -22,3 +22,9 @@ describe('SignInPage', () => {
     expect(component).toBeTruthy();
   });
 });
+
+describe('Given a correct email and password. A user should ', () => {
+
+
+});
+
