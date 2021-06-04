@@ -2,7 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/back-end/experimental-backend" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/experimental-back-end" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/kenzo-back-end" vcs="Git" />
   </component>
 </project>
