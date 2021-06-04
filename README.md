@@ -1,11 +1,11 @@
 # Kenzo-Workout-Suite
 #### by Cracked Studios
 
-##Description:
+## Description:
 Kenzo Workout Suite is the workout customization tool that will allow users around the world to have full control in organizing their workouts. This app will allow users to follow workout plans, having the ability to tailor their own avatars, making workout sessions easy to follow and fun to participate in. Trainers/planners are able to fully customize models and will have the opportunity to be creative with the workouts they create.
 Workouts will be published in a public library where users will be able to pick their favourite ones. These workouts will have text-to-speech technology that will allow planners to explain exercises in workouts. Users will also have the option to export workouts in multiple formats: GIF, PNG, PDF.
 
-##Links:
+## Links:
 ### Resources 
 [SRS-Demo1](https://www.overleaf.com/read/wdwqyfrstqtg)
 
