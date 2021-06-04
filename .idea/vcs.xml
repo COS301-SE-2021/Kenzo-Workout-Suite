@@ -3,5 +3,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/kenzo-back-end" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/kenzo-nest" vcs="Git" />
   </component>
 </project>
