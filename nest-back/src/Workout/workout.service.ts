@@ -4,6 +4,8 @@ import { PrismaService } from "../Prisma/prisma.service";
 import {
     Workout,
     Exercise,
+    Planner,
+    Difficulty,
     Prisma
 } from '@prisma/client';
 
@@ -62,7 +64,15 @@ export class WorkoutService{
 
     }
 
-    createWorkout(workoutTitle: string, workoutDescription: string, difficulty: string){
+    async createWorkout(workoutTitle: string, workoutDescription: string, difficulty: Difficulty) {
+        this.prisma.workout.create({
+            data:{
+                workoutTitle: workoutTitle,
+                workoutDescription: workoutDescription,
+                difficulty: difficulty
+            }
+        })
+        return("Good stuff.");
 
     }
 

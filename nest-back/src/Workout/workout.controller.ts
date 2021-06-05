@@ -1,5 +1,21 @@
-import {Body, Controller, Get, Param, Post, Put} from '@nestjs/common';
-import {WorkoutService} from "./workoutService";
+import {
+    Controller,
+    Get,
+    Param,
+    Post,
+    Body,
+    Put,
+    Delete,
+} from '@nestjs/common';
+import {WorkoutService} from "./workout.service";
+import {Workout as WorkoutModel} from "@prisma/client"
+import {
+    Workout,
+    Exercise,
+    Planner,
+    Difficulty,
+    Prisma
+} from '@prisma/client';
 
 @Controller('workout')
 export class WorkoutController {
@@ -52,9 +68,9 @@ export class WorkoutController {
     createWorkout(
         @Body('workoutTitle') workoutTitle: string,
         @Body('workoutDescription') workoutDescription: string,
-        @Body('difficulty') difficulty: string,
+        @Body('difficulty') difficulty: Difficulty
     ) {
-        return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty);
+        return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty )
     }
 
 }
