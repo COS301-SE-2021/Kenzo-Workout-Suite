@@ -1,4 +1,4 @@
-import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
+import {HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException} from "@nestjs/common";
 import { PrismaService } from "../Prisma/prisma.service";
 
 import {
@@ -35,14 +35,14 @@ export class WorkoutService{
             });
 
             if(this.isEmptyObject(workouts)){//if JSON object is empty, send error code
-                throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+                throw new NotFoundException();
             }
             else{
                 return workouts;
             }
         }
         catch(err){
-            throw new HttpException(err, HttpStatus.SERVICE_UNAVAILABLE);
+            throw new InternalServerErrorException();
         }
     }
 
