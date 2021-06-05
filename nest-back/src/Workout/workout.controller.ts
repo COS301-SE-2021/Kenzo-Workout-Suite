@@ -4,7 +4,7 @@ import {
     ApiCreatedResponse, ApiHeader,
     ApiInternalServerErrorResponse,
     ApiNotFoundResponse,
-    ApiOkResponse, ApiParam,
+    ApiOkResponse, ApiParam, ApiQuery,
     ApiResponse
 } from "@nestjs/swagger";
 
@@ -15,7 +15,6 @@ export class WorkoutController {
     }
 
     @Get('getWorkouts')
-
     @ApiOkResponse({
         description: 'A workout object.'
     })
@@ -31,6 +30,15 @@ export class WorkoutController {
     }
 
     @Get('getWorkoutByTitle/:title')
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
     getWorkoutByTitle(
         @Param('title') title: string,
     ) {
