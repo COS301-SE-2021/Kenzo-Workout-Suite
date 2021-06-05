@@ -15,7 +15,7 @@ export class UserController {
         @Body('password') password: string,
 
     ) {
-        return this.userService.signUpClient(firstName,lastName,email,password);
+        return this.userService.signUpClient(firstName,lastName,password,email);
     }
 
     @Post('signupPlanner')
@@ -50,7 +50,7 @@ export class UserController {
         @Body('lastName') email: string,
         @Body('dateOfBirth') password: string,
     ) {
-        return this.userService.updateUser(firstName,lastName,email,password);
+        return this.userService.updateUser(firstName,lastName,password,email);
     }
 
 
