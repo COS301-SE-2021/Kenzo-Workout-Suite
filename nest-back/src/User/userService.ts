@@ -1,4 +1,4 @@
-import {Injectable} from "@nestjs/common";
+import {Injectable, UnauthorizedException} from "@nestjs/common";
 import {PrismaService} from "../Prisma/prisma.service";
 
 import {
@@ -12,8 +12,18 @@ export class UserService{
 
     constructor(private prisma: PrismaService) {
     }
-    signUpClient(firstName:string, lastName:string,password:string,email:string){
-        return "hello"
+
+    async signUpClient(firstName:string, lastName:string,password:string,email:string){
+        return this.prisma.client.create(
+            {
+                data:{
+                    email: "zelutesema@gmail.com",
+                    firstName:"Zelu",
+                    lastName:"Tesema",
+                    password: "Zelu2000#"
+                }
+            }
+        )
     }
 
     signUpPlanner(firstName:string, lastName:string,password:string,email:string){
@@ -25,7 +35,6 @@ export class UserService{
     }
 
     getUserByEmail(email:string){
-
     }
 
     updateUser(firstName:string, lastName:string,password:string,email:string){

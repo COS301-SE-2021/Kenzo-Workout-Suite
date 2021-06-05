@@ -1,4 +1,4 @@
-import {Injectable} from "@nestjs/common";
+import {Injectable, UnauthorizedException} from "@nestjs/common";
 
 @Injectable()
 export class WorkoutService{
@@ -24,6 +24,5 @@ export class WorkoutService{
     }
 
     getWorkouts(){
-        return "HELLO";
     }
 }
