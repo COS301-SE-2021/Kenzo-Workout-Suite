@@ -7,10 +7,26 @@ const routes: Routes = [
     loadChildren: () => import('./sign-in/sign-in.module').then( m => m.SignInPageModule)
   },
   {
+    path: 'sign-up',
+    loadChildren: () => import('./sign-up/sign-up.module').then( m => m.SignUpPageModule)
+  },
+  {
     path: '',
     redirectTo: 'sign-in',
     pathMatch: 'full'
   },
+  {
+    path: 'create-workout',
+    loadChildren: () => import('./create-workout/create-workout.module').then( m => m.CreateWorkoutPageModule)
+  },
+  {
+    path: 'create-exercise',
+    loadChildren: () => import('./create-exercise/create-exercise.module').then( m => m.CreateExercisePageModule)
+  },
+  {
+    path: 'your-workouts',
+    loadChildren: () => import('./your-workouts/your-workouts.module').then( m => m.YourWorkoutsPageModule)
+  }
 ];
 
 @NgModule({

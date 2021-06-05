@@ -1,3 +1,93 @@
 .sign-in-background{
-  --background:#FF6868;
+  --background: var(--ion-color-primary);
+}
+
+.kenzo-input{
+  font-family: "SF Pro Regular", serif;
+  display: block;
+  height: 50px;
+  border-radius: 9px;
+  background-color: white;
+  color: var(--ion-color-tertiary);
+  --padding-start: 10px;
+  --padding-top: 15px;
+}
+
+.input-div{
+  display: block;
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.input-description{
+  font-family: "SF Pro Medium", serif;
+  display: block;
+  padding-left: 5px;
+  padding-bottom: 5px;
+  font-weight: 500;
+}
+
+.kenzo-logo{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10vh;
+  width: 300px;
+}
+
+.send-req-button{
+  display: block;
+  font-family: "SF Pro Regular", serif;
+  width: var(--button-width);
+  margin-left: auto;
+  margin-right: auto;
+  --background: var(--ion-color-tertiary);
+  --background-activated: var(--ion-color-tertiary);
+  --color-activated: var(--ion-color-primary);
+  --background-hover: var(--ion-color-tertiary);
+  --color-hover: var(--ion-color-primary);
+}
+
+.text-link{
+  width: var(--text-width);
+  display: block;
+  font-family: "SF Pro Regular", serif;
+  color: white;
+  text-decoration: none;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  --background-activated: var(--ion-color-primary);
+  --color-activated: var(--ion-color-tertiary);
+  --background-hover: var(--ion-color-primary);
+  --color-hover: var(--ion-color-tertiary);
+}
+
+.sign-in-with{
+  display: block;
+  width: var(--card-width);
+  height: var(--card-height);
+  background-color: white;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 30px;
+}
+.sign-in-with-text{
+  text-align: center;
+  font-family: "SF Pro Regular", serif;
+  display: block;
+  margin: 10px auto;
+  color: var(--ion-color-tertiary);
+}
+.img-container{
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  width: 82px;
+}
+.sign-in-with-img{
+  display: inline-block;
+  height: 41px;
+  width: 41px;
 }
