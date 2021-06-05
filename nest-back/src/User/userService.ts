@@ -1,4 +1,4 @@
-import {Injectable, UnauthorizedException} from "@nestjs/common";
+import {Injectable, NotFoundException, UnauthorizedException} from "@nestjs/common";
 import {PrismaService} from "../Prisma/prisma.service";
 
 import {
@@ -14,13 +14,19 @@ export class UserService{
     }
 
     async signUpClient(firstName:string, lastName:string,password:string,email:string){
-        return this.prisma.client.create(
+
+        if (firstName==null || lastName==null || password==null || email==null || firstName=="" || lastName==""  || password==""  || email=="" )
+        {
+            throw new NotFoundException("Parameters can not be left empty");
+        }
+
+        this.prisma.client.create(
             {
                 data:{
-                    email: "zelutesema@gmail.com",
-                    firstName:"Zelu",
-                    lastName:"Tesema",
-                    password: "Zelu2000#"
+                    email: email,
+                    firstName:lastName,
+                    lastName:password,
+                    password: email
                 }
             }
         )
