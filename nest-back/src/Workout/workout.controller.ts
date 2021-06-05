@@ -7,6 +7,12 @@ export class WorkoutController {
     constructor(private readonly workoutService: WorkoutService) {
     }
 
+    @Get('getWorkouts')
+    getWorkouts(
+    ) {
+        return this.workoutService.getWorkouts();
+    }
+
     @Get('getWorkoutByTitle/:title')
     getWorkoutByTitle(
         @Param('title') title: string,
@@ -51,9 +57,4 @@ export class WorkoutController {
         return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty);
     }
 
-    @Get('getWorkouts')
-    getWorkouts(
-    ) {
-        return this.workoutService.getWorkouts();
-    }
 }
