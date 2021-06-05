@@ -7,6 +7,7 @@ import {PrismaService} from "../Prisma/prisma.service";
     {
         controllers:[WorkoutController],
         providers: [WorkoutService, PrismaService],
+        exports:[WorkoutService]
     }
 )
 
