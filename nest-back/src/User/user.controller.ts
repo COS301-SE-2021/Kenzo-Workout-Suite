@@ -7,7 +7,7 @@ export class UserController {
     constructor(private readonly userService: UserService) {
     }
 
-    @Post('signupClient')
+    @Post('signUpClient')
     signUpClient(
         @Body('firstName') firstName: string,
         @Body('lastName') lastName: string,
