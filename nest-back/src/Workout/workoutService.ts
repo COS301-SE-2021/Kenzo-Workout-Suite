@@ -46,8 +46,31 @@ export class WorkoutService{
         }
     }
 
-    getWorkoutByTitle(title: string){
+    async getWorkoutByTitle(title: string){
+        try{
+            const workouts = await this.prisma.workout.findMany({//search for workouts that meet the requirement
+                where: {
+                    workoutTitle: title
+                },
+                select: {
+                    workoutTitle: true,
+                    workoutDescription: true,
+                    exercises: true,
+                    difficulty: true,
+                    planner_Email: true
+                }
+            });
 
+            if(this.isEmptyObject(workouts)){//if JSON object is empty, send error code
+                throw new NotFoundException();
+            }
+            else{
+                return workouts;
+            }
+        }
+        catch(err){
+            throw new InternalServerErrorException();
+        }
     }
 
     getExerciseByTitle(title: string){
