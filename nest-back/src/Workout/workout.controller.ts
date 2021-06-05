@@ -51,17 +51,17 @@ export class WorkoutController {
     }
 
     @Post('createExercise')
-    getUserByEmail(
+    createExercise(
         @Body('title') title: string,
         @Body('description') description: string,
         @Body('repRange') repRange: string,
         @Body('sets') sets: number,
-        @Body('poseDescription') poseDescription: string,
+        @Body('Posedescription') Posedescription: string,
         @Body('restPeriod') restPeriod: number,
-        @Body('difficulty') difficulty: string,
+        @Body('difficulty') difficulty: Difficulty,
         @Body('duratime') duration: number,
     ) {
-        return this.workoutService.createExercise(title,description,repRange,sets,poseDescription,restPeriod,difficulty,duration);
+        return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,difficulty,duration);
     }
 
     @Post('createWorkout')

@@ -1,4 +1,4 @@
-import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
+import {HttpException, HttpStatus, Injectable, NotFoundException} from "@nestjs/common";
 import { PrismaService } from "../Prisma/prisma.service";
 
 import {
@@ -60,11 +60,33 @@ export class WorkoutService{
 
     }
 
-    createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,difficulty:string,duratime:number){
+    async createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,difficulty:Difficulty,duratime:number){
+
+        if (title=="" || description=="" || repRange=="" || sets==0 || poseDescription=="" || restPeriod==0  || difficulty==null  || duratime==0 )
+        {
+            throw new NotFoundException("Parameters can not be left empty.");
+        }
+        this.prisma.exercise.create({
+            data:{
+                title: title,
+                description: description,
+                repRange: repRange,
+                sets: sets,
+                Posedescription: poseDescription,
+                restPeriod: restPeriod,
+                difficulty: difficulty,
+                duratime: duratime
+            }
+        })
+        return("Exercise created.");
 
     }
 
     async createWorkout(workoutTitle: string, workoutDescription: string, difficulty: Difficulty) {
+        if (workoutTitle=="" || workoutDescription=="" || difficulty==null )
+        {
+            throw new NotFoundException("Parameters can not be left empty.");
+        }
         this.prisma.workout.create({
             data:{
                 workoutTitle: workoutTitle,
@@ -72,7 +94,7 @@ export class WorkoutService{
                 difficulty: difficulty
             }
         })
-        return("Good stuff.");
+        return("Workout created.");
 
     }
 
