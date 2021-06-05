@@ -1,5 +1,12 @@
 import {Body, Controller, Get, Param, Post, Put} from '@nestjs/common';
 import {WorkoutService} from "./workoutService";
+import {
+    ApiCreatedResponse, ApiHeader,
+    ApiInternalServerErrorResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse, ApiParam,
+    ApiResponse
+} from "@nestjs/swagger";
 
 @Controller('workout')
 export class WorkoutController {
@@ -8,6 +15,16 @@ export class WorkoutController {
     }
 
     @Get('getWorkouts')
+
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
     getWorkouts(
     ) {
         return this.workoutService.getWorkouts();
