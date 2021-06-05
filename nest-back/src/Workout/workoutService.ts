@@ -1,4 +1,11 @@
-import {HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException} from "@nestjs/common";
+import {
+    BadRequestException,
+    HttpException,
+    HttpStatus,
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException
+} from "@nestjs/common";
 import { PrismaService } from "../Prisma/prisma.service";
 
 import {
@@ -104,8 +111,34 @@ export class WorkoutService{
         }
     }
 
-    getWorkoutByPlanner(email: string){
+    async getWorkoutByPlanner(email: string){
+        if(this.validateEmail(email)==false){//first check if email passed is valid
+           throw new BadRequestException();
+        }
+        else {
+            try {
+                const workouts = await this.prisma.workout.findMany({//search for workouts that meet the requirement
+                    where: {
+                        planner_Email: email
+                    },
+                    select: {
+                        workoutTitle: true,
+                        workoutDescription: true,
+                        exercises: true,
+                        difficulty: true,
+                        planner_Email: true
+                    }
+                });
 
+                if (this.isEmptyObject(workouts)) {//if JSON object is empty, send error code
+                    throw new NotFoundException();
+                } else {
+                    return workouts;
+                }
+            } catch (err) {
+                throw new InternalServerErrorException();
+            }
+        }
     }
 
     createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,difficulty:string,duratime:number){
