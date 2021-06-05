@@ -62,6 +62,15 @@ export class WorkoutController {
     }
 
     @Get('getWorkoutByPlanner/:email')
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
     getWorkoutByPlanner(
         @Param('email') email: string,
     ) {
