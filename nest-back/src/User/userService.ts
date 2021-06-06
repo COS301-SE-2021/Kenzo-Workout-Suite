@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException} from "@nestjs/common";
+import {Injectable, NotFoundException, UnauthorizedException} from "@nestjs/common";
 import {PrismaService} from "../Prisma/prisma.service";
 
 import {
@@ -7,6 +7,7 @@ import {
     Prisma
 } from '@prisma/client';
 import {AuthService} from "../auth/auth.service";
+import prisma from "../../dist/client";
 
 @Injectable()
 export class UserService{
@@ -15,6 +16,7 @@ export class UserService{
         private authService: AuthService
     ) {
     }
+
     async signUpClient(firstName:string, lastName:string,password:string,email:string){
         if (firstName==null || lastName==null || password==null || email==null || firstName=="" || lastName==""  || password==""  || email=="" )
         {
@@ -41,13 +43,31 @@ export class UserService{
 
     }
 
-    signIn(email:string,password:string){
+    async signIn(email: string, password: string) {
+
+        let User= await prisma.client.findUnique({
+                where: {
+                    email: email
+                },
+            })
+
+        if (User==null)
+        {
+            return new UnauthorizedException("Credentials invalid");
+        }
+
+        if (await this.authService.comparePasswords(password,User.password))
+        {
+            return await this.authService.generateJWT(User);
+        }
+
+        else
+        {
+            return new UnauthorizedException("Credentials invalid");
+        }
 
     }
 
-    getUserByEmail(email:string){
-
-    }
 
     updateUser(firstName:string, lastName:string,password:string,email:string){
 

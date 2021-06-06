@@ -36,12 +36,6 @@ export class UserController {
         return this.userService.signIn(email,password);
     }
 
-    @Post('getUserByEmail')
-    getUserByEmail(
-        @Body('email') email: string
-    ) {
-        return this.userService.getUserByEmail(email);
-    }
 
     @Put('updateUser')
     updateUser(
