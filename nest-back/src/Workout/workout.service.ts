@@ -1,5 +1,7 @@
 import {HttpException, HttpStatus, Injectable, NotFoundException} from "@nestjs/common";
 import { PrismaService } from "../Prisma/prisma.service";
+import { MockContext, Context, createMockContext } from "../../context";
+import { Test, TestingModule } from '@nestjs/testing';
 
 import {
     Workout,
@@ -8,9 +10,15 @@ import {
     Difficulty,
     Prisma
 } from '@prisma/client';
+import { WorkoutController} from "./workout.controller";
+import {randomUUID} from "crypto";
+
+
+
 
 @Injectable()
 export class WorkoutService{
+    private static prisma: PrismaService;
 
     constructor(private prisma: PrismaService) {
     }
@@ -60,13 +68,13 @@ export class WorkoutService{
 
     }
 
-    async createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,difficulty:Difficulty,duratime:number){
+    static async createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,difficulty:Difficulty,duratime:number, ctx: Context){
 
         if (title=="" || description=="" || repRange=="" || sets==0 || poseDescription=="" || restPeriod==0  || difficulty==null  || duratime==0 )
         {
             throw new NotFoundException("Parameters can not be left empty.");
         }
-        this.prisma.exercise.create({
+        ctx.prisma.exercise.create({
             data:{
                 title: title,
                 description: description,
@@ -82,7 +90,24 @@ export class WorkoutService{
 
     }
 
-    async createWorkout(workoutTitle: string, workoutDescription: string, difficulty: Difficulty) {
+     static async createWorkout(workoutTitle: string, workoutDescription: string, difficulty: Difficulty , ctx: Context) {
+        if (workoutTitle=="" || workoutDescription=="" || difficulty==null )
+        {
+            throw new NotFoundException("Parameters can not be left empty.");
+        }
+        ctx.prisma.workout.create({
+            data:{
+                workoutTitle: workoutTitle,
+                workoutDescription: workoutDescription,
+                difficulty: difficulty
+            }
+        })
+        return("Workout created.");
+
+    }
+
+
+    async createWorkout(workoutTitle: string, workoutDescription: string, difficulty:Difficulty, ctx: Context) {
         if (workoutTitle=="" || workoutDescription=="" || difficulty==null )
         {
             throw new NotFoundException("Parameters can not be left empty.");
@@ -95,7 +120,6 @@ export class WorkoutService{
             }
         })
         return("Workout created.");
-
     }
-
 }
+

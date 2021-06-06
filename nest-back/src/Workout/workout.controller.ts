@@ -16,6 +16,7 @@ import {
     Difficulty,
     Prisma
 } from '@prisma/client';
+import {Context} from "../../context";
 
 @Controller('workout')
 export class WorkoutController {
@@ -61,16 +62,18 @@ export class WorkoutController {
         @Body('difficulty') difficulty: Difficulty,
         @Body('duratime') duration: number,
     ) {
-        return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,difficulty,duration);
+        return this.createExercise(title,description,repRange,sets,Posedescription,restPeriod,difficulty,duration);
     }
 
     @Post('createWorkout')
     createWorkout(
         @Body('workoutTitle') workoutTitle: string,
         @Body('workoutDescription') workoutDescription: string,
-        @Body('difficulty') difficulty: Difficulty
+        @Body('difficulty') difficulty: Difficulty,
+        ctx : Context
     ) {
-        return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty )
+        return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty,ctx )
     }
+
 
 }
