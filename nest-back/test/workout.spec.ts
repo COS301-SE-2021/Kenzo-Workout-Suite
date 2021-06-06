@@ -26,17 +26,20 @@ beforeEach(() => {
 
 test('should create new workout ', async () => {
     const Workout = {
-        workoutID: uuidv4(),
-        workoutTitle: "TestMock",
-        workoutDescription: 'TestMock',
+        workoutID: "85171627-7245-4a0c-9fa3-a00c9683bdbf",
+        workoutTitle: "postmanTest",
+        workoutDescription: "postmanMoreTest",
         difficulty: Difficulty.EASY,
-        planner_Email: "test@Test.com"
+        planner_Email: null
     }
-    mockCtx.prisma.workout.create.mockResolvedValue(Workout)
 
-    await expect(WorkoutService.createWorkout(Workout.workoutTitle,Workout.workoutDescription, Workout.difficulty,ctx)).resolves.toEqual(
-       "Workout created."
-    )
+    mockCtx.prisma.workout.create.mockResolvedValue(Workout);
+    let fWorkout = await WorkoutService.createWorkout("Workout.workoutTitle",Workout.workoutDescription, Workout.difficulty,ctx);
+    console.log(fWorkout.workoutTitle);
+    //console.log(WorkoutService.createWorkout(Workout.workoutTitle,Workout.workoutDescription, Workout.difficulty,ctx));
+    // await expect(WorkoutService.createWorkout(Workout.workoutTitle,Workout.workoutDescription, Workout.difficulty,ctx)).resolves.toEqual(
+    //    "Workout Created."
+    // )
 })
 
 test('should create new exercise ', async () => {
@@ -60,31 +63,31 @@ test('should create new exercise ', async () => {
     )
 })
 
-// describe('Should do the work', () => {
-//     let workoutController: WorkoutController;
-//     const Workout = {
-//         workoutTitle: "TestMock",
-//         workoutDescription: 'TestMock',
-//         difficulty: Difficulty.EASY,
-//         planner_Email: "test@Test.com"
-//     }
-//
-//     beforeEach(async () => {
-//         const app: TestingModule = await Test.createTestingModule({
-//             imports: [WorkoutModule],
-//             controllers: [WorkoutController],
-//             providers: [WorkoutService],
-//         }).compile();
-//
-//         workoutController = app.get<WorkoutController>(WorkoutController);
-//     });
-//
-//     describe('Create Workout', () => {
-//         it('should return "Workout created."', () => {
-//             expect(workoutController.createWorkout(Workout.workoutTitle,Workout.workoutDescription, Workout.difficulty,ctx)).toBe('Workout created.');
-//         });
-//     });
-// });
+describe('Should do the work', () => {
+    let workoutController: WorkoutController;
+    const Workout = {
+        workoutTitle: "TestMock",
+        workoutDescription: 'TestMock',
+        difficulty: Difficulty.EASY,
+        planner_Email: "test@Test.com"
+    }
+
+    beforeEach(async () => {
+        const app: TestingModule = await Test.createTestingModule({
+            imports: [WorkoutModule],
+            controllers: [WorkoutController],
+            providers: [WorkoutService],
+        }).compile();
+
+        workoutController = app.get<WorkoutController>(WorkoutController);
+    });
+
+    describe('Create Workout', () => {
+        it('should return "Workout created."', () => {
+            expect(workoutController.createWorkout(Workout.workoutTitle,Workout.workoutDescription, Workout.difficulty,ctx)).toBe('Workout created.');
+        });
+    });
+});
 
 
 

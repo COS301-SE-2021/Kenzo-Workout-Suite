@@ -89,24 +89,24 @@ export class WorkoutService{
         return("Exercise created.");
 
     }
-
-     static async createWorkout(workoutTitle: string, workoutDescription: string, difficulty: Difficulty , ctx: Context) {
+    //unit test function
+    static async createWorkout(workoutTitle: string, workoutDescription: string, difficulty: Difficulty , ctx: Context) {
         if (workoutTitle=="" || workoutDescription=="" || difficulty==null )
         {
             throw new NotFoundException("Parameters can not be left empty.");
         }
-        ctx.prisma.workout.create({
+        let Workout = await ctx.prisma.workout.create({
             data:{
                 workoutTitle: workoutTitle,
                 workoutDescription: workoutDescription,
                 difficulty: difficulty
             }
         })
-        return("Workout created.");
+        return(Workout);
 
     }
 
-
+    //actual function
     async createWorkout(workoutTitle: string, workoutDescription: string, difficulty:Difficulty, ctx: Context) {
         if (workoutTitle=="" || workoutDescription=="" || difficulty==null )
         {
@@ -119,7 +119,7 @@ export class WorkoutService{
                 difficulty: difficulty
             }
         })
-        return("Workout created.");
+
     }
 }
 
