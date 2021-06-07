@@ -1,5 +1,6 @@
-import {Body, Controller, Get, Post, Put} from '@nestjs/common';
+import {Body, Controller, Get, Post, Put, UseGuards,Request} from '@nestjs/common';
 import {UserService} from "./userService";
+import {LocalAuthGuard} from "../auth/local-auth.guard";
 
 @Controller('user')
 export class UserController {
@@ -28,12 +29,11 @@ export class UserController {
         return this.userService.signUpPlanner(firstName,lastName,email,password);
     }
 
+    @UseGuards(LocalAuthGuard)
     @Post('signIn')
-    signIn(
-        @Body('email') email: string,
-        @Body('password') password: string,
-    ) {
-        return this.userService.signIn(email,password);
+    signIn(@Request() req) : any
+    {
+        return req.user;
     }
 
 

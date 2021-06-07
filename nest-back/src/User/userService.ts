@@ -6,15 +6,23 @@ import {
     Planner,
     Prisma
 } from '@prisma/client';
-import {AuthService} from "../auth/auth.service";
 import prisma from "../../dist/client";
 
 @Injectable()
 export class UserService{
 
     constructor(private prisma: PrismaService,
-        private authService: AuthService
     ) {
+    }
+
+    async findOne(email:string): Promise<Client | undefined>
+    {
+        return await prisma.client.findUnique({
+            where: {
+                email: email
+            },
+        })
+
     }
 
     async signUpClient(firstName:string, lastName:string,password:string,email:string){
@@ -23,15 +31,13 @@ export class UserService{
             throw new NotFoundException("Parameters can not be left empty");
         }
 
-        let passwordHash= await this.authService.hashPassword(password)
-
         await this.prisma.client.create(
             {
                 data:{
                     email: email,
                     firstName: firstName,
                     lastName: lastName,
-                    password: passwordHash
+                    password: password
                 }
             }
         )
@@ -44,27 +50,6 @@ export class UserService{
     }
 
     async signIn(email: string, password: string) {
-
-        let User= await prisma.client.findUnique({
-                where: {
-                    email: email
-                },
-            })
-
-        if (User==null)
-        {
-            return new UnauthorizedException("Credentials invalid");
-        }
-
-        if (await this.authService.comparePasswords(password,User.password))
-        {
-            return await this.authService.generateJWT(User);
-        }
-
-        else
-        {
-            return new UnauthorizedException("Credentials invalid");
-        }
 
     }
 

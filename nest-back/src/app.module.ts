@@ -6,6 +6,7 @@ import {UserModule} from "./User/user.module";
 import { AuthModule } from './auth/auth.module';
 
 
+
 @Module({
   imports: [WorkoutModule, UserModule, AuthModule],
   controllers: [AppController],
