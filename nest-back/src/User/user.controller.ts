@@ -6,7 +6,7 @@ import {AuthService} from "../auth/auth.service";
 @Controller('user')
 export class UserController {
 
-    constructor(private readonly userService: UserService, private readonly authService: AuthService) {
+    constructor(private readonly userService: UserService) {
     }
 
     @Post('signUpClient')
@@ -34,7 +34,7 @@ export class UserController {
     @Post('signIn')
     signIn(@Request() req) : any
     {
-        return this.authService.login(req.user)
+      return null;
     }
 
     @Get('protected')

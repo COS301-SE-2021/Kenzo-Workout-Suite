@@ -9,7 +9,7 @@ import {AuthModule} from "../auth/auth.module";
 @Module(
     {
         controllers:[UserController],
-        providers: [UserService, PrismaService,AuthService],
+        providers: [UserService, PrismaService],
         exports: [UserService]
     }
 )
