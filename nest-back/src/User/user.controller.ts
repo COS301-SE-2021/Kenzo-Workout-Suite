@@ -1,11 +1,12 @@
 import {Body, Controller, Get, Post, Put, UseGuards,Request} from '@nestjs/common';
 import {UserService} from "./userService";
 import {LocalAuthGuard} from "../auth/local-auth.guard";
+import {AuthService} from "../auth/auth.service";
 
 @Controller('user')
 export class UserController {
 
-    constructor(private readonly userService: UserService) {
+    constructor(private readonly userService: UserService, private readonly authService: AuthService) {
     }
 
     @Post('signUpClient')
@@ -33,9 +34,13 @@ export class UserController {
     @Post('signIn')
     signIn(@Request() req) : any
     {
-        return req.user;
+        return this.authService.login(req.user)
     }
 
+    @Get('protected')
+        getHello(@Request() req): string{
+            return "hello";
+    }
 
     @Put('updateUser')
     updateUser(
