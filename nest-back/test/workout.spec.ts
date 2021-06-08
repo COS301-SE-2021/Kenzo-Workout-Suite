@@ -56,7 +56,7 @@ test('should create new exercise ', async () => {
     }
     mockCtx.prisma.exercise.create.mockResolvedValue(Exercise)
 
-    await expect(WorkoutService.createExercise(Exercise.title,Exercise.description,Exercise.repRange,Exercise.sets,Exercise.Posedescription,Exercise.restPeriod,Exercise.difficulty,Exercise.duratime,ctx)).resolves.toEqual(
+    await expect(workoutService.createExercise(Exercise.title,Exercise.description,Exercise.repRange,Exercise.sets,Exercise.Posedescription,Exercise.restPeriod,Exercise.difficulty,Exercise.duratime,ctx)).resolves.toEqual(
         "Exercise created."
     )
 })

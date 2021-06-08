@@ -64,13 +64,13 @@ export class WorkoutService{
 
     }
 
-    static async createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,difficulty:Difficulty,duratime:number, ctx: Context){
+    async createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,difficulty:Difficulty,duratime:number, ctx: Context){
 
         if (title=="" || description=="" || repRange=="" || sets==0 || poseDescription=="" || restPeriod==0  || difficulty==null  || duratime==0 )
         {
             throw new NotFoundException("Parameters can not be left empty.");
         }
-        ctx.prisma.exercise.create({
+        await ctx.prisma.exercise.create({
             data:{
                 title: title,
                 description: description,

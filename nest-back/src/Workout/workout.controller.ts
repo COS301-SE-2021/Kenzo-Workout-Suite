@@ -58,8 +58,10 @@ export class WorkoutController {
         @Body('restPeriod') restPeriod: number,
         @Body('difficulty') difficulty: Difficulty,
         @Body('duratime') duration: number,
+        ctx: Context
     ) {
-        return this.createExercise(title,description,repRange,sets,Posedescription,restPeriod,difficulty,duration);
+        ctx = ActualPrisma();
+        return this.createExercise(title,description,repRange,sets,Posedescription,restPeriod,difficulty,duration, ctx);
     }
 
     @Post('createWorkout')
