@@ -1,16 +1,30 @@
-import {Body, Controller, Get, Param, Post, Put} from '@nestjs/common';
-import {WorkoutService} from "./workoutService";
+import {
+    Controller,
+    Get,
+    Param,
+    Post,
+    Body,
+    Put,
+    Delete,
+} from '@nestjs/common';
+import {WorkoutService} from "./workout.service";
+import {
+    Workout,
+    Exercise,
+    Planner,
+    Difficulty,
+    PrismaClient,
+    Prisma
+} from '@prisma/client';
+import {ActualPrisma, Context} from "../../context";
+
+
 
 @Controller('workout')
 export class WorkoutController {
 
     constructor(private readonly workoutService: WorkoutService) {
-    }
 
-    @Get('getWorkouts')
-    getWorkouts(
-    ) {
-        return this.workoutService.getWorkouts();
     }
 
     @Get('getWorkoutByTitle/:title')
@@ -35,26 +49,32 @@ export class WorkoutController {
     }
 
     @Post('createExercise')
-    getUserByEmail(
+    createExercise(
         @Body('title') title: string,
         @Body('description') description: string,
         @Body('repRange') repRange: string,
         @Body('sets') sets: number,
-        @Body('poseDescription') poseDescription: string,
+        @Body('Posedescription') Posedescription: string,
         @Body('restPeriod') restPeriod: number,
-        @Body('difficulty') difficulty: string,
+        @Body('difficulty') difficulty: Difficulty,
         @Body('duratime') duration: number,
+        ctx: Context
     ) {
-        return this.workoutService.createExercise(title,description,repRange,sets,poseDescription,restPeriod,difficulty,duration);
+        ctx = ActualPrisma();
+        return this.createExercise(title,description,repRange,sets,Posedescription,restPeriod,difficulty,duration, ctx);
     }
 
     @Post('createWorkout')
     createWorkout(
         @Body('workoutTitle') workoutTitle: string,
         @Body('workoutDescription') workoutDescription: string,
-        @Body('difficulty') difficulty: string,
+        @Body('difficulty') difficulty: Difficulty,
+        ctx: Context
     ) {
-        return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty);
+        ctx = ActualPrisma();
+        return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty, ctx)
+
     }
+
 
 }
