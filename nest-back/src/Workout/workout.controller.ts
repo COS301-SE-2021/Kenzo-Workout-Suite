@@ -8,26 +8,23 @@ import {
     Delete,
 } from '@nestjs/common';
 import {WorkoutService} from "./workout.service";
-import {Workout as WorkoutModel} from "@prisma/client"
 import {
     Workout,
     Exercise,
     Planner,
     Difficulty,
+    PrismaClient,
     Prisma
 } from '@prisma/client';
-import {Context} from "../../context";
+import {ActualPrisma, Context} from "../../context";
+
+
 
 @Controller('workout')
 export class WorkoutController {
 
     constructor(private readonly workoutService: WorkoutService) {
-    }
 
-    @Get('getWorkouts')
-    getWorkouts(
-    ) {
-        return this.workoutService.getWorkouts();
     }
 
     @Get('getWorkoutByTitle/:title')
@@ -70,9 +67,11 @@ export class WorkoutController {
         @Body('workoutTitle') workoutTitle: string,
         @Body('workoutDescription') workoutDescription: string,
         @Body('difficulty') difficulty: Difficulty,
-        ctx : Context
+        ctx: Context
     ) {
-        return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty,ctx )
+        ctx = ActualPrisma();
+        return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty, ctx)
+
     }
 
 

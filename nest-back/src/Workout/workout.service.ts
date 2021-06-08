@@ -1,7 +1,5 @@
 import {HttpException, HttpStatus, Injectable, NotFoundException} from "@nestjs/common";
-import { PrismaService } from "../Prisma/prisma.service";
-import { MockContext, Context, createMockContext } from "../../context";
-import { Test, TestingModule } from '@nestjs/testing';
+import { Context } from "../../context";
 
 import {
     Workout,
@@ -10,17 +8,15 @@ import {
     Difficulty,
     Prisma
 } from '@prisma/client';
-import { WorkoutController} from "./workout.controller";
-import {randomUUID} from "crypto";
 
 
 
 
 @Injectable()
 export class WorkoutService{
-    private static prisma: PrismaService;
+    //private static prisma: PrismaService;
 
-    constructor(private prisma: PrismaService) {
+    constructor() {
     }
 
     validateEmail(email) {//function to validate an email
@@ -32,29 +28,29 @@ export class WorkoutService{
         return !Object.keys(obj).length;
     }
 
-    async getWorkouts(){
-        try{
-            const workouts = await this.prisma.workout.findMany({//search for workouts that meet the requirement
-                select: {
-                    workoutTitle: true,
-                    workoutDescription: true,
-                    exercises: true,
-                    difficulty: true,
-                    planner_Email: true
-                }
-            });
-
-            if(this.isEmptyObject(workouts)){//if JSON object is empty, send error code
-                throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
-            }
-            else{
-                return workouts;
-            }
-        }
-        catch(err){
-            throw new HttpException(err, HttpStatus.SERVICE_UNAVAILABLE);
-        }
-    }
+    // async getWorkouts(){
+    //     try{
+    //         const workouts = await this.prisma.workout.findMany({//search for workouts that meet the requirement
+    //             select: {
+    //                 workoutTitle: true,
+    //                 workoutDescription: true,
+    //                 exercises: true,
+    //                 difficulty: true,
+    //                 planner_Email: true
+    //             }
+    //         });
+    //
+    //         if(this.isEmptyObject(workouts)){//if JSON object is empty, send error code
+    //             throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    //         }
+    //         else{
+    //             return workouts;
+    //         }
+    //     }
+    //     catch(err){
+    //         throw new HttpException(err, HttpStatus.SERVICE_UNAVAILABLE);
+    //     }
+    // }
 
     getWorkoutByTitle(title: string){
 
@@ -89,36 +85,20 @@ export class WorkoutService{
         return("Exercise created.");
 
     }
-    //unit test function
-    static async createWorkout(workoutTitle: string, workoutDescription: string, difficulty: Difficulty , ctx: Context) {
-        if (workoutTitle=="" || workoutDescription=="" || difficulty==null )
-        {
-            throw new NotFoundException("Parameters can not be left empty.");
-        }
-        let Workout = await ctx.prisma.workout.create({
-            data:{
-                workoutTitle: workoutTitle,
-                workoutDescription: workoutDescription,
-                difficulty: difficulty
-            }
-        })
-        return(Workout);
 
-    }
-
-    //actual function
     async createWorkout(workoutTitle: string, workoutDescription: string, difficulty:Difficulty, ctx: Context) {
         if (workoutTitle=="" || workoutDescription=="" || difficulty==null )
         {
             throw new NotFoundException("Parameters can not be left empty.");
         }
-        this.prisma.workout.create({
+        await ctx.prisma.workout.create({
             data:{
                 workoutTitle: workoutTitle,
                 workoutDescription: workoutDescription,
                 difficulty: difficulty
             }
         })
+        return("Workout Created.");
 
     }
 }

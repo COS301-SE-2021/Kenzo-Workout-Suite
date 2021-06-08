@@ -1,8 +1,8 @@
 import {Module} from '@nestjs/common';
 import {WorkoutController} from "./workout.controller";
 import {WorkoutService} from "./workout.service";
-import {UserService} from "../User/userService";
 import {PrismaService} from "../Prisma/prisma.service";
+import {Context} from "../../context";
 
 @Module(
     {
