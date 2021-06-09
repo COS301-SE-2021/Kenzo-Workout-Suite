@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {AlertController} from "@ionic/angular";
+import {UserService} from "../Services/UserService/user.service";
 
 @Component({
   selector: 'app-sign-up',
@@ -19,7 +20,8 @@ export class SignUpPage implements OnInit {
 
   constructor(private http:HttpClient,
               private route:Router,
-              public alertController:AlertController) { }
+              public alertController:AlertController,
+              private userService:UserService) { }
 
   ngOnInit() {
   }
@@ -79,11 +81,11 @@ export class SignUpPage implements OnInit {
     }
 
     if (this.password == this.confirmpassword) {
-      this.http.post(this.url, body).subscribe(data => {
-        // Successfully saved
-        this.route.navigate(['/sign-in']);
-      }, async error => {
-        if (error.status == 400 || error.status == 401) {
+      let status = await this.userService.attemptSignUp()
+        if (status < 400){
+            await this.route.navigate(['/sign-in']);
+        }
+        else if (status >= 400 && status < 500) {
           //Invalid entry or already existent client email
           const alert = await this.alertController.create({
             cssClass: 'kenzo-alert',
@@ -92,7 +94,7 @@ export class SignUpPage implements OnInit {
             buttons: ['OK']
           });
           this.presentAlert(alert);
-        } else if (error.status == 500) {
+        } else if (status >= 500) {
           const alert = await this.alertController.create({
             cssClass: 'kenzo-alert',
             header: 'Incorrect Signup',
@@ -101,8 +103,8 @@ export class SignUpPage implements OnInit {
           });
           this.presentAlert(alert);
         }
-      });
-    }else{
+    }
+    else {
       this.InvalidPasswords();  //If passwords do not match, notify user
     }                           //through an alert.
   }
