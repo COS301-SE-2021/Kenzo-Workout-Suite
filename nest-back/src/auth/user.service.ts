@@ -1,17 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import {JwtService} from "@nestjs/jwt";
 import {Client} from "@prisma/client";
-import prisma from "../../dist/client";
+import {
+    Workout,
+    Exercise,
+    Planner,
+    Difficulty,
+    Prisma
+} from '@prisma/client';
+import {PrismaService} from "../Prisma/prisma.service";
+
 
 @Injectable()
 export class UserService {
-    constructor(private jwtService:JwtService,) {
+    constructor(private jwtService:JwtService, private prisma: PrismaService) {
 
     }
 
     async findOne(email:string): Promise<Client | null>
     {
-        return await prisma.client.findUnique({
+        return await this.prisma.client.findUnique({
             where: {
                 email: email
             },

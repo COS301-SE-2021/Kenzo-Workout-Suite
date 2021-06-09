@@ -4,6 +4,7 @@ import {PassportModule} from "@nestjs/passport";
 import {LocalStrategy} from "./local.strategy";
 import {JwtModule, JwtService} from "@nestjs/jwt";
 import {UserController} from "./user.controller"
+import {PrismaService} from "../Prisma/prisma.service";
 
 @Module({
 
@@ -12,7 +13,7 @@ import {UserController} from "./user.controller"
     secret: 'SECRET', // TODO PUT THIS IN THE ENVIRONMENT VARIABLE!!!!!!!
     signOptions: {expiresIn: '60s'},
   })],
-  providers: [UserService, LocalStrategy],
+  providers: [UserService, LocalStrategy,PrismaService],
   exports: [UserService,JwtModule],
 })
 export class UserModule {}
