@@ -34,11 +34,10 @@ export class UserController {
     }
 
     @UseGuards(LocalAuthGuard)
-    @Post('signIn')
+    @Post('login')
     signIn(@Request() req) : any
     {
-        console.log("JHELLO DO YOU EVEN MAKE IT HERE");
-        return this.userService.login(req.user);
+        return req.user;
     }
 
     @Get('protected')
