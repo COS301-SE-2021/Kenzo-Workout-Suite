@@ -1,7 +1,14 @@
 import {Body, Controller, Get, Post, Put, UseGuards,Request} from '@nestjs/common';
 import {UserService} from "./user.service";
 import {LocalAuthGuard} from "./local-auth.guard";
-
+import {
+    Workout,
+    Exercise,
+    Planner,
+    Difficulty,
+    Prisma
+} from '@prisma/client';
+import {Client} from "@prisma/client";
 
 @Controller('user')
 export class UserController {
@@ -11,13 +18,9 @@ export class UserController {
 
     @Post('signUpClient')
     signUpClient(
-        @Body('firstName') firstName: string,
-        @Body('lastName') lastName: string,
-        @Body('email') email: string,
-        @Body('password') password: string,
-
+        @Body('Client') client: Client,
     ) {
-        return null;
+        return this.userService.signUpClient(client);
     }
 
     @Post('signupPlanner')
@@ -34,6 +37,7 @@ export class UserController {
     @Post('signIn')
     signIn(@Request() req) : any
     {
+        console.log("JHELLO DO YOU EVEN MAKE IT HERE");
         return this.userService.login(req.user);
     }
 

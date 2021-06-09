@@ -45,6 +45,17 @@ export class UserService {
         };
     }
 
+    async signUpClient(client:Client) : Promise<any>{
+        return await this.prisma.client.create({
+            data: {
+                firstName: client.firstName,
+                lastName: client.lastName,
+                email: client.email,
+                password : client.password
+            },
+        })
+    }
+
 
 
 }
