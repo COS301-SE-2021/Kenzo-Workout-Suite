@@ -5,11 +5,11 @@ import prisma from "../../dist/client";
 
 @Injectable()
 export class UserService {
-    constructor(private jwtService:JwtService) {
+    constructor(private jwtService:JwtService,) {
 
     }
 
-    async findOne(email:string): Promise<Client | undefined>
+    async findOne(email:string): Promise<Client | null>
     {
         return await prisma.client.findUnique({
             where: {
