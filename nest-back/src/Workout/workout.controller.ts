@@ -23,8 +23,10 @@ import {ActualPrisma, Context} from "../../context";
 @Controller('workout')
 export class WorkoutController {
 
-    constructor(private readonly workoutService: WorkoutService) {
+    ctx: Context
 
+    constructor(private readonly workoutService: WorkoutService) {
+        this.ctx = ActualPrisma();
     }
 
     @Get('getWorkoutByTitle/:title')
@@ -69,10 +71,10 @@ export class WorkoutController {
         @Body('workoutTitle') workoutTitle: string,
         @Body('workoutDescription') workoutDescription: string,
         @Body('difficulty') difficulty: Difficulty,
-        ctx: Context
+
     ) {
-        ctx = ActualPrisma();
-        return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty, ctx)
+
+        return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty, this.ctx)
 
     }
 
