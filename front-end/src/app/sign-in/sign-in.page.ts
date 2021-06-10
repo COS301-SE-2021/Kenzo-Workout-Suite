@@ -24,8 +24,14 @@ export class SignInPage implements OnInit {
   ngOnInit() {
   }
 
-  /**
+  /** This function uses the email and password entered to attempt a sign in through the user service.
+   * The user service will return the status of the login:
+   * 200 -> Success
+   * 400 -> Incorrect Credentials
+   * 500 -> Server not responding
    *
+   * Error states [400,500] will result in an alert
+   * Success states [200] will result in a logged in user being navigated to the logged in User's homescreen.
    */
   async signIn() {
     let status = await this.userService.attemptSignIn(this.email, this.password);

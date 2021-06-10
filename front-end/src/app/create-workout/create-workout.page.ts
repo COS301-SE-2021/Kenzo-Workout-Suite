@@ -25,6 +25,16 @@ export class CreateWorkoutPage implements OnInit {
   ngOnInit() {
   }
 
+  /** This function uses the workout service to submit a request to create a workout.
+   * The workout service will return the status of the request:
+   * 200 -> Success
+   * 400 -> Incorrect Data
+   * 500 -> Server not responding
+   *
+   * Thereafter,
+   * Error states [400,500] will result in an alert
+   * Success states [200] will result in a logged in a Planner being navigated to the logged in User's homescreen.
+   */
   async submitCreateRequest() {
     let new_workout = new Workout(this.title, this.description, this.diff);
     let status = await this.workoutService.attemptSubmitWorkout(new_workout);

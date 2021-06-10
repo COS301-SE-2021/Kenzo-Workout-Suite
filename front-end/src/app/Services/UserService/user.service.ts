@@ -9,10 +9,14 @@ import {AlertController} from "@ionic/angular";
 export class UserService {
   constructor(private http:HttpClient) { }
 
-  /**
+  /** This function attempts to submit a workout by using the following parameters:
    *
-   * @param email
-   * @param password
+   * @param email is the email the user is attempting to login with.
+   * @param password is the password the user is attempting to login with.
+   *
+   * @return Number represents the status of the Http request.
+   *
+   * @returns 200,400,500 represent a success, user error and server error, respectively.
    */
   async attemptSignIn(email: string, password: string): Promise<Number> {
     const url: string = "http://localhost:5500/user/signIn";

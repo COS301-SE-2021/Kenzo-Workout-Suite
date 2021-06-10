@@ -9,9 +9,13 @@ export class WorkoutService {
 
   constructor(private http:HttpClient) {}
 
-  /**
+  /** This function attempts to submit a workout by using the following parameters:
    *
-   * @param workout
+   * @param workout represents a Workout Object that will hold the necessary data for creating a workout.
+   *
+   * @return Number represents the status of the Http request.
+   *
+   * @returns 200,400,500 represent a success, user error and server error, respectively.
    */
   async attemptSubmitWorkout(workout:Workout) : Promise<Number> {
     const url : string = "http://localhost:5500/workout/createWorkout";
