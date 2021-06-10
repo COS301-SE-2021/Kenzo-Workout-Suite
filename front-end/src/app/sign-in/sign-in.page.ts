@@ -14,19 +14,15 @@ import {Alerts} from "../Models/alerts";
 export class SignInPage implements OnInit {
   email: string;
   password: string;
-
+  alertGetter:any;
   constructor(private http:HttpClient,
               private route:Router,
               public alertController:AlertController,
-              private userService:UserService,
-              private alertGetter:Alerts) { }
-
-  ngOnInit() {
+              private userService:UserService,) {
+      this.alertGetter = new Alerts(this.alertController);
   }
 
-  async presentAlert(alert:any) {
-    await alert.present();
-    await alert.onDidDismiss();
+  ngOnInit() {
   }
 
   /**
@@ -38,13 +34,36 @@ export class SignInPage implements OnInit {
       // Success State
       await this.route.navigate(['/your-workouts']);
     }
-    else if (status => 400 && status < 500) {
+    else if (status >= 400 && status < 500) {
       // Invalid Sign In
+      // await this.presentAlert(this.alertGetter.INCORRECT_DETAILS);
+      const alert = await this.alertController.create({
+        cssClass: 'kenzo-alert',
+        header: 'Incorrect login',
+        message: 'Either your password or email is incorrect.',
+        buttons: ['OK']
+      });
       await this.presentAlert(alert);
     }
     else {
       // Server Error
-      await this.presentAlert(this.alertGetter.INCORRECT_DETAILS);
+      // await this.presentAlert(await this.alertGetter.SERVER_ERROR);
+      const alert = await this.alertController.create({
+        cssClass: 'kenzo-alert',
+        header: "Server isn't responding",
+        message: 'Please try again later.',
+        buttons: ['Dismiss']
+      });
+      await this.presentAlert(alert);
     }
+  }
+
+  /**
+   * Helper Function to physically present alert to user independent of OS.
+   * @param alert
+   */
+  async presentAlert(alert:any) {
+    await alert.present();
+    await alert.onDidDismiss();
   }
 }

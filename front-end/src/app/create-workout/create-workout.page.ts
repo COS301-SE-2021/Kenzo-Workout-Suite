@@ -4,7 +4,6 @@ import {Router} from "@angular/router";
 import {AlertController} from "@ionic/angular";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
 import {Workout} from "../Models/workout";
-import {stat} from "fs";
 import {Alerts} from "../Models/alerts";
 
 @Component({
@@ -17,11 +16,13 @@ export class CreateWorkoutPage implements OnInit {
   description: string="";
   title: string="";
 
+  alertGetter:any;
+
   constructor(private http:HttpClient,
               private route:Router,
               private workoutService:WorkoutService,
-              public alertController:AlertController,
-              private alertGetter:Alerts) {
+              public alertController:AlertController,) {
+    // this.alertGetter = new Alerts(alertController);
   }
 
   ngOnInit() {
@@ -45,11 +46,26 @@ export class CreateWorkoutPage implements OnInit {
     }
     else if(status>=400 && status<500){
       // Invalid Input
-      await this.presentAlert(this.alertGetter.CREATE_ERROR_WORKOUT);
+      // await this.presentAlert(this.alertGetter.CREATE_ERROR_WORKOUT);
+      const alert = await this.alertController.create({
+        cssClass: 'kenzo-alert',
+        header: 'Could not create workout',
+        message: 'Please fill all of the fields.',
+        buttons: ['Dismiss']
+      });
+
+      await this.presentAlert(alert);
     }
     else{
       // Server Error
-      await this.presentAlert(this.alertGetter.SERVER_ERROR);
+      // await this.presentAlert(this.alertGetter.SERVER_ERROR);
+      const alert = await this.alertController.create({
+        cssClass: 'kenzo-alert',
+        header: "Server isn't responding",
+        message: 'Please try again later.',
+        buttons: ['Dismiss']
+      });
+      await this.presentAlert(alert);
     }
   }
 }

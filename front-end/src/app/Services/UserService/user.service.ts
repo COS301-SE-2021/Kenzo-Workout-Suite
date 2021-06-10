@@ -34,6 +34,7 @@ export class UserService {
     return this.http.post(url, body).toPromise().then(r => {
           return 200;
         }).catch((error)=>{
+        if(error.status==0) return 500;
         return error.status;
       });
   }

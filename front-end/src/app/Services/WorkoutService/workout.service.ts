@@ -25,6 +25,7 @@ export class WorkoutService {
     return this.http.post(url, body).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
+      if(error.status==0) return 500;
       return error.status;
     });
   }
