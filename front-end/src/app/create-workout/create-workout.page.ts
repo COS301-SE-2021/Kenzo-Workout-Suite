@@ -28,11 +28,6 @@ export class CreateWorkoutPage implements OnInit {
   ngOnInit() {
   }
 
-  async presentAlert(alert:any) {
-    await alert.present();
-    await alert.onDidDismiss();
-  }
-
   async submitCreateRequest() {
     let new_workout = new Workout(this.title, this.description, this.diff);
     let status = await this.workoutService.attemptSubmitWorkout(new_workout);
@@ -67,5 +62,14 @@ export class CreateWorkoutPage implements OnInit {
       });
       await this.presentAlert(alert);
     }
+  }
+
+  /**
+   * Helper Function to physically present alert to user independent of OS.
+   * @param alert
+   */
+  async presentAlert(alert:any) {
+    await alert.present();
+    await alert.onDidDismiss();
   }
 }

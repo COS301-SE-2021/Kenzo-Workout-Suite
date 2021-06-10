@@ -19,7 +19,7 @@ export class SignInPage implements OnInit {
               private route:Router,
               public alertController:AlertController,
               private userService:UserService,) {
-      this.alertGetter = new Alerts(this.alertController);
+      // this.alertGetter = new Alerts(this.alertController);
   }
 
   ngOnInit() {
