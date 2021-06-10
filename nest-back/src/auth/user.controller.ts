@@ -1,5 +1,7 @@
-import {Body, Controller, Get, Post, Put} from '@nestjs/common';
-import {UserService} from "./userService";
+import {Body, Controller, Get, Post, Put, UseGuards,Request} from '@nestjs/common';
+import {UserService} from "./user.service";
+import {LocalAuthGuard} from "./local-auth.guard";
+
 
 @Controller('user')
 export class UserController {
@@ -15,7 +17,7 @@ export class UserController {
         @Body('password') password: string,
 
     ) {
-        return this.userService.signUpClient(firstName,lastName,email,password);
+        return null;
     }
 
     @Post('signupPlanner')
@@ -25,22 +27,19 @@ export class UserController {
         @Body('email') email: string,
         @Body('password') password: string,
     ) {
-        return this.userService.signUpPlanner(firstName,lastName,email,password);
+        return null;
     }
 
+    @UseGuards(LocalAuthGuard)
     @Post('signIn')
-    signIn(
-        @Body('email') email: string,
-        @Body('password') password: string,
-    ) {
-        return this.userService.signIn(email,password);
+    signIn(@Request() req) : any
+    {
+        return this.userService.login(req.user);
     }
 
-    @Post('getUserByEmail')
-    getUserByEmail(
-        @Body('email') email: string
-    ) {
-        return this.userService.getUserByEmail(email);
+    @Get('protected')
+    getHello(@Request() req): string{
+        return "hello";
     }
 
     @Put('updateUser')
@@ -50,8 +49,7 @@ export class UserController {
         @Body('lastName') email: string,
         @Body('dateOfBirth') password: string,
     ) {
-        return this.userService.updateUser(firstName,lastName,email,password);
+        return null;
     }
-
 
 }
