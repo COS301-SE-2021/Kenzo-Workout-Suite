@@ -58,6 +58,14 @@
     border-radius: var(--secondary-radius);;
 }
 
+.kenzo-logo{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10vh;
+  width: 300px;
+}
+
 #PlannerBtn{
     margin-left: 35px;
 }
@@ -67,16 +75,16 @@
 }
 
 #SignUpButton{
-    font-family: "SF Pro Regular", serif;
-    display: block;
-    width: var(--button-width);
-    margin-left: auto;
-    margin-right: auto;
-    --background: var(--ion-color-tertiary);
-    --background-actived: var(--ion-color-tertiary);
-    --color-activated: var(--ion-color-primary);
-    --background-hover: var(--ion-color-tertiary);
-    --color-hover: var(--ion-color-primary);
+  display: block;
+  font-family: "SF Pro Regular", serif;
+  width: var(--button-width);
+  margin-left: auto;
+  margin-right: auto;
+  --background: var(--ion-color-tertiary);
+  --background-activated: var(--ion-color-tertiary);
+  --color-activated: var(--ion-color-primary);
+  --background-hover: var(--ion-color-tertiary);
+  --color-hover: var(--ion-color-primary);
 }
 
 a{
