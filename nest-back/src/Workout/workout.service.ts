@@ -4,7 +4,7 @@ import { Context } from "../../context";
 import {
     Workout,
     Exercise,
-    Planner,
+    User,
     Difficulty,
     Prisma
 } from '@prisma/client';

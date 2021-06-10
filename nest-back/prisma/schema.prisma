@@ -22,29 +22,22 @@ model Avatar {
   armColour   String @default("blue")
   legColour   String @default("blue")
   headColour  String @default("blue")
-  client      Client @relation(fields: [avatarEmail], references: [email])
+  client      User @relation(fields: [avatarEmail], references: [email])
   avatarEmail String @id
 }
 
-model Client {
-  email       String    @id
-  firstName   String
-  lastName    String
-  password    String
-  dateOfBirth DateTime?
-  avatar      Avatar?
-}
-
-
-model Planner {
+model User {
+  userId  String   @id @default(uuid())
   email       String    @unique
   firstName   String
   lastName    String
   password    String
   dateOfBirth DateTime?
-
-  workouts Workout[]
+  avatar      Avatar?
+  isPlanner Boolean
+   workouts Workout[]
 }
+
 
 model Workout {
   workoutID          String @id @default(uuid())
@@ -54,7 +47,7 @@ model Workout {
   exercises  Exercise[]
   difficulty Difficulty
 
-  planner       Planner? @relation(fields: [planner_Email], references: [email])
+  planner       User? @relation(fields: [planner_Email], references: [email])
   planner_Email String?
 }
 
@@ -67,7 +60,6 @@ model Exercise {
   Posedescription String
   restPeriod      Int
   difficulty      Difficulty
-
   duratime Int
 
 

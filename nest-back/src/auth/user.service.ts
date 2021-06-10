@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import {JwtService} from "@nestjs/jwt";
-import {Client} from "@prisma/client";
+//import {Client} from "@prisma/client";
 import {
     Workout,
     Exercise,
-    Planner,
     Difficulty,
+    User,
     Prisma
 } from '@prisma/client';
 import {PrismaService} from "../Prisma/prisma.service";
@@ -17,9 +17,10 @@ export class UserService {
 
     }
 
-    async findOne(email:string): Promise<Client | null>
+    async findOne(email:string): Promise<User | null>
     {
-        return await this.prisma.client.findUnique({
+
+        return await this.prisma.user.findUnique({
             where: {
                 email: email
             },

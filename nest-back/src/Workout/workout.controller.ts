@@ -11,7 +11,7 @@ import {WorkoutService} from "./workout.service";
 import {
     Workout,
     Exercise,
-    Planner,
+    User,
     Difficulty,
     PrismaClient,
     Prisma
