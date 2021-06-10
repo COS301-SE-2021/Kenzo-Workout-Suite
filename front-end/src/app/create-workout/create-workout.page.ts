@@ -34,7 +34,7 @@ export class CreateWorkoutPage implements OnInit {
 
     if (status < 400) {
       // Success State
-      await this.presentAlert(this.alertGetter.WORKOUT_CREATED);
+      //await this.presentAlert(this.alertGetter.WORKOUT_CREATED);
       this.route.navigate(['/your-workouts']).then(success=>{
         window.location.reload();}
       );
