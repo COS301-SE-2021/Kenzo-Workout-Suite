@@ -40,14 +40,14 @@ export class CreateExercisePage implements OnInit {
    */
   async createExercise() {
     let exercise = new Exercise(this.title, this.description, this.range, this.sets, this.pose_description,
-      this.rest, this.diff, this.duration);
+      this.rest, this.diff, this.duration*60);
     let status = await this.workoutService.attemptSubmitExercise(exercise);
 
     if (status < 400) {
       // Success State
       const alert = await this.alertController.create({
         cssClass: 'kenzo-alert',
-        header: 'Workout Submitted',
+        header: 'Exercise Submitted',
         buttons: ['Go Back']
       });
 
@@ -60,7 +60,7 @@ export class CreateExercisePage implements OnInit {
       // Invalid Input
       const alert = await this.alertController.create({
         cssClass: 'kenzo-alert',
-        header: 'Could not create workout',
+        header: 'Could not create exercise',
         message: 'Please fill all of the fields.',
         buttons: ['Dismiss']
       });

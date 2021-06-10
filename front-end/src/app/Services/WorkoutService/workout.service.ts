@@ -53,9 +53,10 @@ export class WorkoutService {
       "sets": exercise.sets,
       "Posedescription": exercise.Posedescription,
       "restPeriod": exercise.restPeriod,
-      "difficulty": exercise.difficulty,
+      "difficulty": exercise.difficulty.toUpperCase(),
       "duratime": exercise.duratime
     };
+    console.log(body);
 
     return this.http.post(url, body).toPromise().then(data=>{
       return 200;

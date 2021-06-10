@@ -1,16 +1,16 @@
 export class Exercise {
 
-  private _title:string;
-  private _description:string;
-  private _repRange:string;
-  private _sets:number;
-  private _Posedescription:string;
-  private _restPeriod:number; //seconds
-  private _difficulty:string;
-  private _duratime:number; //seconds
+  private _title:String;
+  private _description:String;
+  private _repRange:String;
+  private _sets:Number;
+  private _Posedescription:String;
+  private _restPeriod:Number; //seconds
+  private _difficulty:String;
+  private _duratime:Number; //seconds
 
 
-  constructor(title: string, description: string, repRange: string, sets: number, Posedescription: string, restPeriod: number, difficulty: string, duratime: number) {
+  constructor(title: String, description: String, repRange: String, sets: Number, Posedescription: String, restPeriod: Number, difficulty: String, duratime: Number) {
     this._title = title;
     this._description = description;
     this._repRange = repRange;
@@ -22,67 +22,67 @@ export class Exercise {
   }
 
 
-  get title(): string {
+  get title(): String {
     return this._title;
   }
 
-  set title(value: string) {
+  set title(value: String) {
     this._title = value;
   }
 
-  get description(): string {
+  get description(): String {
     return this._description;
   }
 
-  set description(value: string) {
+  set description(value: String) {
     this._description = value;
   }
 
-  get repRange(): string {
+  get repRange(): String {
     return this._repRange;
   }
 
-  set repRange(value: string) {
+  set repRange(value: String) {
     this._repRange = value;
   }
 
-  get sets(): number {
+  get sets(): Number {
     return this._sets;
   }
 
-  set sets(value: number) {
+  set sets(value: Number) {
     this._sets = value;
   }
 
-  get Posedescription(): string {
+  get Posedescription(): String {
     return this._Posedescription;
   }
 
-  set Posedescription(value: string) {
+  set Posedescription(value: String) {
     this._Posedescription = value;
   }
 
-  get restPeriod(): number {
+  get restPeriod(): Number {
     return this._restPeriod;
   }
 
-  set restPeriod(value: number) {
+  set restPeriod(value: Number) {
     this._restPeriod = value;
   }
 
-  get difficulty(): string {
+  get difficulty(): String {
     return this._difficulty;
   }
 
-  set difficulty(value: string) {
+  set difficulty(value: String) {
     this._difficulty = value;
   }
 
-  get duratime(): number {
+  get duratime(): Number {
     return this._duratime;
   }
 
-  set duratime(value: number) {
+  set duratime(value: Number) {
     this._duratime = value;
   }
 }
