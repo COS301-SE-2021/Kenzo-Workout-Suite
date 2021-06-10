@@ -7,6 +7,7 @@ import {UserController} from "./user.controller";
 import {JwtModule} from "@nestjs/jwt";
 import {jwtConstants} from "./constants";
 import {JwtStrategy} from "./jwt.strategy";
+import {GoogleStrategy} from "./google.strategy";
 
 @Module({
   imports: [ PassportModule, JwtModule.register({
@@ -14,7 +15,7 @@ import {JwtStrategy} from "./jwt.strategy";
     signOptions: { expiresIn: '60s' },
   }),],
 
-  providers: [UserService, LocalStrategy,PrismaService,JwtStrategy],
+  providers: [UserService, LocalStrategy,PrismaService,JwtStrategy,GoogleStrategy],
   controllers: [UserController]
 })
 export class UserModule {}

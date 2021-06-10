@@ -60,6 +60,17 @@ export class UserService {
         })
     }
 
+    googleLogin(req) {
+        if (!req.user) {
+            return 'No user from google'
+        }
+
+        return {
+            message: 'User information from google',
+            user: req.user
+        }
+    }
+
     validateEmail(email:string){
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
