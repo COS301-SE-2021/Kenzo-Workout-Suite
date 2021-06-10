@@ -45,14 +45,16 @@ export class SignUpPage implements OnInit {
   }
 
   async signUp() {
-    if (this.accountType == "Planner")
-      this.url = "http://localhost:5500/user/signupPlanner";
-    if (this.accountType == "Client")
-      this.url = "http://localhost:5500/user/signupClient";
-
     if (this.password == this.confirmpassword) {
-      let status = await this.userService.attemptSignUp(this.firstName, this.lastName, this.email, this.password, this.url);
+      let status = await this.userService.attemptSignUp(this.firstName, this.lastName, this.email, this.password, this.accountType);
         if (status < 400 && status >=200){
+          const alert = await this.alertController.create({
+            cssClass: 'kenzo-alert',
+            header: 'Sign up successful',
+            message: 'Your account has been registered successfully.',
+            buttons: ['OK']
+          });
+            await this.presentAlert(alert);
             await this.route.navigate(['/sign-in']);
         }
         else if (status >= 400 && status < 500) {

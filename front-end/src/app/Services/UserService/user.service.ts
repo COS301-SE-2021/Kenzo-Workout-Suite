@@ -38,8 +38,8 @@ export class UserService {
       });
   }
 
-  async attemptSignUp(firstName: string, lastName: string, email: string, password: string, url: string): Promise<Number>{
-
+  async attemptSignUp(firstName: string, lastName: string, email: string, password: string, accountType: string): Promise<Number>{
+    let url = "";
     if (firstName == null) {
       firstName = "";
     }
@@ -52,6 +52,10 @@ export class UserService {
     if (password == null) {
       password = "";
     }
+    if (accountType == "Planner")
+      url = "http://localhost:5500/user/signupPlanner";
+    if (accountType == "Client")
+      url = "http://localhost:5500/user/signupClient";
 
     const body: Object = { //Object to be saved into DB
       "firstName": firstName,
