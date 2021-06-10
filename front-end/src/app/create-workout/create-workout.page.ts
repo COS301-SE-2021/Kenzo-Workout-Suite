@@ -16,13 +16,10 @@ export class CreateWorkoutPage implements OnInit {
   description: string="";
   title: string="";
 
-  alertGetter:any;
-
   constructor(private http:HttpClient,
               private route:Router,
               private workoutService:WorkoutService,
               public alertController:AlertController,) {
-    // this.alertGetter = new Alerts(alertController);
   }
 
   ngOnInit() {
@@ -34,14 +31,19 @@ export class CreateWorkoutPage implements OnInit {
 
     if (status < 400) {
       // Success State
-      //await this.presentAlert(this.alertGetter.WORKOUT_CREATED);
+      const alert = await this.alertController.create({
+        cssClass: 'kenzo-alert',
+        header: 'Workout Submitted',
+        buttons: ['Go Back']
+      });
+
+      await this.presentAlert(alert);
       this.route.navigate(['/your-workouts']).then(success=>{
         window.location.reload();}
       );
     }
     else if(status>=400 && status<500){
       // Invalid Input
-      // await this.presentAlert(this.alertGetter.CREATE_ERROR_WORKOUT);
       const alert = await this.alertController.create({
         cssClass: 'kenzo-alert',
         header: 'Could not create workout',
@@ -53,7 +55,6 @@ export class CreateWorkoutPage implements OnInit {
     }
     else{
       // Server Error
-      // await this.presentAlert(this.alertGetter.SERVER_ERROR);
       const alert = await this.alertController.create({
         cssClass: 'kenzo-alert',
         header: "Server isn't responding",

@@ -14,12 +14,11 @@ import {Alerts} from "../Models/alerts";
 export class SignInPage implements OnInit {
   email: string;
   password: string;
-  alertGetter:any;
+
   constructor(private http:HttpClient,
               private route:Router,
               public alertController:AlertController,
               private userService:UserService,) {
-      // this.alertGetter = new Alerts(this.alertController);
   }
 
   ngOnInit() {
@@ -36,7 +35,6 @@ export class SignInPage implements OnInit {
     }
     else if (status >= 400 && status < 500) {
       // Invalid Sign In
-      // await this.presentAlert(this.alertGetter.INCORRECT_DETAILS);
       const alert = await this.alertController.create({
         cssClass: 'kenzo-alert',
         header: 'Incorrect login',
@@ -47,7 +45,6 @@ export class SignInPage implements OnInit {
     }
     else {
       // Server Error
-      // await this.presentAlert(await this.alertGetter.SERVER_ERROR);
       const alert = await this.alertController.create({
         cssClass: 'kenzo-alert',
         header: "Server isn't responding",
