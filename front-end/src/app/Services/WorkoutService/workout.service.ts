@@ -29,4 +29,9 @@ export class WorkoutService {
       return error.status;
     });
   }
+
+  async attemptGetWorkouts() : Promise<any>{
+    const url: string = "http://localhost:5500/workout/getworkout"
+    return this.http.get(url, {responseType: 'json'}).toPromise();
+  }
 }

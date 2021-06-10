@@ -38,6 +38,14 @@ export class UserService {
       });
   }
 
+  /**
+   * Attempt to register a new user.
+   * @param firstName
+   * @param lastName
+   * @param email
+   * @param password
+   * @param accountType
+   */
   async attemptSignUp(firstName: string, lastName: string, email: string, password: string, accountType: string): Promise<Number>{
     let url = "";
     if (firstName == null) {
