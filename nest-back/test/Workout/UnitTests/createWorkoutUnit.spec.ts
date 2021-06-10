@@ -5,7 +5,7 @@ import {v4 as uuidv4 } from 'uuid';
 import {
     Workout,
     Exercise,
-    Planner,
+    User,
     Difficulty,
     Prisma
 } from '@prisma/client';
@@ -26,11 +26,11 @@ test('should create new workout ', async () => {
         workoutTitle: "postmanTest",
         workoutDescription: "postmanMoreTest",
         difficulty: Difficulty.EASY,
-        planner_Email: null
+        planner_Email: "null"
     }
     mockCtx.prisma.workout.create.mockResolvedValue(Workout);
 
-    await expect(workoutService.createWorkout(Workout.workoutTitle,Workout.workoutDescription, Workout.difficulty,ctx)).resolves.toEqual(
+    await expect(workoutService.createWorkout(Workout.workoutTitle,Workout.workoutDescription, Workout.difficulty, Workout.planner_Email,ctx)).resolves.toEqual(
         "Workout Created."
     )
 })
