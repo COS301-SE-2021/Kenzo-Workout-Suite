@@ -1,7 +1,7 @@
-import {Injectable, NotFoundException, PreconditionFailedException} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException, PreconditionFailedException} from '@nestjs/common';
 import {PrismaService} from "../Prisma/prisma.service";
 import { JwtService } from '@nestjs/jwt';
-import {Client} from "@prisma/client";
+import {User} from "@prisma/client";
 import * as bcrypt from 'bcrypt';
 import {Context} from "../../context";
 
@@ -17,7 +17,7 @@ export class UserService {
             return new NotFoundException("Invalid Email or Password")
         }
 
-        const user = await ctx.prisma.client.findUnique({
+        const user = await ctx.prisma.user.findUnique({
             where: {
                 email: username
             },
@@ -38,41 +38,80 @@ export class UserService {
     }
 
     async login(user: any) {
-        const payload = { email: user.email};
+        const payload = { userId: user.userId};
         return {
             access_token: this.jwtService.sign(payload),
         };
     }
 
-    async signUpClient(client:Client,ctx: Context) : Promise<any>{
+    async signUp(user:User,ctx: Context) : Promise<any>{
 
-        if (client==null)
+        if (user==null)
         {
             return new PreconditionFailedException("Invalid client object")
         }
 
-        const email=client.email.toLowerCase();
+        const email=user.email.toLowerCase();
 
         if (!this.validateEmail(email))
         {
             return new PreconditionFailedException("Invalid email address")
         }
 
-        if (!this.validatePassword(client.password)){
+        if (!this.validatePassword(user.password)){
             return new PreconditionFailedException("Invalid password")
         }
 
         const saltOrRounds = 10;
-        const hash = await bcrypt.hash(client.password, saltOrRounds);
+        const hash = await bcrypt.hash(user.password, saltOrRounds);
 
-        return await ctx.prisma.client.create({
+        const countEmail= await ctx.prisma.user.count({
+            where:{
+                email: user.email
+            }
+        })
+
+        if (countEmail===1)
+        {
+            return new BadRequestException("User with this email already exists")
+        }
+
+        const createdUser= await ctx.prisma.user.create({
             data: {
-                firstName: client.firstName,
-                lastName: client.lastName,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                userType:user.userType,
                 email: email,
                 password : hash
             },
         })
+
+        if (!createdUser)
+        {
+            return new BadRequestException("Could not create User")
+        }
+
+        return this.login(createdUser);
+    }
+
+    async findUserByUUID(userId: string,ctx: Context) : Promise<any>{
+
+        if (userId===null || userId==="")
+        {
+            return new BadRequestException("Null values cannot be passed in for userId")
+        }
+
+        const user = await ctx.prisma.user.findUnique({
+            where: {
+                userId: userId
+            },
+        })
+
+        if (!user){
+            return new NotFoundException("No user with such UUID")
+        }
+
+        return user;
     }
 
     googleLogin(req) {

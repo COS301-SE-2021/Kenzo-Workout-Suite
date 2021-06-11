@@ -5,7 +5,6 @@ import {v4 as uuidv4 } from 'uuid';
 import {
     Workout,
     Exercise,
-    Planner,
     Difficulty,
     Prisma
 } from '@prisma/client';
