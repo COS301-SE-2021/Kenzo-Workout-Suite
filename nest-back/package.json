@@ -45,7 +45,7 @@
   "devDependencies": {
     "@nestjs/cli": "^7.6.0",
     "@nestjs/schematics": "^7.3.0",
-    "@nestjs/testing": "^7.6.15",
+    "@nestjs/testing": "^7.6.17",
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.11",
     "@types/jest": "^26.0.22",
@@ -79,7 +79,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": "test",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"

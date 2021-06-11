@@ -4,6 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import {LocalAuthGuard} from "./local-auth.guard";
 import {JwtAuthGuard} from "./jwt-auth.guard";
 import {Client} from "@prisma/client";
+import {ActualPrisma} from "../../context";
 
 
 @Controller('user')
@@ -28,7 +29,7 @@ export class UserController {
     signUpClient(
         @Body('Client') client: Client,
     ) {
-        return this.userService.signUpClient(client);
+        return this.userService.signUpClient(client,ActualPrisma());
     }
 
     @Get('googleLogin')

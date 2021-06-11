@@ -1,31 +1,40 @@
-import {Injectable, PreconditionFailedException} from '@nestjs/common';
+import {Injectable, NotFoundException, PreconditionFailedException} from '@nestjs/common';
 import {PrismaService} from "../Prisma/prisma.service";
 import { JwtService } from '@nestjs/jwt';
 import {Client} from "@prisma/client";
 import * as bcrypt from 'bcrypt';
+import {Context} from "../../context";
 
 
 @Injectable()
 export class UserService {
-    constructor(private prisma: PrismaService, private jwtService: JwtService) {}
+    constructor(private jwtService: JwtService) {}
 
-    async validateUser(username: string, pass: string): Promise<any> {
-        const user = await this.findOne(username);
+    async validateUser(username: string, pass: string, ctx: Context): Promise<any> {
+
+        if (username==null || pass==null)
+        {
+            return new NotFoundException("Invalid Email or Password")
+        }
+
+        const user = await ctx.prisma.client.findUnique({
+            where: {
+                email: username
+            },
+        })
+
+        if (user==null)
+        {
+            return new NotFoundException("Invalid Email or Password")
+        }
+
         const isMatch = await bcrypt.compare(pass, user.password);
 
-        if (user && isMatch) {
+        if (isMatch) {
             const { password, ...result } = user;
             return result;
         }
         return null;
-    }
-
-    async findOne(email: string): Promise<any> {
-        return await this.prisma.client.findUnique({
-            where: {
-                email: email
-            },
-        })
     }
 
     async login(user: any) {
@@ -35,7 +44,13 @@ export class UserService {
         };
     }
 
-    async signUpClient(client:Client) : Promise<any>{
+    async signUpClient(client:Client,ctx: Context) : Promise<any>{
+
+        if (client==null)
+        {
+            return new PreconditionFailedException("Invalid client object")
+        }
+
         const email=client.email.toLowerCase();
 
         if (!this.validateEmail(email))
@@ -50,7 +65,7 @@ export class UserService {
         const saltOrRounds = 10;
         const hash = await bcrypt.hash(client.password, saltOrRounds);
 
-        return await this.prisma.client.create({
+        return await ctx.prisma.client.create({
             data: {
                 firstName: client.firstName,
                 lastName: client.lastName,
@@ -77,8 +92,8 @@ export class UserService {
 
     }
 
-    validatePassword(password) {
-        var re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+    validatePassword(password:string) {
+        const re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
         return re.test(password);
     }
 }

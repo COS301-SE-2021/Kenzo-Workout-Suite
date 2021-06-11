@@ -15,7 +15,7 @@ import {GoogleStrategy} from "./google.strategy";
     signOptions: { expiresIn: '60s' },
   }),],
 
-  providers: [UserService, LocalStrategy,PrismaService,JwtStrategy,GoogleStrategy],
+  providers: [UserService, LocalStrategy,JwtStrategy,GoogleStrategy],
   controllers: [UserController]
 })
 export class UserModule {}
