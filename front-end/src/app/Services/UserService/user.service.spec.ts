@@ -26,7 +26,7 @@ describe('UserServiceService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should sign in user successfully',async () => {
+  it('should sign in user successfully and return a 200 status',async () => {
 
     let respStatus = service.attemptSignIn("luca@me.com", "Test123!");
 
@@ -39,15 +39,47 @@ describe('UserServiceService', () => {
       statusText: 'Authorisation successful',
       body: {"message": "Planner Authentication successful"}
     });
-    // let error = new HttpErrorResponse({
-    //   status: 400,
-    //   statusText: "Bad request"
-    // });
-    //
-    // // req.flush(null,error);
     req.flush(resp);
 
     let status = await respStatus;
     expect(status).toEqual(200);
+  });
+
+  it('should fail to sign in user because credentials are incorrect and return a 400 status',async () => {
+
+    let respStatus = service.attemptSignIn("luca@me.com", "Test123!");
+
+    const req = httpMock.expectOne("http://localhost:5500/user/signIn");
+    expect(req.request.method).toEqual('POST');
+    expect(req.request.body).toEqual({"email": "luca@me.com", "password": "Test123!"});
+
+    let error = new HttpErrorResponse({
+      status: 400,
+      statusText: "Bad request"
+    });
+
+    req.flush(null,error);
+
+    let status = await respStatus;
+    expect(status).toEqual(400);
+  });
+
+  it('should fail to sign in user because server is not responding and return a 500 status',async () => {
+
+    let respStatus = service.attemptSignIn("luca@me.com", "Test123!");
+
+    const req = httpMock.expectOne("http://localhost:5500/user/signIn");
+    expect(req.request.method).toEqual('POST');
+    expect(req.request.body).toEqual({"email": "luca@me.com", "password": "Test123!"});
+
+    let error = new HttpErrorResponse({
+      status: 500,
+      statusText: "Bad request"
+    });
+
+    req.flush(null,error);
+
+    let status = await respStatus;
+    expect(status).toEqual(500);
   });
 });
