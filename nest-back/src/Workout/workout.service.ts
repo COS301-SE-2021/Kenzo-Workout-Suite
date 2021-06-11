@@ -1,9 +1,11 @@
 import {HttpException, HttpStatus, Injectable, NotFoundException} from "@nestjs/common";
 import { Context } from "../../context";
+import {v4 as uuidv4 } from 'uuid';
 
 import {
     Workout,
     Exercise,
+    User,
     Difficulty,
     Prisma
 } from '@prisma/client';
@@ -64,38 +66,40 @@ export class WorkoutService{
     }
 
     async createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,difficulty:Difficulty,duratime:number, ctx: Context){
-
+        const Exercise = {
+            title: title,
+            description: description,
+            repRange: repRange,
+            sets: sets,
+            Posedescription: poseDescription,
+            restPeriod: restPeriod,
+            difficulty: difficulty,
+            duratime: duratime
+        }
         if (title=="" || description=="" || repRange=="" || sets==0 || poseDescription=="" || restPeriod==0  || difficulty==null  || duratime==0 )
         {
             throw new NotFoundException("Parameters can not be left empty.");
         }
         await ctx.prisma.exercise.create({
-            data:{
-                title: title,
-                description: description,
-                repRange: repRange,
-                sets: sets,
-                Posedescription: poseDescription,
-                restPeriod: restPeriod,
-                difficulty: difficulty,
-                duratime: duratime
-            }
+            data:Exercise
         })
         return("Exercise created.");
 
     }
 
-    async createWorkout(workoutTitle: string, workoutDescription: string, difficulty:Difficulty, ctx: Context) {
+    async createWorkout(workoutTitle: string, workoutDescription: string, difficulty:Difficulty,planner_Email :string, ctx: Context) {
+        const Workout = {
+            workoutTitle: workoutTitle,
+            workoutDescription: workoutDescription,
+            difficulty: difficulty,
+            planner_Email: planner_Email
+        }
         if (workoutTitle=="" || workoutDescription=="" || difficulty==null )
         {
             throw new NotFoundException("Parameters can not be left empty.");
         }
         await ctx.prisma.workout.create({
-            data:{
-                workoutTitle: workoutTitle,
-                workoutDescription: workoutDescription,
-                difficulty: difficulty
-            }
+            data:Workout
         })
         return("Workout Created.");
 
