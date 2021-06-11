@@ -4,7 +4,6 @@ import {Router} from "@angular/router";
 import {AlertController} from "@ionic/angular";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
 import {Workout} from "../Models/workout";
-import {Alerts} from "../Models/alerts";
 
 @Component({
   selector: 'app-create-workout',

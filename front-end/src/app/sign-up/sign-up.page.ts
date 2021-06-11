@@ -3,7 +3,6 @@ import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {AlertController} from "@ionic/angular";
 import {UserService} from "../Services/UserService/user.service";
-import {Alerts} from "../Models/alerts";
 
 @Component({
   selector: 'app-sign-up',

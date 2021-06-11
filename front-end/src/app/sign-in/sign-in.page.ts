@@ -4,7 +4,6 @@ import {Router} from "@angular/router";
 import {ExceptionCode} from "@capacitor/core";
 import {AlertController} from "@ionic/angular";
 import {UserService} from "../Services/UserService/user.service";
-import {Alerts} from "../Models/alerts";
 
 @Component({
   selector: 'app-sign-in',
