@@ -42,14 +42,14 @@ export class WorkoutService{
             });
 
             if(this.isEmptyObject(workouts)){//if JSON object is empty, send error code
-                throw new NotFoundException();
+                throw new NotFoundException("No workouts were found in the database.");
             }
             else{
                 return workouts;
             }
         }
         catch(err){
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException("Internal server error.");
         }
     }
 
@@ -69,14 +69,14 @@ export class WorkoutService{
             });
 
             if(this.isEmptyObject(workouts)){//if JSON object is empty, send error code
-                throw new NotFoundException();
+                throw new NotFoundException("No workouts were found in the database with the specified title.");
             }
             else{
                 return workouts;
             }
         }
         catch(err){
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException("Internal server error.");
         }
     }
 
@@ -100,20 +100,20 @@ export class WorkoutService{
             });
 
             if(this.isEmptyObject(exercise)){//if JSON object is empty, send error code
-                throw new NotFoundException();
+                throw new NotFoundException("No exercises were found in the database with the specified title.");
             }
             else{
                 return exercise;
             }
         }
         catch(err){
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException("Internal server error.");
         }
     }
 
     async getWorkoutByPlanner(email: string){
         if(!this.validateEmail(email)){//first check if email passed is valid
-           throw new BadRequestException();
+           throw new BadRequestException("Invalid email.");
         }
         else {
             try {
@@ -131,12 +131,12 @@ export class WorkoutService{
                 });
 
                 if (this.isEmptyObject(workouts)) {//if JSON object is empty, send error code
-                    throw new NotFoundException();
+                    throw new NotFoundException("No workouts were found in the database with the specified planner.");
                 } else {
                     return workouts;
                 }
             } catch (err) {
-                throw new InternalServerErrorException();
+                throw new InternalServerErrorException("Internal server error.");
             }
         }
     }
