@@ -14,7 +14,7 @@ export class UserService {
 
         if (username==null || pass==null)
         {
-            return new NotFoundException("Invalid Email or Password")
+            throw new NotFoundException("Invalid Email or Password")
         }
 
         const user = await ctx.prisma.user.findUnique({
@@ -25,10 +25,15 @@ export class UserService {
 
         if (user==null)
         {
-            return new NotFoundException("Invalid Email or Password")
+            throw new NotFoundException("Invalid Email or Password")
         }
 
         const isMatch = await bcrypt.compare(pass, user.password);
+
+        if (!isMatch)
+        {
+            throw new NotFoundException("Invalid Email or Password")
+        }
 
         if (isMatch) {
             const { password, ...result } = user;
@@ -98,7 +103,7 @@ export class UserService {
 
         if (userId===null || userId==="")
         {
-            return new BadRequestException("Null values cannot be passed in for userId")
+            throw new BadRequestException("Null values cannot be passed in for userId")
         }
 
         const user = await ctx.prisma.user.findUnique({
@@ -108,7 +113,7 @@ export class UserService {
         })
 
         if (!user){
-            return new NotFoundException("No user with such UUID")
+            throw new NotFoundException("No user with such UUID")
         }
 
         return user;
