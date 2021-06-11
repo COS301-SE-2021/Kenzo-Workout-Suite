@@ -112,7 +112,7 @@ export class WorkoutService{
     }
 
     async getWorkoutByPlanner(email: string){
-        if(this.validateEmail(email)==false){//first check if email passed is valid
+        if(!this.validateEmail(email)){//first check if email passed is valid
            throw new BadRequestException();
         }
         else {
