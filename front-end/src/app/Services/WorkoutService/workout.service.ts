@@ -55,8 +55,7 @@ export class WorkoutService {
       "restPeriod": exercise.restPeriod,
       "difficulty": exercise.difficulty.toUpperCase(),
       "duratime": exercise.duratime
-    };
-    console.log(body);
+    };;
 
     return this.http.post(url, body).toPromise().then(data=>{
       return 200;
@@ -66,8 +65,8 @@ export class WorkoutService {
     });
   }
 
-  async attemptGetWorkouts() : Promise<any>{
-    const url: string = "http://localhost:5500/workout/getworkout"
+  async attemptGetWorkouts() : Promise<object>{
+    const url: string = "http://localhost:5500/workout/getworkout";
     return this.http.get(url, {responseType: 'json'}).toPromise();
   }
 }
