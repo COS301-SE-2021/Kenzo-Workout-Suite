@@ -20,7 +20,7 @@ beforeEach(() => {
     ctx = (mockCtx as unknown) as Context
 })
 
-test('Should recieve valid information about workout with corresponding title', async () => {
+test('Should receive valid information about workout with corresponding title', async () => {
     const workout = [{
         workoutID: uuidv4(),
         workoutTitle: "test",
@@ -30,11 +30,11 @@ test('Should recieve valid information about workout with corresponding title', 
     }]
     mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
 
-    const response=await workoutService.getWorkoutByTitle("test")
+    const response=await workoutService.getWorkoutByTitle("test",ctx)
 
     expect(response).toBe(workout);
 })
 
-test('Should not recieve valid information about workout with corresponding title as workout does not exist', async () => {
-    await expect(workoutService.getWorkoutByTitle("")).rejects.toThrow("No workouts were found in the database with the specified title.")
+test('Should not receive valid information about workout with corresponding title as workout does not exist', async () => {
+    expect(workoutService.getWorkoutByTitle("",ctx)).rejects.toThrow("No workouts were found in the database with the specified title.")
 })
