@@ -13,6 +13,7 @@ import {
     Exercise,
     Prisma
 } from '@prisma/client';
+import {Context} from "../../context";
 
 @Injectable()
 export class WorkoutService{
@@ -29,7 +30,7 @@ export class WorkoutService{
         return !Object.keys(obj).length;
     }
 
-    async getWorkouts(){
+    async getWorkouts(ctx: Context): Promise<any>{
         try{
             const workouts = await this.prisma.workout.findMany({//search for workouts that meet the requirement
                 select: {
@@ -53,7 +54,7 @@ export class WorkoutService{
         }
     }
 
-    async getWorkoutByTitle(title: string){
+    async getWorkoutByTitle(title: string, ctx: Context): Promise<any>{
         try{
             const workouts = await this.prisma.workout.findMany({//search for workouts that meet the requirement
                 where: {
@@ -80,7 +81,7 @@ export class WorkoutService{
         }
     }
 
-    async getExerciseByTitle(title: string){
+    async getExerciseByTitle(title: string, ctx: Context): Promise<any>{
         try{
             const exercise = await this.prisma.exercise.findMany({//search for exercises that meet the requirement
                 where: {
@@ -111,7 +112,7 @@ export class WorkoutService{
         }
     }
 
-    async getWorkoutByPlanner(email: string){
+    async getWorkoutByPlanner(email: string, ctx: Context): Promise<any>{
         if(!this.validateEmail(email)){//first check if email passed is valid
            throw new BadRequestException("Invalid email.");
         }
