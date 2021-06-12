@@ -1,5 +1,5 @@
 import {Body, Controller, Get, Param, Post, Put} from '@nestjs/common';
-import {WorkoutService} from "./workoutService";
+import {WorkoutService} from "./workout.service";
 import {
     ApiCreatedResponse, ApiHeader,
     ApiInternalServerErrorResponse,
@@ -7,6 +7,7 @@ import {
     ApiOkResponse, ApiParam, ApiQuery,
     ApiResponse
 } from "@nestjs/swagger";
+import {ActualPrisma} from "../../context";
 
 @Controller('workout')
 export class WorkoutController {
@@ -26,7 +27,7 @@ export class WorkoutController {
     })
     getWorkouts(
     ) {
-        return this.workoutService.getWorkouts();
+        return this.workoutService.getWorkouts(ActualPrisma());
     }
 
     @Get('getWorkoutByTitle/:title')
@@ -42,7 +43,7 @@ export class WorkoutController {
     getWorkoutByTitle(
         @Param('title') title: string,
     ) {
-        return this.workoutService.getWorkoutByTitle(title);
+        return this.workoutService.getWorkoutByTitle(title,ActualPrisma());
     }
 
     @Get('getExerciseByTitle/:title')
@@ -58,7 +59,7 @@ export class WorkoutController {
     getExerciseByTitle(
         @Param('title') title: string,
     ) {
-        return this.workoutService.getExerciseByTitle(title);
+        return this.workoutService.getExerciseByTitle(title,ActualPrisma());
     }
 
     @Get('getWorkoutByPlanner/:email')
@@ -74,7 +75,7 @@ export class WorkoutController {
     getWorkoutByPlanner(
         @Param('email') email: string,
     ) {
-        return this.workoutService.getWorkoutByPlanner(email);
+        return this.workoutService.getWorkoutByPlanner(email,ActualPrisma());
     }
 
     @Post('createExercise')
