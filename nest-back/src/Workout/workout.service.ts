@@ -27,12 +27,12 @@ export class WorkoutService{
     }
 
     isEmptyObject(obj) {//function to check whether a JSON object is empty or not
-        return !Object.keys(obj).length;
+        return (obj === null);
     }
 
-    async getWorkouts(ctx: Context): Promise<any>{
+    async getWorkouts(ctx: Context): Promise<any> {
         try{
-            const workouts = await this.prisma.workout.findMany({//search for workouts that meet the requirement
+            const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
                 select: {
                     workoutTitle: true,
                     workoutDescription: true,
@@ -50,13 +50,13 @@ export class WorkoutService{
             }
         }
         catch(err){
-            throw new InternalServerErrorException("Internal server error.");
+            throw err;
         }
     }
 
-    async getWorkoutByTitle(title: string, ctx: Context): Promise<any>{
+    async getWorkoutByTitle(title: string, ctx: Context): Promise<any> {
         try{
-            const workouts = await this.prisma.workout.findMany({//search for workouts that meet the requirement
+            const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
                 where: {
                     workoutTitle: title
                 },
@@ -77,13 +77,13 @@ export class WorkoutService{
             }
         }
         catch(err){
-            throw new InternalServerErrorException("Internal server error.");
+            throw err;
         }
     }
 
-    async getExerciseByTitle(title: string, ctx: Context): Promise<any>{
+    async getExerciseByTitle(title: string, ctx: Context): Promise<any> {
         try{
-            const exercise = await this.prisma.exercise.findMany({//search for exercises that meet the requirement
+            const exercise = await ctx.prisma.exercise.findMany({//search for exercises that meet the requirement
                 where: {
                     title : title
                 },
@@ -108,17 +108,17 @@ export class WorkoutService{
             }
         }
         catch(err){
-            throw new InternalServerErrorException("Internal server error.");
+            throw err;
         }
     }
 
-    async getWorkoutByPlanner(email: string, ctx: Context): Promise<any>{
+    async getWorkoutByPlanner(email: string, ctx: Context): Promise<any> {
         if(!this.validateEmail(email)){//first check if email passed is valid
             throw new BadRequestException("Invalid email.");
         }
         else {
             try {
-                const workouts = await this.prisma.workout.findMany({//search for workouts that meet the requirement
+                const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
                     where: {
                         planner_Email: email
                     },
@@ -137,7 +137,7 @@ export class WorkoutService{
                     return workouts;
                 }
             } catch (err) {
-                throw new InternalServerErrorException("Internal server error.");
+                throw err;
             }
         }
     }
