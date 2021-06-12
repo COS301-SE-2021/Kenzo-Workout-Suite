@@ -1,23 +1,24 @@
-import {HttpException, HttpStatus, Injectable, NotFoundException} from "@nestjs/common";
-import { Context } from "../../context";
-import {v4 as uuidv4 } from 'uuid';
+import {
+    BadRequestException,
+    HttpException,
+    HttpStatus,
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException
+} from "@nestjs/common";
+import { PrismaService } from "../Prisma/prisma.service";
 
 import {
     Workout,
     Exercise,
-    User,
-    Difficulty,
     Prisma
 } from '@prisma/client';
-
-
-
+import {Context} from "../../context";
 
 @Injectable()
 export class WorkoutService{
-    //private static prisma: PrismaService;
 
-    constructor() {
+    constructor(private prisma: PrismaService) {
     }
 
     validateEmail(email) {//function to validate an email
@@ -29,80 +30,124 @@ export class WorkoutService{
         return !Object.keys(obj).length;
     }
 
-    // async getWorkouts(){
-    //     try{
-    //         const workouts = await this.prisma.workout.findMany({//search for workouts that meet the requirement
-    //             select: {
-    //                 workoutTitle: true,
-    //                 workoutDescription: true,
-    //                 exercises: true,
-    //                 difficulty: true,
-    //                 planner_Email: true
-    //             }
-    //         });
-    //
-    //         if(this.isEmptyObject(workouts)){//if JSON object is empty, send error code
-    //             throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
-    //         }
-    //         else{
-    //             return workouts;
-    //         }
-    //     }
-    //     catch(err){
-    //         throw new HttpException(err, HttpStatus.SERVICE_UNAVAILABLE);
-    //     }
-    // }
+    async getWorkouts(ctx: Context): Promise<any>{
+        try{
+            const workouts = await this.prisma.workout.findMany({//search for workouts that meet the requirement
+                select: {
+                    workoutTitle: true,
+                    workoutDescription: true,
+                    exercises: true,
+                    difficulty: true,
+                    planner_Email: true
+                }
+            });
 
-    getWorkoutByTitle(title: string){
-
-    }
-
-    getExerciseByTitle(title: string){
-
-    }
-
-    getWorkoutByPlanner(email: string){
-
-    }
-
-    async createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,difficulty:Difficulty,duratime:number, ctx: Context){
-        const Exercise = {
-            title: title,
-            description: description,
-            repRange: repRange,
-            sets: sets,
-            Posedescription: poseDescription,
-            restPeriod: restPeriod,
-            difficulty: difficulty,
-            duratime: duratime
+            if(this.isEmptyObject(workouts)){//if JSON object is empty, send error code
+                throw new NotFoundException("No workouts were found in the database.");
+            }
+            else{
+                return workouts;
+            }
         }
-        if (title=="" || description=="" || repRange=="" || sets==0 || poseDescription=="" || restPeriod==0  || difficulty==null  || duratime==0 )
-        {
-            throw new NotFoundException("Parameters can not be left empty.");
+        catch(err){
+            throw new InternalServerErrorException("Internal server error.");
         }
-        await ctx.prisma.exercise.create({
-            data:Exercise
-        })
-        return("Exercise created.");
+    }
+
+    async getWorkoutByTitle(title: string, ctx: Context): Promise<any>{
+        try{
+            const workouts = await this.prisma.workout.findMany({//search for workouts that meet the requirement
+                where: {
+                    workoutTitle: title
+                },
+                select: {
+                    workoutTitle: true,
+                    workoutDescription: true,
+                    exercises: true,
+                    difficulty: true,
+                    planner_Email: true
+                }
+            });
+
+            if(this.isEmptyObject(workouts)){//if JSON object is empty, send error code
+                throw new NotFoundException("No workouts were found in the database with the specified title.");
+            }
+            else{
+                return workouts;
+            }
+        }
+        catch(err){
+            throw new InternalServerErrorException("Internal server error.");
+        }
+    }
+
+    async getExerciseByTitle(title: string, ctx: Context): Promise<any>{
+        try{
+            const exercise = await this.prisma.exercise.findMany({//search for exercises that meet the requirement
+                where: {
+                    title : title
+                },
+                select: {
+                    title: true,
+                    description: true,
+                    repRange: true,
+                    sets: true,
+                    Posedescription: true,
+                    restPeriod: true,
+                    difficulty: true,
+                    duratime: true,
+                    workoutWorkoutID: true
+                }
+            });
+
+            if(this.isEmptyObject(exercise)){//if JSON object is empty, send error code
+                throw new NotFoundException("No exercises were found in the database with the specified title.");
+            }
+            else{
+                return exercise;
+            }
+        }
+        catch(err){
+            throw new InternalServerErrorException("Internal server error.");
+        }
+    }
+
+    async getWorkoutByPlanner(email: string, ctx: Context): Promise<any>{
+        if(!this.validateEmail(email)){//first check if email passed is valid
+            throw new BadRequestException("Invalid email.");
+        }
+        else {
+            try {
+                const workouts = await this.prisma.workout.findMany({//search for workouts that meet the requirement
+                    where: {
+                        planner_Email: email
+                    },
+                    select: {
+                        workoutTitle: true,
+                        workoutDescription: true,
+                        exercises: true,
+                        difficulty: true,
+                        planner_Email: true
+                    }
+                });
+
+                if (this.isEmptyObject(workouts)) {//if JSON object is empty, send error code
+                    throw new NotFoundException("No workouts were found in the database with the specified planner.");
+                } else {
+                    return workouts;
+                }
+            } catch (err) {
+                throw new InternalServerErrorException("Internal server error.");
+            }
+        }
+    }
+
+    createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,difficulty:string,duratime:number){
 
     }
 
-    async createWorkout(workoutTitle: string, workoutDescription: string, difficulty:Difficulty,planner_Email :string, ctx: Context) {
-        const Workout = {
-            workoutTitle: workoutTitle,
-            workoutDescription: workoutDescription,
-            difficulty: difficulty,
-            planner_Email: planner_Email
-        }
-        if (workoutTitle=="" || workoutDescription=="" || difficulty==null )
-        {
-            throw new NotFoundException("Parameters can not be left empty.");
-        }
-        await ctx.prisma.workout.create({
-            data:Workout
-        })
-        return("Workout Created.");
+    createWorkout(workoutTitle: string, workoutDescription: string, difficulty: string){
 
     }
+
 }
-
