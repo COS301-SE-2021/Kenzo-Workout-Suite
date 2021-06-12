@@ -37,6 +37,7 @@ export class SignInPage implements OnInit {
     if (status < 400) {
       // Success State
       await this.route.navigate(['/your-workouts']);
+      return 200;
     }
     else if (status >= 400 && status < 500) {
       // Invalid Sign In
@@ -47,6 +48,7 @@ export class SignInPage implements OnInit {
         buttons: ['OK']
       });
       await this.presentAlert(alert);
+      throw new Error("User credentials are incorrect.");
     }
     else {
       // Server Error
@@ -57,6 +59,7 @@ export class SignInPage implements OnInit {
         buttons: ['Dismiss']
       });
       await this.presentAlert(alert);
+      throw new Error("Server is not responding.");
     }
   }
 

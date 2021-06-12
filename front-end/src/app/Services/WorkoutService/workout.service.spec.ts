@@ -273,7 +273,7 @@ describe('WorkoutService', () => {
   /**
    * Getting the workouts with no workouts in the database
    */
-  it('it should fail to get all workouts because non exist in the database', async ()=>{
+  it('should fail to get all workouts because none exist in the database', async ()=>{
     let respStatus = service.attemptGetWorkouts();
 
     const req = httpMock.expectOne("http://localhost:5500/workout/getworkout");
