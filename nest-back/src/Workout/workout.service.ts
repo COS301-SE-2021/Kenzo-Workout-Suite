@@ -26,10 +26,6 @@ export class WorkoutService{
         return re.test(String(email).toLowerCase());
     }
 
-    isEmptyObject(obj) {//function to check whether a JSON object is empty or not
-        return (obj === null);
-    }
-
     async getWorkouts(ctx: Context): Promise<any> {
         try{
             const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
@@ -42,7 +38,7 @@ export class WorkoutService{
                 }
             });
 
-            if(this.isEmptyObject(workouts)){//if JSON object is empty, send error code
+            if(workouts==null){//if JSON object is empty, send error code
                 throw new NotFoundException("No workouts were found in the database.");
             }
             else{
@@ -69,7 +65,7 @@ export class WorkoutService{
                 }
             });
 
-            if(this.isEmptyObject(workouts)){//if JSON object is empty, send error code
+            if(workouts==null){//if JSON object is empty, send error code
                 throw new NotFoundException("No workouts were found in the database with the specified title.");
             }
             else{
@@ -100,7 +96,7 @@ export class WorkoutService{
                 }
             });
 
-            if(this.isEmptyObject(exercise)){//if JSON object is empty, send error code
+            if(exercise==null){//if JSON object is empty, send error code
                 throw new NotFoundException("No exercises were found in the database with the specified title.");
             }
             else{
@@ -130,8 +126,7 @@ export class WorkoutService{
                         planner_Email: true
                     }
                 });
-
-                if (this.isEmptyObject(workouts)) {//if JSON object is empty, send error code
+                if (workouts==null) {//if JSON object is empty, send error code
                     throw new NotFoundException("No workouts were found in the database with the specified planner.");
                 } else {
                     return workouts;
