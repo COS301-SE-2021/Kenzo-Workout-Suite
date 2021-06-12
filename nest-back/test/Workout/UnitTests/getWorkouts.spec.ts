@@ -32,7 +32,7 @@ test('Should receive valid information about all workouts', async () => {
     }]
     mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
 
-    const response=await workoutService.getWorkouts()
+    const response=await workoutService.getWorkouts(ctx)
 
     expect(response).toBe(workout);
 })
