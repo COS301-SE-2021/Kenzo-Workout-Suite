@@ -56,7 +56,6 @@ export class WorkoutService {
       "difficulty": exercise.difficulty.toUpperCase(),
       "duratime": exercise.duratime
     };
-    console.log(body);
 
     return this.http.post(url, body).toPromise().then(data=>{
       return 200;
