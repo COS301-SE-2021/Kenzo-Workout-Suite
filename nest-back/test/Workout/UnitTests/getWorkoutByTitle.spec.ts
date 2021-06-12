@@ -36,5 +36,5 @@ test('Should receive valid information about workout with corresponding title', 
 })
 
 test('Should not receive valid information about workout with corresponding title as workout does not exist', async () => {
-    expect(workoutService.getWorkoutByTitle("",ctx)).rejects.toThrow("No workouts were found in the database with the specified title.")
+    await expect(workoutService.getWorkoutByTitle("",ctx)).rejects.toThrow("No workouts were found in the database with the specified title.")
 })
