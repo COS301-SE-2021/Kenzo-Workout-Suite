@@ -2,8 +2,6 @@ import { MockContext, Context, createMockContext } from "../../../context";
 import {UserService} from "../../../src/User/user.service";
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import {userType} from "@prisma/client";
-import {v4 as uuidv4 } from 'uuid';
 
 let mockCtx: MockContext
 let ctx: Context
