@@ -32,9 +32,10 @@ describe('SignInPage', () => {
     expect(component).toBeTruthy();
   });
 
-  // Sign In Tests
+  // Sign In Unit Tests
   it('should, given an incorrect email and password, fail to sign in an user.', async () => {
     spyOn(service, 'attemptSignIn').and.resolveTo(400);
+    spyOn(alertController, "create").and.stub();
     spyOn(component, "presentAlert").and.stub();
     await component.signIn().catch(error=>{
       expect(error).toEqual(new Error('User credentials are incorrect.'));
@@ -42,6 +43,7 @@ describe('SignInPage', () => {
   });
   it('should fail to sign in an user as server is not responding.', async () => {
     spyOn(service, 'attemptSignIn').and.resolveTo(500);
+    spyOn(alertController, "create").and.stub();
     spyOn(component, "presentAlert").and.stub();
     await component.signIn().catch(error=>{
       expect(error).toEqual(new Error('Server is not responding.'));

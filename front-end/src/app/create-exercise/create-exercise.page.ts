@@ -53,8 +53,9 @@ export class CreateExercisePage implements OnInit {
 
       await this.presentAlert(alert);
       this.route.navigate(['/your-workouts']).then(success=>{
-        window.location.reload();}
+        this.reloadWindow();}
       );
+      return 200;
     }
     else if(status>=400 && status<500){
       // Invalid Input
@@ -66,6 +67,7 @@ export class CreateExercisePage implements OnInit {
       });
 
       await this.presentAlert(alert);
+      throw new Error("Data is invalid.");
     }
     else{
       // Server Error
@@ -76,6 +78,7 @@ export class CreateExercisePage implements OnInit {
         buttons: ['Dismiss']
       });
       await this.presentAlert(alert);
+      throw new Error("Server is not responding.");
     }
   }
 
@@ -86,5 +89,9 @@ export class CreateExercisePage implements OnInit {
   async presentAlert(alert:any) {
     await alert.present();
     await alert.onDidDismiss();
+  }
+
+  reloadWindow(){
+    window.location.reload();
   }
 }
