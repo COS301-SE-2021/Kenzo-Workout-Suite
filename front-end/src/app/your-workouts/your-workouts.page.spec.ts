@@ -38,6 +38,7 @@ describe('YourWorkoutsPage', () => {
 
   it('should, given an empty database, fail to obtain data.', async () => {
     spyOn(service, 'attemptGetWorkouts').and.resolveTo({"message": "No workouts obtained"});
+    spyOn(alertController, "create").and.stub();
     spyOn(component, "presentAlert").and.stub();
     await component.LoadWorkouts().catch(error=>{
       expect(error).toEqual(new Error('Workouts do not exist.'));
@@ -46,6 +47,7 @@ describe('YourWorkoutsPage', () => {
 
   it('should fail to get the workouts as server is not responding.', async () => {
     spyOn(service, 'attemptGetWorkouts').and.resolveTo(500);
+    spyOn(alertController, "create").and.stub();
     spyOn(component, "presentAlert").and.stub();
     await component.LoadWorkouts().catch(error=>{
       expect(error).toEqual(new Error('Server is not responding.'));

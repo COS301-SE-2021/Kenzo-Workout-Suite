@@ -36,6 +36,7 @@ describe('SignUpPage', () => {
 
   it('should, given an incorrect email and password, fail to sign up an account.', async () => {
     spyOn(service, 'attemptSignUp').and.resolveTo(400);
+    spyOn(alertController, "create").and.stub();
     spyOn(component, "presentAlert").and.stub();
     await component.signUp().catch(error=>{
       expect(error).toEqual(new Error('User credentials are incorrect.'));
@@ -44,6 +45,7 @@ describe('SignUpPage', () => {
 
   it('should fail to sign up an account as server is not responding.', async () => {
     spyOn(service, 'attemptSignUp').and.resolveTo(500);
+    spyOn(alertController, "create").and.stub();
     spyOn(component, "presentAlert").and.stub();
     await component.signUp().catch(error=>{
       expect(error).toEqual(new Error('Server is not responding.'));
