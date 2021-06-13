@@ -23,18 +23,13 @@ beforeEach(() => {
 })
 
 test('Test, Null values passed into findUserByUUID', async () => {
-    // const response=await userService.findUserByUUID("",ctx)
-
     await expect(userService.findUserByUUID("",ctx)).rejects.toThrow("Null values cannot be passed in for userId")
-
 })
 
 test('Test, Null user returned by mock prisma client', async () => {
 
     const userUUID=uuidv4();
-
     mockCtx.prisma.user.findUnique.mockResolvedValue(null)
-
     await expect(userService.findUserByUUID(userUUID,ctx)).rejects.toThrow("No user with such UUID")
 
 })
@@ -53,11 +48,20 @@ test('Test, Valid user returned by mock prisma service', async () => {
         dateOfBirth: null
     }
 
+    const expectedReturn={
+        userId:uuidv4,
+        email: "test@gmail.com",
+        firstName: "test",
+        lastName: "tester",
+        userType: userType.PLANNER,
+        dateOfBirth: null
+    }
+
     mockCtx.prisma.user.findUnique.mockResolvedValue(myUser)
 
     const response=await userService.findUserByUUID(userUUID,ctx)
 
-    expect(response).toBe(myUser);
+    expect(response).toStrictEqual(expectedReturn);
 })
 
 

@@ -20,10 +20,10 @@ export class UserController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('protected')
+    @Get('getUserDetails')
     doSomething(@Request() req){
         console.log(req.user);
-        return req.user;
+        return this.userService.findUserByUUID(req.user.userId,ActualPrisma())
     }
 
     @Post('signUp')

@@ -66,6 +66,7 @@ export class WorkoutService{
     }
 
     async createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,difficulty:Difficulty,duratime:number, ctx: Context){
+
         const Exercise = {
             title: title,
             description: description,
