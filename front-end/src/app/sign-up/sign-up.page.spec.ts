@@ -32,7 +32,7 @@ describe('SignUpPage', () => {
     expect(component).toBeTruthy();
   });
 
-  //Sign up nterface testing
+  //Sign up Interface Unit Testing
 
   it('should, given an incorrect email and password, fail to sign up an account.', async () => {
     spyOn(service, 'attemptSignUp').and.resolveTo(400);
