@@ -290,5 +290,18 @@ describe('WorkoutService', () => {
     expect(StatusValue).toEqual(404);
   });
 
+  it("should fail to obtain the workouts because server does not respond and returns status 500", async () => {
+    let respStatus = service.attemptGetWorkouts();
+    const req = httpMock.expectOne("http://localhost:5500/workout/getworkout");
+    expect(req.request.method).toEqual('GET');
 
+    let resp = new HttpErrorResponse({
+      status: 500,
+      statusText: "Server not responding."
+    });
+    req.flush(null,resp);
+    let status = await respStatus;
+    let StatusValue = <number>status['status'];
+    expect(StatusValue).toEqual(500);
+  });
 });

@@ -55,6 +55,7 @@ export class SignUpPage implements OnInit {
           });
             await this.presentAlert(alert);
             await this.route.navigate(['/sign-in']);
+            return 200;
         }
         else if (status >= 400 && status < 500) {
           //Invalid entry or already existent client email

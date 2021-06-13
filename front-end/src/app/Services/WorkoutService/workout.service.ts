@@ -65,8 +65,13 @@ export class WorkoutService {
     });
   }
 
-  async attemptGetWorkouts() : Promise<object>{
+  async attemptGetWorkouts() : Promise<any>{
     const url: string = "http://localhost:5500/workout/getworkout";
-    return this.http.get(url, {responseType: 'json'}).toPromise();
+    let value = this.http.get(url).toPromise().then(data=>{
+      return data
+    }).catch(err=>{
+      return err;
+    });
+    return value;
   }
 }
