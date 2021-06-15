@@ -9,6 +9,7 @@ import {
     Difficulty,
     Prisma
 } from '@prisma/client';
+import { jsPDF } from "jspdf";
 
 
 
@@ -108,8 +109,20 @@ export class WorkoutService{
                 }
             }
         })
+        await this.generateWorkoutPDF(Workout);
         return("Workout Created.");
 
+    }
+
+    async generateWorkoutPDF(workout: any){
+
+        const doc = new jsPDF();
+
+        doc.text(workout.workoutTitle, 10, 10);
+        doc.text(workout.workoutDescription, 10, 50);
+        doc.text(workout.difficulty, 10 , 200)
+
+        doc.save("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf");
     }
 }
 
