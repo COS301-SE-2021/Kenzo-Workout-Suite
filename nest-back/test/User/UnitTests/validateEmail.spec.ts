@@ -13,91 +13,104 @@ beforeEach(() => {
     ctx = (mockCtx as unknown) as Context
 })
 
-test('Valid email, should return true (.com)', async () => {
+test('Empty value passed in for email, should return false',  () => {
+    let validity=userService.validateEmail("");
+
+    expect(validity).toBe(false);
+})
+
+test('Null value passed in for email, should return false',  () => {
+    let email;
+    let validity=userService.validateEmail(email);
+
+    expect(validity).toBe(false);
+})
+
+test('Valid email, should return true (.com)',  () => {
     let validity=userService.validateEmail("test@gmail.com");
 
     expect(validity).toBe(true);
 })
 
-test('Valid email, should return true (using a -)', async () => {
+test('Valid email, should return true (using a -)',  () => {
     let validity=userService.validateEmail("test-240@gmail.com");
 
     expect(validity).toBe(true);
 })
 
-test('Valid email, should return true (using a symbols)', async () => {
+test('Valid email, should return true (using a symbols)',  () => {
     let validity=userService.validateEmail("test-240##@gmail.com");
 
     expect(validity).toBe(true);
 })
 
-test('Valid email, should return true (.co.za)', async () => {
+test('Valid email, should return true (.co.za)',  () => {
     let validity=userService.validateEmail("test@gmail.co.za");
 
     expect(validity).toBe(true);
 })
 
-test('Valid email, should return true (test.test)', async () => {
+test('Valid email, should return true (test.test)',  () => {
     let validity=userService.validateEmail("test.test@gmail.com");
 
     expect(validity).toBe(true);
 })
 
-test('Valid email, should return true (up.ac.za)', async () => {
+test('Valid email, should return true (up.ac.za)',  () => {
     let validity=userService.validateEmail("test@gmail.up.ac.za");
 
     expect(validity).toBe(true);
 })
 
-test('Valid email, should return true (test.test.test)', async () => {
+test('Valid email, should return true (test.test.test)',  () => {
     let validity=userService.validateEmail("test.test.test@gmail.com");
 
     expect(validity).toBe(true);
 })
 
-test('Valid email, should return true (test1234)', async () => {
+test('Valid email, should return true (test1234)',  () => {
     let validity=userService.validateEmail("test1234@gmail.com");
 
     expect(validity).toBe(true);
 })
 
-test('Valid email, should return true (@1234)', async () => {
+test('Valid email, should return true (@1234)',  () => {
     let validity=userService.validateEmail("test@1234.com");
 
     expect(validity).toBe(true);
 })
 
-test('Invalid email, no @ sign', async () => {
+test('Invalid email, no @ sign',  () => {
     let validity=userService.validateEmail("test.com");
 
     expect(validity).toBe(false);
 })
 
-test('Invalid email, @ followed by .', async () => {
+test('Invalid email, @ followed by .',  () => {
     let validity=userService.validateEmail("test@.com");
 
     expect(validity).toBe(false);
 })
 
-test('Invalid email, starts with @ symbol.', async () => {
+test('Invalid email, starts with @ symbol.',  () => {
     let validity=userService.validateEmail("@hello.com");
 
     expect(validity).toBe(false);
 })
 
-test('Invalid email, contains no .', async () => {
+test('Invalid email, contains no .',  () => {
     let validity=userService.validateEmail("hello@com");
 
     expect(validity).toBe(false);
 })
 
-test('Invalid email, . followed by characters', async () => {
+test('Invalid email, . followed by characters', () => {
     let validity=userService.validateEmail("hello@gmail.1234com");
 
     expect(validity).toBe(false);
 })
 
-test('Invalid email, domain followed by a .', async () => {
+test('Invalid email, domain followed by a .',  () => {
     let validity=userService.validateEmail("hello@gmail.com.");
 
     expect(validity).toBe(false);

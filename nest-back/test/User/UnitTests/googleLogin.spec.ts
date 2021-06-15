@@ -12,11 +12,19 @@ beforeEach(() => {
     userService = new UserService(Jwt);
 })
 
-test('Null request passed into googleLogin function ', async () => {
-    expect(userService.googleLogin(null)).toBe("No user from google")
+test('Null request passed into googleLogin function ',  async () => {
+     await expect(userService.googleLogin(null)).rejects.toThrow("No such google user")
 })
 
-test('Null request passed into googleLogin function ', async () => {
+test('Request passed into googleLogin function without user object ',  async () => {
+
+    let request={
+    }
+    await expect(userService.googleLogin(null)).rejects.toThrow("No such google user")
+})
+
+
+test('Valid response ',  async () => {
 
     let request={
         user: "theUser"
@@ -25,12 +33,6 @@ test('Null request passed into googleLogin function ', async () => {
         message: 'User information from google',
         user: "theUser"
     }
-    expect(userService.googleLogin(request)).toStrictEqual(expected_response)
+    await expect( await userService.googleLogin(request)).toStrictEqual(expected_response)
 })
 
-test('Request passed into googleLogin function without user object ', async () => {
-
-    let request={
-    }
-    expect(userService.googleLogin(null)).toBe("No user from google")
-})

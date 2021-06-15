@@ -41,8 +41,18 @@ export class UserService {
     }
 
     async login(user: any) {
-        const payload = { userId: user.userId
-            };
+        if (user==null)
+        {
+            throw new NotFoundException("Invalid user object passed in.")
+        }
+
+        if (user.userId==null)
+        {
+            throw new NotFoundException("User object with no userId passed in")
+        }
+
+        const payload = { userId: user.userId};
+
         return {
             access_token: this.jwtService.sign(payload),
         };
@@ -124,18 +134,42 @@ export class UserService {
 
     }
 
-    async updateUserDetails(firstName:string,lastName:string, dateOfBirth:Date){
+    async updateUserDetails(firstName:string,lastName:string, dateOfBirth:Date,userId:string,ctx:Context){
+        if (firstName==null || lastName==null || userId==null || firstName=="" || lastName=="" || userId=="")
+        {
+            throw new BadRequestException("Null values can not be passed in for firstName, lastName or userId")
+        }
 
+        const updatedUser=await ctx.prisma.user.update({
+        where:{
+        userId: userId,
+        },
+        data:{
+            firstName:firstName,
+            lastName:lastName,
+            dateOfBirth:dateOfBirth
+        },
+        })
+
+        if (updatedUser===null)
+        {
+            throw new BadRequestException("Could not update user")
+        }
+
+        return {
+            message: 'User data updated'
+        }
     }
 
-    googleLogin(req) {
+
+    async googleLogin(req) {
         if (!req)
         {
-            return 'No user from google';
+            throw new BadRequestException("No such google user")
         }
 
         if (!req.user) {
-            return 'No user from google'
+            throw new BadRequestException("No such google user")
         }
 
         return {
@@ -144,13 +178,13 @@ export class UserService {
         }
     }
 
-    validateEmail(email:string){
+     validateEmail(email:string){
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
 
     }
 
-    validatePassword(password:string) {
+     validatePassword(password:string) {
         const re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
         return re.test(password);
     }

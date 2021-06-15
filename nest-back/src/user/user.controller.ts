@@ -25,6 +25,15 @@ export class UserController {
         return this.userService.findUserByUUID(req.user.userId,ActualPrisma())
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Put('updateUserDetail')
+    updateUserDetail(@Request() req,
+                     @Body('firstName') firstName: string,
+                     @Body('lastName') lastName: string,
+                     @Body('dateOfBirth') dateOfBirth: Date){
+        return this.userService.updateUserDetails(firstName,lastName,dateOfBirth,req.user.userId,ActualPrisma())
+    }
+
     @Post('signUp')
     signUpClient(
         @Body('User') user: User,

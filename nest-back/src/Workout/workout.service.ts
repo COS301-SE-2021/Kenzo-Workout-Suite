@@ -91,29 +91,22 @@ export class WorkoutService{
 
     async createWorkout(workoutTitle: string, workoutDescription: string, exercises: Exercise[], difficulty:Difficulty, planner_ID : string, ctx: Context) {
 
-        const Workout = {
-            workoutTitle: workoutTitle,
-            workoutDescription: workoutDescription,
-            exercises: exercises,
-            difficulty: difficulty,
-            planner_ID: planner_ID
-
-        }
-        if (workoutTitle=="" || workoutDescription=="" || difficulty==null )
-        {
-            throw new NotFoundException("Parameters can not be left empty.");
-        }
-        await ctx.prisma.workout.create({
-            data: {
-                workoutTitle: workoutTitle,
-                workoutDescription: workoutDescription,
-                exercises: exercises,
-                difficulty: difficulty,
-                planner_ID: planner_ID
-            }
-        })
-        await this.generateWorkoutPDF(Workout);
-        return("Workout Created.");
+       //  if (workoutTitle=="" || workoutDescription=="" || difficulty==null )
+       //  {
+       //      throw new NotFoundException("Parameters can not be left empty.");
+       //  }
+       //
+       // const Workout= await ctx.prisma.workout.create({
+       //      data: {
+       //          workoutTitle: workoutTitle,
+       //          workoutDescription: workoutDescription,
+       //          exercises: exercises,
+       //          difficulty: difficulty,
+       //          planner_ID: planner_ID
+       //      }
+       //  })
+       //  await this.generateWorkoutPDF(Workout);
+       //  return("Workout Created.");
 
     }
 
