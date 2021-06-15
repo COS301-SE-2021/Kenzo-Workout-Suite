@@ -63,7 +63,7 @@ export class WorkoutController {
     ) {
         return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,difficulty,duration, this.ctx);
     }
-
+    //TODO:Use req and auth for userID [consult Zelu]
     @Post('createWorkout')
     createWorkout(
         @Body('workoutTitle') workoutTitle: string,

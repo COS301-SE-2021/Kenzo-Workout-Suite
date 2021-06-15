@@ -90,24 +90,26 @@ export class WorkoutService{
 
     async createWorkout(workoutTitle: string, workoutDescription: string, exercises : Exercise[],difficulty:Difficulty,planner_ID :string,ctx: Context) {
 
+        const Workout ={
+            workoutTitle: workoutTitle,
+            workoutDescription: workoutDescription,
+            exercises: {
+                connect: exercises
+            },
+            difficulty: difficulty,
+            planner: {
+                connect: {
+                    userId: planner_ID
+                }
+            }
+        }
+
         if (workoutTitle=="" || workoutDescription=="" || difficulty==null )
         {
             throw new NotFoundException("Parameters can not be left empty.");
         }
         await ctx.prisma.workout.create({
-            data: {
-                workoutTitle: workoutTitle,
-                workoutDescription: workoutDescription,
-                exercises: {
-                    connect: exercises
-                },
-                difficulty: difficulty,
-                planner: {
-                    connect: {
-                        userId: planner_ID
-                    }
-                }
-            }
+            data: Workout
         })
         await this.generateWorkoutPDF(Workout);
         return("Workout Created.");
@@ -118,9 +120,22 @@ export class WorkoutService{
 
         const doc = new jsPDF();
 
+        //TODO: Make heading font and a normal font
         doc.text(workout.workoutTitle, 10, 10);
-        doc.text(workout.workoutDescription, 10, 50);
-        doc.text(workout.difficulty, 10 , 200)
+        doc.text(workout.difficulty, 10 , 20);
+        doc.text(workout.workoutDescription, 10, 30);
+
+        //TODO:Use this to get the fields for an exercise for the pdf
+        console.log(workout.exercises.connect[0].exercise);
+
+        doc.text(workout.exercises.connect[0].exercise,10,50);
+        // doc.text(workout.exercises.connect[0].description,10,60);
+        // doc.text(workout.exercises.connect[0].repRange,10,70);
+        // doc.text(workout.exercises.connect[0].sets + " sets",300,70);
+        // doc.text(workout.exercises.connect[0].duratime + " Seconds",10,80);
+        // doc.text(workout.exercises.connect[0].restPeriod + " Seconds",50,80);
+        // doc.text(workout.exercises.connect[0].difficulty + " Seconds",10,90);
+
 
         doc.save("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf");
     }
