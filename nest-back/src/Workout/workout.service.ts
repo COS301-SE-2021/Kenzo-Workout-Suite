@@ -9,6 +9,7 @@ import {
     Difficulty,
     Prisma
 } from '@prisma/client';
+import { jsPDF } from "jspdf";
 
 
 
@@ -88,22 +89,45 @@ export class WorkoutService{
 
     }
 
-    async createWorkout(workoutTitle: string, workoutDescription: string, difficulty:Difficulty,planner_Email :string, ctx: Context) {
+    async createWorkout(workoutTitle: string, workoutDescription: string, exercises: Exercise[], difficulty:Difficulty, planner_ID : string, ctx: Context) {
+
         const Workout = {
             workoutTitle: workoutTitle,
             workoutDescription: workoutDescription,
+            exercises: exercises,
             difficulty: difficulty,
-            planner_Email: planner_Email
+            planner_ID: planner_ID
+
         }
         if (workoutTitle=="" || workoutDescription=="" || difficulty==null )
         {
             throw new NotFoundException("Parameters can not be left empty.");
         }
         await ctx.prisma.workout.create({
-            data:Workout
+            data: {
+                workoutTitle: workoutTitle,
+                workoutDescription: workoutDescription,
+                exercises: exercises,
+                difficulty: difficulty,
+                planner_ID: planner_ID
+            }
         })
+        await this.generateWorkoutPDF(Workout);
         return("Workout Created.");
 
     }
+
+    async generateWorkoutPDF(workout: any){
+
+        const doc = new jsPDF();
+
+        doc.text(workout.workoutTitle, 10, 10);
+        doc.text(workout.workoutDescription, 10, 50);
+        doc.text(workout.difficulty, 10 , 200)
+
+        doc.save("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf");
+    }
+
+
 }
 

@@ -68,11 +68,12 @@ export class WorkoutController {
     createWorkout(
         @Body('workoutTitle') workoutTitle: string,
         @Body('workoutDescription') workoutDescription: string,
+        @Body('exercises') exercises : Exercise[],
         @Body('difficulty') difficulty: Difficulty,
-        @Body('planner_Email') planner_Email : string
+        @Body('planner_ID') planner_ID : string
     ) {
 
-        return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty,planner_Email, this.ctx)
+        return this.workoutService.createWorkout(workoutTitle,workoutDescription,exercises,difficulty,planner_ID, this.ctx)
 
     }
 
