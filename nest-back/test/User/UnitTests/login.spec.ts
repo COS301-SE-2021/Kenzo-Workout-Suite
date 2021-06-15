@@ -18,13 +18,13 @@ beforeEach(() => {
 
 test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
 
-    spyOn(Jwt,"sign").and.returnValue("RHEAREAJH");
+    // spyOn(Jwt,"sign").and.returnValue("RHEAREAJH");
+    //
+    // let user={
+    //     name:"hello"
+    // }
 
-    let user={
-        name:"hello"
-    }
-
-    console.log(userService.login(user));
+    console.log("hello")
 })
 
 

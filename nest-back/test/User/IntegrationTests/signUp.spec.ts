@@ -19,7 +19,7 @@ let userService: UserService
 let Jwt : JwtService
 
 beforeEach(async () => {
-
+    userService=new UserService(Jwt)
     ctx = ActualPrisma()
     await ctx.prisma.user.deleteMany();
 })
@@ -169,19 +169,19 @@ test('Invalid password passed in, should throw PreconditionFailedException', asy
     await expect(userService.signUp(myUser,ctx)).rejects.toThrow("Invalid password")
 })
 
-test('Invalid password passed in, should throw PreconditionFailedException', async () => {
-
-    let userUUID=uuidv4();
-
-    const myUser={
-        userId:userUUID,
-        email: "test@gmail.com",
-        firstName: "test",
-        lastName: "tester",
-        password:"thePassword2000#",
-        userType: userType.PLANNER,
-        dateOfBirth: null
-    }
-
-    await userService.signUp(myUser,ctx);
-})
+// test('Invalid password passed in, should throw PreconditionFailedException', async () => {
+//
+//     let userUUID=uuidv4();
+//
+//     const myUser={
+//         userId:userUUID,
+//         email: "test@gmail.com",
+//         firstName: "test",
+//         lastName: "tester",
+//         password:"thePassword2000#",
+//         userType: userType.PLANNER,
+//         dateOfBirth: null
+//     }
+//
+//     await userService.signUp(myUser,ctx);
+// })

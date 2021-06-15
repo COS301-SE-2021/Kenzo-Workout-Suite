@@ -1,11 +1,8 @@
 import {BadRequestException, Injectable, NotFoundException, PreconditionFailedException} from '@nestjs/common';
-import {PrismaService} from "../Prisma/prisma.service";
 import { JwtService } from '@nestjs/jwt';
 import {User} from "@prisma/client";
 import * as bcrypt from 'bcrypt';
 import {Context} from "../../context";
-import {create} from "domain";
-
 
 @Injectable()
 export class UserService {
@@ -80,8 +77,7 @@ export class UserService {
         })
 
 
-        if (countEmail>=1)
-        {
+        if (countEmail>=1) {
             throw new BadRequestException("User with this email already exists")
         }
 
@@ -98,8 +94,7 @@ export class UserService {
         })
 
 
-        if (!createdUser)
-        {
+        if (!createdUser) {
             throw new BadRequestException("Could not create User")
         }
 
@@ -126,6 +121,10 @@ export class UserService {
 
         const { password, ...result } = user;
         return result;
+
+    }
+
+    async updateUserDetails(firstName:string,lastName:string, dateOfBirth:Date){
 
     }
 

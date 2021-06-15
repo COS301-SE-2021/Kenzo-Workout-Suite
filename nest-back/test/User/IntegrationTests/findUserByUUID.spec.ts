@@ -27,14 +27,7 @@ test('Test, Valid user returned by mock prisma service', async () => {
 
     const userUUID=uuidv4();
     const secondUUID=uuidv4();
-    const myUser={
-        email: "test@gmail.com",
-        firstName: "test",
-        lastName: "tester",
-        password:"Test2000#",
-        userType: userType.PLANNER,
-        dateOfBirth: null
-    }
+
 
     const createdUser =await ctx.prisma.user.create({
         data:{
@@ -51,9 +44,18 @@ test('Test, Valid user returned by mock prisma service', async () => {
 
     const searchUUID=createdUser.userId;
 
+    const myUser={
+        userId:searchUUID,
+        email: "test@gmail.com",
+        firstName: "test",
+        lastName: "tester",
+        userType: userType.PLANNER,
+        dateOfBirth: null
+    }
+
     const response=await userService.findUserByUUID(searchUUID,ctx)
 
-    expect(response).toStrictEqual(createdUser);
+    expect(response).toStrictEqual(myUser);
 })
 
 

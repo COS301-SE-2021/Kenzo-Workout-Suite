@@ -9,6 +9,7 @@ let userService: UserService
 let Jwt : JwtService
 
 beforeEach(() => {
+    userService = new UserService(Jwt);
 })
 
 test('Null request passed into googleLogin function ', async () => {

@@ -21,8 +21,7 @@ export class UserController {
 
     @UseGuards(JwtAuthGuard)
     @Get('getUserDetails')
-    doSomething(@Request() req){
-        console.log(req.user);
+    getUserData(@Request() req){
         return this.userService.findUserByUUID(req.user.userId,ActualPrisma())
     }
 
