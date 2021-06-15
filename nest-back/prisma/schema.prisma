@@ -17,6 +17,12 @@ enum Difficulty {
   EXTREME
 }
 
+enum userType {
+  ADMIN
+  CLIENT
+  PLANNER
+}
+
 model Avatar {
   torsoColour String @default("blue")
   armColour   String @default("blue")
@@ -34,8 +40,8 @@ model User {
   password    String
   dateOfBirth DateTime?
   avatar      Avatar?
-  isPlanner Boolean
-   workouts Workout[]
+  userType    userType
+  workouts Workout[]
 }
 
 
@@ -44,11 +50,11 @@ model Workout {
   workoutTitle       String
   workoutDescription String
 
-  exercises  Exercise[]
-  difficulty Difficulty
+  exercises          Exercise[]
+  difficulty         Difficulty
 
-  planner       User? @relation(fields: [planner_Email], references: [email])
-  planner_Email String?
+  planner            User? @relation(fields: [planner_ID], references: [userId])
+  planner_ID         String?
 }
 
 model Exercise {
@@ -60,9 +66,7 @@ model Exercise {
   Posedescription String
   restPeriod      Int
   difficulty      Difficulty
-  duratime Int
+  duratime        Int
 
-
-  Workout          Workout? @relation(fields: [workoutWorkoutID], references: [workoutID])
-  workoutWorkoutID String?
+  workouts        Workout[]
 }
