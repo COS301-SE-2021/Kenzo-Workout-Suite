@@ -24,11 +24,6 @@ beforeEach(async () => {
 })
 
 test('Test, Valid user returned by mock prisma service', async () => {
-
-    const userUUID=uuidv4();
-    const secondUUID=uuidv4();
-
-
     const createdUser =await ctx.prisma.user.create({
         data:{
             email: "test@gmail.com",
@@ -44,7 +39,7 @@ test('Test, Valid user returned by mock prisma service', async () => {
 
     const searchUUID=createdUser.userId;
 
-    const myUser={
+    const expectedUser={
         userId:searchUUID,
         email: "test@gmail.com",
         firstName: "test",
@@ -55,7 +50,38 @@ test('Test, Valid user returned by mock prisma service', async () => {
 
     const response=await userService.findUserByUUID(searchUUID,ctx)
 
-    expect(response).toStrictEqual(myUser);
+    expect(response).toStrictEqual(expectedUser);
+
 })
 
 
+test('Test, Valid user returned by mock prisma service', async () => {
+    const createdUser =await ctx.prisma.user.create({
+        data:{
+            email: "test@gmail.com",
+            firstName: "test",
+            lastName: "tester",
+            password:"Test2000#",
+            userType: userType.PLANNER,
+            dateOfBirth: null
+        }
+    })
+
+    // When a planner exists, the details should be fine
+
+    const searchUUID=createdUser.userId;
+
+    const expectedUser={
+        userId:searchUUID,
+        email: "test@gmail.com",
+        firstName: "test",
+        lastName: "tester",
+        userType: userType.PLANNER,
+        dateOfBirth: null
+    }
+
+    const userId=uuidv4;
+
+    await expect(userService.findUserByUUID(userId,ctx)).rejects.toThrow("No user with such UUID")
+
+})

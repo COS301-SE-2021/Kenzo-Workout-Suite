@@ -5,6 +5,8 @@ import {LocalAuthGuard} from "./local-auth.guard";
 import {JwtAuthGuard} from "./jwt-auth.guard";
 import {User} from "@prisma/client";
 import {ActualPrisma} from "../../context";
+import {v4 as uuidv4 } from 'uuid';
+import {ApiBody} from "@nestjs/swagger";
 
 
 @Controller('user')
@@ -25,6 +27,7 @@ export class UserController {
         return this.userService.findUserByUUID(req.user.userId,ActualPrisma())
     }
 
+
     @UseGuards(JwtAuthGuard)
     @Put('updateUserDetail')
     updateUserDetail(@Request() req,
@@ -34,6 +37,7 @@ export class UserController {
         return this.userService.updateUserDetails(firstName,lastName,dateOfBirth,req.user.userId,ActualPrisma())
     }
 
+    @ApiBody({type: String})
     @Post('signUp')
     signUpClient(
         @Body('User') user: User,
