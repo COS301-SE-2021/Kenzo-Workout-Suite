@@ -21,11 +21,6 @@ export class WorkoutService{
     constructor(private prisma: PrismaService) {
     }
 
-    validateEmail(email) {//function to validate an email
-        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(String(email).toLowerCase());
-    }
-
     async getWorkouts(ctx: Context): Promise<any> {
         try{
             const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
@@ -34,7 +29,7 @@ export class WorkoutService{
                     workoutDescription: true,
                     exercises: true,
                     difficulty: true,
-                    planner_Email: true
+                    planner_ID: true
                 }
             });
 
@@ -61,7 +56,7 @@ export class WorkoutService{
                     workoutDescription: true,
                     exercises: true,
                     difficulty: true,
-                    planner_Email: true
+                    planner_ID: true
                 }
             });
 
@@ -91,8 +86,7 @@ export class WorkoutService{
                     Posedescription: true,
                     restPeriod: true,
                     difficulty: true,
-                    duratime: true,
-                    workoutWorkoutID: true
+                    duratime: true
                 }
             });
 
@@ -108,32 +102,27 @@ export class WorkoutService{
         }
     }
 
-    async getWorkoutByPlanner(email: string, ctx: Context): Promise<any> {
-        if(!this.validateEmail(email)){//first check if email passed is valid
-            throw new BadRequestException("Invalid email.");
-        }
-        else {
-            try {
-                const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
-                    where: {
-                        planner_Email: email
-                    },
-                    select: {
-                        workoutTitle: true,
-                        workoutDescription: true,
-                        exercises: true,
-                        difficulty: true,
-                        planner_Email: true
-                    }
-                });
-                if (workouts==null) {//if JSON object is empty, send error code
-                    throw new NotFoundException("No workouts were found in the database with the specified planner.");
-                } else {
-                    return workouts;
+    async getWorkoutByPlanner(id: string, ctx: Context): Promise<any> {
+        try {
+            const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
+                where: {
+                    planner_ID: id
+                },
+                select: {
+                    workoutTitle: true,
+                    workoutDescription: true,
+                    exercises: true,
+                    difficulty: true,
+                    planner_ID: true
                 }
-            } catch (err) {
-                throw err;
+            });
+            if (workouts==null) {//if JSON object is empty, send error code
+                throw new NotFoundException("No workouts were found in the database with the specified planner.");
+            } else {
+                return workouts;
             }
+        } catch (err) {
+            throw err;
         }
     }
 

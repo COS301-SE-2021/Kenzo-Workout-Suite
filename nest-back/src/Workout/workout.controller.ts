@@ -62,20 +62,17 @@ export class WorkoutController {
         return this.workoutService.getExerciseByTitle(title,ActualPrisma());
     }
 
-    @Get('getWorkoutByPlanner/:email')
+    @Get('getWorkoutByPlanner/:id')
     @ApiOkResponse({
         description: 'A workout object.'
     })
     @ApiNotFoundResponse({
         description: 'No workouts were found in the database.'
     })
-    @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
-    })
     getWorkoutByPlanner(
-        @Param('email') email: string,
+        @Param('id') id: string,
     ) {
-        return this.workoutService.getWorkoutByPlanner(email,ActualPrisma());
+        return this.workoutService.getWorkoutByPlanner(id,ActualPrisma());
     }
 
     @Post('createExercise')
