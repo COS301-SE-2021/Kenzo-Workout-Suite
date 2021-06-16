@@ -21,24 +21,21 @@ beforeEach(() => {
 })
 
 test('Should receive valid information about workout with corresponding planner', async () => {
+    const uuidPlanner = uuidv4();
     const workout = [{
         workoutID: uuidv4(),
         workoutTitle: "test",
         workoutDescription: "test",
         difficulty: Difficulty.EASY,
-        planner_Email: "test@gmail.com"
+        planner_ID: uuidPlanner
     }]
     mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
 
-    const response=await workoutService.getWorkoutByPlanner("test@gmail.com",ctx)
+    const response=await workoutService.getWorkoutByPlanner(uuidPlanner,ctx)
 
     expect(response).toBe(workout);
 })
 
 test('Should not receive valid information about workout with corresponding planner as workout does not exist', async () => {
-    await expect(workoutService.getWorkoutByPlanner("random@gmail.com",ctx)).rejects.toThrow("No workouts were found in the database with the specified planner.")
-})
-
-test('Should receive error for invalid email', async () => {
-    await expect(workoutService.getWorkoutByPlanner("test",ctx)).rejects.toThrow("Invalid email.")
+    await expect(workoutService.getWorkoutByPlanner("000",ctx)).rejects.toThrow("No workouts were found in the database with the specified planner.")
 })

@@ -26,7 +26,7 @@ test('Should receive valid information about workout with corresponding title', 
         workoutTitle: "test",
         workoutDescription: "test",
         difficulty: Difficulty.EASY,
-        planner_Email: "test@gmail.com"
+        planner_ID: uuidv4()
     }]
     mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
 

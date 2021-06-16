@@ -31,7 +31,7 @@ test('Should receive valid information about exercise with corresponding title',
         restPeriod:2,
         difficulty:Difficulty.EASY,
         duratime:2,
-        workoutWorkoutID: null
+        workouts: null
     }]
     mockCtx.prisma.exercise.findMany.mockResolvedValue(Exercise)
 

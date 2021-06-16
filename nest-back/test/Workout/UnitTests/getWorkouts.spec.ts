@@ -27,7 +27,7 @@ test('Should receive valid information about all workouts', async () => {
         workoutTitle: "test",
         workoutDescription: "test",
         difficulty: Difficulty.EASY,
-        planner_Email: "test@gmail.com"
+        planner_ID: uuidv4()
     }]
     mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
 
