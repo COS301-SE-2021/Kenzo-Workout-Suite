@@ -4,7 +4,7 @@ import {
     ApiCreatedResponse, ApiHeader,
     ApiInternalServerErrorResponse,
     ApiNotFoundResponse,
-    ApiOkResponse, ApiParam, ApiQuery,
+    ApiOkResponse, ApiParam, ApiProperty, ApiQuery,
     ApiResponse
 } from "@nestjs/swagger";
 import {ActualPrisma} from "../../context";
@@ -68,6 +68,9 @@ export class WorkoutController {
     })
     @ApiNotFoundResponse({
         description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
     })
     getWorkoutByPlanner(
         @Param('id') id: string,
