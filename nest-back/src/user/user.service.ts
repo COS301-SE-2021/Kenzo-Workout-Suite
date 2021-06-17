@@ -116,7 +116,7 @@ export class UserService {
         return this.login(createdUser);
     }
 
-    async findUserByUUID(userId: uuidv4,ctx: Context) : Promise<any>{
+    async findUserByUUID(userId: string,ctx: Context) : Promise<any>{
 
 
         if (userId===null || userId==="")

@@ -81,8 +81,8 @@ export class WorkoutController {
     ) {
         return this.workoutService.getExercises(ActualPrisma());
     }
-
-    @Get('getExerciseByTitle/:title')
+    //TODO:Remind Tin about GetExerciseByID
+    @Get('getExerciseByID/:ID')
     @ApiOkResponse({
         description: 'A workout object.'
     })
@@ -92,10 +92,10 @@ export class WorkoutController {
     @ApiInternalServerErrorResponse({
         description: 'Internal server error.'
     })
-    getExerciseByTitle(
-        @Param('title') title: string,
+    getExerciseByID(
+        @Param('id') id: string,
     ) {
-        return this.workoutService.getExerciseByTitle(title,ActualPrisma());
+        return this.workoutService.getExerciseByID(id,ActualPrisma());
     }
 
     @Get('getWorkoutByPlanner/:id')
@@ -115,30 +115,6 @@ export class WorkoutController {
     }
 
     @Post('createExercise')
-    @ApiBody({type: CreateExerciseDTO})
-    @ApiOkResponse({
-        description: 'A workout object.'
-    })
-    @ApiNotFoundResponse({
-        description: 'No workouts were found in the database.'
-    })
-    @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
-    })
-    getUserByEmail(
-        @Body('title') title: string,
-        @Body('description') description: string,
-        @Body('repRange') repRange: string,
-        @Body('sets') sets: number,
-        @Body('poseDescription') poseDescription: string,
-        @Body('restPeriod') restPeriod: number,
-        @Body('difficulty') difficulty: string,
-        @Body('duratime') duration: number,
-    ) {
-        return this.workoutService.createExercise(title,description,repRange,sets,poseDescription,restPeriod,difficulty,duration);
-    }
-
-    @Post('createExercise')
     createExercise(
         @Body('title') title: string,
         @Body('description') description: string,
@@ -152,6 +128,7 @@ export class WorkoutController {
         return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,difficulty,duration, this.ctx);
     }
     //TODO:Use req and auth for userID [consult Zelu]
+
     @Post('createWorkout')
     createWorkout(
         @Body('workoutTitle') workoutTitle: string,

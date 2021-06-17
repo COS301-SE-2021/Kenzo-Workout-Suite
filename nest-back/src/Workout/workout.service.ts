@@ -17,6 +17,7 @@ import {
     Prisma
 } from '@prisma/client';
 import { jsPDF } from "jspdf";
+import {PrismaService} from "../Prisma/prisma.service";
 
 
 
@@ -25,7 +26,7 @@ import { jsPDF } from "jspdf";
 export class WorkoutService{
     //private static prisma: PrismaService;
 
-    constructor(private prisma: PrismaService) {
+    constructor(prisma : PrismaService) {
     }
 
     async getWorkouts(ctx: Context): Promise<any> {
@@ -108,11 +109,11 @@ export class WorkoutService{
         }
     }
 
-    async getExerciseByTitle(title: string, ctx: Context): Promise<any> {
+    async getExerciseByID(id: string, ctx: Context): Promise<any> {
         try{
-            const exercise = await ctx.prisma.exercise.findMany({//search for exercises that meet the requirement
+            const exercise = await ctx.prisma.exercise.findUnique({//search for exercises that meet the requirement
                 where: {
-                    title : title
+                    exercise : id
                 },
                 select: {
                     exercise: true,
@@ -128,7 +129,7 @@ export class WorkoutService{
             });
 
             if(exercise==null){//if JSON object is empty, send error code
-                throw new NotFoundException("No exercises were found in the database with the specified title.");
+                throw new NotFoundException("No exercise was found in the database with the specified ID.");
             }
             else{
                 return exercise;
@@ -209,33 +210,45 @@ export class WorkoutService{
         await ctx.prisma.workout.create({
             data: Workout
         })
-        await this.generateWorkoutPDF(Workout);
+        await this.generateWorkoutPDF(Workout, ctx);
         return("Workout Created.");
 
     }
 
-    async generateWorkoutPDF(workout: any){
+    async generateWorkoutPDF(workout: any, ctx: Context){
 
         const doc = new jsPDF();
 
-        //TODO: Make heading font and a normal font
-        doc.text(workout.workoutTitle, 10, 10);
-        doc.text(workout.difficulty, 10 , 20);
-        doc.text(workout.workoutDescription, 10, 30);
+        //TODO: Make heading font and a normal font & Consider adding an image
+        doc.text(workout.workoutTitle, 70, 10);
+        doc.text(workout.difficulty, 90 , 50  );
+        let splitWorkoutDesc = doc.splitTextToSize(workout.workoutDescription,180);
 
-        //TODO:Use this to get the fields for an exercise for the pdf
-        console.log(workout.exercises.connect[0].exercise);
-
-        doc.text(workout.exercises.connect[0].exercise,10,50);
-        // doc.text(workout.exercises.connect[0].description,10,60);
-        // doc.text(workout.exercises.connect[0].repRange,10,70);
-        // doc.text(workout.exercises.connect[0].sets + " sets",300,70);
-        // doc.text(workout.exercises.connect[0].duratime + " Seconds",10,80);
-        // doc.text(workout.exercises.connect[0].restPeriod + " Seconds",50,80);
-        // doc.text(workout.exercises.connect[0].difficulty + " Seconds",10,90);
+        doc.text(splitWorkoutDesc, 15, 130 );
+        //doc.addImage("./src/GeneratedWorkouts/Kenzo_logo.png","PNG",60,230,90, 40);
 
 
-        doc.save("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf");
+        if(workout.exercises.connect === undefined){
+            doc.save("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf");
+        }else{
+
+            for(let i =0; i < workout.exercises.connect.length ; i++){
+                let exercise = await this.getExerciseByID(workout.exercises.connect[i].exercise, ctx);
+                //console.log(exercise);
+                doc.addPage("a4", "p");
+                doc.text(exercise.title, 90, 10);
+                doc.text("Difficulty: " + exercise.difficulty, 80, 30);
+                let splitExerciseDesc = doc.splitTextToSize(exercise.description,180)
+                doc.text(splitExerciseDesc, 15, 50);
+                doc.text("Rep Range: " + exercise.repRange, 15, (60+(splitExerciseDesc.length*10)) );
+                doc.text("Sets: " + exercise.sets.toString(), 90, (60+(splitExerciseDesc.length*10)) );
+                //doc.text(exercise.Posedescription, 10, 90);
+                doc.text("Rest Period: " + exercise.restPeriod.toString() + " seconds.", 15, (80+(splitExerciseDesc.length*10)) );
+                doc.text("Exercise Duration: " + exercise.duratime.toString() + " seconds or " + (exercise.duratime/60).toString() + " minutes", 15, (100+(splitExerciseDesc.length*10)) );
+            }
+            doc.save("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf");
+        }
+
     }
 
 
