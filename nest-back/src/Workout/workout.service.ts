@@ -170,4 +170,25 @@ export class WorkoutService{
         }
     }
 
+    async getTags(ctx: Context): Promise<any> {
+        try{
+            const tags = await ctx.prisma.tag.findMany({//search and retrieve all tags
+                select: {
+                    label: true,
+                    textColour: true,
+                    backgroundColour: true,
+                }
+            });
+
+            if(tags==null){//if JSON object is empty, send error code
+                throw new NotFoundException("No tags were found in the database.");
+            }
+
+            return tags;
+        }
+        catch(err){
+            throw err;
+        }
+    }
+
 }
