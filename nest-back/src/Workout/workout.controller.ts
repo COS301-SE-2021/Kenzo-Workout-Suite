@@ -1,81 +1,131 @@
-import {
-    Controller,
-    Get,
-    Param,
-    Post,
-    Body,
-    Put,
-    Delete,
-} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Put} from '@nestjs/common';
 import {WorkoutService} from "./workout.service";
 import {
-    Workout,
-    Exercise,
-    User,
-    Difficulty,
-    PrismaClient,
-    Prisma
-} from '@prisma/client';
-import {ActualPrisma, Context} from "../../context";
-
-
+    ApiBody,
+    ApiCreatedResponse, ApiHeader,
+    ApiInternalServerErrorResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse, ApiParam, ApiProperty, ApiQuery,
+    ApiResponse
+} from "@nestjs/swagger";
+import {ActualPrisma} from "../../context";
+import { CreateExerciseDTO } from "./workout.model";
 
 @Controller('workout')
 export class WorkoutController {
 
-    ctx: Context
-
     constructor(private readonly workoutService: WorkoutService) {
-        this.ctx = ActualPrisma();
+    }
+
+    @Get('getWorkouts')
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    getWorkouts(
+    ) {
+        return this.workoutService.getWorkouts(ActualPrisma());
     }
 
     @Get('getWorkoutByTitle/:title')
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
     getWorkoutByTitle(
         @Param('title') title: string,
     ) {
-        return this.workoutService.getWorkoutByTitle(title);
+        return this.workoutService.getWorkoutByTitle(title,ActualPrisma());
+    }
+
+    @Get('getExercises')
+    @ApiOkResponse({
+        description: 'An exercise object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No exercises were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    getExercises(
+    ) {
+        return this.workoutService.getExercises(ActualPrisma());
     }
 
     @Get('getExerciseByTitle/:title')
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
     getExerciseByTitle(
         @Param('title') title: string,
     ) {
-        return this.workoutService.getExerciseByTitle(title);
+        return this.workoutService.getExerciseByTitle(title,ActualPrisma());
     }
 
-    @Get('getWorkoutByPlanner/:email')
+    @Get('getWorkoutByPlanner/:id')
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
     getWorkoutByPlanner(
-        @Param('email') email: string,
+        @Param('id') id: string,
     ) {
-        return this.workoutService.getWorkoutByPlanner(email);
+        return this.workoutService.getWorkoutByPlanner(id,ActualPrisma());
     }
 
     @Post('createExercise')
-    createExercise(
+    @ApiBody({type: CreateExerciseDTO})
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    getUserByEmail(
         @Body('title') title: string,
         @Body('description') description: string,
         @Body('repRange') repRange: string,
         @Body('sets') sets: number,
-        @Body('Posedescription') Posedescription: string,
+        @Body('poseDescription') poseDescription: string,
         @Body('restPeriod') restPeriod: number,
-        @Body('difficulty') difficulty: Difficulty,
+        @Body('difficulty') difficulty: string,
         @Body('duratime') duration: number,
     ) {
-        return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,difficulty,duration, this.ctx);
+        return this.workoutService.createExercise(title,description,repRange,sets,poseDescription,restPeriod,difficulty,duration);
     }
 
     @Post('createWorkout')
     createWorkout(
         @Body('workoutTitle') workoutTitle: string,
         @Body('workoutDescription') workoutDescription: string,
-        @Body('exercises') exercises : Exercise[],
-        @Body('difficulty') difficulty: Difficulty,
-        @Body('planner_ID') planner_ID : string
+        @Body('difficulty') difficulty: string,
     ) {
-
-        return this.workoutService.createWorkout(workoutTitle,workoutDescription,exercises,difficulty,planner_ID, this.ctx)
-
+        return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty);
     }
-
 
 }
