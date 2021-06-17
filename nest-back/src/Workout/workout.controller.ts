@@ -1,6 +1,7 @@
 import {Body, Controller, Get, Param, Post, Put} from '@nestjs/common';
 import {WorkoutService} from "./workout.service";
 import {
+    ApiBadRequestResponse,
     ApiBody,
     ApiCreatedResponse, ApiHeader,
     ApiInternalServerErrorResponse,
@@ -9,7 +10,7 @@ import {
     ApiResponse
 } from "@nestjs/swagger";
 import {ActualPrisma} from "../../context";
-import { CreateExerciseDTO } from "./workout.model";
+import { CreateExerciseDTO, createTagDTO } from "./workout.model";
 
 @Controller('workout')
 export class WorkoutController {
@@ -111,6 +112,16 @@ export class WorkoutController {
         @Body('difficulty') difficulty: string,
     ) {
         return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty);
+    }
+
+    @Post('createTag')
+    @ApiBody({type: createTagDTO})
+    createTag(
+        @Body('label') label: string,
+        @Body('textColour') textColour: string,
+        @Body('backgroundColour') backgroundColour: string,
+    ) {
+        return this.workoutService.createTag(label,textColour,backgroundColour,ActualPrisma());
     }
 
 }
