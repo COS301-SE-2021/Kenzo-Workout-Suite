@@ -124,4 +124,20 @@ export class WorkoutController {
         return this.workoutService.createTag(label,textColour,backgroundColour,ActualPrisma());
     }
 
+
+    @Get('getTags')
+    @ApiOkResponse({
+        description: 'Successfully created Tag.'
+    })
+    @ApiBadRequestResponse({
+        description: 'Could not create tag.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    getTags(
+    ) {
+        return this.workoutService.getTags(ActualPrisma());
+    }
+
 }
