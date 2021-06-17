@@ -13,6 +13,7 @@ import {PrismaClient} from "@prisma/client/scripts/default-index";
 let ctx: Context
 let workoutService: WorkoutService
 let prisma: PrismaClient
+const uuidExercise = uuidv4();
 
 beforeEach(async () => {
     workoutService = new WorkoutService(prisma);
@@ -20,7 +21,7 @@ beforeEach(async () => {
     await ctx.prisma.exercise.deleteMany();
     await ctx.prisma.exercise.create({
         data:{
-            exercise:uuidv4(),
+            exercise:uuidExercise,
             title:"TestExercise",
             description:"TestDescription",
             repRange:"TestRange",
@@ -35,6 +36,7 @@ beforeEach(async () => {
 
 test('Should receive valid information about exercise with corresponding title', async () => {
     const Exercise = [{
+        exercise: uuidExercise,
         title:"TestExercise",
         description:"TestDescription",
         repRange:"TestRange",
