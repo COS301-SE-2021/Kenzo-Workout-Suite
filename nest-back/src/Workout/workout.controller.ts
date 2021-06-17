@@ -32,7 +32,7 @@ export class WorkoutController {
         return this.workoutService.getWorkouts(ActualPrisma());
     }
 
-    @Get('getWorkoutByTitle/:title')
+    @Get('getWorkoutById/:id')
     @ApiOkResponse({
         description: 'A workout object.'
     })
@@ -42,10 +42,10 @@ export class WorkoutController {
     @ApiInternalServerErrorResponse({
         description: 'Internal server error.'
     })
-    getWorkoutByTitle(
-        @Param('title') title: string,
+    getWorkoutById(
+        @Param('id') id: string,
     ) {
-        return this.workoutService.getWorkoutByTitle(title,ActualPrisma());
+        return this.workoutService.getWorkoutById(id,ActualPrisma());
     }
 
     @Get('getExercises')
