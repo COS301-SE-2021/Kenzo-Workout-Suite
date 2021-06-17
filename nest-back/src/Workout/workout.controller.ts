@@ -2,9 +2,9 @@ import {Body, Controller, Get, Param, Post, Put} from '@nestjs/common';
 import {WorkoutService} from "./workout.service";
 import {
     ApiBadRequestResponse,
-    ApiBody,
+    ApiBody, ApiConflictResponse,
     ApiCreatedResponse, ApiHeader,
-    ApiInternalServerErrorResponse,
+    ApiInternalServerErrorResponse, ApiNotAcceptableResponse,
     ApiNotFoundResponse,
     ApiOkResponse, ApiParam, ApiProperty, ApiQuery,
     ApiResponse
@@ -115,6 +115,21 @@ export class WorkoutController {
     }
 
     @Post('createTag')
+    @ApiOkResponse({
+        description: 'Successfully created Tag.'
+    })
+    @ApiNotAcceptableResponse({
+        description: 'Profanity contained in label title.'
+    })
+    @ApiConflictResponse({
+        description: 'Label already exists in database.'
+    })
+    @ApiBadRequestResponse({
+        description: 'Could not create tag.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
     @ApiBody({type: createTagDTO})
     createTag(
         @Body('label') label: string,
@@ -129,8 +144,8 @@ export class WorkoutController {
     @ApiOkResponse({
         description: 'Successfully created Tag.'
     })
-    @ApiBadRequestResponse({
-        description: 'Could not create tag.'
+    @ApiNotFoundResponse({
+        description: 'No tags were found in the database.'
     })
     @ApiInternalServerErrorResponse({
         description: 'Internal server error.'
