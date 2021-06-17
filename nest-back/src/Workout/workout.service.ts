@@ -72,6 +72,32 @@ export class WorkoutService{
         }
     }
 
+    async getExercises(ctx: Context): Promise<any> {
+        try{
+            const exercises = await ctx.prisma.exercise.findMany({//search for exercises that meet the requirement
+                select: {
+                    title: true,
+                    description: true,
+                    repRange: true,
+                    sets: true,
+                    Posedescription: true,
+                    restPeriod: true,
+                    difficulty: true,
+                    duratime: true
+                }
+            });
+
+            if(exercises==null){//if JSON object is empty, send error code
+                throw new NotFoundException("No exercises were found in the database.");
+            }
+
+            return exercises;
+        }
+        catch(err){
+            throw err;
+        }
+    }
+
     async getExerciseByTitle(title: string, ctx: Context): Promise<any> {
         try{
             const exercise = await ctx.prisma.exercise.findMany({//search for exercises that meet the requirement

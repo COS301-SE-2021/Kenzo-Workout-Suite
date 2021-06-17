@@ -1,25 +1,24 @@
 import {BadRequestException, Injectable, NotFoundException, PreconditionFailedException} from '@nestjs/common';
-import {PrismaService} from "../Prisma/prisma.service";
 import { JwtService } from '@nestjs/jwt';
 import {User} from "@prisma/client";
 import * as bcrypt from 'bcrypt';
 import {Context} from "../../context";
-
+import {v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UserService {
     constructor(private jwtService: JwtService) {}
 
-    async validateUser(username: string, pass: string, ctx: Context): Promise<any> {
+    async validateUser(email: string, pass: string, ctx: Context): Promise<any> {
 
-        if (username==null || pass==null)
+        if (email==null || pass==null)
         {
             throw new NotFoundException("Invalid Email or Password")
         }
 
         const user = await ctx.prisma.user.findUnique({
             where: {
-                email: username
+                email: email
             },
         })
 
@@ -43,7 +42,18 @@ export class UserService {
     }
 
     async login(user: any) {
+        if (user==null)
+        {
+            throw new NotFoundException("Invalid user object passed in.")
+        }
+
+        if (user.userId==null)
+        {
+            throw new NotFoundException("User object with no userId passed in")
+        }
+
         const payload = { userId: user.userId};
+
         return {
             access_token: this.jwtService.sign(payload),
         };
@@ -53,22 +63,23 @@ export class UserService {
 
         if (user==null)
         {
-            return new PreconditionFailedException("Invalid client object")
+            throw new PreconditionFailedException("Invalid user object")
         }
 
         const email=user.email.toLowerCase();
 
         if (!this.validateEmail(email))
         {
-            return new PreconditionFailedException("Invalid email address")
+            throw new PreconditionFailedException("Invalid email address")
         }
 
         if (!this.validatePassword(user.password)){
-            return new PreconditionFailedException("Invalid password")
+            throw new PreconditionFailedException("Invalid password")
         }
 
         const saltOrRounds = 10;
         const hash = await bcrypt.hash(user.password, saltOrRounds);
+
 
         const countEmail= await ctx.prisma.user.count({
             where:{
@@ -76,10 +87,12 @@ export class UserService {
             }
         })
 
-        if (countEmail===1)
-        {
-            return new BadRequestException("User with this email already exists")
+
+        if (countEmail>=1) {
+            throw new BadRequestException("User with this email already exists")
         }
+
+
 
         const createdUser= await ctx.prisma.user.create({
             data: {
@@ -91,21 +104,25 @@ export class UserService {
             },
         })
 
-        if (!createdUser)
-        {
-            return new BadRequestException("Could not create User")
+
+        if (!createdUser) {
+            throw new BadRequestException("Could not create User")
         }
+
 
         return this.login(createdUser);
     }
 
-    async findUserByUUID(userId: string,ctx: Context) : Promise<any>{
+    async findUserByUUID(userId: uuidv4,ctx: Context) : Promise<any>{
+
 
         if (userId===null || userId==="")
         {
             throw new BadRequestException("Null values cannot be passed in for userId")
         }
 
+
+    try {
         const user = await ctx.prisma.user.findUnique({
             where: {
                 userId: userId
@@ -116,12 +133,51 @@ export class UserService {
             throw new NotFoundException("No user with such UUID")
         }
 
-        return user;
+        const { password, ...result } = user;
+        return result;
+    }
+        catch (err)
+        {
+            throw new BadRequestException("No user with such UUID")
+        }
     }
 
-    googleLogin(req) {
+    async updateUserDetails(firstName:string,lastName:string, dateOfBirth:Date,userId:string,ctx:Context){
+        if (firstName==null || lastName==null || userId==null || firstName=="" || lastName=="" || userId=="")
+        {
+            throw new BadRequestException("Null values can not be passed in for firstName, lastName or userId")
+        }
+
+        const updatedUser=await ctx.prisma.user.update({
+        where:{
+        userId: userId,
+        },
+        data:{
+            firstName:firstName,
+            lastName:lastName,
+            dateOfBirth:dateOfBirth
+        },
+        })
+
+        if (updatedUser===null)
+        {
+            throw new BadRequestException("Could not update user")
+        }
+
+        return {
+            message: 'User data updated'
+        }
+    }
+
+
+    async googleLogin(req) {
+        if (!req)
+        {
+            throw new BadRequestException("No such google user")
+        }
+
         if (!req.user) {
-            return 'No user from google'
+            throw new BadRequestException("No such google user")
         }
 
         return {
@@ -130,13 +186,13 @@ export class UserService {
         }
     }
 
-    validateEmail(email:string){
+     validateEmail(email:string){
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
 
     }
 
-    validatePassword(password:string) {
+     validatePassword(password:string) {
         const re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
         return re.test(password);
     }

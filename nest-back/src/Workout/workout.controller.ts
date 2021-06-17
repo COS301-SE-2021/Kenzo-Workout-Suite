@@ -1,6 +1,7 @@
 import {Body, Controller, Get, Param, Post, Put} from '@nestjs/common';
 import {WorkoutService} from "./workout.service";
 import {
+    ApiBody,
     ApiCreatedResponse, ApiHeader,
     ApiInternalServerErrorResponse,
     ApiNotFoundResponse,
@@ -8,6 +9,7 @@ import {
     ApiResponse
 } from "@nestjs/swagger";
 import {ActualPrisma} from "../../context";
+import { CreateExerciseDTO } from "./workout.model";
 
 @Controller('workout')
 export class WorkoutController {
@@ -46,6 +48,21 @@ export class WorkoutController {
         return this.workoutService.getWorkoutByTitle(title,ActualPrisma());
     }
 
+    @Get('getExercises')
+    @ApiOkResponse({
+        description: 'An exercise object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No exercises were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    getExercises(
+    ) {
+        return this.workoutService.getExercises(ActualPrisma());
+    }
+
     @Get('getExerciseByTitle/:title')
     @ApiOkResponse({
         description: 'A workout object.'
@@ -79,6 +96,16 @@ export class WorkoutController {
     }
 
     @Post('createExercise')
+    @ApiBody({type: CreateExerciseDTO})
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
     getUserByEmail(
         @Body('title') title: string,
         @Body('description') description: string,
