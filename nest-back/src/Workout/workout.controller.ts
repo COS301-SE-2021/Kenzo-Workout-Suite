@@ -17,8 +17,15 @@ import {
     Prisma
 } from '@prisma/client';
 import {ActualPrisma, Context} from "../../context";
-
-
+import {
+    ApiBody,
+    ApiCreatedResponse, ApiHeader,
+    ApiInternalServerErrorResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse, ApiParam, ApiProperty, ApiQuery,
+    ApiResponse
+} from "@nestjs/swagger";
+import { CreateExerciseDTO } from "./workout.model";
 
 @Controller('workout')
 export class WorkoutController {
@@ -29,25 +36,106 @@ export class WorkoutController {
         this.ctx = ActualPrisma();
     }
 
-    @Get('getWorkoutByTitle/:title')
-    getWorkoutByTitle(
-        @Param('title') title: string,
+    @Get('getWorkouts')
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    getWorkouts(
     ) {
-        return this.workoutService.getWorkoutByTitle(title);
+        return this.workoutService.getWorkouts(ActualPrisma());
+    }
+
+    @Get('getWorkoutById/:id')
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    getWorkoutById(
+        @Param('id') id: string,
+    ) {
+        return this.workoutService.getWorkoutById(id,ActualPrisma());
+    }
+
+    @Get('getExercises')
+    @ApiOkResponse({
+        description: 'An exercise object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No exercises were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    getExercises(
+    ) {
+        return this.workoutService.getExercises(ActualPrisma());
     }
 
     @Get('getExerciseByTitle/:title')
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
     getExerciseByTitle(
         @Param('title') title: string,
     ) {
-        return this.workoutService.getExerciseByTitle(title);
+        return this.workoutService.getExerciseByTitle(title,ActualPrisma());
     }
 
-    @Get('getWorkoutByPlanner/:email')
+    @Get('getWorkoutByPlanner/:id')
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
     getWorkoutByPlanner(
-        @Param('email') email: string,
+        @Param('id') id: string,
     ) {
-        return this.workoutService.getWorkoutByPlanner(email);
+        return this.workoutService.getWorkoutByPlanner(id,ActualPrisma());
+    }
+
+    @Post('createExercise')
+    @ApiBody({type: CreateExerciseDTO})
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    getUserByEmail(
+        @Body('title') title: string,
+        @Body('description') description: string,
+        @Body('repRange') repRange: string,
+        @Body('sets') sets: number,
+        @Body('poseDescription') poseDescription: string,
+        @Body('restPeriod') restPeriod: number,
+        @Body('difficulty') difficulty: string,
+        @Body('duratime') duration: number,
+    ) {
+        return this.workoutService.createExercise(title,description,repRange,sets,poseDescription,restPeriod,difficulty,duration);
     }
 
     @Post('createExercise')

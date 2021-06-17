@@ -7,11 +7,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-     .setTitle('Kenzo-Workout Suite')
-     .setDescription('Description of Kenzo-Workout Suite API')
-     .setVersion('1.0')
-      .addBearerAuth()
-     .build();
+      .setTitle('Kenzo Workout Api')
+      .setDescription('The get and post request for Kenzo Workout')
+      .setVersion('1.0')
+      .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
