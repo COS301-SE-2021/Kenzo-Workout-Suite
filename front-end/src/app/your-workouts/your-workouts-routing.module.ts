@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { YourWorkoutsPage } from './your-workouts.page';
 import { CreateWorkoutPage} from '../create-workout/create-workout.page'
+import { SearchPage } from "../search/search.page";
 
 const routes: Routes = [
   {
@@ -12,6 +13,10 @@ const routes: Routes = [
   {
     path: 'create-workout',
     component: CreateWorkoutPage
+  },
+  {
+    path: 'search',
+    component: SearchPage
   }
 ];
 
