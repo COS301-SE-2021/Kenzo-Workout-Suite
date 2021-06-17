@@ -4,6 +4,7 @@ import {Router} from "@angular/router";
 import {AlertController} from "@ionic/angular";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
 import {Workout} from "../Models/workout";
+import {KenzoTag} from "../Models/kenzo-tag";
 
 @Component({
   selector: 'app-create-workout',
@@ -15,10 +16,13 @@ export class CreateWorkoutPage implements OnInit {
   description: string="";
   title: string="";
 
+  tags:KenzoTag[] = new Array();
+
   constructor(private http:HttpClient,
               private route:Router,
               private workoutService:WorkoutService,
               public alertController:AlertController,) {
+    this.getTags();
   }
 
   ngOnInit() {
@@ -88,5 +92,41 @@ export class CreateWorkoutPage implements OnInit {
 
   reloadWindow(){
     window.location.reload();
+  }
+
+  /** This function uses the server to retrieve an array of all possible tags for the system
+   * With these tags, the user will be able to select tags for their workouts
+   */
+  getTags() {
+    // Mocking tags for now
+    this.tags.push(new KenzoTag("BLUE","BLUE","Leg Day", false));
+    this.tags.push(new KenzoTag("GREEN","GREEN","Arms", false));
+    this.tags.push(new KenzoTag("YELLOW","YELLOW","Chest Pump", false));
+    this.tags.push(new KenzoTag("ORANGE","ORANGE","Level 4", false));
+    this.tags.push(new KenzoTag("RED","RED","Pain", false));
+    this.tags.push(new KenzoTag("PURPLE","PURPLE","Hard", false));
+    this.tags.push(new KenzoTag("BLACK","PINK","Thighs", false));
+    this.tags.push(new KenzoTag("BLACK","RED","Creatine", false));
+  }
+
+  /** This function serves the purpose of selecting and deselecting tags for the creation of a workout
+   *
+   * @param id specifies the id of the tag selected/deselected
+   *
+   * If the selected tag is already selected it is returned to the unselected, else it is placed in the new selected choices
+   */
+  select(id) {
+    for (let i = 0; i < this.tags.length; i++) {
+      if (this.tags[i].label === id) {
+        if(this.tags[i].selected){
+          this.tags[i].selected = false;
+          document.getElementById("tags").appendChild(document.getElementById(id));
+        }
+        else {
+          this.tags[i].selected = true;
+          document.getElementById("selected").appendChild(document.getElementById(id));
+        }
+      }
+    }
   }
 }

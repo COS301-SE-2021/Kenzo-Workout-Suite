@@ -19,30 +19,23 @@
     </div>
     <br>
     <div class="input-div">
-      <ion-label class="input-description">Difficulty</ion-label>
-      <ion-list mode="ios">
-        <ion-radio-group [(ngModel)]="diff" value="easy">
-          <ion-item class="radios">
-            <ion-label>Easy</ion-label>
-            <ion-radio slot="start" value="easy"></ion-radio>
-          </ion-item>
+      <ion-label class="input-description">Describe your workout with Kenzo Tags</ion-label>
+      <ion-searchbar placeholder="Search tags" mode="ios"></ion-searchbar>
 
-          <ion-item class="radios">
-            <ion-label>Medium</ion-label>
-            <ion-radio slot="start" value="medium"></ion-radio>
-          </ion-item>
+      <span id="tags" *ngFor="let tag of tags" approxItemHeight="320px">
+        <ion-chip id="{{tag.label}}" (click)="select(tag.label)"
+                  [style]="{'--background': 'var(--ion-color-KTB_'+tag.backgroundColor+')', '--color': 'var(--ion-color-KT_'+tag.textColor+')'}" >
+          <ion-label>{{tag.label}}</ion-label>
+        </ion-chip>
+    </span>
 
-          <ion-item class="radios">
-            <ion-label>Hard</ion-label>
-            <ion-radio slot="start" value="hard"></ion-radio>
-          </ion-item>
+      <br>
+      <br>
+      <ion-label class="input-description">Selected</ion-label>
+      <div id="selected">
 
-          <ion-item class="radios">
-            <ion-label>Extreme</ion-label>
-            <ion-radio slot="start" value="extreme"></ion-radio>
-          </ion-item>
-        </ion-radio-group>
-      </ion-list>
+
+      </div>
     </div>
     <br>
     <div class="input-div">
