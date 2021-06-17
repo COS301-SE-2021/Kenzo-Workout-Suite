@@ -25,6 +25,7 @@ export class WorkoutService{
         try{
             const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
                 select: {
+                    workoutID: true,
                     workoutTitle: true,
                     workoutDescription: true,
                     exercises: true,
@@ -52,6 +53,7 @@ export class WorkoutService{
                     workoutTitle: title
                 },
                 select: {
+                    workoutID: true,
                     workoutTitle: true,
                     workoutDescription: true,
                     exercises: true,
@@ -76,6 +78,7 @@ export class WorkoutService{
         try{
             const exercises = await ctx.prisma.exercise.findMany({//search for exercises that meet the requirement
                 select: {
+                    exercise: true,
                     title: true,
                     description: true,
                     repRange: true,
@@ -105,6 +108,7 @@ export class WorkoutService{
                     title : title
                 },
                 select: {
+                    exercise: true,
                     title: true,
                     description: true,
                     repRange: true,
@@ -135,6 +139,7 @@ export class WorkoutService{
                     planner_ID: id
                 },
                 select: {
+                    workoutID: true,
                     workoutTitle: true,
                     workoutDescription: true,
                     exercises: true,
