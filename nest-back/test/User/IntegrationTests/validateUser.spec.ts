@@ -25,5 +25,5 @@ beforeEach(async () => {
 })
 
 test('Invalid email passed in, should throw PreconditionFailedException', async () => {
-    console.log("hello")
+
 })

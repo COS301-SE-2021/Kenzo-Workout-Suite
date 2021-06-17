@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import {User} from "@prisma/client";
 import * as bcrypt from 'bcrypt';
 import {Context} from "../../context";
+import {v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UserService {
@@ -60,6 +61,8 @@ export class UserService {
 
     async signUp(user:User,ctx: Context) : Promise<any>{
 
+        console.log(user)
+
         if (user==null)
         {
             throw new PreconditionFailedException("Invalid user object")
@@ -87,6 +90,7 @@ export class UserService {
         })
 
 
+
         if (countEmail>=1) {
             throw new BadRequestException("User with this email already exists")
         }
@@ -112,13 +116,16 @@ export class UserService {
         return this.login(createdUser);
     }
 
-    async findUserByUUID(userId: string,ctx: Context) : Promise<any>{
+    async findUserByUUID(userId: uuidv4,ctx: Context) : Promise<any>{
+
 
         if (userId===null || userId==="")
         {
             throw new BadRequestException("Null values cannot be passed in for userId")
         }
 
+
+    try {
         const user = await ctx.prisma.user.findUnique({
             where: {
                 userId: userId
@@ -131,7 +138,11 @@ export class UserService {
 
         const { password, ...result } = user;
         return result;
-
+    }
+        catch (err)
+        {
+            throw new BadRequestException("No user with such UUID")
+        }
     }
 
     async updateUserDetails(firstName:string,lastName:string, dateOfBirth:Date,userId:string,ctx:Context){
