@@ -19,7 +19,7 @@ export class UserService {
    * @returns 200,400,500 represent a success, user error and server error, respectively.
    */
   async attemptSignIn(email: string, password: string): Promise<Number> {
-    const url: string = "http://localhost:5500/user/signIn";
+    const url: string = "http://localhost:3000/user/login";
 
     //Client Validation
     if (email == null) {
@@ -65,9 +65,9 @@ export class UserService {
       password = "";
     }
     if (accountType == "Planner")
-      url = "http://localhost:5500/user/signupPlanner";
+      url = "http://localhost:3000/user/signupPlanner";
     if (accountType == "Client")
-      url = "http://localhost:5500/user/signupClient";
+      url = "http://localhost:3000/user/signupClient";
 
     const body: Object = { //Object to be saved into DB
       "firstName": firstName,

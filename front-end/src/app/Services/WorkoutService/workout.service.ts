@@ -19,7 +19,7 @@ export class WorkoutService {
    * @returns 200,400,500 represent a success, user error and server error, respectively.
    */
   async attemptSubmitWorkout(workout:Workout) : Promise<Number> {
-    const url : string = "http://localhost:5500/workout/createWorkout";
+    const url : string = "http://localhost:3000/workout/createWorkout";
 
     const body:Object = {
       "workoutTitle": workout.title,
@@ -44,7 +44,7 @@ export class WorkoutService {
    * @returns 200,400,500 represent a success, user error and server error, respectively.
    */
   async attemptSubmitExercise(exercise:Exercise) : Promise<Number> {
-    const url : string = "http://localhost:5500/workout/createExercise";
+    const url : string = "http://localhost:3000/workout/createExercise";
 
     const body:Object = {
       "title": exercise.title,
@@ -66,7 +66,7 @@ export class WorkoutService {
   }
 
   async attemptGetWorkouts() : Promise<any>{
-    const url: string = "http://localhost:5500/workout/getworkout";
+    const url: string = "http://localhost:3000/workout/getworkout";
     let value = this.http.get(url).toPromise().then(data=>{
       return data
     }).catch(err=>{
