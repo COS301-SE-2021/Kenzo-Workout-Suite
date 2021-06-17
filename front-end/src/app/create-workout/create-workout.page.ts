@@ -23,7 +23,6 @@ export class CreateWorkoutPage implements OnInit {
               private workoutService:WorkoutService,
               public alertController:AlertController,) {
     this.getTags();
-    console.log(this.tags)
   }
 
   ngOnInit() {
