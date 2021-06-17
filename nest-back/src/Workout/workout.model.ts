@@ -18,3 +18,12 @@ export class CreateExerciseDTO{
     @ApiProperty({type: Number, description: 'duration of exercise'})
     duratime: number;
 }
+
+export class createTagDTO{
+    @ApiProperty({type: String, description: 'label of the tag'})
+    label: string;
+    @ApiProperty({type: String, description: 'text colour of the label'})
+    textColour: string;
+    @ApiProperty({type: String, description: 'background colour of the label'})
+    backgroundColour: string;
+}
