@@ -1,21 +1,13 @@
-import {
-    Controller,
-    Get,
-    Param,
-    Post,
-    Body,
-    Put,
-    Delete,
-} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Put} from '@nestjs/common';
 import {WorkoutService} from "./workout.service";
-import {Workout as WorkoutModel} from "@prisma/client"
 import {
-    Workout,
-    Exercise,
-    Planner,
-    Difficulty,
-    Prisma
-} from '@prisma/client';
+    ApiCreatedResponse, ApiHeader,
+    ApiInternalServerErrorResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse, ApiParam, ApiProperty, ApiQuery,
+    ApiResponse
+} from "@nestjs/swagger";
+import {ActualPrisma} from "../../context";
 
 @Controller('workout')
 export class WorkoutController {
@@ -24,53 +16,89 @@ export class WorkoutController {
     }
 
     @Get('getWorkouts')
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
     getWorkouts(
     ) {
-        return this.workoutService.getWorkouts();
+        return this.workoutService.getWorkouts(ActualPrisma());
     }
 
     @Get('getWorkoutByTitle/:title')
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
     getWorkoutByTitle(
         @Param('title') title: string,
     ) {
-        return this.workoutService.getWorkoutByTitle(title);
+        return this.workoutService.getWorkoutByTitle(title,ActualPrisma());
     }
 
     @Get('getExerciseByTitle/:title')
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
     getExerciseByTitle(
         @Param('title') title: string,
     ) {
-        return this.workoutService.getExerciseByTitle(title);
+        return this.workoutService.getExerciseByTitle(title,ActualPrisma());
     }
 
-    @Get('getWorkoutByPlanner/:email')
+    @Get('getWorkoutByPlanner/:id')
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
     getWorkoutByPlanner(
-        @Param('email') email: string,
+        @Param('id') id: string,
     ) {
-        return this.workoutService.getWorkoutByPlanner(email);
+        return this.workoutService.getWorkoutByPlanner(id,ActualPrisma());
     }
 
     @Post('createExercise')
-    createExercise(
+    getUserByEmail(
         @Body('title') title: string,
         @Body('description') description: string,
         @Body('repRange') repRange: string,
         @Body('sets') sets: number,
-        @Body('Posedescription') Posedescription: string,
+        @Body('poseDescription') poseDescription: string,
         @Body('restPeriod') restPeriod: number,
-        @Body('difficulty') difficulty: Difficulty,
+        @Body('difficulty') difficulty: string,
         @Body('duratime') duration: number,
     ) {
-        return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,difficulty,duration);
+        return this.workoutService.createExercise(title,description,repRange,sets,poseDescription,restPeriod,difficulty,duration);
     }
 
     @Post('createWorkout')
     createWorkout(
         @Body('workoutTitle') workoutTitle: string,
         @Body('workoutDescription') workoutDescription: string,
-        @Body('difficulty') difficulty: Difficulty
+        @Body('difficulty') difficulty: string,
     ) {
-        return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty )
+        return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty);
     }
 
 }

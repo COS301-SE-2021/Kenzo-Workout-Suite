@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
@@ -17,45 +14,44 @@ enum Difficulty {
   EXTREME
 }
 
+enum userType {
+  ADMIN
+  CLIENT
+  PLANNER
+}
+
 model Avatar {
   torsoColour String @default("blue")
   armColour   String @default("blue")
   legColour   String @default("blue")
   headColour  String @default("blue")
-  client      Client @relation(fields: [avatarEmail], references: [email])
+  client      User @relation(fields: [avatarEmail], references: [email])
   avatarEmail String @id
 }
 
-model Client {
-  email       String    @id
-  firstName   String
-  lastName    String
-  password    String
-  dateOfBirth DateTime?
-  avatar      Avatar?
-}
-
-
-model Planner {
+model User {
+  userId  String   @id @default(uuid())
   email       String    @unique
   firstName   String
   lastName    String
   password    String
   dateOfBirth DateTime?
-
+  avatar      Avatar?
+  userType    userType
   workouts Workout[]
 }
+
 
 model Workout {
   workoutID          String @id @default(uuid())
   workoutTitle       String
   workoutDescription String
 
-  exercises  Exercise[]
-  difficulty Difficulty
+  exercises          Exercise[]
+  difficulty         Difficulty
 
-  planner       Planner? @relation(fields: [planner_Email], references: [email])
-  planner_Email String?
+  planner            User? @relation(fields: [planner_ID], references: [userId])
+  planner_ID         String?
 }
 
 model Exercise {
@@ -67,10 +63,7 @@ model Exercise {
   Posedescription String
   restPeriod      Int
   difficulty      Difficulty
+  duratime        Int
 
-  duratime Int
-
-
-  Workout          Workout? @relation(fields: [workoutWorkoutID], references: [workoutID])
-  workoutWorkoutID String?
+  workouts        Workout[]
 }
