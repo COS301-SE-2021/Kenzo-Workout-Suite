@@ -22,6 +22,18 @@ export class WorkoutService{
     constructor(private prisma: PrismaService) {
     }
 
+    format(label: string): string{
+        let str = label.toLowerCase();
+        const arr = str.split(" ");
+        //loop through each element of the array and capitalize the first letter.
+        for(let i=0; i<arr.length; i++){
+            arr[i]= arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
+        }
+        //Join all the elements of the array back into a string using a blank space as a separator
+        str = arr.join(" ");
+        return str;
+    }
+
     async getWorkouts(ctx: Context): Promise<any> {
         try{
             const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
@@ -140,6 +152,7 @@ export class WorkoutService{
             throw new NotAcceptableException("Profanity contained in label title.");
         }
         try {
+            label  = this.format(label);
             const find = await ctx.prisma.tag.findUnique({//search for tags that meet the requirement
                 where: {
                     label
