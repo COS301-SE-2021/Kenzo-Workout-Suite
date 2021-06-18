@@ -61,6 +61,8 @@ export class UserService {
 
     async signUp(user:User,ctx: Context) : Promise<any>{
 
+        console.log(user)
+
         if (user==null)
         {
             throw new PreconditionFailedException("Invalid user object")
@@ -86,6 +88,7 @@ export class UserService {
                 email: user.email
             }
         })
+
 
 
         if (countEmail>=1) {
