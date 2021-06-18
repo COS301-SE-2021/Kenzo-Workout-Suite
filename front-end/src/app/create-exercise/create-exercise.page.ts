@@ -42,6 +42,7 @@ export class CreateExercisePage implements OnInit {
    * Thereafter,
    * Error states [400,500] will result in an alert
    * Success states [200] will result in a logged in a Planner being navigated to the logged in User's homescreen.
+   * @author Luca Azmanov, u19004185
    */
   async createExercise() {
     let exercise = new Exercise(this.title, this.description, this.range, this.sets, this.pose_description,
@@ -90,6 +91,7 @@ export class CreateExercisePage implements OnInit {
   /**
    * Helper Function to physically present alert to user independent of OS.
    * @param alert
+   * @author Luca Azmanov, u19004185
    */
   async presentAlert(alert:any) {
     await alert.present();
@@ -102,6 +104,7 @@ export class CreateExercisePage implements OnInit {
 
   /** This function uses the server to retrieve an array of all possible tags for the system
    * With these tags, the user will be able to select tags for their exercise
+   * @author Luca Azmanov, u19004185
    */
   getTags() {
     // Mocking tags for now
@@ -120,6 +123,7 @@ export class CreateExercisePage implements OnInit {
    * @param id specifies the id of the tag selected/deselected
    *
    * If the selected tag is already selected it is returned to the unselected, else it is placed in the new selected choices
+   * @author Luca Azmanov, u19004185
    */
   select(id) {
     for (let i = 0; i < this.tags.length; i++) {
@@ -141,6 +145,7 @@ export class CreateExercisePage implements OnInit {
    * selected or not and decide whether it is appropriate to display this tag.
    *
    * i.e. If a tag is selected, it must not be displayed under search results
+   * @author Luca Azmanov, u19004185
    */
   filterSelection(event) {
     let text = event.srcElement.value;

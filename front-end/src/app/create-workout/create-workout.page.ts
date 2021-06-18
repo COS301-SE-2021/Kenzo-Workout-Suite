@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
-import {AlertController} from "@ionic/angular";
+import {AlertController, IonSearchbar} from "@ionic/angular";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
 import {Workout} from "../Models/workout";
 import {KenzoTag} from "../Models/kenzo-tag";
@@ -17,12 +17,17 @@ export class CreateWorkoutPage implements OnInit {
   title: string="";
 
   tags:KenzoTag[] = new Array();
+  finalTags:KenzoTag[] = new Array();
+  newTag: KenzoTag;
+
+  @ViewChild('searchBar', {static: false}) searchbar: IonSearchbar;
 
   constructor(private http:HttpClient,
               private route:Router,
               private workoutService:WorkoutService,
               public alertController:AlertController,) {
     this.getTags();
+    this.newTag = this.getRandomTag("TEST");
   }
 
   ngOnInit() {
@@ -37,6 +42,7 @@ export class CreateWorkoutPage implements OnInit {
    * Thereafter,
    * Error states [400,500] will result in an alert
    * Success states [200] will result in a logged in a Planner being navigated to the logged in User's homescreen.
+   * @author Luca Azmanov, u19004185
    */
   async submitCreateRequest() {
     let new_workout = new Workout(this.title, this.description, this.diff);
@@ -84,6 +90,7 @@ export class CreateWorkoutPage implements OnInit {
   /**
    * Helper Function to physically present alert to user independent of OS.
    * @param alert
+   * @author Luca Azmanov, u19004185
    */
   async presentAlert(alert:any) {
     await alert.present();
@@ -96,6 +103,8 @@ export class CreateWorkoutPage implements OnInit {
 
   /** This function uses the server to retrieve an array of all possible tags for the system
    * With these tags, the user will be able to select tags for their workouts
+   *
+   * @author Luca Azmanov, u19004185
    */
   getTags() {
     // Mocking tags for now
@@ -106,7 +115,6 @@ export class CreateWorkoutPage implements OnInit {
     this.tags.push(new KenzoTag("RED","RED","Pain", false));
     this.tags.push(new KenzoTag("PURPLE","PURPLE","Hard", false));
     this.tags.push(new KenzoTag("BLACK","PINK","Thighs", false));
-    this.tags.push(new KenzoTag("BLACK","RED","Creatine", false));
   }
 
   /** This function serves the purpose of selecting and deselecting tags for the creation of a workout
@@ -114,16 +122,26 @@ export class CreateWorkoutPage implements OnInit {
    * @param id specifies the id of the tag selected/deselected
    *
    * If the selected tag is already selected it is returned to the unselected, else it is placed in the new selected choices
+   *
+   * @author Luca Azmanov, u19004185
    */
   select(id) {
+    if(id===this.newTag.label && !this.newTag.selected){
+      this.tags.push(this.newTag);
+      this.reset(id);
+      this.newTag = this.getRandomTag("");
+      return;
+    }
+
     for (let i = 0; i < this.tags.length; i++) {
-      if (this.tags[i].label === id) {
-        if(this.tags[i].selected){
-          this.tags[i].selected = false;
+      let tag = this.tags[i];
+      if (tag.label === id) {
+        if(tag.selected){
+          tag.selected = false;
           document.getElementById("tags").appendChild(document.getElementById(id));
         }
         else {
-          this.tags[i].selected = true;
+          tag.selected = true;
           document.getElementById("selected").appendChild(document.getElementById(id));
         }
       }
@@ -135,9 +153,53 @@ export class CreateWorkoutPage implements OnInit {
    * selected or not and decide whether it is appropriate to display this tag.
    *
    * i.e. If a tag is selected, it must not be displayed under search results
+   *
+   * @author Luca Azmanov, u19004185
    */
   filterSelection(event) {
     let text = event.srcElement.value;
+
+    let found = false;
+    for (let i = 0; i < this.tags.length; i++) {
+      let tag = this.tags[i];
+
+      if(tag.label.toLowerCase().includes(text.toLowerCase())) found = true;
+
+      // if not selected
+      if(!tag.selected){
+        let id = tag.label;
+        let tagElement = document.getElementById(id);
+
+        // if tag label does not contain the searched tag
+        if(!id.toLowerCase().includes(text.toLowerCase())){
+          tagElement.style.display = "none";
+        }
+        else{ // if tag label contains the searched tag
+          tagElement.style.display = "inline-block";
+        }
+      }
+    }
+
+    if(!found){
+      document.getElementById("no-tag-create").style.display="block";
+      this.newTag.label = text;
+    }
+    else{
+      document.getElementById("no-tag-create").style.display="none";
+    }
+
+  }
+
+  /** This function serves the purpose of resetting the selection div after
+   * the addition of a new tag is performed
+   *
+   * @param label is the name to be displayed after creation
+   *
+   * @author Luca Azmanov, u19004185
+   */
+  reset(label) {
+    this.searchbar.value = label;
+    let text = label;
 
     for (let i = 0; i < this.tags.length; i++) {
       let tag = this.tags[i];
@@ -147,14 +209,29 @@ export class CreateWorkoutPage implements OnInit {
         let id = tag.label;
         let tagElement = document.getElementById(id);
 
-        // if tag label contains the searched tag
+        // if tag label does not contain the searched tag
         if(!id.toLowerCase().includes(text.toLowerCase())){
           tagElement.style.display = "none";
         }
-        else{
+        else{ // if tag label contains the searched tag
           tagElement.style.display = "inline-block";
         }
       }
     }
+    document.getElementById("no-tag-create").style.display="none";
+  }
+
+  /** This function creates a new random tag with random colors and waits for the new
+   * specified label
+   * @param label is the name for new newly created tag
+   * @author Luca Azmanov, u19004185
+   */
+  getRandomTag(label) : KenzoTag{
+    let colors = ["RED","PINK","PURPLE","BLUE","YELLOW","ORANGE","GREEN"];
+
+    let randomTC = Math.floor(Math.random() * (6 - 0 + 1)) + 0;
+    let randomBC = Math.floor(Math.random() * (6 - 0 + 1)) + 0;
+
+    return new KenzoTag(colors[randomTC],colors[randomBC],label, false);
   }
 }
