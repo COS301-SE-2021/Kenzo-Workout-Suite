@@ -18,7 +18,7 @@ import {
 } from '@prisma/client';
 import {ActualPrisma, Context} from "../../context";
 import {
-    ApiBadRequestResponse,
+    ApiBadRequestResponse, ApiBearerAuth,
     ApiBody, ApiConflictResponse,
     ApiInternalServerErrorResponse, ApiNotAcceptableResponse,
     ApiNotFoundResponse,
@@ -167,6 +167,7 @@ export class WorkoutController {
     @ApiInternalServerErrorResponse({
         description: 'Internal server error.'
     })
+    @ApiBearerAuth()
     async createWorkout(
         @Body('workoutTitle') workoutTitle: string,
         @Body('workoutDescription') workoutDescription: string,

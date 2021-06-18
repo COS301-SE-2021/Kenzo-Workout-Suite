@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import {User} from "@prisma/client";
 import * as bcrypt from 'bcrypt';
 import {Context} from "../../context";
-import {v4 as uuidv4 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 
 @Injectable()
@@ -179,7 +179,7 @@ export class UserService {
      *
      * @author Zelealem Tesema
      */
-    async findUserByUUID(passedUserId: uuidv4,ctx: Context) : Promise<any>{
+    async findUserByUUID(passedUserId: string, ctx: Context) : Promise<any>{
 
         if (passedUserId===null || passedUserId==="")
         {

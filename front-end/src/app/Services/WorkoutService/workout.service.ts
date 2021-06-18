@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Workout} from "../../Models/workout";
 import {Exercise} from "../../Models/exercise";
+import { UserService } from "../UserService/user.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class WorkoutService {
 
-  constructor(private http:HttpClient) {}
+  constructor(private http:HttpClient,
+              private userService: UserService) {}
 
   /** This function attempts to submit a workout by using the following parameters:
    *
@@ -21,10 +23,13 @@ export class WorkoutService {
   async attemptSubmitWorkout(workout:Workout) : Promise<Number> {
     const url : string = "http://localhost:3000/workout/createWorkout";
 
+    let UserDetails = await this.userService.obtainUserDetails();
+    console.log(UserDetails);
+
     const body:Object = {
       "workoutTitle": workout.title,
       "workoutDescription": workout.description,
-      "difficulty": workout.difficulty
+      "planner_ID": UserDetails["planner_ID"]
     };
 
     return this.http.post(url, body).toPromise().then(data=>{
@@ -51,9 +56,8 @@ export class WorkoutService {
       "description": exercise.description,
       "repRange": exercise.repRange,
       "sets": exercise.sets,
-      "Posedescription": exercise.Posedescription,
+      "poseDescription": exercise.Posedescription,
       "restPeriod": exercise.restPeriod,
-      "difficulty": exercise.difficulty.toUpperCase(),
       "duratime": exercise.duratime
     };
 
@@ -76,6 +80,18 @@ export class WorkoutService {
     }).catch(err=>{
       return err;
     });
+  }
 
+  async attemptGetExercises() : Promise<any>{
+    const url: string = "http://localhost:3000/workout/getExercises";
+    return this.http.get(url).toPromise().then(data=>{
+      data = {
+        status: 200,
+        data: data
+      }
+      return data
+    }).catch(err=>{
+      return err;
+    });
   }
 }

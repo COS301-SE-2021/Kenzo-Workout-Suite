@@ -12,7 +12,7 @@ import {KenzoTag} from "../Models/kenzo-tag";
   styleUrls: ['./create-workout.page.scss'],
 })
 export class CreateWorkoutPage implements OnInit {
-  diff: string="";
+  planner_ID: string="";
   description: string="";
   title: string="";
 
@@ -45,7 +45,7 @@ export class CreateWorkoutPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async submitCreateRequest() {
-    let new_workout = new Workout(this.title, this.description, this.diff);
+    let new_workout = new Workout(this.title, this.description, this.planner_ID);
     let status = await this.workoutService.attemptSubmitWorkout(new_workout);
 
     if (status < 400) {
