@@ -1,18 +1,16 @@
 import {MockContext, Context, createMockContext, ActualPrisma} from "../../../context";
 import {WorkoutService} from "../../../src/Workout/workout.service";
-import { JwtService } from '@nestjs/jwt';
 import {v4 as uuidv4 } from 'uuid';
 
 import {
-    Workout,
-    Exercise,
-    Prisma, Difficulty, userType
+    Difficulty, userType
 } from '@prisma/client';
 import {PrismaClient} from "@prisma/client/scripts/default-index";
 
 let ctx: Context
 let workoutService: WorkoutService
 let prisma: PrismaClient
+const uuidExercise = uuidv4();
 
 beforeEach(async () => {
     workoutService = new WorkoutService(prisma);
@@ -20,7 +18,7 @@ beforeEach(async () => {
     await ctx.prisma.exercise.deleteMany();
     await ctx.prisma.exercise.create({
         data:{
-            exercise:uuidv4(),
+            exercise:uuidExercise,
             title:"TestExercise",
             description:"TestDescription",
             repRange:"TestRange",
@@ -35,6 +33,7 @@ beforeEach(async () => {
 
 test('Should receive valid information about all exercises', async () => {
     const Exercise = [{
+        exercise: uuidExercise,
         title:"TestExercise",
         description:"TestDescription",
         repRange:"TestRange",

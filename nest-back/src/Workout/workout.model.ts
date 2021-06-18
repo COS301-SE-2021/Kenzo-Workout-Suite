@@ -66,3 +66,4 @@ export class DeleteWorkoutDTO{
     workoutID: string;
 
 }
+

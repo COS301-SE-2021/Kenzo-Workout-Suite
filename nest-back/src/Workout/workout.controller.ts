@@ -28,7 +28,6 @@ import {
 import {CreateExerciseDTO, CreateWorkoutDTO, DeleteWorkoutDTO, UpdateWorkoutDTO, createTagDTO} from "./workout.model";
 import {JwtAuthGuard} from "../user/jwt-auth.guard";
 
-
 @Controller('workout')
 export class WorkoutController {
 
@@ -84,7 +83,21 @@ export class WorkoutController {
         return this.workoutService.getExercises(ActualPrisma());
     }
 
-    //TODO:Remind Tin about GetExerciseByID
+    @Get('getExerciseByTitle/:title')
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    getExerciseByTitle(
+        @Param('title') title: string,
+    ) {
+        return this.workoutService.getExerciseByTitle(title,ActualPrisma());
+    }
     @Get('getExerciseByID/:ID')
     @ApiOkResponse({
         description: 'A workout object.'
@@ -116,6 +129,7 @@ export class WorkoutController {
     ) {
         return this.workoutService.getWorkoutByPlanner(id,ActualPrisma());
     }
+
 
     @Post('createExercise')
     @ApiOkResponse({
@@ -247,5 +261,4 @@ export class WorkoutController {
     ) {
         return this.workoutService.getTags(ActualPrisma());
     }
-
 }

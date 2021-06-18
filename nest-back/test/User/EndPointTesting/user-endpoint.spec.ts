@@ -5,7 +5,6 @@ import { UserService} from "../../../src/user/user.service";
 import { INestApplication } from '@nestjs/common';
 import {ActualPrisma, Context, MockContext} from "../../../context";
 
-
 let mockCtx: MockContext
 let ctx: Context
 
@@ -31,7 +30,8 @@ describe('End point testing of the user subsystem', () => {
         return request(app.getHttpServer())
             .post('/user/signUp')
             .send({
-                "User":{
+
+                "user":{
                     "firstName": "Zelu",
                     "lastName": "Tesema",
                     "email": "zelu2@gmail.com",
@@ -46,53 +46,7 @@ describe('End point testing of the user subsystem', () => {
         return request(app.getHttpServer())
             .post('/user/signUp')
             .send({
-                "User":{
-                    "firstName": "Zelu",
-                    "lastName": "Tesema",
-                    "email": "zelu2@gmail.com",
-                    "userType":"PLANNER",
-                    "password": "Zelu2000#"
-                }
-            })
-            .expect(201)
-    });
-
-    it(`Testing googleLogin`, async () => {
-        return request(app.getHttpServer())
-            .post('/user/signUp')
-            .send({
-                "User":{
-                    "firstName": "Zelu",
-                    "lastName": "Tesema",
-                    "email": "zelu2@gmail.com",
-                    "userType":"PLANNER",
-                    "password": "Zelu2000#"
-                }
-            })
-            .expect(201)
-    });
-
-    it(`Testing getUserDetails`, async () => {
-        return request(app.getHttpServer())
-            .post('/user/signUp')
-            .set('Authorization', 'Bearer ')
-            .send({
-                "User":{
-                    "firstName": "Zelu",
-                    "lastName": "Tesema",
-                    "email": "zelu2@gmail.com",
-                    "userType":"PLANNER",
-                    "password": "Zelu2000#"
-                }
-            })
-            .expect(201)
-    });
-
-    it(`Testing updateUserDetail`, async () => {
-        return request(app.getHttpServer())
-            .post('/user/signUp')
-            .send({
-                "User":{
+                "user":{
                     "firstName": "Zelu",
                     "lastName": "Tesema",
                     "email": "zelu2@gmail.com",
