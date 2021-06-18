@@ -2,11 +2,9 @@ import {Body, Controller, Get, Param, Post, Put} from '@nestjs/common';
 import {WorkoutService} from "./workout.service";
 import {
     ApiBody,
-    ApiCreatedResponse, ApiHeader,
     ApiInternalServerErrorResponse,
     ApiNotFoundResponse,
-    ApiOkResponse, ApiParam, ApiProperty, ApiQuery,
-    ApiResponse
+    ApiOkResponse
 } from "@nestjs/swagger";
 import {ActualPrisma} from "../../context";
 import { CreateExerciseDTO } from "./workout.model";

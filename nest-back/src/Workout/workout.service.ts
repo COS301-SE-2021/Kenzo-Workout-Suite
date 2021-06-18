@@ -1,18 +1,7 @@
 import {
-    BadRequestException,
-    HttpException,
-    HttpStatus,
-    Injectable,
-    InternalServerErrorException,
     NotFoundException
 } from "@nestjs/common";
 import { PrismaService } from "../Prisma/prisma.service";
-
-import {
-    Workout,
-    Exercise,
-    Prisma
-} from '@prisma/client';
 import {Context} from "../../context";
 
 @Injectable()
@@ -21,6 +10,14 @@ export class WorkoutService{
     constructor(private prisma: PrismaService) {
     }
 
+    /**
+     *Workout Service - Get Workouts
+     * @throws NotFoundException if:
+     *                               -No workouts were found in the database.
+     * @return  Promise array of workout object/s.
+     * @author Tinashe Chamisa
+     *
+     */
     async getWorkouts(ctx: Context): Promise<any> {
         try{
             const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
@@ -46,6 +43,17 @@ export class WorkoutService{
         }
     }
 
+    /**
+     *Workout Service - Get Workouts by ID
+     *
+     * @param id This is the ID of the workout to be found in the database.
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No workouts were found in the database with the specified ID.
+     * @return  Promise array of workout object/s.
+     * @author Tinashe Chamisa
+     *
+     */
     async getWorkoutById(id: string, ctx: Context): Promise<any> {
         try{
             const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
@@ -74,6 +82,14 @@ export class WorkoutService{
         }
     }
 
+    /**
+     *Workout Service - Get Exercises
+     * @throws NotFoundException if:
+     *                               -No exercises were found in the database.
+     * @return  Promise array of exercise object/s.
+     * @author Tinashe Chamisa
+     *
+     */
     async getExercises(ctx: Context): Promise<any> {
         try{
             const exercises = await ctx.prisma.exercise.findMany({//search for exercises that meet the requirement
@@ -101,6 +117,17 @@ export class WorkoutService{
         }
     }
 
+    /**
+     *Workout Service - Get Exercises by Title
+     *
+     * @param title This is the title of the exercise/s to be found in the database.
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No exercises were found in the database with the specified title.
+     * @return  Promise array of exercises object/s.
+     * @author Tinashe Chamisa
+     *
+     */
     async getExerciseByTitle(title: string, ctx: Context): Promise<any> {
         try{
             const exercise = await ctx.prisma.exercise.findMany({//search for exercises that meet the requirement
@@ -132,6 +159,17 @@ export class WorkoutService{
         }
     }
 
+    /**
+     *Workout Service - Get Workouts by Planner
+     *
+     * @param id This is the ID of the planner of the workout/s to be found in the database.
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No workouts were found in the database with the specified planner ID.
+     * @return  Promise array of workout object/s.
+     * @author Tinashe Chamisa
+     *
+     */
     async getWorkoutByPlanner(id: string, ctx: Context): Promise<any> {
         try {
             const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
