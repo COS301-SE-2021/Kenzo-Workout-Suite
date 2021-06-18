@@ -48,7 +48,7 @@ export class WorkoutService{
 
     async getWorkoutById(id: string, ctx: Context): Promise<any> {
         try{
-            const workouts = await ctx.prisma.workout.findUnique({//search for workouts that meet the requirement
+            const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
                 where: {
                     workoutID: id
                 },

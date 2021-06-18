@@ -22,14 +22,14 @@ beforeEach(() => {
 })
 
 test('Should receive valid information about workout with corresponding id', async () => {
-    const workout = {
+    const workout = [{
         workoutID: uuidWorkout,
         workoutTitle: "test",
         workoutDescription: "test",
         difficulty: Difficulty.EASY,
         planner_ID: uuidv4()
-    }
-    mockCtx.prisma.workout.findUnique.mockResolvedValue(workout)
+    }]
+    mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
 
     const response=await workoutService.getWorkoutById(uuidWorkout,ctx)
 

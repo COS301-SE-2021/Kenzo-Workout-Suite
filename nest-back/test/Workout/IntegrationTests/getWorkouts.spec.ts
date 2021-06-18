@@ -34,7 +34,7 @@ beforeEach(async () => {
     });
     await ctx.prisma.workout.create({
         data:{
-            workoutID: uuidv4(),
+            workoutID: "1",
             workoutTitle: "test",
             workoutDescription: "test",
             difficulty: Difficulty.EASY,
@@ -45,6 +45,7 @@ beforeEach(async () => {
 
 test('Should receive valid information about all workouts', async () => {
     const workout = [{
+        workoutID: "1",
         workoutTitle: "test",
         workoutDescription: "test",
         exercises:[],

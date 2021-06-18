@@ -19,6 +19,7 @@ const uuidPlanner = uuidv4();
 beforeEach(async () => {
     workoutService = new WorkoutService(prisma);
     ctx = ActualPrisma()
+    await ctx.prisma.workout.deleteMany();
     await ctx.prisma.user.deleteMany();
     await ctx.prisma.user.create({
         data:{
@@ -33,7 +34,7 @@ beforeEach(async () => {
     });
     await ctx.prisma.workout.create({
         data:{
-            workoutID: uuidv4(),
+            workoutID: "1",
             workoutTitle: "test",
             workoutDescription: "test",
             difficulty: Difficulty.EASY,
@@ -44,6 +45,7 @@ beforeEach(async () => {
 
 test('Should receive valid information about workout with corresponding planner', async () => {
     const workout = [{
+        workoutID: "1",
         workoutTitle: "test",
         workoutDescription: "test",
         exercises:[],
@@ -57,5 +59,5 @@ test('Should receive valid information about workout with corresponding planner'
 })
 
 test('Should not receive valid information about workout with corresponding planner as workout does not exist', async () => {
-    expect(workoutService.getWorkoutByPlanner("notindatabase@gmail.com",ctx)).rejects.toThrow("No workouts were found in the database with the specified planner.")
+    await expect(workoutService.getWorkoutByPlanner("notindatabase@gmail.com",ctx)).resolves.toStrictEqual([])//"No workouts were found in the database with the specified planner."
 })
