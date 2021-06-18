@@ -3,7 +3,6 @@ import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {AlertController} from "@ionic/angular";
 import {UserService} from "../Services/UserService/user.service";
-import {Alerts} from "../Models/alerts";
 
 @Component({
   selector: 'app-sign-up',
@@ -33,7 +32,7 @@ export class SignUpPage implements OnInit {
    * @constructor
    */
   PlannerAccount() {
-    this.accountType="Planner";
+    this.accountType="PLANNER";
   }
 
   /**
@@ -41,19 +40,22 @@ export class SignUpPage implements OnInit {
    * @constructor
    */
   ClientAccount() {
-    this.accountType="Client";
+    this.accountType="CLIENT";
   }
 
   async signUp() {
-    if (this.accountType == "Planner")
-      this.url = "http://localhost:5500/user/signupPlanner";
-    if (this.accountType == "Client")
-      this.url = "http://localhost:5500/user/signupClient";
-
     if (this.password == this.confirmpassword) {
-      let status = await this.userService.attemptSignUp(this.firstName, this.lastName, this.email, this.password, this.url);
+      let status = await this.userService.attemptSignUp(this.firstName, this.lastName, this.email, this.password, this.accountType);
         if (status < 400 && status >=200){
+          const alert = await this.alertController.create({
+            cssClass: 'kenzo-alert',
+            header: 'Sign up successful',
+            message: 'Your account has been registered successfully.',
+            buttons: ['OK']
+          });
+            await this.presentAlert(alert);
             await this.route.navigate(['/sign-in']);
+            return 200;
         }
         else if (status >= 400 && status < 500) {
           //Invalid entry or already existent client email

@@ -26,7 +26,15 @@ const routes: Routes = [
   {
     path: 'your-workouts',
     loadChildren: () => import('./your-workouts/your-workouts.module').then( m => m.YourWorkoutsPageModule)
+  },  {
+    path: 'search',
+    loadChildren: () => import('./search/search.module').then( m => m.SearchPageModule)
+  },
+  {
+    path: 'profile',
+    loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
   }
+
 ];
 
 @NgModule({
