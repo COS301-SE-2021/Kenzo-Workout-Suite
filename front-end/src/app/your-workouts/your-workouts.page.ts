@@ -22,10 +22,10 @@ export class YourWorkoutsPage implements OnInit {
 
   async LoadWorkouts(){
     let tempWorkouts = await this.workoutService.attemptGetWorkouts();
-      if (tempWorkouts.message=="Successfully retrieved workouts"){
+      if (tempWorkouts.status=200){
         this.workouts = tempWorkouts.data;
         return 200;
-      }else if (tempWorkouts.message=="No workouts obtained"){
+      }else if (tempWorkouts.status==404){
         const alert = await this.alertController.create({
           cssClass: 'kenzo-alert',
           header: '404 Not Found',
@@ -34,11 +34,10 @@ export class YourWorkoutsPage implements OnInit {
         });
         await this.presentAlert(alert);
         return 404;
-      }
-      else{
+      }else{
         const alert = await this.alertController.create({
           cssClass: 'kenzo-alert',
-          header: '500',
+          header: '500 Server Error',
           message: 'Server not responding.',
           buttons: ['Go Back']
         });
