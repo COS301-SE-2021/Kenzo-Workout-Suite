@@ -10,11 +10,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum Difficulty {
-  EASY
-  MEDIUM
-  HARD
-  EXTREME
+enum userType {
+  ADMIN
+  CLIENT
+  PLANNER
 }
 
 model Avatar {
@@ -22,40 +21,33 @@ model Avatar {
   armColour   String @default("blue")
   legColour   String @default("blue")
   headColour  String @default("blue")
-  client      Client @relation(fields: [avatarEmail], references: [email])
+  client      User @relation(fields: [avatarEmail], references: [email])
   avatarEmail String @id
 }
 
-model Client {
-  email       String    @id
-  firstName   String
-  lastName    String
-  password    String
-  dateOfBirth DateTime?
-  avatar      Avatar?
-}
-
-
-model Planner {
+model User {
+  userId  String   @id @default(uuid())
   email       String    @unique
   firstName   String
   lastName    String
   password    String
   dateOfBirth DateTime?
-
+  avatar      Avatar?
+  userType    userType
   workouts Workout[]
 }
+
 
 model Workout {
   workoutID          String @id @default(uuid())
   workoutTitle       String
   workoutDescription String
 
-  exercises  Exercise[]
-  difficulty Difficulty
+  exercises          Exercise[]
+  tags               Tag[]
 
-  planner       Planner? @relation(fields: [planner_Email], references: [email])
-  planner_Email String?
+  planner            User? @relation(fields: [planner_ID], references: [userId])
+  planner_ID         String?
 }
 
 model Exercise {
@@ -66,11 +58,16 @@ model Exercise {
   sets            Int
   Posedescription String
   restPeriod      Int
-  difficulty      Difficulty
+  tags            Tag[]
+  duratime        Int
 
-  duratime Int
+  workouts        Workout[]
+}
 
-
-  Workout          Workout? @relation(fields: [workoutWorkoutID], references: [workoutID])
-  workoutWorkoutID String?
+model Tag{
+  label             String    @id
+  textColour        String
+  backgroundColour  String
+  workouts          Workout[]
+  exercises         Exercise[]
 }
