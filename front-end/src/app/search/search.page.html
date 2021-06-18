@@ -1,0 +1,52 @@
+<ion-content class="your-workout-background">
+  <div class="container">
+    <div class="Spacing-div">
+      <ion-label id="WorkoutHeading" >All workouts and exercises</ion-label>
+      <div class="kenzo-fixed">
+        <ion-fab mode="ios" slot="fixed" size="small" vertical="bottom" horizontal="end">
+          <ion-fab-button>
+            <ion-icon name="create"></ion-icon>
+          </ion-fab-button>
+          <ion-fab-list side="bottom">
+            <ion-fab-button>
+              <ion-icon name="body-outline" routerLink="/create-workout"></ion-icon>
+            </ion-fab-button>
+            <ion-fab-button>
+              <ion-icon name="barbell-outline" routerLink="/create-exercise"></ion-icon>
+            </ion-fab-button>
+          </ion-fab-list>
+        </ion-fab>
+      </div>
+    </div>
+    <div class="Spacing-div" id="SearchBarDiv">
+      <ion-searchbar id="workout-searchbar"  mode="ios" showCancelButton="never" inputmode="search"></ion-searchbar>
+    </div>
+    <div class="Spacing-div" id="ItemsDiv">
+      <ion-virtual-scroll [items]="workouts" approxItemHeight="320px">
+        <ion-card *virtualItem="let workout; let itemBounds = bounds;" class="workouts">
+          <ion-card-header>
+            <ion-card-title><u>Workout:</u> {{ workout.workoutTitle }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>{{ workout.workoutDescription}}</ion-card-content>
+        </ion-card>
+
+        <ion-card *virtualItem="let exercise; let itemBounds = bounds;" class="exercises">
+          <ion-card-header>
+            <ion-card-title><u>Exercises:</u> {{ exercise.exerciseTitle }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>{{ exercise.exerciseDescription}}</ion-card-content>
+        </ion-card>
+      </ion-virtual-scroll>
+    </div>
+  </div>
+
+</ion-content>
+<ion-footer>
+  <ion-toolbar mode="ios" class="footer">
+    <ion-img src="../../assets/clipart/Clipboard.png" class="NavButtons" id="WorkoutsBtn" mode="ios" routerLink="/your-workouts"></ion-img>
+    <ion-img src="../../assets/clipart/Library_activated.png" class="NavButtons" id="SearchBtn" mode="ios" routerLink="."></ion-img>
+    <ion-img src="../../assets/clipart/Clients.png" class="NavButtons" id="ContactsBtn" mode="ios" routerLink="."></ion-img>
+    <ion-img src="../../assets/clipart/Setting.png" class="NavButtons" id="SettingsBtn" mode="ios" routerLink="/profile"></ion-img>
+  </ion-toolbar>
+  <br>
+</ion-footer>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {AlertController} from "@ionic/angular";
+import {UserService} from "../Services/UserService/user.service";
 
 @Component({
   selector: 'app-sign-up',
@@ -19,71 +20,44 @@ export class SignUpPage implements OnInit {
 
   constructor(private http:HttpClient,
               private route:Router,
-              public alertController:AlertController) { }
+              public alertController:AlertController,
+              private userService:UserService) { }
 
   ngOnInit() {
   }
 
-  async presentAlert(alert:any){
-    await alert.present();
-    await alert.onDidDismiss();
-  }
 
-  async InvalidPasswords() {
-    const alert = await this.alertController.create({
-      cssClass: 'kenzo-alert',
-      header: 'Invalid Passwords',
-      message: 'Your passwords do not match. Please try again.',
-      buttons: ['OK']
-    });
-    this.presentAlert(alert);
-  }
-
+  /**
+   * Function to be called upon button onClick to determine if the account is a Planner account
+   * @constructor
+   */
   PlannerAccount() {
-    this.accountType="Planner";
+    this.accountType="PLANNER";
   }
 
+  /**
+   * Function to be called upon button onClick to determine if the account is a Client account
+   * @constructor
+   */
   ClientAccount() {
-    this.accountType="Client";
+    this.accountType="CLIENT";
   }
 
-  signUp() {
-    if (this.accountType == "Planner")
-      this.url = "http://localhost:5500/user/signupPlanner";
-    if (this.accountType == "Client")
-      this.url = "http://localhost:5500/user/signupClient";
-    if (this.firstName == null) {
-      this.firstName = "";
-    }
-    if (this.lastName == null) {
-      this.lastName = "";
-    }
-    if (this.email == null) {
-      this.email = "";
-    }
-    if (this.accountType == null) {
-      this.accountType = "";
-    }
-    if (this.password == null) {
-      this.password = "";
-    }
-    if (this.confirmpassword == null) {
-      this.confirmpassword = "";
-    }
-
-    const body: Object = { //Object to be saved into DB
-      "firstName": this.firstName,
-      "lastName": this.lastName,
-      "email": this.email,
-      "password": this.password
-    }
-
+  async signUp() {
     if (this.password == this.confirmpassword) {
-      this.http.post(this.url, body).subscribe(data => {
-        // Successfully saved
-        this.route.navigate(['/sign-in']);
-      }, async error => {
-        if (error.status == 400 || error.status == 401) {
+      let status = await this.userService.attemptSignUp(this.firstName, this.lastName, this.email, this.password, this.accountType);
+        if (status < 400 && status >=200){
+          const alert = await this.alertController.create({
+            cssClass: 'kenzo-alert',
+            header: 'Sign up successful',
+            message: 'Your account has been registered successfully.',
+            buttons: ['OK']
+          });
+            await this.presentAlert(alert);
+            await this.route.navigate(['/sign-in']);
+            return 200;
+        }
+        else if (status >= 400 && status < 500) {
           //Invalid entry or already existent client email
           const alert = await this.alertController.create({
             cssClass: 'kenzo-alert',
@@ -91,19 +65,42 @@ export class SignUpPage implements OnInit {
             message: 'Your details are invalid or an account with the email already exists.',
             buttons: ['OK']
           });
-          this.presentAlert(alert);
-        } else if (error.status == 500) {
+          await this.presentAlert(alert);
+        } else if (status >= 500) {
           const alert = await this.alertController.create({
             cssClass: 'kenzo-alert',
-            header: 'Incorrect Signup',
-            message: 'Your details are invalid or an account with the email already exists.',
-            buttons: ['OK']
+            header: 'Server isn\'t responding',
+            message: 'Please try again later.',
+            buttons: ['Dismiss']
           });
-          this.presentAlert(alert);
+          await this.presentAlert(alert);
         }
-      });
-    }else{
-      this.InvalidPasswords();  //If passwords do not match, notify user
+    }
+    else {
+      await this.InvalidPasswords();  //If passwords do not match, notify user
     }                           //through an alert.
+  }
+
+  /**
+   * Helper function to be called if both passwords do not match.
+   * @constructor
+   */
+  async InvalidPasswords() {
+    const alert = await this.alertController.create({
+      cssClass: 'kenzo-alert',
+      header: 'Invalid Passwords',
+      message: 'Your passwords do not match. Please try again.',
+      buttons: ['OK']
+    });
+    await this.presentAlert(alert);
+  }
+
+  /**
+   * Helper function to physically present alert to user independent of OS.
+   * @param alert
+   */
+  async presentAlert(alert:any){
+    await alert.present();
+    await alert.onDidDismiss();
   }
 }
