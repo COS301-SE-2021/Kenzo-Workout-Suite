@@ -2,7 +2,6 @@ import { MockContext, Context, createMockContext } from "../../../context";
 import {UserService} from "../../../src/User/user.service";
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import {jwtConstants} from "../../../src/user/constants";
 
 let mockCtx: MockContext
 let ctx: Context
@@ -13,8 +12,8 @@ let bcryptCompare: jest.Mock;
 
 beforeEach(() => {
     Jwt=new JwtService({
-        secret: jwtConstants.secret,
-        signOptions: { expiresIn: '60s' },
+        secret:process.env.JWT_SECRET,
+        signOptions: { expiresIn: process.env.EXPIRY_TIME },
     })
     userService = new UserService(Jwt);
     mockCtx = createMockContext()
