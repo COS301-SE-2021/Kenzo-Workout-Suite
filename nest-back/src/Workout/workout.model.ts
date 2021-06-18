@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+
 import {
     Workout,
     Exercise,
@@ -24,6 +25,7 @@ export class CreateExerciseDTO{
     @ApiProperty({type: Number, description: 'duration of exercise'})
     duratime: number;
 }
+
 
 export class createTagDTO{
     @ApiProperty({type: String, description: 'label of the tag'})

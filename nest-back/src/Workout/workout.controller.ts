@@ -20,14 +20,14 @@ import {ActualPrisma, Context} from "../../context";
 import {
     ApiBadRequestResponse,
     ApiBody, ApiConflictResponse,
-    ApiCreatedResponse, ApiHeader,
     ApiInternalServerErrorResponse, ApiNotAcceptableResponse,
     ApiNotFoundResponse,
-    ApiOkResponse, ApiParam, ApiProperty, ApiQuery,
-    ApiResponse
+    ApiOkResponse
 } from "@nestjs/swagger";
+
 import {CreateExerciseDTO, CreateWorkoutDTO, DeleteWorkoutDTO, UpdateWorkoutDTO, createTagDTO} from "./workout.model";
 import {JwtAuthGuard} from "../user/jwt-auth.guard";
+
 
 @Controller('workout')
 export class WorkoutController {
@@ -37,6 +37,7 @@ export class WorkoutController {
     constructor(private readonly workoutService: WorkoutService) {
         this.ctx = ActualPrisma();
     }
+
 
     @Get('getWorkouts')
     @ApiOkResponse({
@@ -229,7 +230,6 @@ export class WorkoutController {
     ) {
         return this.workoutService.createTag(label,textColour,backgroundColour,ActualPrisma());
     }
-
 
     @Get('getTags')
     @ApiOkResponse({

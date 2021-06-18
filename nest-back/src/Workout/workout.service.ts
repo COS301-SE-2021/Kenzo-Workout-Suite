@@ -1,11 +1,10 @@
 import {
     BadRequestException, ConflictException,
-    HttpException,
-    HttpStatus,
     Injectable,
-    InternalServerErrorException, NotAcceptableException,
+    NotAcceptableException,
     NotFoundException
 } from "@nestjs/common";
+
 import { Context } from "../../context";
 import {v4 as uuidv4 } from 'uuid';
 
@@ -26,6 +25,7 @@ import {
     ApiOkResponse, ApiParam, ApiProperty, ApiQuery,
     ApiResponse
 } from "@nestjs/swagger";
+
 const Filter = require('bad-words'), filter = new Filter();
 
 
@@ -37,6 +37,15 @@ export class WorkoutService{
     constructor(private prisma: PrismaService) {
     }
 
+    /**
+     *Workout service - format
+     *
+     * @brief Function that formats a string so that every first letter of every word is a capital, eg: CoRE extreme to Core Extreme.
+     * @param label This is the label that will be formatted.
+     * @return  Re-formatted string.
+     * @author Tinashe Chamisa
+     *
+     */
     format(label: string): string{
         let str = label.toLowerCase();
         const arr = str.split(" ");
@@ -414,6 +423,23 @@ export class WorkoutService{
 
     }
 
+    /**
+     *Workout Service - Create Tag
+     *
+     * @param label This is the title of the tag.
+     * @param textColour This is the text colour of the tag.
+     * @param backgroundColour  This is the background colour of the tag.
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws NotAcceptableException if:
+     *                               -There is any type of profanity found in the label, using npm 'bad-words'.
+     * @throws ConflictException if:
+     *                               -There is already a tag that exists in the database with the given label.
+     * @throws BadRequestException if:
+     *                               -There is a precondition net met, such as parameters not given.
+     * @return  Promise tag object.
+     * @author Tinashe Chamisa
+     *
+     */
     async createTag(label: string,textColour: string,backgroundColour: string, ctx: Context): Promise<any> {
         if(filter.isProfane(label)){
             throw new NotAcceptableException("Profanity contained in label title.");
@@ -450,6 +476,16 @@ export class WorkoutService{
         }
     }
 
+    /**
+     *Workout Service - Get Tags
+     *
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No tags were found in the database.
+     * @return  Promise array of tag object/s.
+     * @author Tinashe Chamisa
+     *
+     */
     async getTags(ctx: Context): Promise<any> {
         try{
             const tags = await ctx.prisma.tag.findMany({//search and retrieve all tags
