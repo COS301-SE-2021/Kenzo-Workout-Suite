@@ -1,13 +1,27 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
+import { HttpHeaders } from "@angular/common/http";
 import {Router} from "@angular/router";
 import {AlertController} from "@ionic/angular";
+import { Storage } from "@ionic/storage";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  constructor(private http:HttpClient) { }
+
+
+  constructor(private http:HttpClient, private storage: Storage) {
+    this.storage.create();
+  }
+
+  async AddToken(value:any): Promise<void>{
+    await this.storage.set("Token", JSON.stringify(value));
+  }
+
+  async getToken(): Promise<JSON>{
+    return await JSON.parse(await this.storage.get("Token"));
+  }
 
   /** This function attempts to submit a workout by using the following parameters:
    *
@@ -35,8 +49,9 @@ export class UserService {
     };
 
     return this.http.post(url, body).toPromise().then(r => {
-          return 200;
-        }).catch((error)=>{
+        this.AddToken(r);
+        return 200;
+      }).catch((error)=>{
         if(error.status==0) return 500;
         return error.status;
       });
@@ -83,4 +98,19 @@ export class UserService {
       return error.status;
     });
   }
+
+  async obtainUserDetails(): Promise<string>{
+    let userToken = await this.getToken();
+    const url ="http://localhost:3000/user/getUserDetails";
+
+    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
+    console.log(headers);
+
+    return this.http.get(url, {headers}).toPromise().then(r=>{
+      return r;
+    }).catch((error)=>{
+      return error;
+    });
+  }
+
 }

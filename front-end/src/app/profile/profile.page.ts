@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
+import { UserService } from "../Services/UserService/user.service";
 
 @Component({
   selector: 'app-profile',
@@ -13,14 +14,18 @@ export class ProfilePage implements OnInit {
   email: any;
   accountType: string;
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient, private userService: UserService) { }
 
   ngOnInit() {
     this.getDetails();
   }
 
-  getDetails(){
-
+  /**
+   * Get the details of the user through an API call
+   */
+  async getDetails(){
+    let UserDetails = await this.userService.obtainUserDetails();
+    console.log(UserDetails);
   }
 
 }
