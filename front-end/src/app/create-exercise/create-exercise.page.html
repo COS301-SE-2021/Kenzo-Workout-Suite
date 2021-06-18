@@ -20,14 +20,14 @@
     <br>
     <div class="input-div">
       <ion-label class="input-description">Describe your workout with Kenzo Tags</ion-label>
-      <ion-searchbar placeholder="Search tags" mode="ios"></ion-searchbar>
+      <ion-searchbar (ionInput)="filterSelection($event)" placeholder="Search tags" mode="ios"></ion-searchbar>
 
-      <span id="tags" *ngFor="let tag of tags" approxItemHeight="320px">
-        <ion-chip id="{{tag.label}}" (click)="select(tag.label)"
+      <span id="tags">
+        <ion-chip *ngFor="let tag of tags" id="{{tag.label}}" (click)="select(tag.label)"
                   [style]="{'--background': 'var(--ion-color-KTB_'+tag.backgroundColor+')', '--color': 'var(--ion-color-KT_'+tag.textColor+')'}" >
           <ion-label>{{tag.label}}</ion-label>
         </ion-chip>
-    </span>
+      </span>
 
       <br>
       <br>
