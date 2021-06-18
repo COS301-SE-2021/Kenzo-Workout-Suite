@@ -4,6 +4,7 @@ import { HttpHeaders } from "@angular/common/http";
 import {Router} from "@angular/router";
 import {AlertController} from "@ionic/angular";
 import { Storage } from "@ionic/storage";
+import {first} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -15,12 +16,26 @@ export class UserService {
     this.storage.create();
   }
 
-  async AddToken(value:any): Promise<void>{
+  /**
+   * Add the token to ionic storage
+   * @param value
+   */
+  async addToken(value:any): Promise<void>{
     await this.storage.set("Token", JSON.stringify(value));
   }
 
+  /**
+   * Obtain the token from ionic storage
+   */
   async getToken(): Promise<JSON>{
     return await JSON.parse(await this.storage.get("Token"));
+  }
+
+  /**
+   * Remove the token from ionic storage
+   */
+  async removeToken(): Promise<void>{
+    return await JSON.parse(await this.storage.remove("Token"));
   }
 
   /** This function attempts to submit a workout by using the following parameters:
@@ -49,7 +64,7 @@ export class UserService {
     };
 
     return this.http.post(url, body).toPromise().then(r => {
-        this.AddToken(r);
+        this.addToken(r);
         return 200;
       }).catch((error)=>{
         if(error.status==0) return 500;
@@ -99,12 +114,14 @@ export class UserService {
     });
   }
 
+  /**
+   * Get the details of the current user from the token in local storage
+   */
   async obtainUserDetails(): Promise<string>{
     let userToken = await this.getToken();
     const url ="http://localhost:3000/user/getUserDetails";
 
     const headers = {'Authorization': 'Bearer '+userToken['access_token']};
-    console.log(headers);
 
     return this.http.get(url, {headers}).toPromise().then(r=>{
       return r;
@@ -113,4 +130,31 @@ export class UserService {
     });
   }
 
+  /**
+   * Attempt to update the user details through means of the token in local storage
+   * @param firstName
+   * @param lastName
+   * @param birthDate
+   */
+  async attemptUpdateUserDetails(firstName: string, lastName: string, birthDate: Date): Promise<any>{
+    let userToken = await this.getToken();
+    const user = {
+        "firstName": firstName,
+        "lastName": lastName,
+        "dateOfBirth": birthDate
+      }
+    const url = "http://localhost:3000/user/updateUserDetail";
+    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
+    return this.http.put(url, user,{headers}).toPromise().then(r=>{
+      return 200;
+    }).catch((error)=>{
+      if(error.status==401)
+        return 401;
+      else
+        return 500;
+    });
+
+  }
 }
+
+

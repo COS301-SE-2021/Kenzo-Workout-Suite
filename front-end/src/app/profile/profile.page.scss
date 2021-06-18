@@ -4,54 +4,54 @@
 
 .Spacing-div{
   display: block;
-  width: var(--input-width);
+  width: 400px;
   margin-left: auto;
   margin-right: auto;
   margin-top: 50px;
 }
 
-#SearchBarDiv, #ItemsDiv{
-  margin-top: 13px;
-}
-
-#WorkoutHeading{
+.profile-label{
   font-family: "SF Pro Medium", serif;
-  font-size: 23px;
-  color: black;
-  font-weight: bold;
+  display: block;
+  padding-left: 5px;
+  padding-bottom: 5px;
+  font-weight: 500;
+  color: var(--ion-color-primary);
 }
-
-#AddWorkout{
-  width: var(--icon-size);
-  height: var(--icon-size);
-  float: right;
+.profile-input{
+  font-family: "SF Pro Regular", serif;
+  display: block;
+  height: 50px;
+  width: var(--input-width);
+  border-radius: var(--radius);
+  --background: var(--ion-color-tertiary);
+  --padding-start: 10px;
+  --padding-top: 15px;
+  text-indent: 1px;
+  --color: var(--ion-color-secondary);
 }
-
-#workout-searchbar{
-  font-family: "SF Pro Medium", serif;
-  height: 40px;
-  --placeholder-font-weight: 590;
-  color: #707074;
-  --background: #e7e7e8;
-}
-
-#nav-div{
+.input-div{
   font-family: "SF Pro Regular", serif;
   display: block;
   width: var(--input-width);
   margin-left: auto;
   margin-right: auto;
 }
+
+#editBtn{
+  display: block;
+  position: absolute;
+  bottom: 95%;
+  right: 0%;
+}
+
+#updateBtn{
+  visibility: hidden;
+}
+
 .container{
   align-content: center;
   align-items: center;
-}
-
-.kenzo-fixed{
-  position: fixed;
-  top: 150px;
-  right: 5px;
-  z-index: 100;
 }
 
 .footer{
