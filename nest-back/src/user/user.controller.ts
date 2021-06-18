@@ -105,9 +105,6 @@ export class UserController {
     @ApiNotFoundResponse({
         description: 'Invalid Email or Password'
     })
-    @ApiBody({
-        type: loginDTO
-    })
     @HttpCode(200)
     getUserData(@Request() req){
         return this.userService.findUserByUUID(req.user.userId,ActualPrisma())

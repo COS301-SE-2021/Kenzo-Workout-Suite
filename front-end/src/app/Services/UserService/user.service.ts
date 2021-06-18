@@ -30,7 +30,7 @@ export class UserService {
       password = "";
     }
     const body: Object = {
-      "email": email,
+      "username": email,
       "password": password
     };
 
@@ -51,7 +51,7 @@ export class UserService {
    * @param accountType
    */
   async attemptSignUp(firstName: string, lastName: string, email: string, password: string, accountType: string): Promise<Number>{
-    let url = "";
+    const url ="http://localhost:3000/user/signUp";;
     if (firstName == null) {
       firstName = "";
     }
@@ -64,20 +64,20 @@ export class UserService {
     if (password == null) {
       password = "";
     }
-    if (accountType == "Planner")
-      url = "http://localhost:3000/user/signupPlanner";
-    if (accountType == "Client")
-      url = "http://localhost:3000/user/signupClient";
+
 
     const body: Object = { //Object to be saved into DB
-      "firstName": firstName,
-      "lastName": lastName,
-      "email": email,
-      "password": password
+      user: {
+        "firstName": firstName,
+        "lastName": lastName,
+        "email": email,
+        "userType": accountType,
+        "password": password
+      }
     }
 
     return this.http.post(url, body).toPromise().then(r => {
-      return 200;
+      return 201;
     }).catch((error)=>{
       if(error.status==0) return 500;
       return error.status;

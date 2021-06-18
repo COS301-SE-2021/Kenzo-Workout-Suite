@@ -32,7 +32,7 @@ export class SignUpPage implements OnInit {
    * @constructor
    */
   PlannerAccount() {
-    this.accountType="Planner";
+    this.accountType="PLANNER";
   }
 
   /**
@@ -40,7 +40,7 @@ export class SignUpPage implements OnInit {
    * @constructor
    */
   ClientAccount() {
-    this.accountType="Client";
+    this.accountType="CLIENT";
   }
 
   async signUp() {

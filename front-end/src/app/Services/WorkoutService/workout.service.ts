@@ -66,7 +66,7 @@ export class WorkoutService {
   }
 
   async attemptGetWorkouts() : Promise<any>{
-    const url: string = "http://localhost:3000/workout/getworkout";
+    const url: string = "http://localhost:3000/workout/getWorkouts";
     let value = this.http.get(url).toPromise().then(data=>{
       return data
     }).catch(err=>{
