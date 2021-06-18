@@ -78,7 +78,7 @@ export class WorkoutService{
                     backgroundColour
                 },
             })
-            if (!(Arrays.isArray(createdUser) && createdUser.length)) {//if JSON object is empty, send error code
+            if (createdUser==null) {//if JSON object is empty, send error code
                 throw new BadRequestException("Could not create tag.");
             }
 
