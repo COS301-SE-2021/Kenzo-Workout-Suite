@@ -8,10 +8,10 @@
           <ion-icon name="create"></ion-icon>
         </ion-fab-button>
         <ion-fab-list side="bottom">
-            <ion-fab-button>
-              <ion-icon name="body-outline" routerLink="/create-workout"></ion-icon>
+            <ion-fab-button class="fabButton" data-desc="Workout">
+              <ion-icon name="body-outline" class="icons" routerLink="/create-workout"></ion-icon>
             </ion-fab-button>
-            <ion-fab-button>
+            <ion-fab-button class="fabButton" data-desc="Exercise">
               <ion-icon name="barbell-outline" routerLink="/create-exercise"></ion-icon>
             </ion-fab-button>
         </ion-fab-list>
@@ -28,6 +28,7 @@
           <ion-card-title>{{ workout.workoutTitle }}</ion-card-title>
         </ion-card-header>
         <ion-card-content>{{ workout.workoutDescription}}</ion-card-content>
+        <ion-button fill="clear" mode="ios" value="{{workout.workoutID}}" class="editBtn">Edit</ion-button>
       </ion-card>
     </ion-virtual-scroll>
   </div>
@@ -36,9 +37,9 @@
 <ion-footer>
   <ion-toolbar mode="ios" class="footer">
     <ion-img src="../../assets/clipart/Clipboard_activated.png" class="NavButtons" id="WorkoutsBtn" mode="ios" routerLink="."></ion-img>
-    <ion-img src="../../assets/clipart/Library.png" class="NavButtons" id="SearchBtn" mode="ios" routerLink="."></ion-img>
+    <ion-img src="../../assets/clipart/Library.png" class="NavButtons" id="SearchBtn" mode="ios" routerLink="/search"></ion-img>
     <ion-img src="../../assets/clipart/Clients.png" class="NavButtons" id="ContactsBtn" mode="ios" routerLink="."></ion-img>
-    <ion-img src="../../assets/clipart/Setting.png" class="NavButtons" id="SettingsBtn" mode="ios" routerLink="."></ion-img>
+    <ion-img src="../../assets/clipart/Setting.png" class="NavButtons" id="SettingsBtn" mode="ios" routerLink="/profile"></ion-img>
   </ion-toolbar>
   <br>
 </ion-footer>

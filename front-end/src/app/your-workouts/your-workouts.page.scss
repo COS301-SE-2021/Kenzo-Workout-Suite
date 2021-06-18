@@ -71,6 +71,13 @@
     height: var(--icon-size);
 }
 
+.editBtn{
+  display: block;
+  position: absolute;
+  bottom: 50%;
+  right: -5%;
+}
+
 #WorkoutsBtn{
     margin-left: 10%;
 }
@@ -87,3 +94,20 @@
     margin-left: 15%;
 }
 
+.text{
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.fabButton[data-desc] {
+  position: relative;
+}
+.fabButton[data-desc]::after{
+  position: absolute;
+  content: attr(data-desc);
+  z-index: 1;
+  right: 50px;
+  bottom: 8px;
+  color: var(--ion-color-primary);
+  font-size: 16px;
+}
