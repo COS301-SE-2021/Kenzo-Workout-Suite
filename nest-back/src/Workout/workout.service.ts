@@ -46,7 +46,7 @@ export class WorkoutService{
                 }
             });
 
-            if(workouts==null){//if JSON object is empty, send error code
+            if(workouts.length==0){//if JSON object is empty, send error code
                 throw new NotFoundException("No workouts were found in the database.");
             }
             else{
@@ -73,7 +73,7 @@ export class WorkoutService{
                 }
             });
 
-            if(workouts==null){//if JSON object is empty, send error code
+            if(workouts.length==0){//if JSON object is empty, send error code
                 throw new NotFoundException("No workouts were found in the database with the specified title.");
             }
             else{
@@ -103,7 +103,7 @@ export class WorkoutService{
                 }
             });
 
-            if(exercise==null){//if JSON object is empty, send error code
+            if(exercise.length==0){//if JSON object is empty, send error code
                 throw new NotFoundException("No exercises were found in the database with the specified title.");
             }
             else{
@@ -129,7 +129,7 @@ export class WorkoutService{
                     planner_ID: true
                 }
             });
-            if (workouts==null) {//if JSON object is empty, send error code
+            if (workouts.length==0) {//if JSON object is empty, send error code
                 throw new NotFoundException("No workouts were found in the database with the specified planner.");
             } else {
                 return workouts;
@@ -193,7 +193,7 @@ export class WorkoutService{
                 }
             });
 
-            if(tags==null){//if JSON object is empty, send error code
+            if(tags.length==0){//if JSON object is empty, send error code
                 throw new NotFoundException("No tags were found in the database.");
             }
 
