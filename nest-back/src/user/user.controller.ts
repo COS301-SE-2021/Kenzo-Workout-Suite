@@ -23,6 +23,23 @@ export class UserController {
     constructor(private readonly userService: UserService) {
     }
 
+    /**
+     * User Controller- signUp
+     *
+     * @param user User that is to be signed up
+     *
+     * @throws PreconditionFailedException if:
+     *                          -Empty/null user object is passed into the function
+     *                          -Email address that does not conform to the email address standard is passed in
+     *                          -Password that does not conform to the password standard is passed in (atleast 8 characters consisting of one lower case, one upper case, one number and one special character)
+     *
+     *@throws BadRequestException if:
+     *                          -A user with the passed in Users email already exists in the database.
+     *
+     * @return Promise This promise consists the JWT access token
+     * @author Zelealem Tesema
+     *
+     */
 
     @Post('signUp')
     @ApiCreatedResponse({
@@ -46,6 +63,11 @@ export class UserController {
         return this.userService.signUp(user,ActualPrisma());
     }
 
+
+    /**
+     *
+     * @param req
+     */
     @UseGuards(LocalAuthGuard)
     @Post('login')
     @ApiOkResponse({

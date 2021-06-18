@@ -20,7 +20,7 @@ export class UserService {
      *                               -An empty email address is passed in.
      *                               -An empty password is passed in
      *                               -Invalid combination of email address and password
-     * @return  The user object without the password.
+     * @return  Promise user object without the password.
      * @author Zelealem Tesema
      */
     async validateUser(email: string, pass: string, ctx: Context): Promise<any> {
@@ -61,6 +61,7 @@ export class UserService {
      *                          -A user object without the field 'userId' is passed into the function
      * @return Promise that consists of the access token
      *
+     * @author Zelealem Tesema
      */
     async login(user: any) {
         if (user==null)
@@ -100,13 +101,11 @@ export class UserService {
      *@throws BadRequestException if:
      *                          -A user with the passed in Users email already exists in the database.
      *
-     *@return Promise
+     *@return Promise This promise consists the JWT access token.
      *@author Zelealem Tesema
      *
      */
     async signUp(user:User,ctx: Context) : Promise<any>{
-
-        console.log(user)
 
         if (user==null)
         {
@@ -134,13 +133,9 @@ export class UserService {
             }
         })
 
-
-
         if (countEmail>=1) {
             throw new BadRequestException("User with this email already exists")
         }
-
-
 
         const createdUser= await ctx.prisma.user.create({
             data: {
@@ -156,7 +151,6 @@ export class UserService {
         if (!createdUser) {
             throw new BadRequestException("Could not create User")
         }
-
 
         return this.login(createdUser);
     }
@@ -177,7 +171,6 @@ export class UserService {
      *@return Promise This returns the details of the user.
      */
     async findUserByUUID(userId: uuidv4,ctx: Context) : Promise<any>{
-
 
         if (userId===null || userId==="")
         {
@@ -204,7 +197,6 @@ export class UserService {
             throw new BadRequestException("No user with such UUID")
         }
     }
-
 
     /**
      * User Service - Update user details
@@ -248,7 +240,6 @@ export class UserService {
         }
     }
 
-
     async googleLogin(req) {
         if (!req)
         {
@@ -264,7 +255,6 @@ export class UserService {
             user: req.user
         }
     }
-
 
     /**
      * User Service- validateEmail
