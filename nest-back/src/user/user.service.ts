@@ -22,6 +22,7 @@ export class UserService {
      *                               -Invalid combination of email address and password
      * @return  Promise user object without the password.
      * @author Zelealem Tesema
+     *
      */
     async validateUser(email: string, pass: string, ctx: Context): Promise<any> {
 
@@ -59,6 +60,7 @@ export class UserService {
      * @throws NotFoundException if:
      *                          -An empty user object is passed into the function
      *                          -A user object without the field 'userId' is passed into the function
+     *
      * @return Promise that consists of the access token
      *
      * @author Zelealem Tesema
@@ -107,6 +109,8 @@ export class UserService {
      */
     async signUp(user:User,ctx: Context) : Promise<any>{
 
+
+
         if (user==null)
         {
             throw new PreconditionFailedException("Invalid user object")
@@ -133,6 +137,7 @@ export class UserService {
             }
         })
 
+
         if (countEmail>=1) {
             throw new BadRequestException("User with this email already exists")
         }
@@ -155,10 +160,12 @@ export class UserService {
         return this.login(createdUser);
     }
 
+
+
     /**
      * User Service - findUserByUUID
      *
-     * @param userId This is the ID for which the user details are being searched for.
+     * @param passedUserId This is the ID for which the user details are being searched for.
      * @param ctx This is the prisma context that can be mocked.
      *
      * @throws BadRequestException if:
@@ -169,10 +176,12 @@ export class UserService {
      *                          -No user with such UUID exists.
      *
      *@return Promise This returns the details of the user.
+     *
+     * @author Zelealem Tesema
      */
-    async findUserByUUID(userId: uuidv4,ctx: Context) : Promise<any>{
+    async findUserByUUID(passedUserId: uuidv4,ctx: Context) : Promise<any>{
 
-        if (userId===null || userId==="")
+        if (passedUserId===null || passedUserId==="")
         {
             throw new BadRequestException("Null values cannot be passed in for userId")
         }
@@ -181,7 +190,7 @@ export class UserService {
     try {
         const user = await ctx.prisma.user.findUnique({
             where: {
-                userId: userId
+                userId: passedUserId
             },
         })
 
@@ -189,7 +198,7 @@ export class UserService {
             throw new NotFoundException("No user with such UUID")
         }
 
-        const { password, ...result } = user;
+        const { password, userId, ...result } = user;
         return result;
     }
         catch (err)
@@ -212,6 +221,7 @@ export class UserService {
      *                          -Empty values are passed in for the firstName, LastName or userID
      *                          -The user details could not be updated
      *
+     * @author Zelealem Tesema
      */
     async updateUserDetails(firstName:string,lastName:string, dateOfBirth:Date,userId:string,ctx:Context){
         if (firstName==null || lastName==null || userId==null || firstName=="" || lastName=="" || userId=="")

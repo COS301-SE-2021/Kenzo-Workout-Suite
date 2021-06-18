@@ -49,7 +49,6 @@ test('Test, Valid user returned by mock prisma service', async () => {
     }
 
     const expectedReturn={
-        userId:uuidv4,
         email: "test@gmail.com",
         firstName: "test",
         lastName: "tester",

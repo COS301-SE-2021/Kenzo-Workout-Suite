@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
@@ -5,13 +8,6 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-}
-
-enum Difficulty {
-  EASY
-  MEDIUM
-  HARD
-  EXTREME
 }
 
 enum userType {
@@ -48,7 +44,7 @@ model Workout {
   workoutDescription String
 
   exercises          Exercise[]
-  difficulty         Difficulty
+  tags               Tag[]
 
   planner            User? @relation(fields: [planner_ID], references: [userId])
   planner_ID         String?
@@ -62,8 +58,16 @@ model Exercise {
   sets            Int
   Posedescription String
   restPeriod      Int
-  difficulty      Difficulty
+  tags            Tag[]
   duratime        Int
 
   workouts        Workout[]
+}
+
+model Tag{
+  label             String    @id
+  textColour        String
+  backgroundColour  String
+  workouts          Workout[]
+  exercises         Exercise[]
 }
