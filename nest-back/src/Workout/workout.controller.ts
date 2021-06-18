@@ -28,7 +28,6 @@ import {
 import {CreateExerciseDTO, CreateWorkoutDTO, DeleteWorkoutDTO, UpdateWorkoutDTO, createTagDTO} from "./workout.model";
 import {JwtAuthGuard} from "../user/jwt-auth.guard";
 
-
 @Controller('workout')
 export class WorkoutController {
 
@@ -116,6 +115,7 @@ export class WorkoutController {
     ) {
         return this.workoutService.getWorkoutByPlanner(id,ActualPrisma());
     }
+
 
     @Post('createExercise')
     @ApiOkResponse({

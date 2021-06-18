@@ -1,12 +1,9 @@
 import {MockContext, Context, createMockContext, ActualPrisma} from "../../../context";
 import {WorkoutService} from "../../../src/Workout/workout.service";
-import { JwtService } from '@nestjs/jwt';
 import {v4 as uuidv4 } from 'uuid';
 
 import {
-    Workout,
-    Exercise,
-    Prisma, Difficulty, userType
+    Difficulty, userType
 } from '@prisma/client';
 import {PrismaClient} from "@prisma/client/scripts/default-index";
 
@@ -45,14 +42,14 @@ beforeEach(async () => {
 })
 
 test('Should receive valid information about workout with corresponding id', async () => {
-    const workout = {
+    const workout = [{
         workoutID: uuidWorkout,
         workoutTitle: "test",
         workoutDescription: "test",
         exercises:[],
         difficulty: Difficulty.EASY,
         planner_ID: uuidPlanner
-    }
+    }]
 
     const response=await workoutService.getWorkoutById(uuidWorkout, ctx)
 
@@ -60,5 +57,5 @@ test('Should receive valid information about workout with corresponding id', asy
 })
 
 test('Should not receive valid information about workout with corresponding id as workout does not exist', async () => {
-    expect(workoutService.getWorkoutById("",ctx)).rejects.toThrow("No workouts were found in the database with the specified id.")
+    await expect(workoutService.getWorkoutById("",ctx)).rejects.toThrow("No workouts were found in the database with the specified id.")
 })
