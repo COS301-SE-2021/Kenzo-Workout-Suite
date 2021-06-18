@@ -67,11 +67,15 @@ export class WorkoutService {
 
   async attemptGetWorkouts() : Promise<any>{
     const url: string = "http://localhost:3000/workout/getWorkouts";
-    let value = this.http.get(url).toPromise().then(data=>{
+    return this.http.get(url).toPromise().then(data=>{
+      data = {
+        status: 200,
+        data: data
+      }
       return data
     }).catch(err=>{
       return err;
     });
-    return value;
+
   }
 }
