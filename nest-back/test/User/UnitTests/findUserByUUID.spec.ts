@@ -39,7 +39,7 @@ test('Test, Valid user returned by mock prisma service', async () => {
     const userUUID=uuidv4();
     const secondUUID=uuidv4();
     const myUser={
-        userId:uuidv4,
+        userId:uuidv4(),
         email: "test@gmail.com",
         firstName: "test",
         lastName: "tester",

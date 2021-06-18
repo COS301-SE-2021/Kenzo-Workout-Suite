@@ -45,9 +45,6 @@ export class CreateWorkoutDTO{
     exercises: Exercise[];
     @ApiProperty({type: Array, description: 'Tags for the workout.'})
     tags: Tag[];
-    @ApiProperty({type: String, description: 'ID of the planner who created the workout.'})
-    planner_ID: string;
-
 }
 
 export class UpdateWorkoutDTO{
@@ -61,8 +58,6 @@ export class UpdateWorkoutDTO{
     exercises: Exercise[];
     @ApiProperty({type: Array, description: 'Tags for the workout.'})
     tags: Tag[];
-    @ApiProperty({type: String, description: 'ID of the planner who created the workout.'})
-    planner_ID: string;
 
 }
 
