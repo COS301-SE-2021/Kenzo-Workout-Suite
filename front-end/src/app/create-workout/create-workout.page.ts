@@ -129,4 +129,32 @@ export class CreateWorkoutPage implements OnInit {
       }
     }
   }
+
+  /** This function is called upon input of the search bar and will filter the selection of tags
+   * by the specified text. This function will be able to determine whether a tag is already
+   * selected or not and decide whether it is appropriate to display this tag.
+   *
+   * i.e. If a tag is selected, it must not be displayed under search results
+   */
+  filterSelection(event) {
+    let text = event.srcElement.value;
+
+    for (let i = 0; i < this.tags.length; i++) {
+      let tag = this.tags[i];
+
+      // if not selected
+      if(!tag.selected){
+        let id = tag.label;
+        let tagElement = document.getElementById(id);
+
+        // if tag label contains the searched tag
+        if(!id.toLowerCase().includes(text.toLowerCase())){
+          tagElement.style.display = "none";
+        }
+        else{
+          tagElement.style.display = "inline-block";
+        }
+      }
+    }
+  }
 }

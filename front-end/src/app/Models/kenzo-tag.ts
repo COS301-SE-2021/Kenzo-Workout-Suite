@@ -1,45 +1,47 @@
 export class KenzoTag {
-  private _textColor:String;
-  private _backgroundColor:String;
-  private _label:String;
-  private _selected:Boolean;
+  private _textColor:string;
+  private _backgroundColor:string;
+  private _label:string;
+  private _selected:boolean;
 
-  constructor(textColor: String, backgroundColor: String, label: String, selected: Boolean) {
+
+  constructor(textColor: string, backgroundColor: string, label: string, selected: boolean) {
     this._textColor = textColor;
     this._backgroundColor = backgroundColor;
     this._label = label;
     this._selected = selected;
   }
 
-  get textColor(): String {
+
+  get textColor(): string {
     return this._textColor;
   }
 
-  set textColor(value: String) {
+  set textColor(value: string) {
     this._textColor = value;
   }
 
-  get backgroundColor(): String {
+  get backgroundColor(): string {
     return this._backgroundColor;
   }
 
-  set backgroundColor(value: String) {
+  set backgroundColor(value: string) {
     this._backgroundColor = value;
   }
 
-  get label(): String {
+  get label(): string {
     return this._label;
   }
 
-  set label(value: String) {
+  set label(value: string) {
     this._label = value;
   }
 
-  get selected(): Boolean {
+  get selected(): boolean {
     return this._selected;
   }
 
-  set selected(value: Boolean) {
+  set selected(value: boolean) {
     this._selected = value;
   }
 }
