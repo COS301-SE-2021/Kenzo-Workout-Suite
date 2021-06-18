@@ -5,7 +5,6 @@ import {LocalAuthGuard} from "./local-auth.guard";
 import {JwtAuthGuard} from "./jwt-auth.guard";
 import {User} from "@prisma/client";
 import {ActualPrisma} from "../../context";
-import {v4 as uuidv4 } from 'uuid';
 import {
     ApiBadRequestResponse,
     ApiBearerAuth,
