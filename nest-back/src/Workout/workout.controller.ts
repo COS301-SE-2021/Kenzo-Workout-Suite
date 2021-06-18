@@ -5,7 +5,7 @@ import {
     Post,
     Body,
     Put,
-    Delete,
+    Delete, UseGuards, Request,
 } from '@nestjs/common';
 import {WorkoutService} from "./workout.service";
 import {
@@ -26,6 +26,7 @@ import {
     ApiResponse
 } from "@nestjs/swagger";
 import {CreateExerciseDTO, CreateWorkoutDTO, DeleteWorkoutDTO, UpdateWorkoutDTO} from "./workout.model";
+import {JwtAuthGuard} from "../user/jwt-auth.guard";
 
 @Controller('workout')
 export class WorkoutController {
@@ -137,7 +138,7 @@ export class WorkoutController {
         return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,difficulty,duration, this.ctx);
     }
     //TODO:Use req and auth for userID [consult Zelu]
-
+    @UseGuards(JwtAuthGuard)
     @Post('createWorkout')
     @ApiBody({type: CreateWorkoutDTO})
     @ApiOkResponse({
@@ -154,14 +155,14 @@ export class WorkoutController {
         @Body('workoutDescription') workoutDescription: string,
         @Body('exercises') exercises : Exercise[],
         @Body('difficulty') difficulty: Difficulty,
-        @Body('planner_ID') planner_ID : string
+        @Request() req
     ) {
 
-        return this.workoutService.createWorkout(workoutTitle,workoutDescription,exercises,difficulty,planner_ID , this.ctx)
+        return this.workoutService.createWorkout(workoutTitle,workoutDescription,exercises,difficulty,req.user.userId , this.ctx)
 
     }
 
-
+    @UseGuards(JwtAuthGuard)
     @Put ("updateWorkout")
     @ApiBody({type: UpdateWorkoutDTO})
     @ApiOkResponse({
@@ -179,10 +180,12 @@ export class WorkoutController {
         @Body('workoutDescription') workoutDescription: string,
         @Body('exercises') exercises : Exercise[],
         @Body('difficulty') difficulty: Difficulty,
-        @Body('planner_ID') planner_ID : string
+        @Request() req
     ){
-        return this.workoutService.updateWorkout(workoutID,workoutTitle,workoutDescription,exercises,difficulty,planner_ID,this.ctx);
+        return this.workoutService.updateWorkout(workoutID,workoutTitle,workoutDescription,exercises,difficulty,req.user.userId,this.ctx);
     }
+
+
     @Delete("deleteWorkout")
     @ApiBody({type: DeleteWorkoutDTO})
     @ApiOkResponse({
