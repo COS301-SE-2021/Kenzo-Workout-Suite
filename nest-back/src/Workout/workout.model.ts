@@ -3,7 +3,7 @@ import {
     Workout,
     Exercise,
     User,
-    Difficulty,
+    Tag,
     Prisma
 } from '@prisma/client';
 export class CreateExerciseDTO{
@@ -19,8 +19,8 @@ export class CreateExerciseDTO{
     poseDescription: string;
     @ApiProperty({type: Number, description: 'rest period'})
     restPeriod: number;
-    @ApiProperty({type: String, description: 'difficulty'})
-    difficulty: string;
+    @ApiProperty({type: Array, description: 'Tags for the workout.'})
+    tags: Tag[];
     @ApiProperty({type: Number, description: 'duration of exercise'})
     duratime: number;
 }
@@ -41,8 +41,8 @@ export class CreateWorkoutDTO{
     workoutDescription: string;
     @ApiProperty({type: Array , description: 'Exercises part of the workout.'})
     exercises: Exercise[];
-    @ApiProperty({enum: ['EASY','MEDIUM','HARD','EXTREME'], description: 'Difficulty of the workout.'})
-    difficulty: Difficulty;
+    @ApiProperty({type: Array, description: 'Tags for the workout.'})
+    tags: Tag[];
     @ApiProperty({type: String, description: 'ID of the planner who created the workout.'})
     planner_ID: string;
 
@@ -57,8 +57,8 @@ export class UpdateWorkoutDTO{
     workoutDescription: string;
     @ApiProperty({type: Array , description: 'Exercises part of the workout.'})
     exercises: Exercise[];
-    @ApiProperty({enum: ['EASY','MEDIUM','HARD','EXTREME'], description: 'Difficulty of the workout.'})
-    difficulty: Difficulty;
+    @ApiProperty({type: Array, description: 'Tags for the workout.'})
+    tags: Tag[];
     @ApiProperty({type: String, description: 'ID of the planner who created the workout.'})
     planner_ID: string;
 

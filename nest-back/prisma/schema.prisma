@@ -10,13 +10,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum Difficulty {
-  EASY
-  MEDIUM
-  HARD
-  EXTREME
-}
-
 enum userType {
   ADMIN
   CLIENT
@@ -51,7 +44,7 @@ model Workout {
   workoutDescription String
 
   exercises          Exercise[]
-  difficulty         Difficulty
+  tags               Tag[]
 
   planner            User? @relation(fields: [planner_ID], references: [userId])
   planner_ID         String?
@@ -65,7 +58,7 @@ model Exercise {
   sets            Int
   Posedescription String
   restPeriod      Int
-  difficulty      Difficulty
+  tags            Tag[]
   duratime        Int
 
   workouts        Workout[]
@@ -75,4 +68,6 @@ model Tag{
   label             String    @id
   textColour        String
   backgroundColour  String
+  workouts          Workout[]
+  exercises         Exercise[]
 }

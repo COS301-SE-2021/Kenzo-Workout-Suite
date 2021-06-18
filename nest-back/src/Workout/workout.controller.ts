@@ -12,7 +12,7 @@ import {
     Workout,
     Exercise,
     User,
-    Difficulty,
+    Tag,
     PrismaClient,
     Prisma
 } from '@prisma/client';
@@ -118,14 +118,15 @@ export class WorkoutController {
 
     @Post('createExercise')
     @ApiOkResponse({
-        description: 'A workout object.'
+        description: 'Exercise Created'
     })
-    @ApiNotFoundResponse({
-        description: 'No workouts were found in the database.'
+    @ApiBadRequestResponse({
+        description: 'Could not create exercise.'
     })
     @ApiInternalServerErrorResponse({
         description: 'Internal server error.'
     })
+    @ApiBody({type: CreateExerciseDTO})
     createExercise(
         @Body('title') title: string,
         @Body('description') description: string,
@@ -133,20 +134,20 @@ export class WorkoutController {
         @Body('sets') sets: number,
         @Body('Posedescription') Posedescription: string,
         @Body('restPeriod') restPeriod: number,
-        @Body('difficulty') difficulty: Difficulty,
+        @Body('tags') tags: Tag[],
         @Body('duratime') duration: number,
     ) {
-        return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,difficulty,duration, this.ctx);
+        return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,tags,duration, this.ctx);
     }
     //TODO:Use req and auth for userID [consult Zelu]
     @UseGuards(JwtAuthGuard)
     @Post('createWorkout')
     @ApiBody({type: CreateWorkoutDTO})
     @ApiOkResponse({
-        description: 'A workout object.'
+        description: 'Workout Created'
     })
-    @ApiNotFoundResponse({
-        description: 'No workouts were found in the database.'
+    @ApiBadRequestResponse({
+        description: 'Could not create workout.'
     })
     @ApiInternalServerErrorResponse({
         description: 'Internal server error.'
@@ -155,11 +156,11 @@ export class WorkoutController {
         @Body('workoutTitle') workoutTitle: string,
         @Body('workoutDescription') workoutDescription: string,
         @Body('exercises') exercises : Exercise[],
-        @Body('difficulty') difficulty: Difficulty,
+        @Body('tags') tags: Tag[],
         @Request() req
     ) {
 
-        return this.workoutService.createWorkout(workoutTitle,workoutDescription,exercises,difficulty,req.user.userId , this.ctx)
+        return this.workoutService.createWorkout(workoutTitle,workoutDescription,exercises,tags,req.user.userId , this.ctx)
 
     }
 
@@ -169,8 +170,8 @@ export class WorkoutController {
     @ApiOkResponse({
         description: 'Workout Updated'
     })
-    @ApiNotFoundResponse({
-        description: 'Workout with provided ID does not exist'
+    @ApiBadRequestResponse({
+        description: 'Could not update workout.'
     })
     @ApiInternalServerErrorResponse({
         description: 'Internal server error.'
@@ -180,10 +181,10 @@ export class WorkoutController {
         @Body('workoutTitle') workoutTitle: string,
         @Body('workoutDescription') workoutDescription: string,
         @Body('exercises') exercises : Exercise[],
-        @Body('difficulty') difficulty: Difficulty,
+        @Body('tags') tags: Tag[],
         @Request() req
     ){
-        return this.workoutService.updateWorkout(workoutID,workoutTitle,workoutDescription,exercises,difficulty,req.user.userId,this.ctx);
+        return this.workoutService.updateWorkout(workoutID,workoutTitle,workoutDescription,exercises,tags,req.user.userId,this.ctx);
     }
 
 
