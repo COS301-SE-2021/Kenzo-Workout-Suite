@@ -59,5 +59,5 @@ test('Should receive valid information about workout with corresponding planner'
 })
 
 test('Should not receive valid information about workout with corresponding planner as workout does not exist', async () => {
-    await expect(workoutService.getWorkoutByPlanner("notindatabase@gmail.com",ctx)).resolves.toStrictEqual([])//"No workouts were found in the database with the specified planner."
+    await expect(workoutService.getWorkoutByPlanner("notindatabase@gmail.com",ctx)).rejects.toThrow("No workouts were found in the database with the specified planner.")
 })

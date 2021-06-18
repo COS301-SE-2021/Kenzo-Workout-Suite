@@ -60,5 +60,5 @@ test('Should receive valid information about workout with corresponding id', asy
 })
 
 test('Should not receive valid information about workout with corresponding id as workout does not exist', async () => {
-    await expect(workoutService.getWorkoutById("",ctx)).resolves.toStrictEqual([])//"No workouts were found in the database with the specified id."
+    await expect(workoutService.getWorkoutById("",ctx)).rejects.toThrow("No workouts were found in the database with the specified id.")
 })
