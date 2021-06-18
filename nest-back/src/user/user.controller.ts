@@ -65,8 +65,16 @@ export class UserController {
 
 
     /**
+     *User Controller- login
      *
-     * @param req
+     * @param req This is the request that has the Authorisation bearer token.
+     *
+     * @throws NotFoundException if:
+     *                          -An empty user object is passed into the function
+     *                          -A user object without the field 'userId' is passed into the function
+     *
+     * @return Promise that consists of the access token
+     * @author Zelealem Tesema
      */
     @UseGuards(LocalAuthGuard)
     @Post('login')
@@ -84,11 +92,25 @@ export class UserController {
         return this.userService.login(req.user);
     }
 
-
+    /**
+     * User Controller- googleLogin
+     *
+     * @param req
+     *
+     * @author Zelealem Tesema
+     * @callback googleAuthRedirect The function will callback to the googleredirect functionality
+     */
     @Get('googleLogin')
     @UseGuards(AuthGuard('google'))
     async googleAuth(@Req() req) {}
 
+    /**
+     * User Controller- googleRedirect
+     *
+     * @param req
+     *
+     * @author Zelealem Tesema
+     */
     @Get('googleRedirect')
     @UseGuards(AuthGuard('google'))
     googleAuthRedirect(@Req() req) {
@@ -96,6 +118,19 @@ export class UserController {
     }
 
 
+    /**
+     * User Controller- getUserDetails
+     *
+     * @param req This consists of the userID of the user whose details are being resolved.
+     *
+     * @throws BadRequestException if:
+     *                             -An empty or null user ID is passed into the function
+     *                             -The database fails to retrieve the user details
+     *
+     *@throws NotFoundException if:
+     *                          -No user with such UUID exists.
+     * @author Zelealem Tesema
+     */
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     @Get('getUserDetails')
@@ -105,15 +140,28 @@ export class UserController {
     @ApiNotFoundResponse({
         description: 'Invalid Email or Password'
     })
-    @ApiBody({
-        type: loginDTO
-    })
     @HttpCode(200)
     getUserData(@Request() req){
         return this.userService.findUserByUUID(req.user.userId,ActualPrisma())
     }
 
 
+    /**
+     * User Controller- updateUserDetail
+     *
+     * @param req   This is the request object that consists of the UUID of the user whose details need to be updated
+     * @param firstName This is the first name of the user whose details need to be updated.
+     * @param lastName  This is the last name of the user whose details need to be updated.
+     * @param dateOfBirth This is the updated date of birth of the user whose details need to be updated.
+     *
+     * @throws BadRequestException if:
+     *                          -Null values are passed in for the firstName, LastName or userID
+     *                          -Empty values are passed in for the firstName, LastName or userID
+     *                          -The user details could not be updated
+     *
+     * @author Zelealem Tesema
+     *
+     */
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     @Put('updateUserDetail')
