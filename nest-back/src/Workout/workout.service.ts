@@ -18,6 +18,14 @@ import {
 } from '@prisma/client';
 import { jsPDF } from "jspdf";
 import {PrismaService} from "../Prisma/prisma.service";
+import {
+    ApiBody,
+    ApiCreatedResponse, ApiHeader,
+    ApiInternalServerErrorResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse, ApiParam, ApiProperty, ApiQuery,
+    ApiResponse
+} from "@nestjs/swagger";
 
 
 
@@ -188,7 +196,9 @@ export class WorkoutService{
     }
 
     async createWorkout(workoutTitle: string, workoutDescription: string, exercises : Exercise[],difficulty:Difficulty,planner_ID :string,ctx: Context) {
-
+        if (workoutTitle=="" || workoutDescription=="" || difficulty==null ){
+            throw new NotFoundException("Parameters can not be left empty.");
+        }
         const Workout ={
             workoutTitle: workoutTitle,
             workoutDescription: workoutDescription,
@@ -202,11 +212,6 @@ export class WorkoutService{
                 }
             }
         }
-
-        if (workoutTitle=="" || workoutDescription=="" || difficulty==null )
-        {
-            throw new NotFoundException("Parameters can not be left empty.");
-        }
         await ctx.prisma.workout.create({
             data: Workout
         })
@@ -215,13 +220,61 @@ export class WorkoutService{
 
     }
 
+    async updateWorkout(workoutID: string, workoutTitle: string, workoutDescription: string, exercises : Exercise[],difficulty:Difficulty,planner_ID :string,ctx: Context){
+        if (workoutID == "" || workoutTitle=="" || workoutDescription=="" || difficulty==null ){
+            throw new NotFoundException("Parameters can not be left empty.");
+        }
+        const updateWorkout ={
+            workoutTitle: workoutTitle,
+            workoutDescription: workoutDescription,
+            exercises: {
+                connect: exercises
+            },
+            difficulty: difficulty,
+            planner: {
+                connect: {
+                    userId: planner_ID
+                }
+            }
+        }
+        try{
+            await ctx.prisma.workout.update({
+                where:{
+                    workoutID: workoutID,
+                },
+                data:updateWorkout
+            });
+            await this.generateWorkoutPDF(updateWorkout, ctx);
+            return("Workout Updated.");
+        }catch (e) {
+            //console.log(e);
+            throw new NotFoundException("Workout with provided ID does not exist");
+        }
+    }
+
+    async deleteWorkout(workoutID: string,ctx: Context){
+        if(workoutID ==""){
+            throw new NotFoundException("Parameters can not be left empty.");
+        }
+        try{
+            await ctx.prisma.workout.delete({
+                where:{
+                    workoutID: workoutID
+                }
+            });
+            return("Workout Deleted.");
+        }catch (e) {
+            throw new NotFoundException("Workout with provided ID does not exist");
+        }
+    }
+
     async generateWorkoutPDF(workout: any, ctx: Context){
 
         const doc = new jsPDF();
 
         //TODO: Make heading font and a normal font & Consider adding an image
-        doc.text(workout.workoutTitle, 70, 10);
-        doc.text(workout.difficulty, 90 , 50  );
+        doc.text(workout.workoutTitle, 80, 10);
+        doc.text("Difficulty: " + workout.difficulty, 80 , 50  );
         let splitWorkoutDesc = doc.splitTextToSize(workout.workoutDescription,180);
 
         doc.text(splitWorkoutDesc, 15, 130 );
