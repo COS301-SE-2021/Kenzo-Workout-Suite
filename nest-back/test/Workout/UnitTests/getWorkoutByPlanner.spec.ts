@@ -1,11 +1,8 @@
 import { MockContext, Context, createMockContext } from "../../../context";
 import {WorkoutService} from "../../../src/Workout/workout.service";
-//import { Test, TestingModule } from '@nestjs/testing';
 import {v4 as uuidv4 } from 'uuid';
 import {
-    Workout,
-    Exercise,
-    Prisma, Difficulty
+    Difficulty
 } from '@prisma/client';
 import {PrismaClient} from "@prisma/client/scripts/default-index";
 
@@ -37,5 +34,7 @@ test('Should receive valid information about workout with corresponding planner'
 })
 
 test('Should not receive valid information about workout with corresponding planner as workout does not exist', async () => {
+    let workout;
+    mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
     await expect(workoutService.getWorkoutByPlanner("000",ctx)).rejects.toThrow("No workouts were found in the database with the specified planner.")
 })
