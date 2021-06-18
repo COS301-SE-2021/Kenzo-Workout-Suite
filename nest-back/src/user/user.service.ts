@@ -175,7 +175,7 @@ export class UserService {
      *
      * @author Zelealem Tesema
      */
-    async findUserByUUID(passedUserId: uuidv4,ctx: Context) : Promise<any>{
+    async findUserByUUID(passedUserId: uuidv4 ,ctx: Context) : Promise<any>{
 
         if (passedUserId===null || passedUserId==="")
         {

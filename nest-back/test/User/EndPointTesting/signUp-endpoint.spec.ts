@@ -41,7 +41,48 @@ describe('End point testing of the user subsystem', () => {
             .expect(201)
     });
 
-    it(`Testing login`, async () => {
+    it(`Testing login with Invalid email`, async () => {
+        return request(app.getHttpServer())
+            .post('/user/signUp')
+            .send({
+                "user":{
+                    "firstName": "Zelu",
+                    "lastName": "Tesema",
+                    "email": "zelu2gmail.com",
+                    "userType":"PLANNER",
+                    "password": "Zelu2000#"
+                }
+            })
+            .expect(412)
+    });
+
+    it(`Testing login with Invalid password`, async () => {
+        return request(app.getHttpServer())
+            .post('/user/signUp')
+            .send({
+                "user":{
+                    "firstName": "Zelu",
+                    "lastName": "Tesema",
+                    "email": "zelu2@gmail.com",
+                    "userType":"PLANNER",
+                    "password": "Zelu2000"
+                }
+            })
+            .expect(412)
+    });
+
+    it(`Testing login with Invalid password`, async () => {
+
+        await ActualPrisma().prisma.user.create({
+            data:{
+                "firstName": "Zelu",
+                "lastName": "Tesema",
+                "email": "zelu2@gmail.com",
+                "userType":"PLANNER",
+                "password": "Zelu2000"
+            }
+        })
+
         return request(app.getHttpServer())
             .post('/user/signUp')
             .send({
@@ -53,8 +94,10 @@ describe('End point testing of the user subsystem', () => {
                     "password": "Zelu2000#"
                 }
             })
-            .expect(201)
+            .expect(400)
+
     });
+
 
     afterAll(async () => {
         await app.close();
