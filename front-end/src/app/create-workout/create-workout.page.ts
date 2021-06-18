@@ -27,7 +27,7 @@ export class CreateWorkoutPage implements OnInit {
               private workoutService:WorkoutService,
               public alertController:AlertController,) {
     this.getTags();
-    this.newTag = this.getRandomTag("TEST");
+    this.newTag = this.getRandomTag("");
   }
 
   ngOnInit() {
@@ -151,6 +151,8 @@ export class CreateWorkoutPage implements OnInit {
   /** This function is called upon input of the search bar and will filter the selection of tags
    * by the specified text. This function will be able to determine whether a tag is already
    * selected or not and decide whether it is appropriate to display this tag.
+   *
+   * @param event contains the result of the search
    *
    * i.e. If a tag is selected, it must not be displayed under search results
    *
