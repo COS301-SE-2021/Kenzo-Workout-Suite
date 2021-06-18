@@ -83,7 +83,21 @@ export class WorkoutController {
         return this.workoutService.getExercises(ActualPrisma());
     }
 
-    //TODO:Remind Tin about GetExerciseByID
+    @Get('getExerciseByTitle/:title')
+    @ApiOkResponse({
+        description: 'A workout object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No workouts were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    getExerciseByTitle(
+        @Param('title') title: string,
+    ) {
+        return this.workoutService.getExerciseByTitle(title,ActualPrisma());
+    }
     @Get('getExerciseByID/:ID')
     @ApiOkResponse({
         description: 'A workout object.'

@@ -164,6 +164,48 @@ export class WorkoutService{
         }
     }
 
+    /**
+     *Workout Service - Get Exercises by Title
+     *
+     * @param title This is the title of the exercise/s to be found in the database.
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No exercises were found in the database with the specified title.
+     * @return  Promise array of exercises object/s.
+     * @author Tinashe Chamisa
+     *
+     */
+    async getExerciseByTitle(title: string, ctx: Context): Promise<any> {
+        try{
+            const exercise = await ctx.prisma.exercise.findMany({//search for exercises that meet the requirement
+                where: {
+                    title : title
+                },
+                select: {
+                    exercise: true,
+                    title: true,
+                    description: true,
+                    repRange: true,
+                    sets: true,
+                    Posedescription: true,
+                    restPeriod: true,
+                    tags: true,
+                    duratime: true
+                }
+            });
+
+            if(!(Array.isArray(exercise) && exercise.length)){//if JSON object is empty, send error code
+                throw new NotFoundException("No exercises were found in the database with the specified title.");
+            }
+            else{
+                return exercise;
+            }
+        }
+        catch(err){
+            throw err;
+        }
+    }
+
 
     async getExerciseByID(id: string, ctx: Context): Promise<any> {
         try{
@@ -431,9 +473,13 @@ export class WorkoutService{
 
         //TODO: Make heading font and a normal font & Consider adding an image
         doc.text(workout.workoutTitle, 80, 10);
-        doc.text("Difficulty: " + workout.difficulty, 80 , 50  );
-        let splitWorkoutDesc = doc.splitTextToSize(workout.workoutDescription,180);
+        // if(workout.tags ){
+        //     let stringTags = workout.tags.label.join();
+        //     let splitTags = doc.splitTextToSize(stringTags,180);
+        //     doc.text("Tags: " + splitTags, 15 , 50  );
+        // }
 
+        let splitWorkoutDesc = doc.splitTextToSize(workout.workoutDescription,180);
         doc.text(splitWorkoutDesc, 15, 130 );
         //doc.addImage("./src/GeneratedWorkouts/Kenzo_logo.png","PNG",60,230,90, 40);
 
@@ -447,7 +493,12 @@ export class WorkoutService{
                 //console.log(exercise);
                 doc.addPage("a4", "p");
                 doc.text(exercise.title, 90, 10);
-                doc.text("Difficulty: " + exercise.difficulty, 80, 30);
+                // if(exercise.tags){
+                //     let stringTags = exercise.tags.label.join()
+                //     let splitTags = doc.splitTextToSize(stringTags,180);
+                //     doc.text("Tags: " + splitTags, 15 , 30  );
+                // }
+
                 let splitExerciseDesc = doc.splitTextToSize(exercise.description,180)
                 doc.text(splitExerciseDesc, 15, 50);
                 doc.text("Rep Range: " + exercise.repRange, 15, (60+(splitExerciseDesc.length*10)) );
