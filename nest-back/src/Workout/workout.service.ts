@@ -34,7 +34,7 @@ export class WorkoutService{
                 }
             });
 
-            if(workouts==null){//if JSON object is empty, send error code
+            if(!(Array.isArray(workouts) && workouts.length)){//if JSON object is empty, send error code
                 throw new NotFoundException("No workouts were found in the database.");
             }
             else{
@@ -62,7 +62,7 @@ export class WorkoutService{
                 }
             });
 
-            if(workouts==null){//if JSON object is empty, send error code
+            if(!(Array.isArray(workouts) && workouts.length)){//if JSON object is empty, send error code
                 throw new NotFoundException("No workouts were found in the database with the specified id.");
             }
             else{
@@ -90,7 +90,7 @@ export class WorkoutService{
                 }
             });
 
-            if(exercises==null){//if JSON object is empty, send error code
+            if(!(Array.isArray(exercises) && exercises.length)){//if JSON object is empty, send error code
                 throw new NotFoundException("No exercises were found in the database.");
             }
 
@@ -120,7 +120,7 @@ export class WorkoutService{
                 }
             });
 
-            if(exercise==null){//if JSON object is empty, send error code
+            if(!(Array.isArray(exercise) && exercise.length)){//if JSON object is empty, send error code
                 throw new NotFoundException("No exercises were found in the database with the specified title.");
             }
             else{
@@ -147,7 +147,7 @@ export class WorkoutService{
                     planner_ID: true
                 }
             });
-            if (workouts==null) {//if JSON object is empty, send error code
+            if (!(Array.isArray(workouts) && workouts.length)) {//if JSON object is empty, send error code
                 throw new NotFoundException("No workouts were found in the database with the specified planner.");
             } else {
                 return workouts;
