@@ -1,11 +1,8 @@
 import { MockContext, Context, createMockContext } from "../../../context";
 import {WorkoutService} from "../../../src/Workout/workout.service";
-//import { Test, TestingModule } from '@nestjs/testing';
 import {v4 as uuidv4 } from 'uuid';
 import {
-    Workout,
-    Exercise,
-    Prisma, Difficulty
+    Difficulty
 } from '@prisma/client';
 import {PrismaClient} from "@prisma/client/scripts/default-index";
 

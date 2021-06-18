@@ -4,9 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import {v4 as uuidv4 } from 'uuid';
 
 import {
-    Workout,
-    Exercise,
-    Prisma, Difficulty, userType
+    Difficulty
 } from '@prisma/client';
 import {PrismaClient} from "@prisma/client/scripts/default-index";
 

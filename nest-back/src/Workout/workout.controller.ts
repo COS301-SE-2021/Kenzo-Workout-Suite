@@ -7,7 +7,6 @@ import {
     ApiOkResponse
 } from "@nestjs/swagger";
 import {ActualPrisma} from "../../context";
-import { CreateExerciseDTO } from "./workout.model";
 
 @Controller('workout')
 export class WorkoutController {
@@ -91,39 +90,6 @@ export class WorkoutController {
         @Param('id') id: string,
     ) {
         return this.workoutService.getWorkoutByPlanner(id,ActualPrisma());
-    }
-
-    @Post('createExercise')
-    @ApiBody({type: CreateExerciseDTO})
-    @ApiOkResponse({
-        description: 'A workout object.'
-    })
-    @ApiNotFoundResponse({
-        description: 'No workouts were found in the database.'
-    })
-    @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
-    })
-    getUserByEmail(
-        @Body('title') title: string,
-        @Body('description') description: string,
-        @Body('repRange') repRange: string,
-        @Body('sets') sets: number,
-        @Body('poseDescription') poseDescription: string,
-        @Body('restPeriod') restPeriod: number,
-        @Body('difficulty') difficulty: string,
-        @Body('duratime') duration: number,
-    ) {
-        return this.workoutService.createExercise(title,description,repRange,sets,poseDescription,restPeriod,difficulty,duration);
-    }
-
-    @Post('createWorkout')
-    createWorkout(
-        @Body('workoutTitle') workoutTitle: string,
-        @Body('workoutDescription') workoutDescription: string,
-        @Body('difficulty') difficulty: string,
-    ) {
-        return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty);
     }
 
 }

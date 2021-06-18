@@ -1,12 +1,9 @@
 import {MockContext, Context, createMockContext, ActualPrisma} from "../../../context";
 import {WorkoutService} from "../../../src/Workout/workout.service";
-import { JwtService } from '@nestjs/jwt';
 import {v4 as uuidv4 } from 'uuid';
 
 import {
-    Workout,
-    Exercise,
-    Prisma, Difficulty, userType
+    Prisma, Difficulty
 } from '@prisma/client';
 import {PrismaClient} from "@prisma/client/scripts/default-index";
 

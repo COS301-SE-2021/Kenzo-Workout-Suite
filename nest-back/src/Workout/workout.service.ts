@@ -1,4 +1,5 @@
 import {
+    Injectable,
     NotFoundException
 } from "@nestjs/common";
 import { PrismaService } from "../Prisma/prisma.service";
@@ -12,6 +13,7 @@ export class WorkoutService{
 
     /**
      *Workout Service - Get Workouts
+     * @param ctx  This is the prisma context that is injected into the function.
      * @throws NotFoundException if:
      *                               -No workouts were found in the database.
      * @return  Promise array of workout object/s.
@@ -84,6 +86,7 @@ export class WorkoutService{
 
     /**
      *Workout Service - Get Exercises
+     * @param ctx  This is the prisma context that is injected into the function.
      * @throws NotFoundException if:
      *                               -No exercises were found in the database.
      * @return  Promise array of exercise object/s.
@@ -193,14 +196,6 @@ export class WorkoutService{
         } catch (err) {
             throw err;
         }
-    }
-
-    createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,difficulty:string,duratime:number){
-
-    }
-
-    createWorkout(workoutTitle: string, workoutDescription: string, difficulty: string){
-
     }
 
 }
