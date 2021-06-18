@@ -40,7 +40,6 @@ test('Test, Valid user returned by mock prisma service', async () => {
     const searchUUID=createdUser.userId;
 
     const expectedUser={
-        userId:searchUUID,
         email: "test@gmail.com",
         firstName: "test",
         lastName: "tester",
@@ -72,7 +71,6 @@ test('Test, Valid user returned by mock prisma service', async () => {
     const searchUUID=createdUser.userId;
 
     const expectedUser={
-        userId:searchUUID,
         email: "test@gmail.com",
         firstName: "test",
         lastName: "tester",
