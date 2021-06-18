@@ -10,7 +10,6 @@ import {
 } from '@prisma/client';
 import {BadRequestException} from "@nestjs/common";
 import {create} from "domain";
-import {jwtConstants} from "../../../src/user/constants";
 
 
 let mockCtx: MockContext
@@ -21,8 +20,8 @@ let Jwt : JwtService
 
 beforeEach(async () => {
     Jwt=new JwtService({
-        secret: jwtConstants.secret,
-        signOptions: { expiresIn: '60s' },
+        secret: process.env.JWT_SECRET,
+        signOptions: { expiresIn: process.env.EXPIRY_TIME },
     })
     userService=new UserService(Jwt)
     ctx = ActualPrisma()
