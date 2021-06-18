@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button class="back" mode="ios" defaultHref="/your-workouts"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="title">Create an Exercise</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="background">
+  <br>
+    <div class="input-div">
+      <ion-label class="input-description">Title</ion-label>
+      <ion-input placeholder="Shred Program" class="kenzo-input"></ion-input>
+    </div>
+    <br>
+    <div class="input-div">
+      <ion-label class="input-description">Description</ion-label>
+      <ion-input placeholder="3 week program to lose weight" class="kenzo-input"></ion-input>
+    </div>
+    <br>
+    <div class="input-div">
+      <ion-label class="input-description">Difficulty</ion-label>
+      <ion-list mode="ios">
+        <ion-radio-group value="easy">
+          <ion-item class="radios">
+            <ion-label>Easy</ion-label>
+            <ion-radio slot="start" value="easy"></ion-radio>
+          </ion-item>
+
+          <ion-item class="radios">
+            <ion-label>Medium</ion-label>
+            <ion-radio slot="start" value="medium"></ion-radio>
+          </ion-item>
+
+          <ion-item class="radios">
+            <ion-label>Hard</ion-label>
+            <ion-radio slot="start" value="hard"></ion-radio>
+          </ion-item>
+
+          <ion-item class="radios">
+            <ion-label>Extreme</ion-label>
+            <ion-radio slot="start" value="extreme"></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </ion-list>
+    </div>
+    <br>
+    <div class="input-div">
+      <ion-label class="input-description">Rep Range</ion-label>
+      <ion-input placeholder="4-6" class="kenzo-input"></ion-input>
+    </div>
+    <br>
+    <div class="input-div">
+      <ion-label class="input-description">Sets</ion-label>
+      <ion-input type="number" placeholder="3" class="kenzo-input"></ion-input>
+    </div>
+    <br>
+    <div class="input-div">
+      <ion-label class="input-description">Pose Description</ion-label>
+      <ion-input placeholder="Ensure that your shoulders are straight" class="kenzo-input"></ion-input>
+    </div>
+    <br>
+    <div class="input-div">
+      <ion-label class="input-description">Rest Period (seconds)</ion-label>
+      <ion-input type="number" placeholder="40" class="kenzo-input"></ion-input>
+    </div>
+    <br>
+    <div class="input-div">
+      <ion-label class="input-description">Duration of exercise (minutes)</ion-label>
+      <ion-input type="number" placeholder="10" class="kenzo-input"></ion-input>
+    </div>
+    <br>
+</ion-content>
+<ion-footer class="ion-no-border">
+  <ion-toolbar mode="ios" class="footer">
+    <ion-button  mode="ios" class="submit">Submit</ion-button>
+  </ion-toolbar>
+</ion-footer>
