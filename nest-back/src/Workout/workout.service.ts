@@ -1,18 +1,10 @@
 import {
     BadRequestException, ConflictException,
-    HttpException,
-    HttpStatus,
     Injectable,
-    InternalServerErrorException, NotAcceptableException,
+    NotAcceptableException,
     NotFoundException
 } from "@nestjs/common";
 import { PrismaService } from "../Prisma/prisma.service";
-
-import {
-    Workout,
-    Exercise,
-    Prisma
-} from '@prisma/client';
 import {Context} from "../../context";
 const Filter = require('bad-words'), filter = new Filter();
 
@@ -22,6 +14,15 @@ export class WorkoutService{
     constructor(private prisma: PrismaService) {
     }
 
+    /**
+     *Workout service - format
+     *
+     * @brief Function that formats a string so that every first letter of every word is a capital, eg: CoRE extreme to Core Extreme.
+     * @param label This is the label that will be formatted.
+     * @return  Re-formatted string.
+     * @author Tinashe Chamisa
+     *
+     */
     format(label: string): string{
         let str = label.toLowerCase();
         const arr = str.split(" ");
@@ -34,119 +35,23 @@ export class WorkoutService{
         return str;
     }
 
-    async getWorkouts(ctx: Context): Promise<any> {
-        try{
-            const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
-                select: {
-                    workoutTitle: true,
-                    workoutDescription: true,
-                    exercises: true,
-                    difficulty: true,
-                    planner_ID: true
-                }
-            });
-
-            if(workouts.length==0){//if JSON object is empty, send error code
-                throw new NotFoundException("No workouts were found in the database.");
-            }
-            else{
-                return workouts;
-            }
-        }
-        catch(err){
-            throw err;
-        }
-    }
-
-    async getWorkoutByTitle(title: string, ctx: Context): Promise<any> {
-        try{
-            const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
-                where: {
-                    workoutTitle: title
-                },
-                select: {
-                    workoutTitle: true,
-                    workoutDescription: true,
-                    exercises: true,
-                    difficulty: true,
-                    planner_ID: true
-                }
-            });
-
-            if(workouts.length==0){//if JSON object is empty, send error code
-                throw new NotFoundException("No workouts were found in the database with the specified title.");
-            }
-            else{
-                return workouts;
-            }
-        }
-        catch(err){
-            throw err;
-        }
-    }
-
-    async getExerciseByTitle(title: string, ctx: Context): Promise<any> {
-        try{
-            const exercise = await ctx.prisma.exercise.findMany({//search for exercises that meet the requirement
-                where: {
-                    title : title
-                },
-                select: {
-                    title: true,
-                    description: true,
-                    repRange: true,
-                    sets: true,
-                    Posedescription: true,
-                    restPeriod: true,
-                    difficulty: true,
-                    duratime: true
-                }
-            });
-
-            if(exercise.length==0){//if JSON object is empty, send error code
-                throw new NotFoundException("No exercises were found in the database with the specified title.");
-            }
-            else{
-                return exercise;
-            }
-        }
-        catch(err){
-            throw err;
-        }
-    }
-
-    async getWorkoutByPlanner(id: string, ctx: Context): Promise<any> {
-        try {
-            const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
-                where: {
-                    planner_ID: id
-                },
-                select: {
-                    workoutTitle: true,
-                    workoutDescription: true,
-                    exercises: true,
-                    difficulty: true,
-                    planner_ID: true
-                }
-            });
-            if (workouts.length==0) {//if JSON object is empty, send error code
-                throw new NotFoundException("No workouts were found in the database with the specified planner.");
-            } else {
-                return workouts;
-            }
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,difficulty:string,duratime:number){
-
-    }
-
-    createWorkout(workoutTitle: string, workoutDescription: string, difficulty: string){
-
-    }
-
+    /**
+     *Workout Service - Create Tag
+     *
+     * @param label This is the title of the tag.
+     * @param textColour This is the text colour of the tag.
+     * @param backgroundColour  This is the background colour of the tag.
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws NotAcceptableException if:
+     *                               -There is any type of profanity found in the label, using npm 'bad-words'.
+     * @throws ConflictException if:
+     *                               -There is already a tag that exists in the database with the given label.
+     * @throws BadRequestException if:
+     *                               -There is a precondition net met, such as parameters not given.
+     * @return  Promise tag object.
+     * @author Tinashe Chamisa
+     *
+     */
     async createTag(label: string,textColour: string,backgroundColour: string, ctx: Context): Promise<any> {
         if(filter.isProfane(label)){
             throw new NotAcceptableException("Profanity contained in label title.");
@@ -173,7 +78,7 @@ export class WorkoutService{
                     backgroundColour
                 },
             })
-            if (createdUser==null) {//if JSON object is empty, send error code
+            if (!(Arrays.isArray(createdUser) && createdUser.length)) {//if JSON object is empty, send error code
                 throw new BadRequestException("Could not create tag.");
             }
 
@@ -183,6 +88,16 @@ export class WorkoutService{
         }
     }
 
+    /**
+     *Workout Service - Get Tags
+     *
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No tags were found in the database.
+     * @return  Promise array of tag object/s.
+     * @author Tinashe Chamisa
+     *
+     */
     async getTags(ctx: Context): Promise<any> {
         try{
             const tags = await ctx.prisma.tag.findMany({//search and retrieve all tags
