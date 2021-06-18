@@ -1,18 +1,5 @@
-import {
-    BadRequestException,
-    HttpException,
-    HttpStatus,
-    Injectable,
-    InternalServerErrorException,
-    NotFoundException
-} from "@nestjs/common";
-import { PrismaService } from "../Prisma/prisma.service";
-
-import {
-    Workout,
-    Exercise,
-    Prisma
-} from '@prisma/client';
+import {Injectable, NotFoundException} from "@nestjs/common";
+import {PrismaService} from "../Prisma/prisma.service";
 import {Context} from "../../context";
 
 @Injectable()

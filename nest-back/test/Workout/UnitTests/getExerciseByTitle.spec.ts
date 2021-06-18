@@ -21,6 +21,7 @@ beforeEach(() => {
 })
 
 test('Should receive valid information about exercise with corresponding title', async () => {
+
     const Exercise = [{
         exercise:uuidv4(),
         title:"TestExercise",
@@ -33,6 +34,7 @@ test('Should receive valid information about exercise with corresponding title',
         duratime:2,
         workouts: null
     }]
+
     mockCtx.prisma.exercise.findMany.mockResolvedValue(Exercise)
 
     const response=await workoutService.getExerciseByTitle("TestExercise",ctx)

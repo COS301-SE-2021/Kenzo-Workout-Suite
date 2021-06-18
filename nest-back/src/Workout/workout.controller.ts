@@ -127,5 +127,4 @@ export class WorkoutController {
     ) {
         return this.workoutService.createWorkout(workoutTitle,workoutDescription,difficulty);
     }
-
 }
