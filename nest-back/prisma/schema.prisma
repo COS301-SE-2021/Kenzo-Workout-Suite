@@ -70,3 +70,9 @@ model Exercise {
 
   workouts        Workout[]
 }
+
+model Tag{
+  label             String    @id
+  textColour        String
+  backgroundColour  String
+}

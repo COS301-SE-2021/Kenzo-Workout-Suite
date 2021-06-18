@@ -25,6 +25,15 @@ export class CreateExerciseDTO{
     duratime: number;
 }
 
+export class createTagDTO{
+    @ApiProperty({type: String, description: 'label of the tag'})
+    label: string;
+    @ApiProperty({type: String, description: 'text colour of the label'})
+    textColour: string;
+    @ApiProperty({type: String, description: 'background colour of the label'})
+    backgroundColour: string;
+}
+
 export class CreateWorkoutDTO{
     @ApiProperty({type: String, description: 'Title of Workout.'})
     workoutTitle: string;

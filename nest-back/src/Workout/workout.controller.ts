@@ -18,14 +18,15 @@ import {
 } from '@prisma/client';
 import {ActualPrisma, Context} from "../../context";
 import {
-    ApiBody,
+    ApiBadRequestResponse,
+    ApiBody, ApiConflictResponse,
     ApiCreatedResponse, ApiHeader,
-    ApiInternalServerErrorResponse,
+    ApiInternalServerErrorResponse, ApiNotAcceptableResponse,
     ApiNotFoundResponse,
     ApiOkResponse, ApiParam, ApiProperty, ApiQuery,
     ApiResponse
 } from "@nestjs/swagger";
-import {CreateExerciseDTO, CreateWorkoutDTO, DeleteWorkoutDTO, UpdateWorkoutDTO} from "./workout.model";
+import {CreateExerciseDTO, CreateWorkoutDTO, DeleteWorkoutDTO, UpdateWorkoutDTO, createTagDTO} from "./workout.model";
 import {JwtAuthGuard} from "../user/jwt-auth.guard";
 
 @Controller('workout')
@@ -67,7 +68,6 @@ export class WorkoutController {
     ) {
         return this.workoutService.getWorkoutById(id,ActualPrisma());
     }
-
     @Get('getExercises')
     @ApiOkResponse({
         description: 'An exercise object.'
@@ -82,6 +82,7 @@ export class WorkoutController {
     ) {
         return this.workoutService.getExercises(ActualPrisma());
     }
+
     //TODO:Remind Tin about GetExerciseByID
     @Get('getExerciseByID/:ID')
     @ApiOkResponse({
@@ -203,5 +204,45 @@ export class WorkoutController {
         return this.workoutService.deleteWorkout(workoutID, this.ctx);
     }
 
+    @Post('createTag')
+    @ApiOkResponse({
+        description: 'Successfully created Tag.'
+    })
+    @ApiNotAcceptableResponse({
+        description: 'Profanity contained in label title.'
+    })
+    @ApiConflictResponse({
+        description: 'Label already exists in database.'
+    })
+    @ApiBadRequestResponse({
+        description: 'Could not create tag.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    @ApiBody({type: createTagDTO})
+    createTag(
+        @Body('label') label: string,
+        @Body('textColour') textColour: string,
+        @Body('backgroundColour') backgroundColour: string,
+    ) {
+        return this.workoutService.createTag(label,textColour,backgroundColour,ActualPrisma());
+    }
+
+
+    @Get('getTags')
+    @ApiOkResponse({
+        description: 'Successfully created Tag.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No tags were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    getTags(
+    ) {
+        return this.workoutService.getTags(ActualPrisma());
+    }
 
 }
