@@ -7,11 +7,31 @@
         </ion-card-header>
         <ion-card-content>
           <!--Will put avatar/image here but for now leaving it blank-->
-          <ion-label>First Name: {{firstName}}</ion-label>
-          <ion-label>Last Name: {{lastName}}</ion-label>
-          <ion-label>Birth date: {{birthDate}}</ion-label>
-          <ion-label>Email: {{email}}</ion-label>
-          <ion-label>Account Type: {{accountType}}</ion-label>
+          <div class="input-div">
+            <ion-label class="profile-label">First Name</ion-label>
+            <ion-input [(ngModel)]="firstName" class="profile-input enable-input" type="text" disabled="true"></ion-input>
+          </div>
+          <div class="input-div">
+            <ion-label class="profile-label">Last Name</ion-label>
+            <ion-input [(ngModel)]="lastName" class="profile-input enable-input" type="text" disabled="true"></ion-input>
+          </div>
+          <div class="input-div">
+            <ion-label class="profile-label">Birth Date</ion-label>
+            <ion-input [(ngModel)]="birthDate" class="profile-input enable-input" type="date" disabled="true"></ion-input>
+          </div>
+          <div class="input-div">
+            <ion-label class="profile-label">Email</ion-label>
+            <ion-input [(ngModel)]="email" class="profile-input" type="email" disabled="true"></ion-input>
+          </div>
+          <div class="input-div">
+            <ion-label class="profile-label">Account Type</ion-label>
+            <ion-input [(ngModel)]="accountType" class="profile-input" type="text" disabled="true"></ion-input>
+          </div>
+          <ion-button (click)="editDetails()" fill="clear" mode="ios" id="editBtn">Edit</ion-button>
+          <br>
+          <ion-button (click)="updateDetails()" expand="full" mode="ios" id="updateBtn" disabled="true">
+            Update
+          </ion-button>
         </ion-card-content>
       </ion-card>
     </div>
