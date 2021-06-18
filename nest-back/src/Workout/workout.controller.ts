@@ -259,5 +259,4 @@ export class WorkoutController {
     ) {
         return this.workoutService.getTags(ActualPrisma());
     }
-
 }
