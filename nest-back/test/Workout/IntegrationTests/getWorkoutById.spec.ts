@@ -1,12 +1,9 @@
 import {MockContext, Context, createMockContext, ActualPrisma} from "../../../context";
 import {WorkoutService} from "../../../src/Workout/workout.service";
-import { JwtService } from '@nestjs/jwt';
 import {v4 as uuidv4 } from 'uuid';
 
 import {
-    Workout,
-    Exercise,
-    Prisma, Difficulty, userType
+    Difficulty, userType
 } from '@prisma/client';
 import {PrismaClient} from "@prisma/client/scripts/default-index";
 
@@ -15,6 +12,7 @@ let workoutService: WorkoutService
 let prisma: PrismaClient
 
 const uuidPlanner = uuidv4();
+const uuidWorkout = uuidv4();
 
 beforeEach(async () => {
     workoutService = new WorkoutService(prisma);
@@ -34,7 +32,7 @@ beforeEach(async () => {
     });
     await ctx.prisma.workout.create({
         data:{
-            workoutID: uuidv4(),
+            workoutID: uuidWorkout,
             workoutTitle: "test",
             workoutDescription: "test",
             difficulty: Difficulty.EASY,
@@ -43,8 +41,9 @@ beforeEach(async () => {
     });
 })
 
-test('Should receive valid information about workout with corresponding title', async () => {
+test('Should receive valid information about workout with corresponding id', async () => {
     const workout = [{
+        workoutID: uuidWorkout,
         workoutTitle: "test",
         workoutDescription: "test",
         exercises:[],
@@ -52,11 +51,11 @@ test('Should receive valid information about workout with corresponding title', 
         planner_ID: uuidPlanner
     }]
 
-    const response=await workoutService.getWorkoutByTitle("test", ctx)
+    const response=await workoutService.getWorkoutById(uuidWorkout, ctx)
 
     expect(response).toStrictEqual(workout);
 })
 
-test('Should not receive valid information about workout with corresponding title as workout does not exist', async () => {
-    expect(workoutService.getWorkoutByTitle("",ctx)).rejects.toThrow("No workouts were found in the database with the specified title.")
+test('Should not receive valid information about workout with corresponding id as workout does not exist', async () => {
+    await expect(workoutService.getWorkoutById("",ctx)).rejects.toThrow("No workouts were found in the database with the specified id.")
 })

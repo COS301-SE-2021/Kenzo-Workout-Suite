@@ -30,6 +30,7 @@ describe('End point testing of the user subsystem', () => {
         return request(app.getHttpServer())
             .post('/user/signUp')
             .send({
+
                 "user":{
                     "firstName": "Zelu",
                     "lastName": "Tesema",

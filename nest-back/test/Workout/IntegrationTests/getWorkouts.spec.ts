@@ -1,12 +1,9 @@
 import {MockContext, Context, createMockContext, ActualPrisma} from "../../../context";
 import {WorkoutService} from "../../../src/Workout/workout.service";
-import { JwtService } from '@nestjs/jwt';
 import {v4 as uuidv4 } from 'uuid';
 
 import {
-    Workout,
-    Exercise,
-    Prisma, Difficulty, userType
+    Difficulty
 } from '@prisma/client';
 import {PrismaClient} from "@prisma/client/scripts/default-index";
 
@@ -34,7 +31,7 @@ beforeEach(async () => {
     });
     await ctx.prisma.workout.create({
         data:{
-            workoutID: uuidv4(),
+            workoutID: "1",
             workoutTitle: "test",
             workoutDescription: "test",
             difficulty: Difficulty.EASY,
@@ -45,6 +42,7 @@ beforeEach(async () => {
 
 test('Should receive valid information about all workouts', async () => {
     const workout = [{
+        workoutID: "1",
         workoutTitle: "test",
         workoutDescription: "test",
         exercises:[],

@@ -5,6 +5,8 @@ import {LocalAuthGuard} from "./local-auth.guard";
 import {JwtAuthGuard} from "./jwt-auth.guard";
 import {User} from "@prisma/client";
 import {ActualPrisma} from "../../context";
+
+import {v4 as uuidv4 } from 'uuid';
 import {
     ApiBadRequestResponse,
     ApiBearerAuth,
@@ -16,11 +18,13 @@ import {
 import {loginDTO, signUpDTO, updateUserDTO} from "./user.model";
 
 
+
 @Controller('user')
 export class UserController {
 
     constructor(private readonly userService: UserService) {
     }
+
 
     /**
      * User Controller- signUp
@@ -91,6 +95,7 @@ export class UserController {
         return this.userService.login(req.user);
     }
 
+
     /**
      * User Controller- googleLogin
      *
@@ -102,6 +107,7 @@ export class UserController {
     @Get('googleLogin')
     @UseGuards(AuthGuard('google'))
     async googleAuth(@Req() req) {}
+
 
     /**
      * User Controller- googleRedirect
@@ -143,7 +149,6 @@ export class UserController {
     getUserData(@Request() req){
         return this.userService.findUserByUUID(req.user.userId,ActualPrisma())
     }
-
 
     /**
      * User Controller- updateUserDetail

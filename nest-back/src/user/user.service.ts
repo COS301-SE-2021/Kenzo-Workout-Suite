@@ -110,6 +110,7 @@ export class UserService {
     async signUp(user:User,ctx: Context) : Promise<any>{
 
 
+
         if (user==null)
         {
             throw new PreconditionFailedException("Invalid user object")
@@ -136,6 +137,7 @@ export class UserService {
             }
         })
 
+
         if (countEmail>=1) {
             throw new BadRequestException("User with this email already exists")
         }
@@ -157,6 +159,8 @@ export class UserService {
 
         return this.login(createdUser);
     }
+
+
 
     /**
      * User Service - findUserByUUID
