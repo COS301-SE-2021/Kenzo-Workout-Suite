@@ -26,13 +26,22 @@ const routes: Routes = [
   {
     path: 'your-workouts',
     loadChildren: () => import('./your-workouts/your-workouts.module').then( m => m.YourWorkoutsPageModule)
-  },  {
+  },
+  {
     path: 'search',
     loadChildren: () => import('./search/search.module').then( m => m.SearchPageModule)
   },
   {
     path: 'profile',
     loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
+  },
+  {
+    path: 'update-workout',
+    loadChildren: () => import('./update-workout/update-workout.module').then( m => m.UpdateWorkoutPageModule)
+  },
+  {
+    path: 'update-exercise',
+    loadChildren: () => import('./update-exercise/update-exercise.module').then( m => m.UpdateExercisePageModule)
   }
 
 ];
