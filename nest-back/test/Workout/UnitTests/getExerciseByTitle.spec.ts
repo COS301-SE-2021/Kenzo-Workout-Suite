@@ -41,5 +41,7 @@ test('Should receive valid information about exercise with corresponding title',
 })
 
 test('Should not receive valid information about exercise with corresponding title as workout does not exist', async () => {
+    let Exercise;
+    mockCtx.prisma.exercise.findMany.mockResolvedValue(Exercise)
     await expect(workoutService.getExerciseByTitle("",ctx)).rejects.toThrow("No exercises were found in the database with the specified title.")
 })

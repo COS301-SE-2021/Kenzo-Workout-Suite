@@ -37,5 +37,7 @@ test('Should receive valid information about workout with corresponding id', asy
 })
 
 test('Should not receive valid information about workout with corresponding id as workout does not exist', async () => {
+    let workout;
+    mockCtx.prisma.workout.findUnique.mockResolvedValue(workout)
     await expect(workoutService.getWorkoutById("",ctx)).rejects.toThrow("No workouts were found in the database with the specified id.")
 })

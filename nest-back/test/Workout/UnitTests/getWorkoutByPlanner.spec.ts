@@ -37,5 +37,7 @@ test('Should receive valid information about workout with corresponding planner'
 })
 
 test('Should not receive valid information about workout with corresponding planner as workout does not exist', async () => {
+    let workout;
+    mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
     await expect(workoutService.getWorkoutByPlanner("000",ctx)).rejects.toThrow("No workouts were found in the database with the specified planner.")
 })
