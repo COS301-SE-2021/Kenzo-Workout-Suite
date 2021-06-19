@@ -17,7 +17,6 @@ export class CreateWorkoutPage implements OnInit {
   title: string="";
 
   tags:KenzoTag[] = new Array();
-  finalTags:KenzoTag[] = new Array();
   newTag: KenzoTag;
 
   @ViewChild('searchBar', {static: false}) searchbar: IonSearchbar;
@@ -45,7 +44,14 @@ export class CreateWorkoutPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async submitCreateRequest() {
-    let new_workout = new Workout(this.title, this.description, this.diff);
+    let selected:KenzoTag[] = new Array();
+    for (let i = 0; i < this.tags.length; i++) {
+      if(this.tags[i].selected){
+        selected.push(this.tags[i]);
+      }
+    }
+
+    let new_workout = new Workout(this.title, this.description, selected);
     let status = await this.workoutService.attemptSubmitWorkout(new_workout);
 
     if (status < 400) {

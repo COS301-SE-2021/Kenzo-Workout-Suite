@@ -22,7 +22,6 @@ export class CreateExercisePage implements OnInit {
   duration: number;
 
   tags:KenzoTag[] = new Array();
-  finalTags:KenzoTag[] = new Array();
   newTag: KenzoTag;
 
   @ViewChild('searchBar', {static: false}) searchbar: IonSearchbar;
@@ -50,8 +49,15 @@ export class CreateExercisePage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async createExercise() {
+    let selected:KenzoTag[] = new Array();
+    for (let i = 0; i < this.tags.length; i++) {
+      if(this.tags[i].selected){
+        selected.push(this.tags[i]);
+      }
+    }
+
     let exercise = new Exercise(this.title, this.description, this.range, this.sets, this.pose_description,
-      this.rest, this.diff, this.duration*60);
+      this.rest, selected, this.duration*60);
     let status = await this.workoutService.attemptSubmitExercise(exercise);
 
     if (status < 400) {

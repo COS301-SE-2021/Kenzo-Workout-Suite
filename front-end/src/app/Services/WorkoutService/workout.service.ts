@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Workout} from "../../Models/workout";
 import {Exercise} from "../../Models/exercise";
+import {UserService} from "../UserService/user.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class WorkoutService {
 
-  constructor(private http:HttpClient) {}
+  constructor(private http:HttpClient, private user:UserService) {}
 
   /** This function attempts to submit a workout by using the following parameters:
    *
@@ -24,10 +25,13 @@ export class WorkoutService {
     const body:Object = {
       "workoutTitle": workout.title,
       "workoutDescription": workout.description,
-      "difficulty": workout.difficulty
+      "tags": workout.tags
     };
 
-    return this.http.post(url, body).toPromise().then(data=>{
+    let userToken = await this.user.getToken();
+    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
+
+    return this.http.post(url, body, {headers} ).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
       if(error.status==0) return 500;
@@ -53,11 +57,14 @@ export class WorkoutService {
       "sets": exercise.sets,
       "Posedescription": exercise.Posedescription,
       "restPeriod": exercise.restPeriod,
-      "difficulty": exercise.difficulty.toUpperCase(),
+      "tags": exercise.tags,
       "duratime": exercise.duratime
     };
 
-    return this.http.post(url, body).toPromise().then(data=>{
+    let userToken = await this.user.getToken();
+    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
+
+    return this.http.post(url, body, {headers}).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
       if(error.status==0) return 500;
@@ -90,13 +97,16 @@ export class WorkoutService {
     "tags": [
         {"label":"painful",
         "textColour":"BLUE",
-        "backgroundColour":"RED"},
-        {"label":"ADD ONE",
-        "textColour":"RED",
-        "backgroundColour":"YELLOW"},
-        {"label":"back",
-        "textColour":"GREEN",
-        "backgroundColour":"GREEN"}
+        "backgroundColour":"RED",
+        "selected": true},
+        {"label":"painful",
+        "textColour":"BLUE",
+        "backgroundColour":"RED",
+        "selected": true},
+        {"label":"painful",
+        "textColour":"BLUE",
+        "backgroundColour":"RED",
+        "selected": true}
     ]
   }
 
