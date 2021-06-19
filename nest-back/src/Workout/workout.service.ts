@@ -320,7 +320,7 @@ export class WorkoutService{
             throw new NotFoundException("Parameters can not be left empty.");
         }
 
-        if(tags != null){
+        if(Array.isArray(tags) && tags.length){
             await this.addNewTags(tags,ctx);
             let tagConnection = tags.map( n => {
                 const container = {
@@ -508,11 +508,11 @@ export class WorkoutService{
         }
     }
 
-    async createWorkout(workoutTitle: string, workoutDescription: string, exercises : Exercise[],tags:Tag[],planner_ID :string,ctx: Context) {
+    async createWorkout(workoutTitle: string, workoutDescription: string, exercises : Exercise[],tags: Tag[],planner_ID :string,ctx: Context) {
         if (workoutTitle=="" || workoutDescription==""  ){
             throw new NotFoundException("Parameters can not be left empty.");
         }
-        if(tags!= null){ //run create query with tags
+        if(Array.isArray(tags) && tags.length){ //run create query with tags
             await this.addNewTags(tags,ctx);
             let tagConnection = tags.map( n => {
                 const container = {
@@ -569,7 +569,7 @@ export class WorkoutService{
         if (workoutID == "" || workoutTitle=="" || workoutDescription=="" ){
             throw new NotFoundException("Parameters can not be left empty.");
         }
-        if(tags!= null) { //run update query with tags
+        if(Array.isArray(tags) && tags.length) { //run update query with tags
             await this.addNewTags(tags, ctx);
             let tagConnection = tags.map(n => {
                 const container = {
@@ -653,11 +653,13 @@ export class WorkoutService{
 
     async generateWorkoutPDF(workout: any, ctx: Context){
 
+        if(workout==null){
+            throw new PreconditionFailedException("Invalid workout provided");
+        }
         const doc = new jsPDF();
-
         //TODO: Make heading font and a normal font & Consider adding an image
         doc.text(workout.workoutTitle, 80, 10);
-        if(workout.tags.length != 0){
+        if(workout.tags !== undefined){
             const workoutTagArray = workout.tags.connect.map(({label}) => [label])
             let stringTags = workoutTagArray.join();
             let splitTags = doc.splitTextToSize(stringTags,180);
@@ -666,16 +668,13 @@ export class WorkoutService{
 
         let splitWorkoutDesc = doc.splitTextToSize(workout.workoutDescription,180);
         doc.text(splitWorkoutDesc, 15, 130 );
-        //doc.addImage("./src/GeneratedWorkouts/Kenzo_logo.png","PNG",60,230,90, 40);
 
-
-        if(workout.exercises.connect === undefined){
+        if(workout.exercises === undefined){
             doc.save("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf");
         }else{
 
             for(let i =0; i < workout.exercises.connect.length ; i++){
                 let exercise = await this.getExerciseByID(workout.exercises.connect[i].exercise, ctx);
-                //console.log(exercise);
                 doc.addPage("a4", "p");
                 doc.text(exercise.title, 90, 10);
                 if(exercise.tags.length != 0){
@@ -788,6 +787,10 @@ export class WorkoutService{
 
 
     async addNewTags(tags: Tag[], ctx:Context){
+
+        if(!(Array.isArray(tags) && tags.length)){
+           throw new PreconditionFailedException("Cannot work with empty tags.");
+        }
         for(let i = 0;i<tags.length;i++){
             tags[i].label = this.format(tags[i].label);
         }
