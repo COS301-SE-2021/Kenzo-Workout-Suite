@@ -14,7 +14,7 @@ beforeEach(() => {
     ctx = (mockCtx as unknown) as Context
 })
 
-test('Valid user passed in, should receive successful message', async () => {
+test('Valid tag passed in, should receive successful message', async () => {
     const tag = {
         label:'test',
         textColour:'test',

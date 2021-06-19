@@ -13,7 +13,7 @@ beforeEach(async () => {
     await ctx.prisma.tag.deleteMany();
 })
 
-test('Valid user passed in, should receive successful message', async () => {
+test('Valid tag passed in, should receive successful message', async () => {
     const tag = {
         label:'Test',
         textColour:'test',
