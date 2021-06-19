@@ -282,6 +282,9 @@ export class WorkoutController {
     @ApiNotAcceptableResponse({
         description: 'Profanity contained in label title.'
     })
+    @ApiPreconditionFailedResponse({
+        description: 'Parameter can not be left empty.'
+    })
     @ApiConflictResponse({
         description: 'Label already exists in database.'
     })

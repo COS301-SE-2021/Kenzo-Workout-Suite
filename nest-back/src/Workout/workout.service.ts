@@ -654,6 +654,10 @@ export class WorkoutService{
         if(filter.isProfane(label)){
             throw new NotAcceptableException("Profanity contained in label title.");
         }
+
+        if (label == "" || textColour=="" || backgroundColour=="" ){
+            throw new PreconditionFailedException("Parameters can not be left empty.")
+        }
         try {
             label  = this.format(label);
             const find = await ctx.prisma.tag.findUnique({//search for tags that meet the requirement
