@@ -21,9 +21,9 @@ jobs:
             npm install
 
       - run:
-        name: Migrate prisma
-        command: |
-           cd nest-back
-           npx prisma migrate dev --name init
+          name: Migrate prisma
+          command: |
+            cd nest-back
+            npx prisma migrate dev --name init
            
       - run: npm run test
