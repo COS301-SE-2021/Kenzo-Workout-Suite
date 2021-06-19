@@ -223,7 +223,7 @@ export class WorkoutService {
 
   async attemptGetWorkoutsByPlanner() : Promise<any>{
     const url: string = "http://localhost:3000/workout/getWorkoutByPlanner";
-    let userToken = await this.userService.getToken();
+    let userToken = await this.user.getToken();
     const headers = {'Authorization': 'Bearer '+userToken['access_token']};
 
     return this.http.get(url, {headers}).toPromise().then(data=>{
@@ -240,7 +240,7 @@ export class WorkoutService {
 
   async attemptGetExercisesByPlanner() : Promise<any>{
     const url: string = "http://localhost:3000/workout/getExercisesByPlanner";
-    let userToken = await this.userService.getToken();
+    let userToken = await this.user.getToken();
     const headers = {'Authorization': 'Bearer '+userToken['access_token']};
 
     return this.http.get(url, {headers}).toPromise().then(data=>{
