@@ -299,7 +299,6 @@ export class WorkoutService{
                     restPeriod: true,
                     duratime: true,
                     tags: true,
-                    planner: true,
                     planner_ID: true,
                 }
             });
