@@ -473,11 +473,12 @@ export class WorkoutService{
 
         //TODO: Make heading font and a normal font & Consider adding an image
         doc.text(workout.workoutTitle, 80, 10);
-        // if(workout.tags ){
-        //     let stringTags = workout.tags.label.join();
-        //     let splitTags = doc.splitTextToSize(stringTags,180);
-        //     doc.text("Tags: " + splitTags, 15 , 50  );
-        // }
+        if(workout.tags.length != 0){
+            const workoutTagArray = workout.tags.connect.map(({label}) => [label])
+            let stringTags = workoutTagArray.join();
+            let splitTags = doc.splitTextToSize(stringTags,180);
+            doc.text("Tags: " + splitTags, 15 , 50  );
+        }
 
         let splitWorkoutDesc = doc.splitTextToSize(workout.workoutDescription,180);
         doc.text(splitWorkoutDesc, 15, 130 );
@@ -493,11 +494,12 @@ export class WorkoutService{
                 //console.log(exercise);
                 doc.addPage("a4", "p");
                 doc.text(exercise.title, 90, 10);
-                // if(exercise.tags){
-                //     let stringTags = exercise.tags.label.join()
-                //     let splitTags = doc.splitTextToSize(stringTags,180);
-                //     doc.text("Tags: " + splitTags, 15 , 30  );
-                // }
+                if(exercise.tags.length != 0){
+                    const exerciseTagArray = exercise.tags.connect.map(({label}) => [label])
+                    let stringTags = exerciseTagArray.join();
+                    let splitTags = doc.splitTextToSize(stringTags,180);
+                    doc.text("Tags: " + splitTags, 15 , 30  );
+                }
 
                 let splitExerciseDesc = doc.splitTextToSize(exercise.description,180)
                 doc.text(splitExerciseDesc, 15, 50);
