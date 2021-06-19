@@ -12,7 +12,7 @@ export class WorkoutService {
   constructor(private http:HttpClient, private user:UserService) {}
 
   /** This function attempts to submit a workout by using the following parameters:
-   *
+   * @author Luca Azmanov, u19004185
    * @param workout represents a Workout Object that will hold the necessary data for creating a workout.
    *
    * @return Number represents the status of the Http request.
@@ -39,8 +39,64 @@ export class WorkoutService {
     });
   }
 
-  /** This function attempts to submit an exercise by using the following parameters:
+  /** This function attempts to update a workout by using the following parameters:
+   * @author Luca Azmanov, u19004185
+   * @param workout represents a Workout Object that will hold the necessary data for creating a workout.
+   * @param id the id corresponding to the workout
    *
+   * @return Number represents the status of the Http request.
+   *
+   * @returns 200,400,500 represent a success, user error and server error, respectively.
+   */
+  async attemptUpdateWorkout(workout:Workout, id:string) : Promise<Number> {
+    const url : string = "http://localhost:3000/workout/updateWorkout";
+
+    const body:Object = {
+      "workoutID":id,
+      "workoutTitle": workout.title,
+      "workoutDescription": workout.description,
+      "tags": workout.tags
+    };
+
+    let userToken = await this.user.getToken();
+    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
+
+    return this.http.post(url, body, {headers} ).toPromise().then(data=>{
+      return 200;
+    }).catch(error=>{
+      if(error.status==0) return 500;
+      return error.status;
+    });
+  }
+
+  /** This function attempts to remove a workout by using the following parameters:
+   * @author Luca Azmanov, u19004185
+   * @param id the id corresponding to the workout
+   *
+   * @return Number represents the status of the Http request.
+   *
+   * @returns 200,400,500 represent a success, user error and server error, respectively.
+   */
+  async attemptRemoveWorkout(id:string) : Promise<Number> {
+    const url : string = "http://localhost:3000/workout/createWorkout";
+
+    const body:Object = {
+      "workoutID":id,
+    };
+
+    let userToken = await this.user.getToken();
+    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
+
+    return this.http.post(url, body, {headers}).toPromise().then(data=>{
+      return 200;
+    }).catch(error=>{
+      if(error.status==0) return 500;
+      return error.status;
+    });
+  }
+
+  /** This function attempts to submit an exercise by using the following parameters:
+   * @author Luca Azmanov, u19004185
    * @param exercise represents an Exercise Object that will hold the necessary data for creating an exercise.
    *
    * @return Number represents the status of the Http request.
@@ -59,6 +115,65 @@ export class WorkoutService {
       "restPeriod": exercise.restPeriod,
       "tags": exercise.tags,
       "duratime": exercise.duratime
+    };
+
+    let userToken = await this.user.getToken();
+    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
+
+    return this.http.post(url, body, {headers}).toPromise().then(data=>{
+      return 200;
+    }).catch(error=>{
+      if(error.status==0) return 500;
+      return error.status;
+    });
+  }
+
+  /** This function attempts to update an exercise by using the following parameters:
+   * @author Luca Azmanov, u19004185
+   * @param exercise represents an Exercise Object that will hold the necessary data for creating an exercise.
+   * @param id the id corresponding to the exercise
+   * @return Number represents the status of the Http request.
+   *
+   * @returns 200,400,500 represent a success, user error and server error, respectively.
+   */
+  async attemptUpdateExercise(exercise:Exercise, id:string) : Promise<Number> {
+    const url : string = "http://localhost:3000/workout/createExercise";
+
+    const body:Object = {
+      "exercise":id,
+      "title": exercise.title,
+      "description": exercise.description,
+      "repRange": exercise.repRange,
+      "sets": exercise.sets,
+      "Posedescription": exercise.Posedescription,
+      "restPeriod": exercise.restPeriod,
+      "tags": exercise.tags,
+      "duratime": exercise.duratime
+    };
+
+    let userToken = await this.user.getToken();
+    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
+
+    return this.http.post(url, body, {headers}).toPromise().then(data=>{
+      return 200;
+    }).catch(error=>{
+      if(error.status==0) return 500;
+      return error.status;
+    });
+  }
+
+  /** This function attempts to submit an exercise by using the following parameters:
+   * @author Luca Azmanov, u19004185
+   * @param id the id corresponding to the exercise
+   * @return Number represents the status of the Http request.
+   *
+   * @returns 200,400,500 represent a success, user error and server error, respectively.
+   */
+  async attemptRemoveExercise(id:string) : Promise<Number> {
+    const url : string = "http://localhost:3000/workout/createExercise";
+
+    const body:Object = {
+      "exercise":id,
     };
 
     let userToken = await this.user.getToken();
