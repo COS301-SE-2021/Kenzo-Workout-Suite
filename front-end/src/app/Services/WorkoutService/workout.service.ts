@@ -27,8 +27,7 @@ export class WorkoutService {
 
     const body:Object = {
       "workoutTitle": workout.title,
-      "workoutDescription": workout.description,
-      "planner_ID": UserDetails["planner_ID"]
+      "workoutDescription": workout.description
     };
 
     return this.http.post(url, body).toPromise().then(data=>{
@@ -102,8 +101,10 @@ export class WorkoutService {
 
   async attemptGetWorkoutsByPlanner() : Promise<any>{
     const url: string = "http://localhost:3000/workout/getWorkoutByPlanner";
+    let userToken = await this.userService.getToken();
+    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
 
-    return this.http.get(url).toPromise().then(data=>{
+    return this.http.get(url, {headers}).toPromise().then(data=>{
       data = {
         status: 200,
         data: data
@@ -116,14 +117,11 @@ export class WorkoutService {
   }
 
   async attemptGetExercisesByPlanner() : Promise<any>{
-    const url: string = "http://localhost:3000/workout/getExerciseByPlanner";
-    // let UserDetails = await this.userService.obtainUserDetails();
-    // let headers = new HttpHeaders();
-    // headers.append('header', 'application/json');
-    // let params = new HttpParams();
-    // params.append('param',UserDetails["planner_ID"]);
+    const url: string = "http://localhost:3000/workout/getExercisesByPlanner";
+    let userToken = await this.userService.getToken();
+    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
 
-    return this.http.get(url).toPromise().then(data=>{
+    return this.http.get(url, {headers}).toPromise().then(data=>{
       data = {
         status: 200,
         data: data

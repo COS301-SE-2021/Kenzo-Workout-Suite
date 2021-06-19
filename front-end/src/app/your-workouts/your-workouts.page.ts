@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
 import {Workout} from "../Models/workout";
 import {AlertController} from "@ionic/angular";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-your-workouts',
@@ -15,7 +16,8 @@ export class YourWorkoutsPage implements OnInit {
   exercises: Promise<any>;
   constructor(private http:HttpClient,
               private workoutService:WorkoutService,
-              public alertController:AlertController) { }
+              public alertController:AlertController,
+              private router: Router) { }
 
   ngOnInit() {
     this.loadWorkouts();
@@ -56,6 +58,9 @@ export class YourWorkoutsPage implements OnInit {
     await alert.onDidDismiss();
   }
 
+  /**
+   * Filter out the exercises and only show workouts
+   */
   showWorkouts(){
     let exerciseBtn = document.getElementById("exerciseBtn");
     exerciseBtn.style.opacity = "0.5";
@@ -65,6 +70,9 @@ export class YourWorkoutsPage implements OnInit {
     document.getElementById("exerciseScroll").style.display = "none";
   }
 
+  /**
+   * Filter out the workouts and only show exercises
+   */
   showExercises(){
     let exerciseBtn = document.getElementById("exerciseBtn");
     exerciseBtn.style.opacity = "1";
@@ -72,6 +80,22 @@ export class YourWorkoutsPage implements OnInit {
     workoutBtn.style.opacity = "0.5";
     document.getElementById("workoutScroll").style.display = "none";
     document.getElementById("exerciseScroll").style.display = "block";
+  }
+
+  async sendWorkoutID(id: string){
+    await this.router.navigate(['/update-workout'],{
+      state:{
+        id: id
+      }
+    })
+  }
+
+  async sendExerciseID(id: string){
+    await this.router.navigate(['/update-exercise']),{
+      state:{
+        id: id
+      }
+    }
   }
 
 }

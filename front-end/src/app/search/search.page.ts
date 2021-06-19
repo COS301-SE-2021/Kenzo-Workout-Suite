@@ -10,7 +10,7 @@ import {WorkoutService} from "../Services/WorkoutService/workout.service";
 })
 export class SearchPage implements OnInit {
   workouts: Observable<any>;
-  exercises: Observable<any>
+  exercises: Observable<any>;
   constructor(private http:HttpClient,
               private workoutService: WorkoutService) { }
 
@@ -22,7 +22,6 @@ export class SearchPage implements OnInit {
 
   /**
    * Load all the workouts
-   *
    */
   async loadWorkouts(){
     let tempWorkouts = await this.workoutService.attemptGetWorkouts();
@@ -30,8 +29,12 @@ export class SearchPage implements OnInit {
       this.workouts = tempWorkouts.data;
       return 200;
     }
+    tempWorkouts.length;
   }
 
+  /**
+   * Load all the exercises
+   */
   async loadExercises(){
     let tempExercises = await this.workoutService.attemptGetExercises();
     if (tempExercises.status==200){
@@ -40,6 +43,10 @@ export class SearchPage implements OnInit {
     }
   }
 
+  /**
+   * on keypress or enter key is pressed, filter the cards based on what is typed
+   * @param event
+   */
   eventHandler(event){
     let TypedValue = (<HTMLInputElement>document.getElementById("workout-searchbar")).value;
     this.workouts.forEach(x=>{
@@ -59,6 +66,30 @@ export class SearchPage implements OnInit {
         document.getElementById(x.exercise).style.display = "block";
       }
     })
+  }
+
+  /**
+   * Filter out the exercises and only show workouts
+   */
+  showWorkouts(){
+    let exerciseBtn = document.getElementById("exerciseBtn");
+    exerciseBtn.style.opacity = "0.5";
+    let workoutBtn = document.getElementById("workoutBtn");
+    workoutBtn.style.opacity = "1";
+    document.getElementById("workoutScroll").style.display = "block";
+    document.getElementById("exerciseScroll").style.display = "none";
+  }
+
+  /**
+   * Filter out the workouts and only show exercises
+   */
+  showExercises(){
+    let exerciseBtn = document.getElementById("exerciseBtn");
+    exerciseBtn.style.opacity = "1";
+    let workoutBtn = document.getElementById("workoutBtn");
+    workoutBtn.style.opacity = "0.5";
+    document.getElementById("workoutScroll").style.display = "none";
+    document.getElementById("exerciseScroll").style.display = "block";
   }
 
 }
