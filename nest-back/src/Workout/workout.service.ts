@@ -2,7 +2,7 @@ import {
     BadRequestException, ConflictException,
     Injectable,
     NotAcceptableException,
-    NotFoundException
+    NotFoundException, PreconditionFailedException
 } from "@nestjs/common";
 
 import { Context } from "../../context";
@@ -324,6 +324,127 @@ export class WorkoutService{
 
     }
 
+    /**
+     *Workout Service - Update Exercise
+     *
+     * @param exercise This is the ID of the exercise.
+     * @param title This is the title of the exercise.
+     * @param description This is the description of the exercise.
+     * @param repRange This is the amount of reps.
+     * @param sets This is the amount of sets.
+     * @param Posedescription This is the pose description.
+     * @param restPeriod This is the rest period of the exercise.
+     * @param difficulty This is the difficulty of the exercise.
+     * @param duratime This is the duration of the exercise.
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws PreconditionFailedException if:
+     *                               -Not all parameters are given.
+     * @throws NotFoundException if:
+     *                               -An exercise with provided ID does not exist.
+     * @return  Message indicating success.
+     * @author Tinashe Chamisa
+     *
+     */
+    async updateExercise(exercise: string, title: string,description: string,repRange: string,sets: number,Posedescription: string,restPeriod: number,tags: Tag[],duratime: number, ctx: Context): Promise<any> {
+        if(exercise=="" || title=="" || description=="" || repRange=="" || sets==null || title=="" || Posedescription=="" || restPeriod==null || duratime==null){
+            throw new PreconditionFailedException("Invalid exercise object passed in.")
+        }
+
+        try{
+            const Exercise = await ctx.prisma.exercise.findMany({
+                where: {
+                    exercise
+                },
+                select: {
+                    exercise: true
+                }
+            });
+
+            if(!(Array.isArray(Exercise) && Exercise.length)){
+                throw new NotFoundException("Exercise with provided ID does not exist.");
+            }
+
+            if(tags!= null) { //run update query with tags
+                await this.addNewTags(tags, ctx);
+                let tagConnection = tags.map(n => {
+                    const container = {
+                        label: n.label
+                    };
+
+                    return container;
+                });
+                await ctx.prisma.exercise.update({
+                    where:{
+                        exercise
+                    },
+                    data:{
+                        exercise,
+                        title,
+                        description,
+                        repRange,
+                        sets,
+                        Posedescription,
+                        restPeriod,
+                        tags: {
+                            connect:tagConnection
+                        },
+                        duratime
+                    }
+                });
+
+                return "Exercise updated."
+            }else{
+                await ctx.prisma.exercise.update({
+                    where:{
+                        exercise
+                    },
+                    data:{
+                        exercise,
+                        title,
+                        description,
+                        repRange,
+                        sets,
+                        Posedescription,
+                        restPeriod,
+                        duratime
+                    }
+                });
+
+                return "Exercise updated."
+            }
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
+     *Workout Service - Delete Exercise
+     *
+     * @param exercise This is the ID of the exercise.
+     * @throws PreconditionFailedException if:
+     *                               -Parameter can not be left empty.
+     * @throws NotFoundException if:
+     *                               -An exercise with provided ID does not exist.
+     * @return  Message indicating success.
+     * @author Tinashe Chamisa
+     *
+     */
+    async deleteExercise(exercise: string, ctx: Context): Promise<any> {
+        if(exercise ==""){
+            throw new PreconditionFailedException("Parameter can not be left empty.")
+        }
+        try{
+            await ctx.prisma.exercise.delete({
+                where:{
+                    exercise
+                }
+            });
+            return("Exercise Deleted.");
+        }catch (e) {
+            throw new NotFoundException("Exercise with provided ID does not exist");
+        }
+    }
+
     async createWorkout(workoutTitle: string, workoutDescription: string, exercises : Exercise[],tags:Tag[],planner_ID :string,ctx: Context) {
         if (workoutTitle=="" || workoutDescription==""  ){
             throw new NotFoundException("Parameters can not be left empty.");
@@ -532,6 +653,10 @@ export class WorkoutService{
     async createTag(label: string,textColour: string,backgroundColour: string, ctx: Context): Promise<any> {
         if(filter.isProfane(label)){
             throw new NotAcceptableException("Profanity contained in label title.");
+        }
+
+        if (label == "" || textColour=="" || backgroundColour=="" ){
+            throw new PreconditionFailedException("Parameters can not be left empty.")
         }
         try {
             label  = this.format(label);

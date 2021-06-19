@@ -72,3 +72,29 @@ export class DeleteWorkoutDTO{
 
 }
 
+export class updateExerciseDTO{
+    @ApiProperty({type: String, description: 'id of exercises'})
+    exercise: string;
+    @ApiProperty({type: String, description: 'title of exercises'})
+    title: string;
+    @ApiProperty({type: String, description: 'description of exercise'})
+    description: string;
+    @ApiProperty({type: String, description: 'rep range for exercise'})
+    repRange: string;
+    @ApiProperty({type: Number, description: 'number of sets'})
+    sets: number;
+    @ApiProperty({type: String, description: 'description for pose'})
+    PoseDescription: string;
+    @ApiProperty({type: Number, description: 'rest period'})
+    restPeriod: number;
+    @ApiProperty({type: Array, description: 'Tags for the exercise.'})
+    tag: Tag[];
+    @ApiProperty({type: Number, description: 'duration of exercise'})
+    duratime: number;
+}
+
+export class deleteExerciseDTO{
+    @ApiProperty({type: String, description: 'ID of Exercise.'})
+    exercise: string;
+}
+
