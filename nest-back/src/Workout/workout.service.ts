@@ -273,6 +273,46 @@ export class WorkoutService{
         }
     }
 
+    /**
+     *Workout Service - Get Exercises by Planner
+     *
+     * @param id This is the ID of the planner of the workout/s to be found in the database.
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No workouts were found in the database with the specified planner ID.
+     * @return  Promise array of workout object/s.
+     * @author Msi Sibanyoni
+     *
+     */
+    async getExercisesByPlanner(id: string, ctx: Context): Promise<any> {
+        try {
+            const exercise = await ctx.prisma.exercise.findMany({//search for workouts that meet the requirement
+                where: {
+                    planner_ID: id
+                },
+                select: {
+                    title: true,
+                    description: true,
+                    repRange: true,
+                    sets: true,
+                    Posedescription: true,
+                    restPeriod: true,
+                    duratime: true,
+                    tags: true,
+                    planner: true,
+                    planner_ID: true,
+                }
+            });
+            if (!(Array.isArray(exercise) && exercise.length)) {//if JSON object is empty, send error code
+                throw new NotFoundException("No Exercises were found in the database with the specified planner.");
+            } else {
+                return exercise;
+            }
+        } catch (err) {
+            throw err;
+        }
+    }
+
 
     async createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,tags:Tag[],duratime:number, planner_ID:string,ctx: Context){
 

@@ -121,7 +121,8 @@ export class WorkoutController {
         return this.workoutService.getExerciseByID(id,ActualPrisma());
     }
 
-    @Get('getWorkoutByPlanner/:id')
+    @UseGuards(JwtAuthGuard)
+    @Get('getWorkoutByPlanner')
     @ApiOkResponse({
         description: 'A workout object.'
     })
@@ -131,10 +132,29 @@ export class WorkoutController {
     @ApiInternalServerErrorResponse({
         description: 'Internal server error.'
     })
+    @ApiBearerAuth()
     getWorkoutByPlanner(
-        @Param('id') id: string,
+        @Request() req
     ) {
-        return this.workoutService.getWorkoutByPlanner(id,ActualPrisma());
+        return this.workoutService.getWorkoutByPlanner(req.user.userId,ActualPrisma());
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('getExercisesByPlanner')
+    @ApiOkResponse({
+        description: 'A exercise object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No exercises were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    @ApiBearerAuth()
+    getExercisesPlanner(
+        @Request() req
+    ) {
+        return this.workoutService.getExercisesByPlanner(req.user.userId,ActualPrisma());
     }
 
     @UseGuards(JwtAuthGuard)
