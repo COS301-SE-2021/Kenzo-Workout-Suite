@@ -17,7 +17,7 @@ export class CreateExerciseDTO{
     @ApiProperty({type: Number, description: 'number of sets'})
     sets: number;
     @ApiProperty({type: String, description: 'description for pose'})
-    poseDescription: string;
+    Posedescription: string;
     @ApiProperty({type: Number, description: 'rest period'})
     restPeriod: number;
     @ApiProperty({type: Array, description: 'Tags for the workout.'})
@@ -45,9 +45,6 @@ export class CreateWorkoutDTO{
     exercises: Exercise[];
     @ApiProperty({type: Array, description: 'Tags for the workout.'})
     tags: Tag[];
-    @ApiProperty({type: String, description: 'ID of the planner who created the workout.'})
-    planner_ID: string;
-
 }
 
 export class UpdateWorkoutDTO{
@@ -61,8 +58,6 @@ export class UpdateWorkoutDTO{
     exercises: Exercise[];
     @ApiProperty({type: Array, description: 'Tags for the workout.'})
     tags: Tag[];
-    @ApiProperty({type: String, description: 'ID of the planner who created the workout.'})
-    planner_ID: string;
 
 }
 
@@ -84,7 +79,7 @@ export class updateExerciseDTO{
     @ApiProperty({type: Number, description: 'number of sets'})
     sets: number;
     @ApiProperty({type: String, description: 'description for pose'})
-    PoseDescription: string;
+    Posedescription: string;
     @ApiProperty({type: Number, description: 'rest period'})
     restPeriod: number;
     @ApiProperty({type: Array, description: 'Tags for the exercise.'})

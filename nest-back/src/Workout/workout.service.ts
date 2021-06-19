@@ -273,8 +273,48 @@ export class WorkoutService{
         }
     }
 
+    /**
+     *Workout Service - Get Exercises by Planner
+     *
+     * @param id This is the ID of the planner of the workout/s to be found in the database.
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No workouts were found in the database with the specified planner ID.
+     * @return  Promise array of workout object/s.
+     * @author Msi Sibanyoni
+     *
+     */
+    async getExercisesByPlanner(id: string, ctx: Context): Promise<any> {
+        try {
+            const exercise = await ctx.prisma.exercise.findMany({//search for workouts that meet the requirement
+                where: {
+                    planner_ID: id
+                },
+                select: {
+                    title: true,
+                    description: true,
+                    repRange: true,
+                    sets: true,
+                    Posedescription: true,
+                    restPeriod: true,
+                    duratime: true,
+                    tags: true,
+                    planner: true,
+                    planner_ID: true,
+                }
+            });
+            if (!(Array.isArray(exercise) && exercise.length)) {//if JSON object is empty, send error code
+                throw new NotFoundException("No Exercises were found in the database with the specified planner.");
+            } else {
+                return exercise;
+            }
+        } catch (err) {
+            throw err;
+        }
+    }
 
-    async createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,tags:Tag[],duratime:number, ctx: Context){
+
+    async createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,tags:Tag[],duratime:number, planner_ID:string,ctx: Context){
 
         if (title=="" || description=="" || repRange=="" || sets==0 || poseDescription=="" || restPeriod==0 || duratime==0 )
         {
@@ -300,6 +340,11 @@ export class WorkoutService{
                 duratime: duratime,
                 tags: {
                     connect: tagConnection
+                },
+                planner: {
+                    connect: {
+                        userId: planner_ID
+                    }
                 }
             }
             await ctx.prisma.exercise.create({
@@ -315,6 +360,11 @@ export class WorkoutService{
                 Posedescription: poseDescription,
                 restPeriod: restPeriod,
                 duratime: duratime,
+                planner: {
+                    connect: {
+                        userId: planner_ID
+                    }
+                }
             }
             await ctx.prisma.exercise.create({
                 data:Exercise
@@ -345,7 +395,7 @@ export class WorkoutService{
      * @author Tinashe Chamisa
      *
      */
-    async updateExercise(exercise: string, title: string,description: string,repRange: string,sets: number,Posedescription: string,restPeriod: number,tags: Tag[],duratime: number, ctx: Context): Promise<any> {
+    async updateExercise(exercise: string, title: string,description: string,repRange: string,sets: number,Posedescription: string,restPeriod: number,tags: Tag[],duratime: number,planner_ID:string ,ctx: Context): Promise<any> {
         if(exercise=="" || title=="" || description=="" || repRange=="" || sets==null || title=="" || Posedescription=="" || restPeriod==null || duratime==null){
             throw new PreconditionFailedException("Invalid exercise object passed in.")
         }
@@ -388,7 +438,13 @@ export class WorkoutService{
                         tags: {
                             connect:tagConnection
                         },
-                        duratime
+                        duratime,
+                        planner: {
+                            connect: {
+                                userId: planner_ID
+                            }
+                        }
+
                     }
                 });
 
@@ -406,7 +462,12 @@ export class WorkoutService{
                         sets,
                         Posedescription,
                         restPeriod,
-                        duratime
+                        duratime,
+                        planner: {
+                            connect: {
+                                userId: planner_ID
+                            }
+                        }
                     }
                 });
 
@@ -594,11 +655,12 @@ export class WorkoutService{
 
         //TODO: Make heading font and a normal font & Consider adding an image
         doc.text(workout.workoutTitle, 80, 10);
-        // if(workout.tags ){
-        //     let stringTags = workout.tags.label.join();
-        //     let splitTags = doc.splitTextToSize(stringTags,180);
-        //     doc.text("Tags: " + splitTags, 15 , 50  );
-        // }
+        if(workout.tags.length != 0){
+            const workoutTagArray = workout.tags.connect.map(({label}) => [label])
+            let stringTags = workoutTagArray.join();
+            let splitTags = doc.splitTextToSize(stringTags,180);
+            doc.text("Tags: " + splitTags, 15 , 50  );
+        }
 
         let splitWorkoutDesc = doc.splitTextToSize(workout.workoutDescription,180);
         doc.text(splitWorkoutDesc, 15, 130 );
@@ -614,11 +676,12 @@ export class WorkoutService{
                 //console.log(exercise);
                 doc.addPage("a4", "p");
                 doc.text(exercise.title, 90, 10);
-                // if(exercise.tags){
-                //     let stringTags = exercise.tags.label.join()
-                //     let splitTags = doc.splitTextToSize(stringTags,180);
-                //     doc.text("Tags: " + splitTags, 15 , 30  );
-                // }
+                if(exercise.tags.length != 0){
+                    const exerciseTagArray = exercise.tags.connect.map(({label}) => [label])
+                    let stringTags = exerciseTagArray.join();
+                    let splitTags = doc.splitTextToSize(stringTags,180);
+                    doc.text("Tags: " + splitTags, 15 , 30  );
+                }
 
                 let splitExerciseDesc = doc.splitTextToSize(exercise.description,180)
                 doc.text(splitExerciseDesc, 15, 50);

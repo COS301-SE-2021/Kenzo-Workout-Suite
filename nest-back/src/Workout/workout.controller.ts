@@ -18,7 +18,7 @@ import {
 } from '@prisma/client';
 import {ActualPrisma, Context} from "../../context";
 import {
-    ApiBadRequestResponse,
+    ApiBadRequestResponse, ApiBearerAuth,
     ApiBody, ApiConflictResponse,
     ApiInternalServerErrorResponse, ApiNotAcceptableResponse,
     ApiNotFoundResponse,
@@ -121,7 +121,8 @@ export class WorkoutController {
         return this.workoutService.getExerciseByID(id,ActualPrisma());
     }
 
-    @Get('getWorkoutByPlanner/:id')
+    @UseGuards(JwtAuthGuard)
+    @Get('getWorkoutByPlanner')
     @ApiOkResponse({
         description: 'A workout object.'
     })
@@ -131,13 +132,32 @@ export class WorkoutController {
     @ApiInternalServerErrorResponse({
         description: 'Internal server error.'
     })
+    @ApiBearerAuth()
     getWorkoutByPlanner(
-        @Param('id') id: string,
+        @Request() req
     ) {
-        return this.workoutService.getWorkoutByPlanner(id,ActualPrisma());
+        return this.workoutService.getWorkoutByPlanner(req.user.userId,ActualPrisma());
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Get('getExercisesByPlanner')
+    @ApiOkResponse({
+        description: 'A exercise object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No exercises were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    @ApiBearerAuth()
+    getExercisesPlanner(
+        @Request() req
+    ) {
+        return this.workoutService.getExercisesByPlanner(req.user.userId,ActualPrisma());
+    }
 
+    @UseGuards(JwtAuthGuard)
     @Post('createExercise')
     @ApiOkResponse({
         description: 'Exercise Created'
@@ -149,6 +169,7 @@ export class WorkoutController {
         description: 'Internal server error.'
     })
     @ApiBody({type: CreateExerciseDTO})
+    @ApiBearerAuth()
     createExercise(
         @Body('title') title: string,
         @Body('description') description: string,
@@ -158,10 +179,12 @@ export class WorkoutController {
         @Body('restPeriod') restPeriod: number,
         @Body('tags') tags: Tag[],
         @Body('duratime') duration: number,
+        @Request() req
     ) {
-        return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,tags,duration, this.ctx);
+        return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,tags,duration,req.user.userId  ,this.ctx);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Put('updateExercise')
     @ApiBody({type: updateExerciseDTO})
     @ApiOkResponse({
@@ -176,6 +199,7 @@ export class WorkoutController {
     @ApiInternalServerErrorResponse({
         description: 'Internal server error.'
     })
+    @ApiBearerAuth()
     updateExercise(
         @Body('exercise') exercise: string,
         @Body('title') title: string,
@@ -186,8 +210,9 @@ export class WorkoutController {
         @Body('restPeriod') restPeriod: number,
         @Body('tags') tags: Tag[],
         @Body('duratime') duratime: number,
+        @Request() req
     ) {
-        return this.workoutService.updateExercise(exercise,title,description,repRange,sets,Posedescription,restPeriod,tags,duratime,ActualPrisma());
+        return this.workoutService.updateExercise(exercise,title,description,repRange,sets,Posedescription,restPeriod,tags,duratime, req.user.userId,ActualPrisma());
     }
 
     @Delete("deleteExercise")
@@ -222,6 +247,7 @@ export class WorkoutController {
     @ApiInternalServerErrorResponse({
         description: 'Internal server error.'
     })
+    @ApiBearerAuth()
     async createWorkout(
         @Body('workoutTitle') workoutTitle: string,
         @Body('workoutDescription') workoutDescription: string,
@@ -246,6 +272,7 @@ export class WorkoutController {
     @ApiInternalServerErrorResponse({
         description: 'Internal server error.'
     })
+    @ApiBearerAuth()
     async updateWorkout(
         @Body('workoutID') workoutID: string,
         @Body('workoutTitle') workoutTitle: string,
