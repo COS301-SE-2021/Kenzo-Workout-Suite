@@ -274,7 +274,7 @@ export class WorkoutService{
     }
 
 
-    async createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,tags:Tag[],duratime:number, ctx: Context){
+    async createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,tags:Tag[],duratime:number, planner_ID:string,ctx: Context){
 
         if (title=="" || description=="" || repRange=="" || sets==0 || poseDescription=="" || restPeriod==0 || duratime==0 )
         {
@@ -300,6 +300,11 @@ export class WorkoutService{
                 duratime: duratime,
                 tags: {
                     connect: tagConnection
+                },
+                planner: {
+                    connect: {
+                        userId: planner_ID
+                    }
                 }
             }
             await ctx.prisma.exercise.create({
@@ -315,6 +320,11 @@ export class WorkoutService{
                 Posedescription: poseDescription,
                 restPeriod: restPeriod,
                 duratime: duratime,
+                planner: {
+                    connect: {
+                        userId: planner_ID
+                    }
+                }
             }
             await ctx.prisma.exercise.create({
                 data:Exercise
@@ -345,7 +355,7 @@ export class WorkoutService{
      * @author Tinashe Chamisa
      *
      */
-    async updateExercise(exercise: string, title: string,description: string,repRange: string,sets: number,Posedescription: string,restPeriod: number,tags: Tag[],duratime: number, ctx: Context): Promise<any> {
+    async updateExercise(exercise: string, title: string,description: string,repRange: string,sets: number,Posedescription: string,restPeriod: number,tags: Tag[],duratime: number,planner_ID:string ,ctx: Context): Promise<any> {
         if(exercise=="" || title=="" || description=="" || repRange=="" || sets==null || title=="" || Posedescription=="" || restPeriod==null || duratime==null){
             throw new PreconditionFailedException("Invalid exercise object passed in.")
         }
@@ -388,7 +398,13 @@ export class WorkoutService{
                         tags: {
                             connect:tagConnection
                         },
-                        duratime
+                        duratime,
+                        planner: {
+                            connect: {
+                                userId: planner_ID
+                            }
+                        }
+
                     }
                 });
 
@@ -406,7 +422,12 @@ export class WorkoutService{
                         sets,
                         Posedescription,
                         restPeriod,
-                        duratime
+                        duratime,
+                        planner: {
+                            connect: {
+                                userId: planner_ID
+                            }
+                        }
                     }
                 });
 

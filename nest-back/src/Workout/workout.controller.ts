@@ -137,7 +137,7 @@ export class WorkoutController {
         return this.workoutService.getWorkoutByPlanner(id,ActualPrisma());
     }
 
-
+    @UseGuards(JwtAuthGuard)
     @Post('createExercise')
     @ApiOkResponse({
         description: 'Exercise Created'
@@ -149,6 +149,7 @@ export class WorkoutController {
         description: 'Internal server error.'
     })
     @ApiBody({type: CreateExerciseDTO})
+    @ApiBearerAuth()
     createExercise(
         @Body('title') title: string,
         @Body('description') description: string,
@@ -158,10 +159,12 @@ export class WorkoutController {
         @Body('restPeriod') restPeriod: number,
         @Body('tags') tags: Tag[],
         @Body('duratime') duration: number,
+        @Request() req
     ) {
-        return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,tags,duration, this.ctx);
+        return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,tags,duration,req.user.userId  ,this.ctx);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Put('updateExercise')
     @ApiBody({type: updateExerciseDTO})
     @ApiOkResponse({
@@ -176,6 +179,7 @@ export class WorkoutController {
     @ApiInternalServerErrorResponse({
         description: 'Internal server error.'
     })
+    @ApiBearerAuth()
     updateExercise(
         @Body('exercise') exercise: string,
         @Body('title') title: string,
@@ -186,8 +190,9 @@ export class WorkoutController {
         @Body('restPeriod') restPeriod: number,
         @Body('tags') tags: Tag[],
         @Body('duratime') duratime: number,
+        @Request() req
     ) {
-        return this.workoutService.updateExercise(exercise,title,description,repRange,sets,Posedescription,restPeriod,tags,duratime,ActualPrisma());
+        return this.workoutService.updateExercise(exercise,title,description,repRange,sets,Posedescription,restPeriod,tags,duratime, req.user.userId,ActualPrisma());
     }
 
     @Delete("deleteExercise")
