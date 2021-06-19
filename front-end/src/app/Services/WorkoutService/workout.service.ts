@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Workout} from "../../Models/workout";
 import {Exercise} from "../../Models/exercise";
 import { UserService } from "../UserService/user.service";
@@ -24,7 +24,6 @@ export class WorkoutService {
     const url : string = "http://localhost:3000/workout/createWorkout";
 
     let UserDetails = await this.userService.obtainUserDetails();
-    console.log(UserDetails);
 
     const body:Object = {
       "workoutTitle": workout.title,
@@ -69,6 +68,9 @@ export class WorkoutService {
     });
   }
 
+  /**
+   * attempt to get all the workouts in the database for the library page
+   */
   async attemptGetWorkouts() : Promise<any>{
     const url: string = "http://localhost:3000/workout/getWorkouts";
     return this.http.get(url).toPromise().then(data=>{
@@ -82,6 +84,9 @@ export class WorkoutService {
     });
   }
 
+  /**
+   * attempt to get all the exercises in the database for the library page
+   */
   async attemptGetExercises() : Promise<any>{
     const url: string = "http://localhost:3000/workout/getExercises";
     return this.http.get(url).toPromise().then(data=>{
@@ -92,6 +97,41 @@ export class WorkoutService {
       return data
     }).catch(err=>{
       return err;
+    });
+  }
+
+  async attemptGetWorkoutsByPlanner() : Promise<any>{
+    const url: string = "http://localhost:3000/workout/getWorkoutByPlanner";
+
+    return this.http.get(url).toPromise().then(data=>{
+      data = {
+        status: 200,
+        data: data
+      }
+      return data;
+    }).catch(error=>{
+      if(error.status==0 || error.status == 500) return 500;
+      return 404;
+    });
+  }
+
+  async attemptGetExercisesByPlanner() : Promise<any>{
+    const url: string = "http://localhost:3000/workout/getExerciseByPlanner";
+    // let UserDetails = await this.userService.obtainUserDetails();
+    // let headers = new HttpHeaders();
+    // headers.append('header', 'application/json');
+    // let params = new HttpParams();
+    // params.append('param',UserDetails["planner_ID"]);
+
+    return this.http.get(url).toPromise().then(data=>{
+      data = {
+        status: 200,
+        data: data
+      }
+      return data;
+    }).catch(error=>{
+      if(error.status==0 || error.status == 500) return 500;
+      return 404;
     });
   }
 }

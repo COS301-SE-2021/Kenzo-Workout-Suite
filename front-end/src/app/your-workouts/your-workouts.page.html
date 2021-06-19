@@ -19,16 +19,28 @@
     </div>
   </div>
   <div class="Spacing-div" id="SearchBarDiv">
-  <ion-searchbar id="workout-searchbar"  mode="ios" showCancelButton="never" inputmode="search"></ion-searchbar>
+    <ion-searchbar id="workout-searchbar"  mode="ios" showCancelButton="never" inputmode="search"></ion-searchbar>
+  </div>
+  <div>
+    <ion-button class="filterBtns" id="workoutBtn" (click)="showWorkouts()">Workouts</ion-button>
+    <ion-button class="filterBtns" id="exerciseBtn" (click)="showExercises()">Exercises</ion-button>
   </div>
   <div class="Spacing-div" id="ItemsDiv">
-    <ion-virtual-scroll [items]="workouts" approxItemHeight="320px">
+    <ion-virtual-scroll [items]="workouts" approxItemHeight="320px" id="workoutScroll">
       <ion-card *virtualItem="let workout; let itemBounds = bounds;">
         <ion-card-header>
           <ion-card-title>{{ workout.workoutTitle }}</ion-card-title>
         </ion-card-header>
         <ion-card-content>{{ workout.workoutDescription}}</ion-card-content>
         <ion-button fill="clear" mode="ios" value="{{workout.workoutID}}" class="editBtn">Edit</ion-button>
+      </ion-card>
+    </ion-virtual-scroll>
+    <ion-virtual-scroll [items]="exercises" approxItemHeight="320px" id="exerciseScroll">
+      <ion-card *virtualItem="let exercise; let itemBounds = bounds;" class="exercises" id="{{exercise.exercise}}">
+        <ion-card-header>
+          <ion-card-title><u>Exercise</u><br> {{ exercise.title }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>{{ exercise.description}}</ion-card-content>
       </ion-card>
     </ion-virtual-scroll>
   </div>
