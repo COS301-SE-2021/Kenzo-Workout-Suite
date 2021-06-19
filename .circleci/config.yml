@@ -1,0 +1,23 @@
+version: 2
+jobs:
+  build:
+    machine: true
+    working_directory: ~/typescript-graphql-test
+    steps:
+      - checkout
+      - run:
+          name: move into the nest-back directory
+          command: |
+            cd nest-back
+      - run:
+          name: list directory
+          command: |
+            cd nest-back
+            ls
+      - run:
+          name: run tests
+          command: |
+            cd nest-back
+            npm test
+           
+      - run: npm run test
