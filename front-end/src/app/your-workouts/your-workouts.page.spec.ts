@@ -40,7 +40,7 @@ describe('YourWorkoutsPage', () => {
     spyOn(service, 'attemptGetWorkouts').and.resolveTo({"message": "No workouts obtained"});
     spyOn(alertController, "create").and.stub();
     spyOn(component, "presentAlert").and.stub();
-    await component.LoadWorkouts().catch(error=>{
+    await component.loadWorkouts().catch(error=>{
       expect(error).toEqual(new Error('Workouts do not exist.'));
     });
   });
@@ -49,14 +49,14 @@ describe('YourWorkoutsPage', () => {
     spyOn(service, 'attemptGetWorkouts').and.resolveTo(500);
     spyOn(alertController, "create").and.stub();
     spyOn(component, "presentAlert").and.stub();
-    await component.LoadWorkouts().catch(error=>{
+    await component.loadWorkouts().catch(error=>{
       expect(error).toEqual(new Error('Server is not responding.'));
     });
   });
   it('should successfully obtain all workouts.', async () => {
     spyOn(service, 'attemptGetWorkouts').and.resolveTo({"message": "Successfully retrieved workouts"});
     spyOn(routeMock, "navigate").and.resolveTo();
-    await component.LoadWorkouts().then(data=>{
+    await component.loadWorkouts().then(data=>{
       expect(data).toEqual(200);
     });
   });
