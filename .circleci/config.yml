@@ -6,6 +6,10 @@ jobs:
     steps:
       - checkout
       - run:
+          name: move into the nest-back directory
+          command: |
+            cd nest-back
+      - run:
           name: Install Node Version Manager
           command: |
             curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
