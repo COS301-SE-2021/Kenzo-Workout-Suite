@@ -1,12 +1,12 @@
 export class Workout {
   private _title:String;
   private _description:String;
-  private _difficulty:String;
+  private _plannerID:String;
 
-  constructor(title: String, description: String, difficulty: String) {
+  constructor(title: String, description: String, planner_ID: String) {
     this._title = title;
     this._description = description;
-    this._difficulty = difficulty;
+    this._plannerID = planner_ID;
   }
 
   get title(): String {
@@ -25,11 +25,11 @@ export class Workout {
     this._description = value;
   }
 
-  get difficulty(): String {
-    return this._difficulty;
+  get planner_ID(): String {
+    return this._plannerID;
   }
 
-  set difficulty(value: String) {
-    this._difficulty = value;
+  set planner_ID(value: String) {
+    this.planner_ID = value;
   }
 }

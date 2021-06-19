@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Workout} from "../../Models/workout";
 import {Exercise} from "../../Models/exercise";
+import { UserService } from "../UserService/user.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class WorkoutService {
 
-  constructor(private http:HttpClient) {}
+  constructor(private http:HttpClient,
+              private userService: UserService) {}
 
   /** This function attempts to submit a workout by using the following parameters:
    *
@@ -21,10 +23,11 @@ export class WorkoutService {
   async attemptSubmitWorkout(workout:Workout) : Promise<Number> {
     const url : string = "http://localhost:3000/workout/createWorkout";
 
+    let UserDetails = await this.userService.obtainUserDetails();
+
     const body:Object = {
       "workoutTitle": workout.title,
-      "workoutDescription": workout.description,
-      "difficulty": workout.difficulty
+      "workoutDescription": workout.description
     };
 
     return this.http.post(url, body).toPromise().then(data=>{
@@ -51,9 +54,8 @@ export class WorkoutService {
       "description": exercise.description,
       "repRange": exercise.repRange,
       "sets": exercise.sets,
-      "Posedescription": exercise.Posedescription,
+      "poseDescription": exercise.Posedescription,
       "restPeriod": exercise.restPeriod,
-      "difficulty": exercise.difficulty.toUpperCase(),
       "duratime": exercise.duratime
     };
 
@@ -65,6 +67,9 @@ export class WorkoutService {
     });
   }
 
+  /**
+   * attempt to get all the workouts in the database for the library page
+   */
   async attemptGetWorkouts() : Promise<any>{
     const url: string = "http://localhost:3000/workout/getWorkouts";
     return this.http.get(url).toPromise().then(data=>{
@@ -76,6 +81,55 @@ export class WorkoutService {
     }).catch(err=>{
       return err;
     });
+  }
 
+  /**
+   * attempt to get all the exercises in the database for the library page
+   */
+  async attemptGetExercises() : Promise<any>{
+    const url: string = "http://localhost:3000/workout/getExercises";
+    return this.http.get(url).toPromise().then(data=>{
+      data = {
+        status: 200,
+        data: data
+      }
+      return data
+    }).catch(err=>{
+      return err;
+    });
+  }
+
+  async attemptGetWorkoutsByPlanner() : Promise<any>{
+    const url: string = "http://localhost:3000/workout/getWorkoutByPlanner";
+    let userToken = await this.userService.getToken();
+    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
+
+    return this.http.get(url, {headers}).toPromise().then(data=>{
+      data = {
+        status: 200,
+        data: data
+      }
+      return data;
+    }).catch(error=>{
+      if(error.status==0 || error.status == 500) return 500;
+      return 404;
+    });
+  }
+
+  async attemptGetExercisesByPlanner() : Promise<any>{
+    const url: string = "http://localhost:3000/workout/getExercisesByPlanner";
+    let userToken = await this.userService.getToken();
+    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
+
+    return this.http.get(url, {headers}).toPromise().then(data=>{
+      data = {
+        status: 200,
+        data: data
+      }
+      return data;
+    }).catch(error=>{
+      if(error.status==0 || error.status == 500) return 500;
+      return 404;
+    });
   }
 }

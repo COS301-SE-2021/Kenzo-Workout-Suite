@@ -2,7 +2,7 @@ import {
     BadRequestException, ConflictException,
     Injectable,
     NotAcceptableException,
-    NotFoundException
+    NotFoundException, PreconditionFailedException
 } from "@nestjs/common";
 
 import { Context } from "../../context";
@@ -273,8 +273,48 @@ export class WorkoutService{
         }
     }
 
+    /**
+     *Workout Service - Get Exercises by Planner
+     *
+     * @param id This is the ID of the planner of the workout/s to be found in the database.
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No workouts were found in the database with the specified planner ID.
+     * @return  Promise array of workout object/s.
+     * @author Msi Sibanyoni
+     *
+     */
+    async getExercisesByPlanner(id: string, ctx: Context): Promise<any> {
+        try {
+            const exercise = await ctx.prisma.exercise.findMany({//search for workouts that meet the requirement
+                where: {
+                    planner_ID: id
+                },
+                select: {
+                    title: true,
+                    description: true,
+                    repRange: true,
+                    sets: true,
+                    Posedescription: true,
+                    restPeriod: true,
+                    duratime: true,
+                    tags: true,
+                    planner: true,
+                    planner_ID: true,
+                }
+            });
+            if (!(Array.isArray(exercise) && exercise.length)) {//if JSON object is empty, send error code
+                throw new NotFoundException("No Exercises were found in the database with the specified planner.");
+            } else {
+                return exercise;
+            }
+        } catch (err) {
+            throw err;
+        }
+    }
 
-    async createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,tags:Tag[],duratime:number, ctx: Context){
+
+    async createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,tags:Tag[],duratime:number, planner_ID:string,ctx: Context){
 
         if (title=="" || description=="" || repRange=="" || sets==0 || poseDescription=="" || restPeriod==0 || duratime==0 )
         {
@@ -300,6 +340,11 @@ export class WorkoutService{
                 duratime: duratime,
                 tags: {
                     connect: tagConnection
+                },
+                planner: {
+                    connect: {
+                        userId: planner_ID
+                    }
                 }
             }
             await ctx.prisma.exercise.create({
@@ -315,6 +360,11 @@ export class WorkoutService{
                 Posedescription: poseDescription,
                 restPeriod: restPeriod,
                 duratime: duratime,
+                planner: {
+                    connect: {
+                        userId: planner_ID
+                    }
+                }
             }
             await ctx.prisma.exercise.create({
                 data:Exercise
@@ -322,6 +372,138 @@ export class WorkoutService{
             return("Exercise created.");
         }
 
+    }
+
+    /**
+     *Workout Service - Update Exercise
+     *
+     * @param exercise This is the ID of the exercise.
+     * @param title This is the title of the exercise.
+     * @param description This is the description of the exercise.
+     * @param repRange This is the amount of reps.
+     * @param sets This is the amount of sets.
+     * @param Posedescription This is the pose description.
+     * @param restPeriod This is the rest period of the exercise.
+     * @param difficulty This is the difficulty of the exercise.
+     * @param duratime This is the duration of the exercise.
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws PreconditionFailedException if:
+     *                               -Not all parameters are given.
+     * @throws NotFoundException if:
+     *                               -An exercise with provided ID does not exist.
+     * @return  Message indicating success.
+     * @author Tinashe Chamisa
+     *
+     */
+    async updateExercise(exercise: string, title: string,description: string,repRange: string,sets: number,Posedescription: string,restPeriod: number,tags: Tag[],duratime: number,planner_ID:string ,ctx: Context): Promise<any> {
+        if(exercise=="" || title=="" || description=="" || repRange=="" || sets==null || title=="" || Posedescription=="" || restPeriod==null || duratime==null){
+            throw new PreconditionFailedException("Invalid exercise object passed in.")
+        }
+
+        try{
+            const Exercise = await ctx.prisma.exercise.findMany({
+                where: {
+                    exercise
+                },
+                select: {
+                    exercise: true
+                }
+            });
+
+            if(!(Array.isArray(Exercise) && Exercise.length)){
+                throw new NotFoundException("Exercise with provided ID does not exist.");
+            }
+
+            if(tags!= null) { //run update query with tags
+                await this.addNewTags(tags, ctx);
+                let tagConnection = tags.map(n => {
+                    const container = {
+                        label: n.label
+                    };
+
+                    return container;
+                });
+                await ctx.prisma.exercise.update({
+                    where:{
+                        exercise
+                    },
+                    data:{
+                        exercise,
+                        title,
+                        description,
+                        repRange,
+                        sets,
+                        Posedescription,
+                        restPeriod,
+                        tags: {
+                            connect:tagConnection
+                        },
+                        duratime,
+                        planner: {
+                            connect: {
+                                userId: planner_ID
+                            }
+                        }
+
+                    }
+                });
+
+                return "Exercise updated."
+            }else{
+                await ctx.prisma.exercise.update({
+                    where:{
+                        exercise
+                    },
+                    data:{
+                        exercise,
+                        title,
+                        description,
+                        repRange,
+                        sets,
+                        Posedescription,
+                        restPeriod,
+                        duratime,
+                        planner: {
+                            connect: {
+                                userId: planner_ID
+                            }
+                        }
+                    }
+                });
+
+                return "Exercise updated."
+            }
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
+     *Workout Service - Delete Exercise
+     *
+     * @param exercise This is the ID of the exercise.
+     * @throws PreconditionFailedException if:
+     *                               -Parameter can not be left empty.
+     * @throws NotFoundException if:
+     *                               -An exercise with provided ID does not exist.
+     * @return  Message indicating success.
+     * @author Tinashe Chamisa
+     *
+     */
+    async deleteExercise(exercise: string, ctx: Context): Promise<any> {
+        if(exercise ==""){
+            throw new PreconditionFailedException("Parameter can not be left empty.")
+        }
+        try{
+            await ctx.prisma.exercise.delete({
+                where:{
+                    exercise
+                }
+            });
+            return("Exercise Deleted.");
+        }catch (e) {
+            throw new NotFoundException("Exercise with provided ID does not exist");
+        }
     }
 
     async createWorkout(workoutTitle: string, workoutDescription: string, exercises : Exercise[],tags:Tag[],planner_ID :string,ctx: Context) {
@@ -473,11 +655,12 @@ export class WorkoutService{
 
         //TODO: Make heading font and a normal font & Consider adding an image
         doc.text(workout.workoutTitle, 80, 10);
-        // if(workout.tags ){
-        //     let stringTags = workout.tags.label.join();
-        //     let splitTags = doc.splitTextToSize(stringTags,180);
-        //     doc.text("Tags: " + splitTags, 15 , 50  );
-        // }
+        if(workout.tags.length != 0){
+            const workoutTagArray = workout.tags.connect.map(({label}) => [label])
+            let stringTags = workoutTagArray.join();
+            let splitTags = doc.splitTextToSize(stringTags,180);
+            doc.text("Tags: " + splitTags, 15 , 50  );
+        }
 
         let splitWorkoutDesc = doc.splitTextToSize(workout.workoutDescription,180);
         doc.text(splitWorkoutDesc, 15, 130 );
@@ -493,11 +676,12 @@ export class WorkoutService{
                 //console.log(exercise);
                 doc.addPage("a4", "p");
                 doc.text(exercise.title, 90, 10);
-                // if(exercise.tags){
-                //     let stringTags = exercise.tags.label.join()
-                //     let splitTags = doc.splitTextToSize(stringTags,180);
-                //     doc.text("Tags: " + splitTags, 15 , 30  );
-                // }
+                if(exercise.tags.length != 0){
+                    const exerciseTagArray = exercise.tags.connect.map(({label}) => [label])
+                    let stringTags = exerciseTagArray.join();
+                    let splitTags = doc.splitTextToSize(stringTags,180);
+                    doc.text("Tags: " + splitTags, 15 , 30  );
+                }
 
                 let splitExerciseDesc = doc.splitTextToSize(exercise.description,180)
                 doc.text(splitExerciseDesc, 15, 50);
@@ -532,6 +716,10 @@ export class WorkoutService{
     async createTag(label: string,textColour: string,backgroundColour: string, ctx: Context): Promise<any> {
         if(filter.isProfane(label)){
             throw new NotAcceptableException("Profanity contained in label title.");
+        }
+
+        if (label == "" || textColour=="" || backgroundColour=="" ){
+            throw new PreconditionFailedException("Parameters can not be left empty.")
         }
         try {
             label  = this.format(label);

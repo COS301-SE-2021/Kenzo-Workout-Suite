@@ -21,37 +21,37 @@ model Avatar {
   armColour   String @default("blue")
   legColour   String @default("blue")
   headColour  String @default("blue")
-  client      User @relation(fields: [avatarEmail], references: [email])
+  client      User   @relation(fields: [avatarEmail], references: [email])
   avatarEmail String @id
 }
 
 model User {
-  userId  String   @id @default(uuid())
-  email       String    @unique
+  userId      String     @id @default(uuid())
+  email       String     @unique
   firstName   String
   lastName    String
   password    String
   dateOfBirth DateTime?
   avatar      Avatar?
   userType    userType
-  workouts Workout[]
+  workouts    Workout[]
+  Exercise    Exercise[]
 }
-
 
 model Workout {
   workoutID          String @id @default(uuid())
   workoutTitle       String
   workoutDescription String
 
-  exercises          Exercise[]
-  tags               Tag[]
+  exercises Exercise[]
+  tags      Tag[]
 
-  planner            User? @relation(fields: [planner_ID], references: [userId])
-  planner_ID         String?
+  planner    User?   @relation(fields: [planner_ID], references: [userId])
+  planner_ID String?
 }
 
 model Exercise {
-  exercise        String     @id @default(uuid())
+  exercise        String    @id @default(uuid())
   title           String
   description     String
   repRange        String
@@ -60,14 +60,16 @@ model Exercise {
   restPeriod      Int
   tags            Tag[]
   duratime        Int
-
   workouts        Workout[]
+
+  planner    User?   @relation(fields: [planner_ID], references: [userId])
+  planner_ID String?
 }
 
-model Tag{
-  label             String    @id
-  textColour        String
-  backgroundColour  String
-  workouts          Workout[]
-  exercises         Exercise[]
+model Tag {
+  label            String     @id
+  textColour       String
+  backgroundColour String
+  workouts         Workout[]
+  exercises        Exercise[]
 }

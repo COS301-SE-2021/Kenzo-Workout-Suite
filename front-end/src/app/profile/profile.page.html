@@ -1,11 +1,11 @@
 <ion-content class="your-workout-background">
   <div class="container">
     <div class="Spacing-div">
-      <ion-card class="profile">
+      <ion-card>
         <ion-card-header>
-          <ion-card-title><u>Welcome {{firstName}} {{lastName}}</u></ion-card-title>
+          <ion-card-title class="profileHeader">Profile</ion-card-title>
         </ion-card-header>
-        <ion-card-content>
+        <ion-card-content class="profileContent">
           <!--Will put avatar/image here but for now leaving it blank-->
           <div class="input-div">
             <ion-label class="profile-label">First Name</ion-label>
@@ -27,8 +27,9 @@
             <ion-label class="profile-label">Account Type</ion-label>
             <ion-input [(ngModel)]="accountType" class="profile-input" type="text" disabled="true"></ion-input>
           </div>
-          <ion-button (click)="editDetails()" fill="clear" mode="ios" id="editBtn">Edit</ion-button>
-          <br>
+          <ion-button (click)="editDetails()" expand="full" mode="ios" id="editBtn">
+            Edit
+          </ion-button>
           <ion-button (click)="updateDetails()" expand="full" mode="ios" id="updateBtn" disabled="true">
             Update
           </ion-button>
@@ -40,10 +41,25 @@
 </ion-content>
 <ion-footer>
   <ion-toolbar mode="ios" class="footer">
-    <ion-img src="../../assets/clipart/Clipboard.png" class="NavButtons" id="WorkoutsBtn" mode="ios" routerLink="/your-workouts"></ion-img>
-    <ion-img src="../../assets/clipart/Library.png" class="NavButtons" id="SearchBtn" mode="ios" routerLink="/search"></ion-img>
-    <ion-img src="../../assets/clipart/Clients.png" class="NavButtons" id="ContactsBtn" mode="ios" routerLink="."></ion-img>
-    <ion-img src="../../assets/clipart/Setting_activated.png" class="NavButtons" id="SettingsBtn" mode="ios" routerLink="."></ion-img>
+    <ion-thumbnail slot="start" class="navThumbnail">
+      <ion-img src="../../assets/clipart/Clipboard.png" class="NavButtons" id="WorkoutsBtn" mode="ios" routerLink="/your-workouts"></ion-img>
+    </ion-thumbnail>
+    <ion-label class="NavLabel">Home</ion-label>
+
+    <ion-thumbnail slot="start" class="navThumbnail">
+      <ion-img src="../../assets/clipart/Library.png" class="NavButtons" id="SearchBtn" mode="ios" routerLink="/search"></ion-img>
+    </ion-thumbnail>
+    <ion-label class="NavLabel browseLabel">Browse</ion-label>
+
+    <ion-thumbnail slot="start" class="navThumbnail">
+      <ion-img src="../../assets/clipart/Clients.png" class="NavButtons" id="ContactsBtn" mode="ios" routerLink="."></ion-img>
+    </ion-thumbnail>
+    <ion-label class="NavLabel clientsLabel">Clients</ion-label>
+
+    <ion-thumbnail slot="start" class="navThumbnail">
+      <ion-img src="../../assets/clipart/Setting_activated.png" class="NavButtons" id="SettingsBtn" mode="ios" routerLink="."></ion-img>
+    </ion-thumbnail>
+    <ion-label class="NavLabel profileLabel">Settings</ion-label>
   </ion-toolbar>
   <br>
 </ion-footer>

@@ -1,7 +1,7 @@
 <ion-content class="your-workout-background">
 <div class="container">
   <div class="Spacing-div">
-    <ion-label id="WorkoutHeading" >Your Workouts</ion-label>
+    <ion-label id="WorkoutHeading" >For you page</ion-label>
     <div class="kenzo-fixed">
       <ion-fab mode="ios" slot="fixed" size="small" vertical="bottom" horizontal="end">
         <ion-fab-button>
@@ -19,16 +19,29 @@
     </div>
   </div>
   <div class="Spacing-div" id="SearchBarDiv">
-  <ion-searchbar id="workout-searchbar"  mode="ios" showCancelButton="never" inputmode="search"></ion-searchbar>
+    <ion-searchbar id="workout-searchbar"  mode="ios" showCancelButton="never" inputmode="search"></ion-searchbar>
+  </div>
+  <div>
+    <ion-button class="filterBtns" id="workoutBtn" (click)="showWorkouts()">Workouts</ion-button>
+    <ion-button class="filterBtns" id="exerciseBtn" (click)="showExercises()">Exercises</ion-button>
   </div>
   <div class="Spacing-div" id="ItemsDiv">
-    <ion-virtual-scroll [items]="workouts" approxItemHeight="320px">
-      <ion-card *virtualItem="let workout; let itemBounds = bounds;">
+    <ion-virtual-scroll [items]="workouts" approxItemHeight="320px" id="workoutScroll">
+      <ion-card *virtualItem="let workout; let itemBounds = bounds;" class="workouts" id="{{workout.workoutID}}">
         <ion-card-header>
           <ion-card-title>{{ workout.workoutTitle }}</ion-card-title>
         </ion-card-header>
         <ion-card-content>{{ workout.workoutDescription}}</ion-card-content>
-        <ion-button fill="clear" mode="ios" value="{{workout.workoutID}}" class="editBtn">Edit</ion-button>
+        <ion-button mode="ios" class="editBtn" (click)="sendWorkoutID(workout.workoutID)">Edit</ion-button>
+      </ion-card>
+    </ion-virtual-scroll>
+    <ion-virtual-scroll [items]="exercises" approxItemHeight="320px" id="exerciseScroll">
+      <ion-card *virtualItem="let exercise; let itemBounds = bounds;" class="exercises" id="{{exercise.exercise}}">
+        <ion-card-header>
+          <ion-card-title><u>Exercise</u><br> {{ exercise.title }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>{{ exercise.description}}</ion-card-content>
+        <ion-button mode="ios" value="{{exercise.ID}}" class="editBtn" (click)="sendExerciseID(exercise.ID)">Edit</ion-button>
       </ion-card>
     </ion-virtual-scroll>
   </div>
@@ -36,10 +49,25 @@
 </ion-content>
 <ion-footer>
   <ion-toolbar mode="ios" class="footer">
-    <ion-img src="../../assets/clipart/Clipboard_activated.png" class="NavButtons" id="WorkoutsBtn" mode="ios" routerLink="."></ion-img>
-    <ion-img src="../../assets/clipart/Library.png" class="NavButtons" id="SearchBtn" mode="ios" routerLink="/search"></ion-img>
-    <ion-img src="../../assets/clipart/Clients.png" class="NavButtons" id="ContactsBtn" mode="ios" routerLink="."></ion-img>
-    <ion-img src="../../assets/clipart/Setting.png" class="NavButtons" id="SettingsBtn" mode="ios" routerLink="/profile"></ion-img>
+    <ion-thumbnail slot="start" class="navThumbnail">
+      <ion-img src="../../assets/clipart/Clipboard_activated.png" class="NavButtons" id="WorkoutsBtn" mode="ios" routerLink="."></ion-img>
+    </ion-thumbnail>
+      <ion-label class="NavLabel">Home</ion-label>
+
+    <ion-thumbnail slot="start" class="navThumbnail">
+      <ion-img src="../../assets/clipart/Library.png" class="NavButtons" id="SearchBtn" mode="ios" routerLink="/search"></ion-img>
+    </ion-thumbnail>
+      <ion-label class="NavLabel browseLabel">Browse</ion-label>
+
+    <ion-thumbnail slot="start" class="navThumbnail">
+      <ion-img src="../../assets/clipart/Clients.png" class="NavButtons" id="ContactsBtn" mode="ios" routerLink="."></ion-img>
+    </ion-thumbnail>
+      <ion-label class="NavLabel clientsLabel">Clients</ion-label>
+
+    <ion-thumbnail slot="start" class="navThumbnail">
+      <ion-img src="../../assets/clipart/Setting.png" class="NavButtons" id="SettingsBtn" mode="ios" routerLink="/profile"></ion-img>
+    </ion-thumbnail>
+      <ion-label class="NavLabel profileLabel">Settings</ion-label>
   </ion-toolbar>
   <br>
 </ion-footer>

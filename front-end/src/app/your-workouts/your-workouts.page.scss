@@ -54,6 +54,19 @@
   z-index: 100;
 }
 
+.filterBtns{
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 187.5px;
+  font-family: "SF Pro Regular", serif;
+  --border-radius: var(--border-radius);
+}
+
+#exerciseBtn{
+  opacity:0.3;
+}
+
 .footer{
     --background: var(--ion-off-white);
     padding-top: 10px;
@@ -63,35 +76,48 @@
     //margin-bottom: 20px;
 }
 
-.NavButtons{
-    display: block;
-    float: left;
-    margin-right: auto;
-    width: var(--icon-size);
-    height: var(--icon-size);
-}
-
 .editBtn{
   display: block;
+}
+
+.navThumbnail{
+  display: block;
+  float: left;
+  margin-left: 10%;
+
+}
+
+.NavButtons{
+  width: var(--icon-size);
+  height: var(--icon-size);
+}
+
+.NavLabel{
+  display: block;
+  float: left;
   position: absolute;
-  bottom: 50%;
-  right: -5%;
+  top: 35px;
+  left: 40px;
 }
 
 #WorkoutsBtn{
     margin-left: 10%;
 }
 
-#SearchBtn{
+#SearchBtn, #ContactsBtn, #SettingsBtn{
     margin-left: 15%;
 }
 
-#ContactsBtn{
-    margin-left: 15%;
+.browseLabel{
+  margin-left: 22%;
 }
 
-#SettingsBtn{
-    margin-left: 15%;
+.clientsLabel{
+  margin-left: 45%;
+}
+
+.profileLabel{
+  margin-left: 67%;
 }
 
 .text{

@@ -49,9 +49,22 @@
 
 .kenzo-fixed{
   position: fixed;
-  top: 150px;
+  top: 100px;
   right: 5px;
   z-index: 100;
+}
+
+.filterBtns{
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 187.5px;
+  font-family: "SF Pro Regular", serif;
+  --border-radius: var(--border-radius);
+}
+
+#exerciseBtn{
+  opacity:0.3;
 }
 
 .footer{
@@ -63,27 +76,52 @@
   //margin-bottom: 20px;
 }
 
-.NavButtons{
+.navThumbnail{
   display: block;
   float: left;
-  margin-right: auto;
+  margin-left: 10%;
+
+}
+
+.NavButtons{
   width: var(--icon-size);
   height: var(--icon-size);
+}
+
+.NavLabel{
+  display: block;
+  float: left;
+  position: absolute;
+  top: 35px;
+  left: 40px;
 }
 
 #WorkoutsBtn{
   margin-left: 10%;
 }
 
-#SearchBtn{
+#SearchBtn, #ContactsBtn, #SettingsBtn{
   margin-left: 15%;
 }
 
-#ContactsBtn{
-  margin-left: 15%;
+.browseLabel{
+  margin-left: 22%;
 }
 
-#SettingsBtn{
-  margin-left: 15%;
+.clientsLabel{
+  margin-left: 45%;
 }
 
+.profileLabel{
+  margin-left: 67%;
+}
+
+.workoutScroll{
+  display: block;
+  float: left;
+}
+
+.exerciseScroll{
+  display: block;
+  float: left;
+}
