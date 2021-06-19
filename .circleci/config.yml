@@ -12,6 +12,7 @@ jobs:
       - run:
           name: list directory
           command: |
+            cd nest-back
             ls
       - run:
           name: Install Node Version Manager
