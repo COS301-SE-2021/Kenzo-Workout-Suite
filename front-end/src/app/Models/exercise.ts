@@ -1,88 +1,90 @@
+import {KenzoTag} from "./kenzo-tag";
+
 export class Exercise {
 
-  private _title:String;
-  private _description:String;
-  private _repRange:String;
-  private _sets:Number;
-  private _Posedescription:String;
-  private _restPeriod:Number; //seconds
-  private _difficulty:String;
-  private _duratime:Number; //seconds
+  private _title:string;
+  private _description:string;
+  private _repRange:string;
+  private _sets:number;
+  private _Posedescription:string;
+  private _restPeriod:number; //seconds
+  private _tags:KenzoTag[];
+  private _duratime:number; //seconds
 
 
-  constructor(title: String, description: String, repRange: String, sets: Number, Posedescription: String, restPeriod: Number, difficulty: String, duratime: Number) {
+  constructor(title: string, description: string, repRange: string, sets: number, Posedescription: string, restPeriod: number, tags: KenzoTag[], duratime: number) {
     this._title = title;
     this._description = description;
     this._repRange = repRange;
     this._sets = sets;
     this._Posedescription = Posedescription;
     this._restPeriod = restPeriod;
-    this._difficulty = difficulty;
+    this._tags = tags;
     this._duratime = duratime;
   }
 
 
-  get title(): String {
+  get title(): string {
     return this._title;
   }
 
-  set title(value: String) {
+  set title(value: string) {
     this._title = value;
   }
 
-  get description(): String {
+  get description(): string {
     return this._description;
   }
 
-  set description(value: String) {
+  set description(value: string) {
     this._description = value;
   }
 
-  get repRange(): String {
+  get repRange(): string {
     return this._repRange;
   }
 
-  set repRange(value: String) {
+  set repRange(value: string) {
     this._repRange = value;
   }
 
-  get sets(): Number {
+  get sets(): number {
     return this._sets;
   }
 
-  set sets(value: Number) {
+  set sets(value: number) {
     this._sets = value;
   }
 
-  get Posedescription(): String {
+  get Posedescription(): string {
     return this._Posedescription;
   }
 
-  set Posedescription(value: String) {
+  set Posedescription(value: string) {
     this._Posedescription = value;
   }
 
-  get restPeriod(): Number {
+  get restPeriod(): number {
     return this._restPeriod;
   }
 
-  set restPeriod(value: Number) {
+  set restPeriod(value: number) {
     this._restPeriod = value;
   }
 
-  get difficulty(): String {
-    return this._difficulty;
+  get tags(): KenzoTag[] {
+    return this._tags;
   }
 
-  set difficulty(value: String) {
-    this._difficulty = value;
+  set tags(value: KenzoTag[]) {
+    this._tags = value;
   }
 
-  get duratime(): Number {
+  get duratime(): number {
     return this._duratime;
   }
 
-  set duratime(value: Number) {
+  set duratime(value: number) {
     this._duratime = value;
   }
 }

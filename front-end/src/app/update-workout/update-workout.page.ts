@@ -45,7 +45,14 @@ export class UpdateWorkoutPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async submitCreateRequest() {
-    let new_workout = new Workout(this.title, this.description, this.diff);
+    let selected:KenzoTag[] = new Array();
+    for (let i = 0; i < this.tags.length; i++) {
+      if(this.tags[i].selected){
+        selected.push(this.tags[i]);
+      }
+    }
+
+    let new_workout = new Workout(this.title, this.description, selected);
     let status = await this.workoutService.attemptSubmitWorkout(new_workout);
 
     if (status < 400) {

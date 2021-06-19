@@ -5,6 +5,7 @@ import {Router} from "@angular/router";
 import {AlertController} from "@ionic/angular";
 import { Storage } from "@ionic/storage";
 import {first} from "rxjs/operators";
+import {root} from "rxjs/internal-compatibility";
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,7 @@ export class UserService {
    * @param value
    */
   async addToken(value:any): Promise<void>{
+    root.auth = value;
     await this.storage.set("Token", JSON.stringify(value));
   }
 
