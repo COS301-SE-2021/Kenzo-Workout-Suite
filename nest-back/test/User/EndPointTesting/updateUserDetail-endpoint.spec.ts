@@ -1,7 +1,7 @@
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
-import {UserModule} from '../../../src/user/user.module'
-import { UserService} from "../../../src/user/user.service";
+import {UserModule} from '../../../src/User/user.module'
+import { UserService} from "../../../src/User/user.service";
 import { INestApplication } from '@nestjs/common';
 import {ActualPrisma, Context, MockContext} from "../../../context";
 import {JwtService} from "@nestjs/jwt";
@@ -11,7 +11,7 @@ let ctx: Context
 let userServ: UserService
 let Jwt : JwtService
 
-describe('End point testing of the user subsystem', () => {
+describe('End point testing of the User subsystem', () => {
     let app: INestApplication;
     let userService = { findAll: () => ['test'] };
 
@@ -53,7 +53,7 @@ describe('End point testing of the user subsystem', () => {
         const accesstoken= response.access_token
 
         return request(app.getHttpServer())
-            .put('/user/updateUserDetail')
+            .put('/User/updateUserDetail')
             .set("Authorization","Bearer " + accesstoken)
             .send({
                 "firstName" : "updatedFirstName",
@@ -83,7 +83,7 @@ describe('End point testing of the user subsystem', () => {
         const accesstoken= "invalidaccesstoken"
 
         return request(app.getHttpServer())
-            .put('/user/updateUserDetail')
+            .put('/User/updateUserDetail')
             .set("Authorization","Bearer " + accesstoken)
             .send({
                 "firstName" : "updatedFirstName",
@@ -113,7 +113,7 @@ describe('End point testing of the user subsystem', () => {
         const accesstoken= response.access_token
 
         return request(app.getHttpServer())
-            .put('/user/updateUserDetail')
+            .put('/User/updateUserDetail')
             .set("Authorization","Bearer " + accesstoken)
             .send({
                 "firstName" : "updatedFirstName",

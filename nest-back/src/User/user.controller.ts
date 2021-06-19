@@ -28,12 +28,12 @@ export class UserController {
      * @param user User that is to be signed up
      *
      * @throws PreconditionFailedException if:
-     *                          -Empty/null user object is passed into the function
+     *                          -Empty/null User object is passed into the function
      *                          -Email address that does not conform to the email address standard is passed in
      *                          -Password that does not conform to the password standard is passed in (atleast 8 characters consisting of one lower case, one upper case, one number and one special character)
      *
      *@throws BadRequestException if:
-     *                          -A user with the passed in Users email already exists in the database.
+     *                          -A User with the passed in Users email already exists in the database.
      *
      * @return Promise This promise consists the JWT access token
      * @author Zelealem Tesema
@@ -51,7 +51,7 @@ export class UserController {
         description: 'Invalid email address or password.'
     })
     @ApiInternalServerErrorResponse({
-        description: 'Could not create user due to server.'
+        description: 'Could not create User due to server.'
     })
     @ApiBody({
         type:signUpDTO
@@ -69,8 +69,8 @@ export class UserController {
      * @param req This is the request that has the Authorisation bearer token.
      *
      * @throws NotFoundException if:
-     *                          -An empty user object is passed into the function
-     *                          -A user object without the field 'userId' is passed into the function
+     *                          -An empty User object is passed into the function
+     *                          -A User object without the field 'userId' is passed into the function
      *
      * @return Promise that consists of the access token
      * @author Zelealem Tesema
@@ -121,14 +121,14 @@ export class UserController {
     /**
      * User Controller- getUserDetails
      *
-     * @param req This consists of the userID of the user whose details are being resolved.
+     * @param req This consists of the userID of the User whose details are being resolved.
      *
      * @throws BadRequestException if:
-     *                             -An empty or null user ID is passed into the function
-     *                             -The database fails to retrieve the user details
+     *                             -An empty or null User ID is passed into the function
+     *                             -The database fails to retrieve the User details
      *
      *@throws NotFoundException if:
-     *                          -No user with such UUID exists.
+     *                          -No User with such UUID exists.
      * @author Zelealem Tesema
      */
     @UseGuards(JwtAuthGuard)
@@ -149,15 +149,15 @@ export class UserController {
     /**
      * User Controller- updateUserDetail
      *
-     * @param req   This is the request object that consists of the UUID of the user whose details need to be updated
-     * @param firstName This is the first name of the user whose details need to be updated.
-     * @param lastName  This is the last name of the user whose details need to be updated.
-     * @param dateOfBirth This is the updated date of birth of the user whose details need to be updated.
+     * @param req   This is the request object that consists of the UUID of the User whose details need to be updated
+     * @param firstName This is the first name of the User whose details need to be updated.
+     * @param lastName  This is the last name of the User whose details need to be updated.
+     * @param dateOfBirth This is the updated date of birth of the User whose details need to be updated.
      *
      * @throws BadRequestException if:
      *                          -Null values are passed in for the firstName, LastName or userID
      *                          -Empty values are passed in for the firstName, LastName or userID
-     *                          -The user details could not be updated
+     *                          -The User details could not be updated
      *
      * @author Zelealem Tesema
      *
@@ -169,13 +169,13 @@ export class UserController {
         description: 'User details successfully retrieved'
     })
     @ApiUnauthorizedResponse({
-        description: 'Unauthorized user'
+        description: 'Unauthorized User'
     })
     @ApiBody({
         type:updateUserDTO
     })
     @ApiInternalServerErrorResponse({
-        description: 'Could not create user due to server.'
+        description: 'Could not create User due to server.'
     })
     updateUserDetail(@Request() req,
                      @Body('firstName') firstName: string,

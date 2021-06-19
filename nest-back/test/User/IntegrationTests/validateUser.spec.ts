@@ -45,7 +45,7 @@ test('Invalid details passed in, should throw not found exception', async () => 
 })
 
 
-test('Valid details passed in, user should be validated and user object without password should be returned', async () => {
+test('Valid details passed in, User should be validated and User object without password should be returned', async () => {
 
     const myUser={
         userId:"1234567",

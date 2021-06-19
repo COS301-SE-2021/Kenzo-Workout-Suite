@@ -23,7 +23,7 @@ describe('SignInPage', () => {
   });
 });
 
-describe('Given a correct email and password. A user should ', () => {
+describe('Given a correct email and password. A User should ', () => {
 
 
 });

@@ -20,10 +20,10 @@ beforeEach(() => {
     ctx = (mockCtx as unknown) as Context
 })
 
-test('Null user passed into login, should throw Not found exception.', async () => {
+test('Null User passed into login, should throw Not found exception.', async () => {
 
     let user;
-    await expect(userService.login(user)).rejects.toThrow("Invalid user object passed in.")
+    await expect(userService.login(user)).rejects.toThrow("Invalid User object passed in.")
 })
 
 
@@ -40,7 +40,7 @@ test('User with empty userId passed in, should throw Not found exception', async
 })
 
 
-test('Valid user passed in, should generate valid JWT token and return message with JWT token', async () => {
+test('Valid User passed in, should generate valid JWT token and return message with JWT token', async () => {
 
     spyOn(Jwt,"sign").and.returnValue("signedValue");
 

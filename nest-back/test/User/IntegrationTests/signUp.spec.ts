@@ -173,7 +173,7 @@ test('Invalid password passed in, should throw PreconditionFailedException', asy
     await expect(userService.signUp(myUser,ctx)).rejects.toThrow("Invalid password")
 })
 
-test('Valid details passed in, should create an entry of a user with details in the database.', async () => {
+test('Valid details passed in, should create an entry of a User with details in the database.', async () => {
 
     let userUUID=uuidv4();
 

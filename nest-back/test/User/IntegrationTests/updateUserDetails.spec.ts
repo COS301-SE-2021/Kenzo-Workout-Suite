@@ -33,12 +33,12 @@ test('Invalid emails passed in, should throw NotFoundException', async () => {
 
     let date;
 
-   await expect(userService.updateUserDetails("updatedTest","updatedLast",date,"12345",ctx)).rejects.toThrow("Could not update user")
+   await expect(userService.updateUserDetails("updatedTest","updatedLast",date,"12345",ctx)).rejects.toThrow("Could not update User")
 
 })
 
 
-test('Valid details passed in, user details should be updated and should reflect update in the database', async () => {
+test('Valid details passed in, User details should be updated and should reflect update in the database', async () => {
 
     const myUser={
         userId:"123456",

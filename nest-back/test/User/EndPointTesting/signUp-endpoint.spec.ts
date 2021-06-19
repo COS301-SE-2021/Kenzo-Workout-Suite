@@ -1,14 +1,14 @@
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
-import {UserModule} from '../../../src/user/user.module'
-import { UserService} from "../../../src/user/user.service";
+import {UserModule} from '../../../src/User/user.module'
+import { UserService} from "../../../src/User/user.service";
 import { INestApplication } from '@nestjs/common';
 import {ActualPrisma, Context, MockContext} from "../../../context";
 
 let mockCtx: MockContext
 let ctx: Context
 
-describe('End point testing of the user subsystem', () => {
+describe('End point testing of the User subsystem', () => {
     let app: INestApplication;
     let userService = { findAll: () => ['test'] };
 
@@ -28,7 +28,7 @@ describe('End point testing of the user subsystem', () => {
 
     it(`Testing signUp with valid details, should return status 201`, async () => {
         return request(app.getHttpServer())
-            .post('/user/signUp')
+            .post('/User/signUp')
             .send({
                 "user":{
                     "firstName": "Zelu",
@@ -43,7 +43,7 @@ describe('End point testing of the user subsystem', () => {
 
     it(`Testing signup with invalid email, should return status 412`, async () => {
         return request(app.getHttpServer())
-            .post('/user/signUp')
+            .post('/User/signUp')
             .send({
                 "user":{
                     "firstName": "Zelu",
@@ -58,7 +58,7 @@ describe('End point testing of the user subsystem', () => {
 
     it(`Testing signup with Invalid password, should return status 412`, async () => {
         return request(app.getHttpServer())
-            .post('/user/signUp')
+            .post('/User/signUp')
             .send({
                 "user":{
                     "firstName": "Zelu",
@@ -84,7 +84,7 @@ describe('End point testing of the user subsystem', () => {
         })
 
         return request(app.getHttpServer())
-            .post('/user/signUp')
+            .post('/User/signUp')
             .send({
                 "user":{
                     "firstName": "Zelu",

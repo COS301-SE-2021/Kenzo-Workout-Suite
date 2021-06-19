@@ -23,7 +23,7 @@ beforeEach(async () => {
     await ctx.prisma.user.deleteMany();
 })
 
-test('Test, Valid user returned by mock prisma service', async () => {
+test('Test, Valid User returned by mock prisma service', async () => {
     const createdUser =await ctx.prisma.user.create({
         data:{
             email: "test@gmail.com",
@@ -80,6 +80,6 @@ test('User that is not in the database is attempted to be updated, should throw 
 
     const userId=uuidv4;
 
-    await expect(userService.findUserByUUID(userId,ctx)).rejects.toThrow("No user with such UUID")
+    await expect(userService.findUserByUUID(userId,ctx)).rejects.toThrow("No User with such UUID")
 
 })
