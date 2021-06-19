@@ -16,29 +16,6 @@ beforeEach(() => {
     ctx = (mockCtx as unknown) as Context
 })
 
-test('Valid exercise passed in, should receive successful message', async () => {
-    const Exercise = {
-        exercise:uuidExercise,
-        title:"test",
-        description:"test",
-        repRange:"test",
-        sets:4,
-        Posedescription:"test",
-        restPeriod:2,
-        tags: [{
-            label:'test',
-            textColour:'test',
-            backgroundColour:'test'
-        }],
-        duratime:2,
-        workouts: null
-    }
-    mockCtx.prisma.exercise.delete.mockResolvedValue(Exercise)
-
-    const response=await workoutService.deleteExercise(uuidExercise,ctx)
-    expect(response).toBe("Exercise Deleted.");
-})
-
 test('Null exercise ID passed in, should throw PreconditionFailedException', async () => {
     let exercise;
     mockCtx.prisma.exercise.delete.mockResolvedValue(exercise)

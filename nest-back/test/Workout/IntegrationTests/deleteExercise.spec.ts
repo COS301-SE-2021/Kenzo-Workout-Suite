@@ -27,11 +27,6 @@ beforeEach(async () => {
     });
 })
 
-test('Valid exercise passed in, should receive successful message', async () => {
-    const response=await workoutService.deleteExercise(uuidExercise,ctx)
-    expect(response).toStrictEqual("Exercise Deleted.");
-})
-
 test('Null exercise ID passed in, should throw PreconditionFailedException', async () => {
     await expect(workoutService.deleteExercise('',ctx)).rejects.toThrow("Parameter can not be left empty.")
 })
