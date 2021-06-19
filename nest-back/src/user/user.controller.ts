@@ -1,8 +1,8 @@
 import {Body, Controller, Get, Post, Put, UseGuards, Request, Req, HttpCode} from '@nestjs/common';
 import {UserService} from "./user.service";
 import { AuthGuard } from '@nestjs/passport';
-import {LocalAuthGuard} from "./local-auth.guard";
-import {JwtAuthGuard} from "./jwt-auth.guard";
+import {LocalAuthGuard} from "./AuthGuards/local-auth.guard";
+import {JwtAuthGuard} from "./AuthGuards/jwt-auth.guard";
 import {User} from "@prisma/client";
 import {ActualPrisma} from "../../context";
 import {
@@ -138,7 +138,7 @@ export class UserController {
         description: 'Login successful.'
     })
     @ApiNotFoundResponse({
-        description: 'Invalid Email or Password'
+        description: 'Invalid User UUID passed in'
     })
     @HttpCode(200)
     getUserData(@Request() req){

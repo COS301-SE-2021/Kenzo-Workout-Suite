@@ -30,7 +30,7 @@ test('Null user passed to signUp, Should throw PreconditionFailedException', asy
 
 })
 
-test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
+test('signUp with invalid email, validate email returns fault, therefore PreconditionFailedException.', async () => {
     const userUUID=uuidv4();
     const myUser={
         userId:userUUID,
@@ -48,7 +48,7 @@ test('Null user passed to signUp, Should throw PreconditionFailedException', asy
 
 })
 
-test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
+test('signUp validateEmail return true and validatePassword returns false, therefore preconditionFailedException should be thrown', async () => {
     const userUUID=uuidv4();
     const myUser={
         userId:userUUID,
@@ -67,7 +67,7 @@ test('Null user passed to signUp, Should throw PreconditionFailedException', asy
 })
 
 
-test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
+test('Valid email and password, prisma count returns 1 therefore should throw BadRequestException ', async () => {
     const userUUID=uuidv4();
     const myUser={
         userId:userUUID,
@@ -92,7 +92,7 @@ test('Null user passed to signUp, Should throw PreconditionFailedException', asy
 })
 
 
-test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
+test('Valid details, prisma returns null therefore should throw BadRequest exception', async () => {
     const userUUID=uuidv4();
     const myUser={
         userId:userUUID,
@@ -119,7 +119,7 @@ test('Null user passed to signUp, Should throw PreconditionFailedException', asy
 
 })
 
-test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
+test('Valid details passed in, sign up should succeed and valid response message should be returned', async () => {
     const userUUID=uuidv4();
     const myUser={
         userId:userUUID,

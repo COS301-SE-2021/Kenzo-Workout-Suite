@@ -31,6 +31,7 @@ export class UserService {
             throw new NotFoundException("Invalid Email or Password")
         }
 
+
         const user = await ctx.prisma.user.findUnique({
             where: {
                 email: email
@@ -108,8 +109,6 @@ export class UserService {
      *
      */
     async signUp(user:User,ctx: Context) : Promise<any>{
-
-
         if (user==null)
         {
             throw new PreconditionFailedException("Invalid user object")
@@ -154,6 +153,8 @@ export class UserService {
         if (!createdUser) {
             throw new BadRequestException("Could not create User")
         }
+
+
 
         return this.login(createdUser);
     }
@@ -225,25 +226,33 @@ export class UserService {
             throw new BadRequestException("Null values can not be passed in for firstName, lastName or userId")
         }
 
-        const updatedUser=await ctx.prisma.user.update({
-        where:{
-        userId: userId,
-        },
-        data:{
-            firstName:firstName,
-            lastName:lastName,
-            dateOfBirth:dateOfBirth
-        },
-        })
+        try {
+            const updatedUser=await ctx.prisma.user.update({
+                where:{
+                    userId: userId,
+                },
+                data:{
+                    firstName:firstName,
+                    lastName:lastName,
+                    dateOfBirth:dateOfBirth
+                },
+            })
 
-        if (updatedUser===null)
+            if (updatedUser===null)
+            {
+                throw new BadRequestException("Could not update user")
+            }
+
+            return {
+                message: 'User data updated'
+            }
+        }
+
+        catch (err)
         {
             throw new BadRequestException("Could not update user")
         }
 
-        return {
-            message: 'User data updated'
-        }
     }
 
     async googleLogin(req) {

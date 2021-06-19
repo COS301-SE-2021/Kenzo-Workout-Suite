@@ -8,10 +8,6 @@ import {
     userType,
     Prisma
 } from '@prisma/client';
-import {BadRequestException} from "@nestjs/common";
-import {create} from "domain";
-
-
 let mockCtx: MockContext
 let ctx: Context
 
@@ -28,7 +24,7 @@ beforeEach(async () => {
     await ctx.prisma.user.deleteMany();
 })
 
-test('Invalid email passed in, should throw PreconditionFailedException', async () => {
+test('Valid details passed into login, should return access token of length 128', async () => {
 
   const theUUID=uuidv4;
 

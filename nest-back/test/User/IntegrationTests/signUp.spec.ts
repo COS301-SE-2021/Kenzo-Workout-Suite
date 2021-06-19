@@ -19,6 +19,10 @@ let userService: UserService
 let Jwt : JwtService
 
 beforeEach(async () => {
+    Jwt=new JwtService({
+        secret: process.env.JWT_SECRET,
+        signOptions: { expiresIn: process.env.EXPIRY_TIME },
+    })
     userService=new UserService(Jwt)
     ctx = ActualPrisma()
     await ctx.prisma.user.deleteMany();
@@ -169,19 +173,29 @@ test('Invalid password passed in, should throw PreconditionFailedException', asy
     await expect(userService.signUp(myUser,ctx)).rejects.toThrow("Invalid password")
 })
 
-// test('Invalid password passed in, should throw PreconditionFailedException', async () => {
-//
-//     let userUUID=uuidv4();
-//
-//     const myUser={
-//         userId:userUUID,
-//         email: "test@gmail.com",
-//         firstName: "test",
-//         lastName: "tester",
-//         password:"thePassword2000#",
-//         userType: userType.PLANNER,
-//         dateOfBirth: null
-//     }
-//
-//     await userService.signUp(myUser,ctx);
-// })
+test('Valid details passed in, should create an entry of a user with details in the database.', async () => {
+
+    let userUUID=uuidv4();
+
+    const myUser={
+        userId:"",
+        email: "test@gmail.com",
+        firstName: "test",
+        lastName: "tester",
+        password:"thePassword2000#",
+        userType: userType.PLANNER,
+        dateOfBirth: null
+    }
+
+    const response=await userService.signUp(myUser,ctx);
+
+    const dbUser=await ctx.prisma.user.findUnique({
+        where: {
+            email: "test@gmail.com"
+        },
+    });
+
+    expect(dbUser).toBeDefined()
+    expect(response.access_token.length).toBe(192)
+    expect(typeof response.access_token).toBe("string")
+})

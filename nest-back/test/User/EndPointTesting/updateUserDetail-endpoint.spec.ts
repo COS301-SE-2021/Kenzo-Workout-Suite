@@ -34,7 +34,7 @@ describe('End point testing of the user subsystem', () => {
         await ActualPrisma().prisma.user.deleteMany();
     })
 
-    it(`Testing updateUserDetail`, async () => {
+    it(`UpdateUserDetail endpoint with valid data, should return 200`, async () => {
 
         await ActualPrisma().prisma.user.deleteMany();
 
@@ -64,7 +64,7 @@ describe('End point testing of the user subsystem', () => {
 
     });
 
-    it(`Testing updateUserDetail`, async () => {
+    it(`Testing updateUserDetail with invalid data, should return 401`, async () => {
 
         await ActualPrisma().prisma.user.deleteMany();
 
@@ -94,7 +94,7 @@ describe('End point testing of the user subsystem', () => {
 
     });
 
-    it(`Testing updateUserDetail`, async () => {
+    it(`Testing update userdetail endpoint with valid data including a non-null date, should return status 200`, async () => {
 
         await ActualPrisma().prisma.user.deleteMany();
 

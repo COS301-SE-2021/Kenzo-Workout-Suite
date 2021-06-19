@@ -22,11 +22,11 @@ beforeEach(() => {
     ctx = (mockCtx as unknown) as Context
 })
 
-test('Test, Null values passed into findUserByUUID', async () => {
+test('Test, Null values passed into findUserByUUID should throw BadRequestException', async () => {
     await expect(userService.findUserByUUID("",ctx)).rejects.toThrow("Null values cannot be passed in for userId")
 })
 
-test('Test, Null user returned by mock prisma client', async () => {
+test('Test, Null user returned by mock prisma client should throw not found exception', async () => {
 
     const userUUID=uuidv4();
     mockCtx.prisma.user.findUnique.mockResolvedValue(null)
@@ -34,7 +34,7 @@ test('Test, Null user returned by mock prisma client', async () => {
 
 })
 
-test('Test, Valid user returned by mock prisma service', async () => {
+test('Test, Valid user returned by mock prisma service should return the user details without the password', async () => {
 
     const userUUID=uuidv4();
     const secondUUID=uuidv4();

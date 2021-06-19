@@ -34,7 +34,7 @@ describe('End point testing of the user subsystem', () => {
         await ActualPrisma().prisma.user.deleteMany();
     })
 
-    it(`Testing updateUserDetail`, async () => {
+    it(`Testing getUserDetail end point with valid data and authorisation, should return status 200`, async () => {
 
         await ActualPrisma().prisma.user.deleteMany();
 
@@ -60,7 +60,7 @@ describe('End point testing of the user subsystem', () => {
 
     });
 
-    it(`Testing updateUserDetail`, async () => {
+    it(`Testing getUserDetail end point with valid data and invalid authorisation, should return status 401`, async () => {
 
         await ActualPrisma().prisma.user.deleteMany();
         const accesstoken= "invalid token"

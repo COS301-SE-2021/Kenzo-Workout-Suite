@@ -26,7 +26,7 @@ describe('End point testing of the user subsystem', () => {
         await ActualPrisma().prisma.user.deleteMany();
     })
 
-    it(`Testing signUp`, async () => {
+    it(`Testing signUp with valid details, should return status 201`, async () => {
         return request(app.getHttpServer())
             .post('/user/signUp')
             .send({
@@ -41,7 +41,7 @@ describe('End point testing of the user subsystem', () => {
             .expect(201)
     });
 
-    it(`Testing login with Invalid email`, async () => {
+    it(`Testing signup with invalid email, should return status 412`, async () => {
         return request(app.getHttpServer())
             .post('/user/signUp')
             .send({
@@ -56,7 +56,7 @@ describe('End point testing of the user subsystem', () => {
             .expect(412)
     });
 
-    it(`Testing login with Invalid password`, async () => {
+    it(`Testing signup with Invalid password, should return status 412`, async () => {
         return request(app.getHttpServer())
             .post('/user/signUp')
             .send({
@@ -71,7 +71,7 @@ describe('End point testing of the user subsystem', () => {
             .expect(412)
     });
 
-    it(`Testing login with Invalid password`, async () => {
+    it(`Testing signup with user email that already exists, should return 400`, async () => {
 
         await ActualPrisma().prisma.user.create({
             data:{

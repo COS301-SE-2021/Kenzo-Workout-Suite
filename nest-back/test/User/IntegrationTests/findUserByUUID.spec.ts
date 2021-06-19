@@ -54,7 +54,7 @@ test('Test, Valid user returned by mock prisma service', async () => {
 })
 
 
-test('Test, Valid user returned by mock prisma service', async () => {
+test('User that is not in the database is attempted to be updated, should throw preconditionfailed exception', async () => {
     const createdUser =await ctx.prisma.user.create({
         data:{
             email: "test@gmail.com",

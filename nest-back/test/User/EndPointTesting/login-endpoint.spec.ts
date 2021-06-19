@@ -34,7 +34,7 @@ describe('End point testing of the user subsystem', () => {
         await ActualPrisma().prisma.user.deleteMany();
     })
 
-    it(`Testing updateUserDetail`, async () => {
+    it(`Testing login endpoint with valid data, should return status 404`, async () => {
 
         const user= await ActualPrisma().prisma.user.create({
             data:{
@@ -51,7 +51,7 @@ describe('End point testing of the user subsystem', () => {
         return request(app.getHttpServer())
             .post('/user/login')
             .send({
-                "username": "zelu200@gmail.com",
+                "username": "zelu20@gmail.com",
                 "password": "Zelu2000#"
             })
             .expect(404)
