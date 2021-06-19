@@ -22,10 +22,17 @@ import {
     ApiBody, ApiConflictResponse,
     ApiInternalServerErrorResponse, ApiNotAcceptableResponse,
     ApiNotFoundResponse,
-    ApiOkResponse
+    ApiOkResponse, ApiPreconditionFailedResponse
 } from "@nestjs/swagger";
 
-import {CreateExerciseDTO, CreateWorkoutDTO, DeleteWorkoutDTO, UpdateWorkoutDTO, createTagDTO} from "./workout.model";
+import {
+    CreateExerciseDTO,
+    CreateWorkoutDTO,
+    DeleteWorkoutDTO,
+    UpdateWorkoutDTO,
+    createTagDTO,
+    deleteExerciseDTO, updateExerciseDTO
+} from "./workout.model";
 import {JwtAuthGuard} from "../user/jwt-auth.guard";
 
 @Controller('workout')
@@ -114,7 +121,8 @@ export class WorkoutController {
         return this.workoutService.getExerciseByID(id,ActualPrisma());
     }
 
-    @Get('getWorkoutByPlanner/:id')
+    @UseGuards(JwtAuthGuard)
+    @Get('getWorkoutByPlanner')
     @ApiOkResponse({
         description: 'A workout object.'
     })
@@ -124,13 +132,32 @@ export class WorkoutController {
     @ApiInternalServerErrorResponse({
         description: 'Internal server error.'
     })
+    @ApiBearerAuth()
     getWorkoutByPlanner(
-        @Param('id') id: string,
+        @Request() req
     ) {
-        return this.workoutService.getWorkoutByPlanner(id,ActualPrisma());
+        return this.workoutService.getWorkoutByPlanner(req.user.userId,ActualPrisma());
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Get('getExercisesByPlanner')
+    @ApiOkResponse({
+        description: 'A exercise object.'
+    })
+    @ApiNotFoundResponse({
+        description: 'No exercises were found in the database.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    @ApiBearerAuth()
+    getExercisesPlanner(
+        @Request() req
+    ) {
+        return this.workoutService.getExercisesByPlanner(req.user.userId,ActualPrisma());
+    }
 
+    @UseGuards(JwtAuthGuard)
     @Post('createExercise')
     @ApiOkResponse({
         description: 'Exercise Created'
@@ -142,6 +169,7 @@ export class WorkoutController {
         description: 'Internal server error.'
     })
     @ApiBody({type: CreateExerciseDTO})
+    @ApiBearerAuth()
     createExercise(
         @Body('title') title: string,
         @Body('description') description: string,
@@ -151,10 +179,62 @@ export class WorkoutController {
         @Body('restPeriod') restPeriod: number,
         @Body('tags') tags: Tag[],
         @Body('duratime') duration: number,
+        @Request() req
     ) {
-        return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,tags,duration, this.ctx);
+        return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,tags,duration,req.user.userId  ,this.ctx);
     }
-    //TODO:Use req and auth for userID [consult Zelu]
+
+    @UseGuards(JwtAuthGuard)
+    @Put('updateExercise')
+    @ApiBody({type: updateExerciseDTO})
+    @ApiOkResponse({
+        description: 'Exercise updated.'
+    })
+    @ApiPreconditionFailedResponse({
+        description: 'Invalid exercise object passed in.'
+    })
+    @ApiNotFoundResponse({
+        description: 'Exercise with provided ID does not exist.'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    @ApiBearerAuth()
+    updateExercise(
+        @Body('exercise') exercise: string,
+        @Body('title') title: string,
+        @Body('description') description: string,
+        @Body('repRange') repRange: string,
+        @Body('sets') sets: number,
+        @Body('Posedescription') Posedescription: string,
+        @Body('restPeriod') restPeriod: number,
+        @Body('tags') tags: Tag[],
+        @Body('duratime') duratime: number,
+        @Request() req
+    ) {
+        return this.workoutService.updateExercise(exercise,title,description,repRange,sets,Posedescription,restPeriod,tags,duratime, req.user.userId,ActualPrisma());
+    }
+
+    @Delete("deleteExercise")
+    @ApiBody({type: deleteExerciseDTO})
+    @ApiOkResponse({
+        description: 'Exercise Deleted.'
+    })
+    @ApiPreconditionFailedResponse({
+        description: 'Parameter can not be left empty.'
+    })
+    @ApiNotFoundResponse({
+        description: 'Exercise with provided ID does not exist'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    async deleteExercise(
+        @Body('exercise') exercise: string,
+    ){
+        return this.workoutService.deleteExercise(exercise,ActualPrisma());
+    }
+
     @UseGuards(JwtAuthGuard)
     @Post('createWorkout')
     @ApiBody({type: CreateWorkoutDTO})
@@ -192,6 +272,7 @@ export class WorkoutController {
     @ApiInternalServerErrorResponse({
         description: 'Internal server error.'
     })
+    @ApiBearerAuth()
     async updateWorkout(
         @Body('workoutID') workoutID: string,
         @Body('workoutTitle') workoutTitle: string,
@@ -227,6 +308,9 @@ export class WorkoutController {
     })
     @ApiNotAcceptableResponse({
         description: 'Profanity contained in label title.'
+    })
+    @ApiPreconditionFailedResponse({
+        description: 'Parameter can not be left empty.'
     })
     @ApiConflictResponse({
         description: 'Label already exists in database.'

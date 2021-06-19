@@ -1,9 +1,6 @@
 import { MockContext, Context, createMockContext } from "../../../context";
 import {WorkoutService} from "../../../src/Workout/workout.service";
 import {v4 as uuidv4 } from 'uuid';
-import {
-    Difficulty
-} from '@prisma/client';
 import {PrismaClient} from "@prisma/client/scripts/default-index";
 
 let mockCtx: MockContext
@@ -27,7 +24,7 @@ test('Should receive valid information about exercise with corresponding title',
         sets:4,
         Posedescription:"TestPDesc",
         restPeriod:2,
-        difficulty:Difficulty.EASY,
+        tags: [],
         duratime:2,
         workouts: null
     }]

@@ -17,7 +17,7 @@ export class CreateExerciseDTO{
     @ApiProperty({type: Number, description: 'number of sets'})
     sets: number;
     @ApiProperty({type: String, description: 'description for pose'})
-    poseDescription: string;
+    Posedescription: string;
     @ApiProperty({type: Number, description: 'rest period'})
     restPeriod: number;
     @ApiProperty({type: Array, description: 'Tags for the workout.'})
@@ -45,9 +45,6 @@ export class CreateWorkoutDTO{
     exercises: Exercise[];
     @ApiProperty({type: Array, description: 'Tags for the workout.'})
     tags: Tag[];
-    @ApiProperty({type: String, description: 'ID of the planner who created the workout.'})
-    planner_ID: string;
-
 }
 
 export class UpdateWorkoutDTO{
@@ -61,8 +58,6 @@ export class UpdateWorkoutDTO{
     exercises: Exercise[];
     @ApiProperty({type: Array, description: 'Tags for the workout.'})
     tags: Tag[];
-    @ApiProperty({type: String, description: 'ID of the planner who created the workout.'})
-    planner_ID: string;
 
 }
 
@@ -70,5 +65,31 @@ export class DeleteWorkoutDTO{
     @ApiProperty({type: String, description: 'ID of Workout.'})
     workoutID: string;
 
+}
+
+export class updateExerciseDTO{
+    @ApiProperty({type: String, description: 'id of exercises'})
+    exercise: string;
+    @ApiProperty({type: String, description: 'title of exercises'})
+    title: string;
+    @ApiProperty({type: String, description: 'description of exercise'})
+    description: string;
+    @ApiProperty({type: String, description: 'rep range for exercise'})
+    repRange: string;
+    @ApiProperty({type: Number, description: 'number of sets'})
+    sets: number;
+    @ApiProperty({type: String, description: 'description for pose'})
+    Posedescription: string;
+    @ApiProperty({type: Number, description: 'rest period'})
+    restPeriod: number;
+    @ApiProperty({type: Array, description: 'Tags for the exercise.'})
+    tag: Tag[];
+    @ApiProperty({type: Number, description: 'duration of exercise'})
+    duratime: number;
+}
+
+export class deleteExerciseDTO{
+    @ApiProperty({type: String, description: 'ID of Exercise.'})
+    exercise: string;
 }
 
