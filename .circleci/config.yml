@@ -15,12 +15,6 @@ jobs:
             cd nest-back
             ls
       - run:
-          name: Install Node modules
-          command: |
-            cd nest-back
-            npm install
-
-      - run:
           name: Migrate prisma
           command: |
             cd nest-back
