@@ -15,9 +15,9 @@ jobs:
             cd nest-back
             ls
       - run:
-          name: Migrate prisma
+          name: run tests
           command: |
             cd nest-back
-            npx prisma migrate dev --name init
+            npm test
            
       - run: npm run test
