@@ -66,6 +66,7 @@ export class SignUpPage implements OnInit {
             buttons: ['OK']
           });
           await this.presentAlert(alert);
+          return new Error('User credentials are incorrect.');
         } else if (status >= 500) {
           const alert = await this.alertController.create({
             cssClass: 'kenzo-alert',
@@ -74,6 +75,7 @@ export class SignUpPage implements OnInit {
             buttons: ['Dismiss']
           });
           await this.presentAlert(alert);
+          return new Error('Server is not responding.');
         }
     }
     else {

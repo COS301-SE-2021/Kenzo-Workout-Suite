@@ -105,4 +105,11 @@ export class YourWorkoutsPage implements OnInit {
       });
   }
 
+  async goToProfile(){
+    await this.router.navigate(['/profile'])
+      .then(() => {
+        window.location.reload();
+      })
+  }
+
 }
