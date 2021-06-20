@@ -2,6 +2,7 @@ import {MockContext, Context, createMockContext, ActualPrisma} from "../../../co
 import {WorkoutService} from "../../../src/Workout/workout.service";
 import {v4 as uuidv4 } from 'uuid';
 import {PrismaClient} from "@prisma/client/scripts/default-index";
+import {Tag} from "@prisma/client";
 
 let ctx: Context
 let workoutService: WorkoutService
@@ -43,7 +44,9 @@ test('Valid exercise passed in without tags, should receive successful message',
         }
     });
 
-    const response=await workoutService.updateExercise(uuidExercise,'test','test','test',4,'test',2,[],2,uuidPlanner,ctx)
+    let emptyTag: Tag[] = [];
+
+    const response=await workoutService.updateExercise(uuidExercise,'test','test','test',4,'test',2,emptyTag,2,uuidPlanner,ctx)
     expect(response).toStrictEqual("Exercise updated.");
 })
 

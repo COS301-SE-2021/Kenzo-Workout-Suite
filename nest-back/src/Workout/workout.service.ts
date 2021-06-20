@@ -443,7 +443,7 @@ export class WorkoutService{
             if(!(Array.isArray(Exercise) && Exercise.length)){
                 throw new NotFoundException("Exercise with provided ID does not exist.");
             }
-            if(tags!= null) { //run update query with tags
+            if((Array.isArray(tags) && tags.length)) { //run update query with tags
                 await this.addNewTags(tags, ctx);
                 let tagConnection = tags.map(n => {
                     const container = {
