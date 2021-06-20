@@ -26,23 +26,7 @@ describe('End point testing of the User subsystem', () => {
         await ActualPrisma().prisma.user.deleteMany();
     })
 
-    it(`Testing signUp`, async () => {
-        return request(app.getHttpServer())
-            .post('/User/signUp')
-            .send({
-
-                "user":{
-                    "firstName": "Zelu",
-                    "lastName": "Tesema",
-                    "email": "zelu2@gmail.com",
-                    "userType":"PLANNER",
-                    "password": "Zelu2000#"
-                }
-            })
-            .expect(201)
-    });
-
-    it(`Testing login`, async () => {
+    it(`Testing signUp with valid details, should return status 201`, async () => {
         return request(app.getHttpServer())
             .post('/User/signUp')
             .send({
@@ -56,6 +40,64 @@ describe('End point testing of the User subsystem', () => {
             })
             .expect(201)
     });
+
+    it(`Testing signup with invalid email, should return status 412`, async () => {
+        return request(app.getHttpServer())
+            .post('/User/signUp')
+            .send({
+                "user":{
+                    "firstName": "Zelu",
+                    "lastName": "Tesema",
+                    "email": "zelu2gmail.com",
+                    "userType":"PLANNER",
+                    "password": "Zelu2000#"
+                }
+            })
+            .expect(412)
+    });
+
+    it(`Testing signup with Invalid password, should return status 412`, async () => {
+        return request(app.getHttpServer())
+            .post('/User/signUp')
+            .send({
+                "user":{
+                    "firstName": "Zelu",
+                    "lastName": "Tesema",
+                    "email": "zelu2@gmail.com",
+                    "userType":"PLANNER",
+                    "password": "Zelu2000"
+                }
+            })
+            .expect(412)
+    });
+
+    it(`Testing signup with user email that already exists, should return 400`, async () => {
+
+        await ActualPrisma().prisma.user.create({
+            data:{
+                "firstName": "Zelu",
+                "lastName": "Tesema",
+                "email": "zelu2@gmail.com",
+                "userType":"PLANNER",
+                "password": "Zelu2000"
+            }
+        })
+
+        return request(app.getHttpServer())
+            .post('/User/signUp')
+            .send({
+                "user":{
+                    "firstName": "Zelu",
+                    "lastName": "Tesema",
+                    "email": "zelu2@gmail.com",
+                    "userType":"PLANNER",
+                    "password": "Zelu2000#"
+                }
+            })
+            .expect(400)
+
+    });
+
 
     afterAll(async () => {
         await app.close();

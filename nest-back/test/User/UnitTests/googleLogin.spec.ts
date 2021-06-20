@@ -13,14 +13,14 @@ beforeEach(() => {
 })
 
 test('Null request passed into googleLogin function ',  async () => {
-     await expect(userService.googleLogin(null)).rejects.toThrow("No such google user")
+     await expect(userService.googleLogin(null)).rejects.toThrow("No such google User")
 })
 
-test('Request passed into googleLogin function without user object ',  async () => {
+test('Request passed into googleLogin function without User object ',  async () => {
 
     let request={
     }
-    await expect(userService.googleLogin(null)).rejects.toThrow("No such google user")
+    await expect(userService.googleLogin(null)).rejects.toThrow("No such google User")
 })
 
 

@@ -33,7 +33,8 @@ import {
     createTagDTO,
     deleteExerciseDTO, updateExerciseDTO
 } from "./workout.model";
-import {JwtAuthGuard} from "../user/jwt-auth.guard";
+import {JwtAuthGuard} from "../User/AuthGuards/jwt-auth.guard";
+
 
 @Controller('workout')
 export class WorkoutController {
@@ -209,6 +210,27 @@ export class WorkoutController {
         return this.workoutService.getExercisesByPlanner(req.user.userId,ActualPrisma());
     }
 
+    /**
+     *Workout Service - Create Exercise
+     *
+     * @param title This is the title of the exercise.
+     * @param description This is the description of the exercise.
+     * @param repRange This is the amount of reps.
+     * @param sets This is the amount of sets.
+     * @param poseDescription This is the description of the poses
+     * @param restPeriod This is the rest period of the exercise.
+     * @param tags this is an array of tags
+     * @param duratime This is the duration of the exercise.
+     * @param planner_ID This is the planner ID
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws PreconditionFailedException if:
+     *                               -Not all parameters are given.
+     * @throws NotFoundException if:
+     *                               -An exercise with provided ID does not exist.
+     * @return  Message indicating success.
+     * @author Msi Sibanyoni
+     *
+     */
     @UseGuards(JwtAuthGuard)
     @Post('createExercise')
     @ApiOkResponse({
@@ -321,6 +343,22 @@ export class WorkoutController {
         return this.workoutService.deleteExercise(exercise,ActualPrisma());
     }
 
+    /**
+     *Workout Service - Create Workout
+     *
+     * @param workoutTitle This is the string workout title
+     * @param workoutDescription This is the string workout description
+     * @param exercises This is an array of exercises
+     * @param tags This is an array of tags
+     * @param req This contains the User object of the User currently logged in [from this the string User id is retrieved]
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws PreconditionFailedException if:
+     *                               -Parameters can not be left empty.
+     *
+     * @return  Message indicating success.
+     * @author Msi Sibanyoni
+     *
+     */
     @UseGuards(JwtAuthGuard)
     @Post('createWorkout')
     @ApiBody({type: CreateWorkoutDTO})
@@ -346,6 +384,23 @@ export class WorkoutController {
 
     }
 
+    /**
+     *Workout Service - Update Workout
+     *
+     * @param workoutID this is the string ID of the workout to be updated
+     * @param workoutTitle This is the string workout title
+     * @param workoutDescription This is the string workout description
+     * @param exercises This is an array of exercises
+     * @param tags This is an array of tags
+     * @param req This contains the User object of the User currently logged in [from this the string User id is retrieved]
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws PreconditionFailedException if:
+     *                               -Parameters can not be left empty.
+     *
+     * @return  Message indicating success.
+     * @author Msi Sibanyoni
+     *
+     */
     @UseGuards(JwtAuthGuard)
     @Put ("updateWorkout")
     @ApiBody({type: UpdateWorkoutDTO})
@@ -370,7 +425,21 @@ export class WorkoutController {
         return this.workoutService.updateWorkout(workoutID,workoutTitle,workoutDescription,exercises,tags,req.user.userId,this.ctx);
     }
 
-
+    /**
+     *Workout Service - Delete Workout
+     *
+     * @param workoutID this is the string ID of the workout to be delete
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws PreconditionFailedException if:
+     *                               -Parameters can not be left empty.
+     *
+     * @throws NotFoundException if:
+     *                               -Workout with provided ID does not exist.
+     *
+     * @return  Message indicating success.
+     * @author Msi Sibanyoni
+     *
+     */
     @Delete("deleteWorkout")
     @ApiBody({type: DeleteWorkoutDTO})
     @ApiOkResponse({
