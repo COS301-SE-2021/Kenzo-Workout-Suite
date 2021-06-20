@@ -13,14 +13,14 @@ export class UserService {
     /**
      *User Service - Validate User
      *
-     * @param email This is the email address of the user to be validated
-     * @param pass This is the password of the user that is to be validated
+     * @param email This is the email address of the User to be validated
+     * @param pass This is the password of the User that is to be validated
      * @param ctx  This is the prisma context that is injected into the function
      * @throws NotFoundException if:
      *                               -An empty email address is passed in.
      *                               -An empty password is passed in
      *                               -Invalid combination of email address and password
-     * @return  Promise user object without the password.
+     * @return  Promise User object without the password.
      * @author Zelealem Tesema
      *
      */
@@ -30,6 +30,7 @@ export class UserService {
         {
             throw new NotFoundException("Invalid Email or Password")
         }
+
 
         const user = await ctx.prisma.user.findUnique({
             where: {
@@ -49,17 +50,17 @@ export class UserService {
             throw new NotFoundException("Invalid Email or Password")
         }
 
-            const { password, ...result } = user;
-            return result;
+        const { password, ...result } = user;
+        return result;
 
     }
 
     /**
      * User Service- login
-     * @param user This is the user object with the email address and password that need to be validated.
+     * @param user This is the User object with the email address and password that need to be validated.
      * @throws NotFoundException if:
-     *                          -An empty user object is passed into the function
-     *                          -A user object without the field 'userId' is passed into the function
+     *                          -An empty User object is passed into the function
+     *                          -A User object without the field 'userId' is passed into the function
      *
      * @return Promise that consists of the access token
      *
@@ -68,7 +69,7 @@ export class UserService {
     async login(user: any) {
         if (user==null)
         {
-            throw new NotFoundException("Invalid user object passed in.")
+            throw new NotFoundException("Invalid User object passed in.")
         }
 
         if (user.userId==null)
@@ -86,7 +87,7 @@ export class UserService {
     /**
      *User Service - Sign Up
      *
-     * @param user This is the user object that consists of the following details:
+     * @param user This is the User object that consists of the following details:
      *              -firstName
      *              -lastName
      *              -email
@@ -96,24 +97,21 @@ export class UserService {
      * @param ctx
      *
      * @throws PreconditionFailedException if:
-     *                          -Empty/null user object is passed into the function
+     *                          -Empty/null User object is passed into the function
      *                          -Email address that does not conform to the email address standard is passed in
      *                          -Password that does not conform to the password standard is passed in (atleast 8 characters consisting of one lower case, one upper case, one number and one special character)
      *
      *@throws BadRequestException if:
-     *                          -A user with the passed in Users email already exists in the database.
+     *                          -A User with the passed in Users email already exists in the database.
      *
      *@return Promise This promise consists the JWT access token.
      *@author Zelealem Tesema
      *
      */
     async signUp(user:User,ctx: Context) : Promise<any>{
-
-
-
         if (user==null)
         {
-            throw new PreconditionFailedException("Invalid user object")
+            throw new PreconditionFailedException("Invalid User object")
         }
 
         const email=user.email.toLowerCase();
@@ -137,7 +135,6 @@ export class UserService {
             }
         })
 
-
         if (countEmail>=1) {
             throw new BadRequestException("User with this email already exists")
         }
@@ -157,25 +154,25 @@ export class UserService {
             throw new BadRequestException("Could not create User")
         }
 
+
+
         return this.login(createdUser);
     }
-
-
 
     /**
      * User Service - findUserByUUID
      *
-     * @param passedUserId This is the ID for which the user details are being searched for.
+     * @param passedUserId This is the ID for which the User details are being searched for.
      * @param ctx This is the prisma context that can be mocked.
      *
      * @throws BadRequestException if:
-     *                             -An empty or null user ID is passed into the function
-     *                             -The database fails to retrieve the user details
+     *                             -An empty or null User ID is passed into the function
+     *                             -The database fails to retrieve the User details
      *
      *@throws NotFoundException if:
-     *                          -No user with such UUID exists.
+     *                          -No User with such UUID exists.
      *
-     *@return Promise This returns the details of the user.
+     *@return Promise This returns the details of the User.
      *
      * @author Zelealem Tesema
      */
@@ -187,39 +184,39 @@ export class UserService {
         }
 
 
-    try {
-        const user = await ctx.prisma.user.findUnique({
-            where: {
-                userId: passedUserId
-            },
-        })
+        try {
+            const user = await ctx.prisma.user.findUnique({
+                where: {
+                    userId: passedUserId
+                },
+            })
 
-        if (!user){
-            throw new NotFoundException("No user with such UUID")
+            if (!user){
+                throw new NotFoundException("No User with such UUID")
+            }
+
+            const { password, userId, ...result } = user;
+            return result;
         }
-
-        const { password, userId, ...result } = user;
-        return result;
-    }
         catch (err)
         {
-            throw new BadRequestException("No user with such UUID")
+            throw new BadRequestException("No User with such UUID")
         }
     }
 
     /**
-     * User Service - Update user details
+     * User Service - Update User details
      *
-     * @param firstName This is the first name of the user that is required to be updated
-     * @param lastName  This is the last name of the user that is required to be updated.
-     * @param dateOfBirth  This is the date of birth of the user that is required to be updated.
-     * @param userId    This is the user ID of the user that is required to be updated. ( This UserID should be passed in through the bearer token Authorisation header)
+     * @param firstName This is the first name of the User that is required to be updated
+     * @param lastName  This is the last name of the User that is required to be updated.
+     * @param dateOfBirth  This is the date of birth of the User that is required to be updated.
+     * @param userId    This is the User ID of the User that is required to be updated. ( This UserID should be passed in through the bearer token Authorisation header)
      * @param ctx   This is the prisma context that can be passed in as a mock
      *
      * @throws BadRequestException if:
      *                          -Null values are passed in for the firstName, LastName or userID
      *                          -Empty values are passed in for the firstName, LastName or userID
-     *                          -The user details could not be updated
+     *                          -The User details could not be updated
      *
      * @author Zelealem Tesema
      */
@@ -229,35 +226,43 @@ export class UserService {
             throw new BadRequestException("Null values can not be passed in for firstName, lastName or userId")
         }
 
-        const updatedUser=await ctx.prisma.user.update({
-        where:{
-        userId: userId,
-        },
-        data:{
-            firstName:firstName,
-            lastName:lastName,
-            dateOfBirth:dateOfBirth
-        },
-        })
+        try {
+            const updatedUser=await ctx.prisma.user.update({
+                where:{
+                    userId: userId,
+                },
+                data:{
+                    firstName:firstName,
+                    lastName:lastName,
+                    dateOfBirth:dateOfBirth
+                },
+            })
 
-        if (updatedUser===null)
+            if (updatedUser===null)
+            {
+                throw new BadRequestException("Could not update User")
+            }
+
+            return {
+                message: 'User data updated'
+            }
+        }
+
+        catch (err)
         {
-            throw new BadRequestException("Could not update user")
+            throw new BadRequestException("Could not update User")
         }
 
-        return {
-            message: 'User data updated'
-        }
     }
 
     async googleLogin(req) {
         if (!req)
         {
-            throw new BadRequestException("No such google user")
+            throw new BadRequestException("No such google User")
         }
 
         if (!req.user) {
-            throw new BadRequestException("No such google user")
+            throw new BadRequestException("No such google User")
         }
 
         return {
@@ -279,7 +284,9 @@ export class UserService {
      *
      * @author Zelealem Tesema
      */
-     validateEmail(email:string){
+
+
+    validateEmail(email:string){
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
 
@@ -301,7 +308,7 @@ export class UserService {
      *
      *@author Zelealem Tesema
      */
-     validatePassword(password:string) {
+    validatePassword(password:string) {
         const re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
         return re.test(password);
     }
