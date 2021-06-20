@@ -33,7 +33,7 @@ import {
     createTagDTO,
     deleteExerciseDTO, updateExerciseDTO
 } from "./workout.model";
-import {JwtAuthGuard} from "../user/jwt-auth.guard";
+import {JwtAuthGuard} from "../User/AuthGuards/jwt-auth.guard";
 
 @Controller('workout')
 export class WorkoutController {
@@ -262,7 +262,7 @@ export class WorkoutController {
      * @param workoutDescription This is the string workout description
      * @param exercises This is an array of exercises
      * @param tags This is an array of tags
-     * @param req This contains the user object of the user currently logged in [from this the string user id is retrieved]
+     * @param req This contains the User object of the User currently logged in [from this the string User id is retrieved]
      * @param ctx  This is the prisma context that is injected into the function.
      * @throws PreconditionFailedException if:
      *                               -Parameters can not be left empty.
@@ -304,7 +304,7 @@ export class WorkoutController {
      * @param workoutDescription This is the string workout description
      * @param exercises This is an array of exercises
      * @param tags This is an array of tags
-     * @param req This contains the user object of the user currently logged in [from this the string user id is retrieved]
+     * @param req This contains the User object of the User currently logged in [from this the string User id is retrieved]
      * @param ctx  This is the prisma context that is injected into the function.
      * @throws PreconditionFailedException if:
      *                               -Parameters can not be left empty.
