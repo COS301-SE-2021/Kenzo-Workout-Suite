@@ -34,6 +34,9 @@ export class UpdateExercisePage implements OnInit {
     this.newTag = this.getRandomTag("");
     this.id = route.getCurrentNavigation().extras.state.exercise;
     console.log(this.id)
+  }
+
+  ngOnInit() {
     this.getDetails();
   }
 
@@ -65,10 +68,6 @@ export class UpdateExercisePage implements OnInit {
         }
       }
     }
-  }
-
-
-  ngOnInit() {
   }
 
   /** This function uses the workout service to submit a request to create an exercise.

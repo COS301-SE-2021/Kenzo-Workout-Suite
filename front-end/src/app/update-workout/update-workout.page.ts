@@ -28,10 +28,10 @@ export class UpdateWorkoutPage implements OnInit {
               public alertController:AlertController,) {
     this.newTag = this.getRandomTag("");
     this.id = route.getCurrentNavigation().extras.state.id;
-    this.getDetails();
   }
 
   ngOnInit() {
+    this.getDetails();
   }
 
   async getDetails(){
