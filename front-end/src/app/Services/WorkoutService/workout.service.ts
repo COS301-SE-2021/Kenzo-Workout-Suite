@@ -10,16 +10,8 @@ import {Route, Router} from "@angular/router";
 })
 export class WorkoutService {
 
-  id:string;
 
   constructor(private http:HttpClient, private user:UserService) {
-    this.populateJWT();
-  }
-
-  async populateJWT(){
-    // let userToken = await this.user.getToken();
-    // this.id = userToken['access_token'];
-    // console.log(this.id)
   }
 
   /** This function attempts to submit a workout by using the following parameters:
@@ -33,17 +25,13 @@ export class WorkoutService {
   async attemptSubmitWorkout(workout:Workout) : Promise<Number> {
     const url : string = "http://localhost:3000/workout/createWorkout";
 
-    let UserDetails = await this.user.obtainUserDetails();
-
     const body:Object = {
       "workoutTitle": workout.title,
       "workoutDescription": workout.description,
       "tags": workout.tags
     };
 
-    const headers = {'Authorization': 'Bearer '+this.id};
-
-    return this.http.post(url, body, {headers} ).toPromise().then(data=>{
+    return this.http.post(url, body ).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
       if(error.status==0) return 500;
@@ -70,9 +58,7 @@ export class WorkoutService {
       "tags": workout.tags
     };
 
-    const headers = {'Authorization': 'Bearer '+this.id};
-
-    return this.http.put(url, body, {headers} ).toPromise().then(data=>{
+    return this.http.put(url, body ).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
       if(error.status==0) return 500;
@@ -95,13 +81,7 @@ export class WorkoutService {
       "workoutID":id,
     };
 
-    const options = {
-      headers: new HttpHeaders({
-        'Authorization': 'Bearer '+this.id,
-      }),
-      body: body
-    };
-    return this.http.delete(url, options).toPromise().then(data=>{
+    return this.http.delete(url).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
       if(error.status==0) return 500;
@@ -129,9 +109,7 @@ export class WorkoutService {
       "tags": exercise.tags,
       "duratime": exercise.duratime
     };
-    // await this.populateJWT();
-    const headers = {'Authorization': 'Bearer '+this.id};
-    return this.http.post(url, body, {headers}).toPromise().then(data=>{
+    return this.http.post(url, body).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
       if(error.status==0) return 500;
@@ -162,9 +140,7 @@ export class WorkoutService {
       "duratime": exercise.duratime
     };
 
-    const headers = {'Authorization': 'Bearer '+this.id};
-
-    return this.http.put(url, body, {headers}).toPromise().then(data=>{
+    return this.http.put(url, body).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
       if(error.status==0) return 500;
@@ -186,13 +162,7 @@ export class WorkoutService {
       "exercise":id,
     };
 
-    const options = {
-      headers: new HttpHeaders({
-        'Authorization': 'Bearer '+this.id,
-      }),
-      body: body
-    };
-    return this.http.delete(url, options).toPromise().then(data=>{
+    return this.http.delete(url).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
       if(error.status==0) return 500;
@@ -234,10 +204,8 @@ export class WorkoutService {
 
   async attemptGetWorkoutsByPlanner() : Promise<any>{
     const url: string = "http://localhost:3000/workout/getWorkoutByPlanner";
-    await this.populateJWT();
-    const headers = {'Authorization': 'Bearer '+this.id};
 
-    return this.http.get(url, {headers}).toPromise().then(data=>{
+    return this.http.get(url).toPromise().then(data=>{
       data = {
         status: 200,
         data: data
@@ -251,10 +219,8 @@ export class WorkoutService {
 
   async attemptGetExercisesByPlanner() : Promise<any>{
     const url: string = "http://localhost:3000/workout/getExercisesByPlanner";
-    await this.populateJWT();
-    const headers = {'Authorization': 'Bearer '+this.id};
 
-    return this.http.get(url, {headers}).toPromise().then(data=>{
+    return this.http.get(url).toPromise().then(data=>{
       data = {
         status: 200,
         data: data

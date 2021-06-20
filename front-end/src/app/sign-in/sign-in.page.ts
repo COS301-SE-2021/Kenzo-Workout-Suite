@@ -21,7 +21,6 @@ export class SignInPage implements OnInit {
   }
 
   ngOnInit() {
-    this.userService.removeToken();
   }
 
   /** This function uses the email and password entered to attempt a sign in through the user service.
