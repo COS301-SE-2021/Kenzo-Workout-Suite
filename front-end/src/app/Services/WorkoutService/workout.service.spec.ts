@@ -569,7 +569,7 @@ describe('WorkoutService', () => {
   });
 
   /**
-   * Getting the workouts
+   * Getting all the workouts
    */
   it('should obtain all the workouts and return a 200 status',async () => {
 
@@ -580,55 +580,13 @@ describe('WorkoutService', () => {
 
     let resp = new HttpResponse({
       status: 200,
-      statusText: "Workouts obtained",
-      body : {"message": "Successfully retrieved workouts",
-        "data": [
-          {
-            "workoutTitle": "Potato Salad",
-            "workoutDescription": "1 minute instant shred",
-            "exercises": [],
-            "difficulty": "EXTREME",
-            "planner_Email": null
-          },
-          {
-            "workoutTitle": "Luca's Shred",
-            "workoutDescription": "3 day program to lose 20kg",
-            "exercises": [],
-            "difficulty": "MEDIUM",
-            "planner_Email": null
-          },
-          {
-            "workoutTitle": "Msi's bicep wrecker",
-            "workoutDescription": "20 bicep curls with 60kgs 10 sets",
-            "exercises": [],
-            "difficulty": "MEDIUM",
-            "planner_Email": null
-          },
-          {
-            "workoutTitle": "Jenny's shred programme",
-            "workoutDescription": "1 day to lose 50kg",
-            "exercises": [],
-            "difficulty": "EASY",
-            "planner_Email": null
-          },
-          {
-            "workoutTitle": "Zelu's chest pump",
-            "workoutDescription": "3 pumps a day",
-            "exercises": [],
-            "difficulty": "EASY",
-            "planner_Email": null
-          }
-        ]}
+      statusText: "Workouts obtained"
     });
     req.flush(resp);
     let status = await respStatus;
     let StatusValue = <number>status['status'];
     expect(StatusValue).toEqual(200);
   });
-
-  /**
-   * Getting the workouts with no workouts in the database
-   */
   it('should fail to get all workouts because none exist in the database', async ()=>{
     let respStatus = service.attemptGetWorkouts();
 
@@ -644,7 +602,6 @@ describe('WorkoutService', () => {
     let StatusValue = <number>status['status'];
     expect(StatusValue).toEqual(404);
   });
-
   it("should fail to obtain the workouts because server does not respond and returns status 500", async () => {
     let respStatus = service.attemptGetWorkouts();
     const req = httpMock.expectOne("http://localhost:3000/workout/getWorkouts");
@@ -658,5 +615,149 @@ describe('WorkoutService', () => {
     let status = await respStatus;
     let StatusValue = <number>status['status'];
     expect(StatusValue).toEqual(500);
+  });
+
+  /**
+   * Getting all the exercises
+   */
+  it('should obtain all the exercises and return a 200 status',async () => {
+
+    let respStatus = service.attemptGetExercises();
+
+    const req = httpMock.expectOne("http://localhost:3000/workout/getExercises");
+    expect(req.request.method).toEqual('GET');
+
+    let resp = new HttpResponse({
+      status: 200,
+      statusText: "Exercises obtained"
+    });
+    req.flush(resp);
+    let status = await respStatus;
+    let StatusValue = <number>status['status'];
+    expect(StatusValue).toEqual(200);
+  });
+  it('should fail to get all exercises because none exist in the database', async ()=>{
+    let respStatus = service.attemptGetExercises();
+
+    const req = httpMock.expectOne("http://localhost:3000/workout/getExercises");
+    expect(req.request.method).toEqual('GET');
+
+    let resp = new HttpErrorResponse({
+      status: 404,
+      statusText: "No exercises were found in the database",
+    });
+    req.flush(null,resp);
+    let status = await respStatus;
+    let StatusValue = <number>status['status'];
+    expect(StatusValue).toEqual(404);
+  });
+  it("should fail to obtain the exercises because server does not respond and returns status 500", async () => {
+    let respStatus = service.attemptGetWorkouts();
+    const req = httpMock.expectOne("http://localhost:3000/workout/getWorkouts");
+    expect(req.request.method).toEqual('GET');
+
+    let resp = new HttpErrorResponse({
+      status: 500,
+      statusText: "Server not responding."
+    });
+    req.flush(null,resp);
+    let status = await respStatus;
+    let StatusValue = <number>status['status'];
+    expect(StatusValue).toEqual(500);
+  });
+
+  /**
+   * Getting all the workouts by planner
+   */
+  it('should obtain all the workouts for the planner that is logged in and return a 200 status',async () => {
+
+    let respStatus = service.attemptGetWorkoutsByPlanner();
+
+    const req = httpMock.expectOne("http://localhost:3000/workout/getWorkoutByPlanner");
+    expect(req.request.method).toEqual('GET');
+
+    let resp = new HttpResponse({
+      status: 200,
+      statusText: "Exercises obtained"
+    });
+    req.flush(resp);
+    let status = await respStatus;
+    let StatusValue = <number>status['status'];
+    expect(StatusValue).toEqual(200);
+  });
+  it('should fail to get all workouts for the planner that is logged in because none exist in the database', async ()=>{
+    let respStatus = service.attemptGetWorkoutsByPlanner();
+
+    const req = httpMock.expectOne("http://localhost:3000/workout/getWorkoutByPlanner");
+    expect(req.request.method).toEqual('GET');
+
+    let resp = new HttpErrorResponse({
+      status: 404,
+      statusText: "No exercises were found in the database",
+    });
+    req.flush(null,resp);
+    let status = await respStatus;
+    expect(status).toEqual(404);
+  });
+  it("should fail to get all workouts for the planner that is logged in because server does not respond and returns status 500", async () => {
+    let respStatus = service.attemptGetWorkoutsByPlanner();
+    const req = httpMock.expectOne("http://localhost:3000/workout/getWorkoutByPlanner");
+    expect(req.request.method).toEqual('GET');
+
+    let resp = new HttpErrorResponse({
+      status: 500,
+      statusText: "Server not responding."
+    });
+    req.flush(null,resp);
+    let status = await respStatus;
+    expect(status).toEqual(500);
+  });
+
+  /**
+   * Getting all the exercises by planner
+   */
+  it('should obtain all the exercises for the planner that is logged in and return a 200 status',async () => {
+
+    let respStatus = service.attemptGetExercisesByPlanner();
+
+    const req = httpMock.expectOne("http://localhost:3000/workout/getExercisesByPlanner");
+    expect(req.request.method).toEqual('GET');
+
+    let resp = new HttpResponse({
+      status: 200,
+      statusText: "Exercises obtained"
+    });
+    req.flush(resp);
+    let status = await respStatus;
+    let StatusValue = <number>status['status'];
+    expect(StatusValue).toEqual(200);
+  });
+  it('should fail to get all exercises for the planner that is logged in because none exist in the database', async ()=>{
+    let respStatus = service.attemptGetExercisesByPlanner();
+
+    const req = httpMock.expectOne("http://localhost:3000/workout/getExercisesByPlanner");
+    expect(req.request.method).toEqual('GET');
+
+    let resp = new HttpErrorResponse({
+      status: 404,
+      statusText: "No exercises were found in the database",
+    });
+    req.flush(null,resp);
+    let status = await respStatus;
+    expect(status).toEqual(404);
+  });
+  it("should fail to get all exercises for the planner that is logged in because server does not respond and returns status 500", async () => {
+    let respStatus = service.attemptGetExercisesByPlanner();
+
+    const req = httpMock.expectOne("http://localhost:3000/workout/getExercisesByPlanner");
+    expect(req.request.method).toEqual('GET');
+
+    let resp = new HttpErrorResponse({
+      status: 500,
+      statusText: "Server not responding."
+    });
+    req.flush(null,resp);
+    let status = await respStatus;
+    expect(status).toEqual(500);
   });
 });

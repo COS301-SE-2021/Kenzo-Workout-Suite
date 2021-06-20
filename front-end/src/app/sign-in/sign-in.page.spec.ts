@@ -18,7 +18,13 @@ describe('SignInPage', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SignInPage ],
-      imports: [IonicModule.forRoot(), HttpClientTestingModule, RouterTestingModule, FormsModule, IonicStorageModule.forRoot()],
+      imports: [
+        IonicModule.forRoot(),
+        HttpClientTestingModule,
+        RouterTestingModule,
+        FormsModule,
+        IonicStorageModule.forRoot()
+      ],
     }).compileComponents();
 
     routeMock = TestBed.inject(Router);

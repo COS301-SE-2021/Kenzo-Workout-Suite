@@ -19,7 +19,7 @@
     </div>
   </div>
   <div class="Spacing-div" id="SearchBarDiv">
-    <ion-searchbar id="workout-searchbar"  mode="ios" showCancelButton="never" inputmode="search"></ion-searchbar>
+    <ion-searchbar  #searchbar (ionInput)="eventHandler($event)" id="workout-searchbar" mode="ios" inputmode="search"></ion-searchbar>
   </div>
   <div>
     <ion-button class="filterBtns" id="workoutBtn" (click)="showWorkouts()">Workouts</ion-button>

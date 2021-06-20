@@ -46,9 +46,6 @@ describe('YourWorkoutsPage', () => {
   //Your workouts interface testing
 
   it('should, given an empty database, fail to obtain workouts for a planner with a given ID.', async () => {
-    // spyOn(userService, 'attemptSignIn').and.stub();
-    // spyOn(userService, 'addToken').and.stub();
-    // spyOn(userService, "getToken").and.stub();
     spyOn(service, 'attemptGetWorkoutsByPlanner').and.resolveTo({"status": 404});
     await component.loadWorkouts().then(error=>{
       expect(error).toEqual(404);

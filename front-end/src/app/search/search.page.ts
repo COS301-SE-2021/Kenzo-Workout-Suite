@@ -10,8 +10,8 @@ import { Router } from "@angular/router";
   styleUrls: ['./search.page.scss'],
 })
 export class SearchPage implements OnInit {
-  searchWorkouts: Promise<any>;
-  searchExercises: Promise<any>;
+  searchWorkouts: Observable<any>;
+  searchExercises: Observable<any>;
   constructor(private http:HttpClient,
               private workoutService: WorkoutService,
               private router: Router) { }
@@ -56,31 +56,26 @@ export class SearchPage implements OnInit {
    * on keypress or enter key is pressed, filter the cards based on what is typed
    * @param event
    */
-  eventHandler(event){
-    let TypedValue = (<HTMLInputElement>document.getElementById("workout-searchbar")).value;
-    this.searchWorkouts.then(result=>{
-      result.forEach(data=>{
-        if (!(data.workoutTitle.includes(TypedValue)) && !(data.workoutDescription.includes(TypedValue))){
-          document.getElementById(data.workoutID).style.display = "none";
-        }
-        else{
-          document.getElementById(data.workoutID).style.display = "block";
-        }
-      })
-
+  eventHandler(event) {
+    let text = event.srcElement.value.toLowerCase();
+    this.searchWorkouts.forEach(data => {
+      let currElement =  document.getElementById(data.workoutID);
+      if (!(data.workoutTitle.toLowerCase().includes(text)) && !(data.workoutDescription.toLowerCase().includes(text))) {
+        currElement.style.display = "none";
+      } else {
+        currElement.style.display = "block";
+      }
     })
-
-    this.searchExercises.then(result=>{
-      result.forEach(data=>{
-        if (!(data.title.includes(TypedValue)) && !(data.description.includes(TypedValue))){
-          document.getElementById(data.exercise).style.display = "none";
-        }
-        else{
-          document.getElementById(data.exercise).style.display = "block";
-        }
-      })
+    this.searchExercises.forEach(data => {
+      let currElement = document.getElementById(data.exercise)
+      if (!(data.title.toLowerCase().includes(text)) && !(data.description.toLowerCase().includes(text))) {
+        currElement.style.display = "none";
+      } else {
+        currElement.style.display = "block";
+      }
     })
   }
+
 
   /**
    * Filter out the exercises and only show workouts
