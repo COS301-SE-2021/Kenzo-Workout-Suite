@@ -26,7 +26,6 @@ export class UpdateWorkoutPage implements OnInit {
               private route:Router,
               private workoutService:WorkoutService,
               public alertController:AlertController,) {
-    this.getTags();
     this.newTag = this.getRandomTag("");
     this.id = route.getCurrentNavigation().extras.state.id;
     this.getDetails();
@@ -36,6 +35,7 @@ export class UpdateWorkoutPage implements OnInit {
   }
 
   async getDetails(){
+    await this.getTags();
     let workout = await this.workoutService.attemptGetWorkouts();
     let data = workout['data'];
     let unit;
@@ -51,10 +51,12 @@ export class UpdateWorkoutPage implements OnInit {
 
     let tags = unit['tags'];
     for (let i=0; i<tags.length; i++) {
-      let tagsKey = tags[i];
-      let tg = new KenzoTag(tagsKey['textColour'],tagsKey['backgroundColour'], tagsKey['label'], true);
-      console.log(tg)
-      // this.tags.push(tg);
+      let currTag = tags[i];
+      for (let j = 0; j < this.tags.length; j++) {
+        if(this.tags[j].label==currTag['label']){
+          document.getElementById(this.tags[j].label).click();
+        }
+      }
     }
   }
 
