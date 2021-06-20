@@ -78,7 +78,7 @@ test('User that is not in the database is attempted to be updated, should throw 
         dateOfBirth: null
     }
 
-    const userId=uuidv4;
+    const userId=uuidv4();
 
     await expect(userService.findUserByUUID(userId,ctx)).rejects.toThrow("No User with such UUID")
 
