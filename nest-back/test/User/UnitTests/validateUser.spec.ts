@@ -28,7 +28,7 @@ test('Null password passed in, should throw NotFoundException', async () => {
     await expect(userService.validateUser("username","",ctx)).rejects.toThrow("Invalid Email or Password")
 })
 
-test('Null user returned by mock Prisma client, should throw NotFoundException', async () => {
+test('Null User returned by mock Prisma client, should throw NotFoundException', async () => {
 
     bcryptCompare = jest.fn().mockReturnValue(false);
     (bcrypt.compare as jest.Mock) = bcryptCompare;
@@ -71,7 +71,7 @@ test('Bcrypt.compare returns false, should throw NotFoundException', async () =>
     await expect(userService.validateUser("hello", "password", ctx)).rejects.toThrow("Invalid Email or Password")
 })
 
-test('Bcrypt.compare returns true, should return user details WITHOUT PASSWORD', async () => {
+test('Bcrypt.compare returns true, should return User details WITHOUT PASSWORD', async () => {
 
     bcryptCompare = jest.fn().mockReturnValue(true);
     (bcrypt.compare as jest.Mock) = bcryptCompare;

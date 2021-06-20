@@ -22,15 +22,15 @@ beforeEach(() => {
     ctx = (mockCtx as unknown) as Context
 })
 
-test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
+test('Null User passed to signUp, Should throw PreconditionFailedException', async () => {
     const userUUID=uuidv4();
     let myUser;
 
-    await expect(userService.signUp(myUser,ctx)).rejects.toThrow("Invalid user object")
+    await expect(userService.signUp(myUser,ctx)).rejects.toThrow("Invalid User object")
 
 })
 
-test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
+test('signUp with invalid email, validate email returns fault, therefore PreconditionFailedException.', async () => {
     const userUUID=uuidv4();
     const myUser={
         userId:userUUID,
@@ -48,7 +48,7 @@ test('Null user passed to signUp, Should throw PreconditionFailedException', asy
 
 })
 
-test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
+test('signUp validateEmail return true and validatePassword returns false, therefore preconditionFailedException should be thrown', async () => {
     const userUUID=uuidv4();
     const myUser={
         userId:userUUID,
@@ -67,7 +67,7 @@ test('Null user passed to signUp, Should throw PreconditionFailedException', asy
 })
 
 
-test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
+test('Valid email and password, prisma count returns 1 therefore should throw BadRequestException ', async () => {
     const userUUID=uuidv4();
     const myUser={
         userId:userUUID,
@@ -92,7 +92,7 @@ test('Null user passed to signUp, Should throw PreconditionFailedException', asy
 })
 
 
-test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
+test('Valid details, prisma returns null therefore should throw BadRequest exception', async () => {
     const userUUID=uuidv4();
     const myUser={
         userId:userUUID,
@@ -119,7 +119,7 @@ test('Null user passed to signUp, Should throw PreconditionFailedException', asy
 
 })
 
-test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
+test('Valid details passed in, sign up should succeed and valid response message should be returned', async () => {
     const userUUID=uuidv4();
     const myUser={
         userId:userUUID,
@@ -138,11 +138,11 @@ test('Null user passed to signUp, Should throw PreconditionFailedException', asy
 
     spyOn(userService,"validateEmail").and.returnValue(true);
     spyOn(userService,"validatePassword").and.returnValue(true);
-    spyOn(userService,"login").and.returnValue("Logged in user");
+    spyOn(userService,"login").and.returnValue("Logged in User");
 
     mockCtx.prisma.user.count.mockResolvedValue(0)
     mockCtx.prisma.user.create.mockResolvedValue(myUser);
 
-    expect(await userService.signUp(myUser,ctx)).toBe("Logged in user")
+    expect(await userService.signUp(myUser,ctx)).toBe("Logged in User")
 
 })

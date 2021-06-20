@@ -2,6 +2,7 @@ import {MockContext, Context, createMockContext, ActualPrisma} from "../../../co
 import {WorkoutService} from "../../../src/Workout/workout.service";
 import {v4 as uuidv4 } from 'uuid';
 import {PrismaClient} from "@prisma/client/scripts/default-index";
+import {Tag} from "@prisma/client";
 
 let ctx: Context
 let workoutService: WorkoutService
@@ -28,25 +29,6 @@ beforeEach(async () => {
     });
 })
 
-test('Valid exercise passed in with tags, should receive successful message', async () => {
-    await ctx.prisma.exercise.create({
-        data:{
-            exercise:uuidExercise,
-            title:"test",
-            description:"test",
-            repRange:"test",
-            sets:4,
-            Posedescription:"test",
-            restPeriod:2,
-            duratime:2,
-            planner_ID: uuidPlanner
-        }
-    });
-
-    const response=await workoutService.updateExercise(uuidExercise,'test','test','test',4,'test',2,[{label:'test',textColour:'test',backgroundColour:'test'}],2,uuidPlanner,ctx)
-    expect(response).toStrictEqual("Exercise updated.");
-})
-
 test('Valid exercise passed in without tags, should receive successful message', async () => {
     await ctx.prisma.exercise.create({
         data:{
@@ -62,7 +44,9 @@ test('Valid exercise passed in without tags, should receive successful message',
         }
     });
 
-    const response=await workoutService.updateExercise(uuidExercise,'test','test','test',4,'test',2,[],2,uuidPlanner,ctx)
+    let emptyTag: Tag[] = [];
+
+    const response=await workoutService.updateExercise(uuidExercise,'test','test','test',4,'test',2,emptyTag,2,uuidPlanner,ctx)
     expect(response).toStrictEqual("Exercise updated.");
 })
 
@@ -75,5 +59,5 @@ test('Incomplete exercise passed in, should throw PreconditionFailedException', 
 })
 
 test('Nonexistent exercise, should throw NotFoundException', async () => {
-    await expect(workoutService.updateExercise('test','test','test','test',0,'test',0,[],0,"",ctx)).rejects.toThrow("Exercise with provided ID does not exist.")
+    await expect(workoutService.updateExercise('test','test','test','test',0,'test',0,[],0,"",ctx)).rejects.toThrow("Invalid exercise object passed in.")
 })

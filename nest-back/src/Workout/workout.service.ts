@@ -206,7 +206,17 @@ export class WorkoutService{
         }
     }
 
-
+    /**
+     *Workout Service - Get Exercises by ID
+     *
+     * @param id This is the id of the workout to be searched
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No exercises were found in the database with the specified title.
+     * @return  Promise searched for exercise is returned.
+     * @author Msi Sibanyoni
+     *
+     */
     async getExerciseByID(id: string, ctx: Context): Promise<any> {
         try{
             const exercise = await ctx.prisma.exercise.findUnique({//search for exercises that meet the requirement
@@ -291,6 +301,7 @@ export class WorkoutService{
                     planner_ID: id
                 },
                 select: {
+                    exercise: true,
                     title: true,
                     description: true,
                     repRange: true,
@@ -312,15 +323,35 @@ export class WorkoutService{
         }
     }
 
-
+    /**
+     *Workout Service - Create Exercise
+     *
+     * @param title This is the title of the exercise.
+     * @param description This is the description of the exercise.
+     * @param repRange This is the amount of reps.
+     * @param sets This is the amount of sets.
+     * @param poseDescription This is the description of the poses
+     * @param restPeriod This is the rest period of the exercise.
+     * @param tags this is an array of tags
+     * @param duratime This is the duration of the exercise.
+     * @param planner_ID This is the planner ID
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws PreconditionFailedException if:
+     *                               -Not all parameters are given.
+     * @throws NotFoundException if:
+     *                               -An exercise with provided ID does not exist.
+     * @return  Message indicating success.
+     * @author Msi Sibanyoni
+     *
+     */
     async createExercise(title:string,description:string,repRange:string,sets:number,poseDescription:string,restPeriod:number,tags:Tag[],duratime:number, planner_ID:string,ctx: Context){
 
-        if (title=="" || description=="" || repRange=="" || sets==0 || poseDescription=="" || restPeriod==0 || duratime==0 )
+        if (title=="" || description=="" || repRange=="" || sets==0 || poseDescription=="" || restPeriod==0 || duratime==0 || tags==null || planner_ID == "" || title==null || description==null || repRange==null || sets==null || poseDescription==null || restPeriod==null || duratime==null  || planner_ID == "")
         {
             throw new NotFoundException("Parameters can not be left empty.");
         }
 
-        if(tags != null){
+        if(Array.isArray(tags) && tags.length){
             await this.addNewTags(tags,ctx);
             let tagConnection = tags.map( n => {
                 const container = {
@@ -395,7 +426,7 @@ export class WorkoutService{
      *
      */
     async updateExercise(exercise: string, title: string,description: string,repRange: string,sets: number,Posedescription: string,restPeriod: number,tags: Tag[],duratime: number,planner_ID:string ,ctx: Context): Promise<any> {
-        if(exercise=="" || title=="" || description=="" || repRange=="" || sets==null || title=="" || Posedescription=="" || restPeriod==null || duratime==null){
+        if(exercise=="" || title=="" || description=="" || repRange=="" || sets==0 || Posedescription=="" || restPeriod==0 || duratime==0 || tags==null || planner_ID == "" || title==null || description==null || repRange==null || sets==null || Posedescription==null || restPeriod==null || duratime==null  || planner_ID == ""){
             throw new PreconditionFailedException("Invalid exercise object passed in.")
         }
 
@@ -412,8 +443,7 @@ export class WorkoutService{
             if(!(Array.isArray(Exercise) && Exercise.length)){
                 throw new NotFoundException("Exercise with provided ID does not exist.");
             }
-
-            if(tags!= null) { //run update query with tags
+            if((Array.isArray(tags) && tags.length)) { //run update query with tags
                 await this.addNewTags(tags, ctx);
                 let tagConnection = tags.map(n => {
                     const container = {
@@ -481,6 +511,7 @@ export class WorkoutService{
      *Workout Service - Delete Exercise
      *
      * @param exercise This is the ID of the exercise.
+     * @param ctx
      * @throws PreconditionFailedException if:
      *                               -Parameter can not be left empty.
      * @throws NotFoundException if:
@@ -499,7 +530,7 @@ export class WorkoutService{
                     exercise
                 }
             });
-            if(!(Array.isArray(Exercise) && Exercise.length)){
+            if(!(Array.isArray(Exercise) && Exercise.length)){//if JSON object is empty, send error code
                 throw new NotFoundException("Exercise with provided ID does not exist");
             }
             return("Exercise Deleted.");
@@ -507,12 +538,27 @@ export class WorkoutService{
             throw e;
         }
     }
-
-    async createWorkout(workoutTitle: string, workoutDescription: string, exercises : Exercise[],tags:Tag[],planner_ID :string,ctx: Context) {
-        if (workoutTitle=="" || workoutDescription==""  ){
+    /**
+     *Workout Service - Create Workout
+     *
+     * @param workoutTitle This is the string workout title
+     * @param workoutDescription This is the string workout description
+     * @param exercises This is an array of exercises
+     * @param tags This is an array of tags
+     * @param planner_ID This is the string planner ID
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws PreconditionFailedException if:
+     *                               -Parameters can not be left empty.
+     *
+     * @return  Message indicating success.
+     * @author Msi Sibanyoni
+     *
+     */
+    async createWorkout(workoutTitle: string, workoutDescription: string, exercises : Exercise[],tags: Tag[],planner_ID :string,ctx: Context) {
+        if (workoutTitle=="" || workoutDescription==""  || planner_ID=="" || tags == null || exercises == null || workoutTitle==null || workoutDescription==null  || planner_ID==null){
             throw new NotFoundException("Parameters can not be left empty.");
         }
-        if(tags!= null){ //run create query with tags
+        if((Array.isArray(tags) && tags.length) && (Array.isArray(exercises) && exercises.length)){ //run create query with tags & exercises
             await this.addNewTags(tags,ctx);
             let tagConnection = tags.map( n => {
                 const container = {
@@ -521,11 +567,18 @@ export class WorkoutService{
 
                 return container;
             });
+            let exerciseConnection = exercises.map( n => {
+                const container = {
+                    exercise: n.exercise
+                };
+
+                return container;
+            });
             const Workout ={
                 workoutTitle: workoutTitle,
                 workoutDescription: workoutDescription,
                 exercises: {
-                    connect: exercises
+                    connect: exerciseConnection
                 },
                 tags: {
                     connect:tagConnection
@@ -542,13 +595,61 @@ export class WorkoutService{
             await this.generateWorkoutPDF(Workout, ctx);
             return("Workout Created.");
 
-        }else{ //run create query without tags
+        }else if(!(Array.isArray(tags) && tags.length) && (Array.isArray(exercises) && exercises.length)){ //run create query with exercises only
+            let exerciseConnection = exercises.map( n => {
+                const container = {
+                    exercise: n.exercise
+                };
+
+                return container;
+            });
             const Workout ={
                 workoutTitle: workoutTitle,
                 workoutDescription: workoutDescription,
                 exercises: {
-                    connect: exercises
+                    connect: exerciseConnection
                 },
+                planner: {
+                    connect: {
+                        userId: planner_ID
+                    }
+                }
+            }
+            await ctx.prisma.workout.create({
+                data: Workout
+            })
+            await this.generateWorkoutPDF(Workout, ctx);
+            return("Workout Created.");
+        }else if((Array.isArray(tags) && tags.length) && !(Array.isArray(exercises) && exercises.length)){ //run create query with tags only
+            await this.addNewTags(tags,ctx);
+            let tagConnection = tags.map( n => {
+                const container = {
+                    label: n.label
+                };
+
+                return container;
+            });
+            const Workout ={
+                workoutTitle: workoutTitle,
+                workoutDescription: workoutDescription,
+                tags: {
+                    connect:tagConnection
+                },
+                planner: {
+                    connect: {
+                        userId: planner_ID
+                    }
+                }
+            }
+            await ctx.prisma.workout.create({
+                data: Workout
+            })
+            await this.generateWorkoutPDF(Workout, ctx);
+            return("Workout Created.");
+        }else{
+            const Workout ={
+                workoutTitle: workoutTitle,
+                workoutDescription: workoutDescription,
                 planner: {
                     connect: {
                         userId: planner_ID
@@ -564,12 +665,103 @@ export class WorkoutService{
 
 
     }
-
+    /**
+     *Workout Service - Update Workout
+     *
+     * @param workoutID this is the string ID of the workout to be updated
+     * @param workoutTitle This is the string workout title
+     * @param workoutDescription This is the string workout description
+     * @param exercises This is an array of exercises
+     * @param tags This is an array of tags
+     * @param planner_ID This is the string planner ID
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws PreconditionFailedException if:
+     *                               -Parameters can not be left empty.
+     *
+     * @return  Message indicating success.
+     * @author Msi Sibanyoni
+     *
+     */
     async updateWorkout(workoutID: string, workoutTitle: string, workoutDescription: string, exercises : Exercise[],tags:Tag[],planner_ID :string,ctx: Context){
-        if (workoutID == "" || workoutTitle=="" || workoutDescription=="" ){
+        if (workoutTitle=="" || workoutDescription==""  || planner_ID=="" || tags == null || exercises == null || workoutTitle==null || workoutDescription==null  || planner_ID==null){
             throw new NotFoundException("Parameters can not be left empty.");
         }
-        if(tags!= null) { //run update query with tags
+        if((Array.isArray(tags) && tags.length) && (Array.isArray(exercises) && exercises.length)) { //run update query with tags and exercises
+            await this.addNewTags(tags, ctx);
+            let tagConnection = tags.map(n => {
+                const container = {
+                    label: n.label
+                };
+
+                return container;
+            });
+            let exerciseConnection = exercises.map( n => {
+                const container = {
+                    exercise: n.exercise
+                };
+
+                return container;
+            });
+            const updateWorkout ={
+                workoutTitle: workoutTitle,
+                workoutDescription: workoutDescription,
+                exercises: {
+                    connect: exerciseConnection
+                },
+                tags: {
+                    connect:tagConnection
+                },
+                planner: {
+                    connect: {
+                        userId: planner_ID
+                    }
+                }
+            }
+            try{
+                await ctx.prisma.workout.update({
+                    where:{
+                        workoutID: workoutID,
+                    },
+                    data:updateWorkout
+                });
+                await this.generateWorkoutPDF(updateWorkout, ctx);
+                return("Workout Updated.");
+            }catch (e) {
+                throw new NotFoundException("Workout with provided ID does not exist");
+            }
+        }else if(!(Array.isArray(tags) && tags.length) && (Array.isArray(exercises) && exercises.length)){//run create query with exercises only
+            let exerciseConnection = exercises.map( n => {
+                const container = {
+                    exercise: n.exercise
+                };
+
+                return container;
+            });
+            const updateWorkout ={
+                workoutTitle: workoutTitle,
+                workoutDescription: workoutDescription,
+                exercises: {
+                    connect: exerciseConnection
+                },
+                planner: {
+                    connect: {
+                        userId: planner_ID
+                    }
+                }
+            }
+            try{
+                await ctx.prisma.workout.update({
+                    where:{
+                        workoutID: workoutID,
+                    },
+                    data:updateWorkout
+                });
+                await this.generateWorkoutPDF(updateWorkout, ctx);
+                return("Workout Updated.");
+            }catch (e) {
+                throw new NotFoundException("Workout with provided ID does not exist");
+            }
+        }else if((Array.isArray(tags) && tags.length) && !(Array.isArray(exercises) && exercises.length)){//tags only
             await this.addNewTags(tags, ctx);
             let tagConnection = tags.map(n => {
                 const container = {
@@ -581,9 +773,6 @@ export class WorkoutService{
             const updateWorkout ={
                 workoutTitle: workoutTitle,
                 workoutDescription: workoutDescription,
-                exercises: {
-                    connect: exercises
-                },
                 tags: {
                     connect:tagConnection
                 },
@@ -609,9 +798,6 @@ export class WorkoutService{
             const updateWorkout ={
                 workoutTitle: workoutTitle,
                 workoutDescription: workoutDescription,
-                exercises: {
-                    connect: exercises
-                },
                 planner: {
                     connect: {
                         userId: planner_ID
@@ -635,6 +821,21 @@ export class WorkoutService{
 
     }
 
+    /**
+     *Workout Service - Delete Workout
+     *
+     * @param workoutID this is the string ID of the workout to be delete
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws PreconditionFailedException if:
+     *                               -Parameters can not be left empty.
+     *
+     * @throws NotFoundException if:
+     *                               -Workout with provided ID does not exist.
+     *
+     * @return  Message indicating success.
+     * @author Msi Sibanyoni
+     *
+     */
     async deleteWorkout(workoutID: string,ctx: Context){
         if(workoutID ==""){
             throw new NotFoundException("Parameters can not be left empty.");
@@ -650,14 +851,30 @@ export class WorkoutService{
             throw new NotFoundException("Workout with provided ID does not exist");
         }
     }
-
+    /**
+     *Workout Service - Generate Workout PDF
+     *
+     * @param workout This is the workout Object to be generated
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws PreconditionFailedException if:
+     *                               -Parameters can not be left empty.
+     *
+     * @throws NotFoundException if:
+     *                               -Workout with provided ID does not exist.
+     *
+     * @return  Message indicating success.
+     * @author Msi Sibanyoni
+     *
+     */
     async generateWorkoutPDF(workout: any, ctx: Context){
 
+        if(workout==null){
+            throw new PreconditionFailedException("Invalid workout provided");
+        }
         const doc = new jsPDF();
-
         //TODO: Make heading font and a normal font & Consider adding an image
         doc.text(workout.workoutTitle, 80, 10);
-        if(workout.tags.length != 0){
+        if(workout.tags !== undefined){
             const workoutTagArray = workout.tags.connect.map(({label}) => [label])
             let stringTags = workoutTagArray.join();
             let splitTags = doc.splitTextToSize(stringTags,180);
@@ -666,16 +883,13 @@ export class WorkoutService{
 
         let splitWorkoutDesc = doc.splitTextToSize(workout.workoutDescription,180);
         doc.text(splitWorkoutDesc, 15, 130 );
-        //doc.addImage("./src/GeneratedWorkouts/Kenzo_logo.png","PNG",60,230,90, 40);
 
-
-        if(workout.exercises.connect === undefined){
+        if(workout.exercises === undefined){
             doc.save("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf");
         }else{
 
             for(let i =0; i < workout.exercises.connect.length ; i++){
                 let exercise = await this.getExerciseByID(workout.exercises.connect[i].exercise, ctx);
-                //console.log(exercise);
                 doc.addPage("a4", "p");
                 doc.text(exercise.title, 90, 10);
                 if(exercise.tags.length != 0){
@@ -786,8 +1000,26 @@ export class WorkoutService{
         }
     }
 
-
+    /**
+     *Workout Service - Add new tags
+     *
+     * @param tags array of tags to be added to database
+     * @param ctx  This is the prisma context that is injected into the function.
+     * @throws PreconditionFailedException if:
+     *                               -Cannot work with empty tags.
+     *
+     * @throws NotFoundException if:
+     *                               -Workout with provided ID does not exist.
+     *
+     * @return  Message indicating success.
+     * @author Msi Sibanyoni
+     *
+     */
     async addNewTags(tags: Tag[], ctx:Context){
+
+        if(!(Array.isArray(tags) && tags.length)){
+           throw new PreconditionFailedException("Cannot work with empty tags.");
+        }
         for(let i = 0;i<tags.length;i++){
             tags[i].label = this.format(tags[i].label);
         }
