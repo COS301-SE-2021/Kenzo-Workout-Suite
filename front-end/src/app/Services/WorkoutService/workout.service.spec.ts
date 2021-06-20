@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import { WorkoutService } from './workout.service';
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
@@ -23,6 +23,8 @@ describe('WorkoutService', () => {
     userService = TestBed.inject(UserService);
     httpMock = TestBed.inject(HttpTestingController);
     httpClient = TestBed.inject(HttpClient);
+    // spyOn(userService,"getToken").and.resolveTo(JSON.parse('{"access_token" : "1234"}'));
+    // spyOn(service, "populateJWT");
   });
 
   afterEach(()=>{
@@ -35,7 +37,7 @@ describe('WorkoutService', () => {
 
   // Create Exercise Unit Tests
   it("should create an exercise successfully because server responds with status code 200", async () => {
-    spyOn(userService, "getToken").and.resolveTo(JSON.parse('{"access_token":"1234"}'));
+
     let exercise: Exercise = new Exercise("Leg Killer", "A hard day for your legs", "6-8", 3, "None", 60, [], 8);
     let respStatus = service.attemptSubmitExercise(exercise);
     const req = httpMock.expectOne("http://localhost:3000/workout/createExercise");
