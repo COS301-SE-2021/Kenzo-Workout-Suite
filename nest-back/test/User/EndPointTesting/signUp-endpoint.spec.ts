@@ -20,10 +20,11 @@ describe('End point testing of the User subsystem', () => {
         app = moduleRef.createNestApplication();
         await app.init();
 
+        ctx=ActualPrisma();
     });
 
     beforeEach(async () => {
-        await ActualPrisma().prisma.user.deleteMany();
+        await ctx.prisma.user.deleteMany();
     })
 
     it(`Testing signUp with valid details, should return status 201`, async () => {
@@ -73,7 +74,7 @@ describe('End point testing of the User subsystem', () => {
 
     it(`Testing signup with user email that already exists, should return 400`, async () => {
 
-        await ActualPrisma().prisma.user.create({
+        await ctx.prisma.user.create({
             data:{
                 "firstName": "Zelu",
                 "lastName": "Tesema",
