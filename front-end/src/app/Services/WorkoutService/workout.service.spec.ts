@@ -535,6 +535,41 @@ describe('WorkoutService', () => {
     expect(status).toEqual(493);
   });
 
+  // Get Tags Unit Tests
+  it("should get all tags in the database",async ()=>{
+    let tags = service.getTags();
+
+    let req = httpMock.expectOne("http://localhost:3000/workout/getTags")
+    expect(req.request.method).toEqual('GET');
+
+    let resp = new HttpResponse({
+      status: 200,
+      body:
+        [
+          {
+            "label": "Add One",
+            "textColour": "RED",
+            "backgroundColour": "YELLOW"
+          },
+          {
+            "label": "Thighs",
+            "textColour": "BLACK",
+            "backgroundColour": "PINK"
+          },
+          {
+            "label": "Zel",
+            "textColour": "YELLOW",
+            "backgroundColour": "ORANGE"
+          }
+        ]
+    });
+    req.flush(null,resp);
+    let actualResp = await tags;
+    console.log(actualResp.data)
+    console.log(resp.body)
+    expect(resp.body).toEqual(actualResp.data);
+  });
+
   /**
    * Getting the workouts
    */

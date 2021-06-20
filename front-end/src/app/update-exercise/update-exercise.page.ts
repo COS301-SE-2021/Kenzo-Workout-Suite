@@ -15,7 +15,6 @@ export class UpdateExercisePage implements OnInit {
 
   title: string;
   description: string;
-  diff: string;
   range: string;
   sets: number;
   pose_description: string;
@@ -33,24 +32,29 @@ export class UpdateExercisePage implements OnInit {
               public alertController:AlertController,
               private workoutService:WorkoutService) {
     this.newTag = this.getRandomTag("");
-    this.id = route.getCurrentNavigation().extras.state.id;
+    this.id = route.getCurrentNavigation().extras.state.exercise;
+    console.log(this.id)
     this.getDetails();
   }
 
   async getDetails(){
     await this.getTags();
-    let workout = await this.workoutService.attemptGetWorkouts();
-    let data = workout['data'];
+    let exercises = await this.workoutService.attemptGetExercises();
+    let data = exercises['data'];
     let unit;
     for (let i = 0; i < data.length; i++) {
       unit = data[i];
-
-      if(unit['workoutID']==this.id){
+      if(unit['exercise']==this.id){
         break;
       }
     }
-    this.title = unit['workoutTitle'];
-    this.description = unit['workoutDescription'];
+    this.title = unit['title'];
+    this.description = unit['description'];
+    this.range = unit['repRange'];
+    this.sets = unit['sets'];
+    this.pose_description = unit['Posedescription'];
+    this.rest = unit['restPeriod'];
+    this.duration = unit['duratime'];
 
     let tags = unit['tags'];
     for (let i=0; i<tags.length; i++) {
@@ -78,7 +82,7 @@ export class UpdateExercisePage implements OnInit {
    * Success states [200] will result in a logged in a Planner being navigated to the logged in User's homescreen.
    * @author Luca Azmanov, u19004185
    */
-  async createExercise() {
+  async submitUpdateRequest() {
     let selected:KenzoTag[] = new Array();
     for (let i = 0; i < this.tags.length; i++) {
       if(this.tags[i].selected){
@@ -88,7 +92,7 @@ export class UpdateExercisePage implements OnInit {
 
     let exercise = new Exercise(this.title, this.description, this.range, this.sets, this.pose_description,
       this.rest, selected, this.duration*60);
-    let status = await this.workoutService.attemptSubmitExercise(exercise);
+    let status = await this.workoutService.attemptUpdateExercise(exercise, this.id);
 
     if (status < 400) {
       // Success State

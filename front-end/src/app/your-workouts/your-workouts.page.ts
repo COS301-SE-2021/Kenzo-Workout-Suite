@@ -44,7 +44,6 @@ export class YourWorkoutsPage implements OnInit {
     let tempExercises = await this.workoutService.attemptGetExercisesByPlanner();
     if (tempExercises.status==200){
       this.exercises = tempExercises.data;
-      console.log(this.exercises)
       return 200;
     }else if (tempExercises.status==404){
       return 404;
@@ -92,11 +91,11 @@ export class YourWorkoutsPage implements OnInit {
   }
 
   async sendExerciseID(id: string){
-    await this.router.navigate(['/update-exercise']),{
+    await this.router.navigate(['/update-exercise'],{
       state:{
-        id: id
+        exercise: id
       }
-    }
+    });
   }
 
   async goToSearch(){
