@@ -33,7 +33,6 @@ export class UpdateExercisePage implements OnInit {
               private workoutService:WorkoutService) {
     this.newTag = this.getRandomTag("");
     this.id = route.getCurrentNavigation().extras.state.exercise;
-    console.log(this.id)
   }
 
   ngOnInit() {
