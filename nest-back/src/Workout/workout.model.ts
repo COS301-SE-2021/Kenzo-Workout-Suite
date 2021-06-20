@@ -79,11 +79,13 @@ export class updateExerciseDTO{
     @ApiProperty({type: Number, description: 'number of sets'})
     sets: number;
     @ApiProperty({type: String, description: 'description for pose'})
+
     Posedescription: string;
     @ApiProperty({type: Number, description: 'rest period'})
     restPeriod: number;
     @ApiProperty({type: Array, description: 'Tags for the exercise.'})
     tag: Tag[];
+
     @ApiProperty({type: Number, description: 'duration of exercise'})
     duratime: number;
 }
@@ -92,4 +94,3 @@ export class deleteExerciseDTO{
     @ApiProperty({type: String, description: 'ID of Exercise.'})
     exercise: string;
 }
-

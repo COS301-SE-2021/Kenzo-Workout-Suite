@@ -4,9 +4,12 @@ import {UserModule} from '../../../src/User/user.module'
 import { UserService} from "../../../src/User/user.service";
 import { INestApplication } from '@nestjs/common';
 import {ActualPrisma, Context, MockContext} from "../../../context";
+import {JwtService} from "@nestjs/jwt";
 
 let mockCtx: MockContext
 let ctx: Context
+let userServ: UserService
+let Jwt : JwtService
 
 describe('End point testing of the User subsystem', () => {
     let app: INestApplication;
@@ -23,39 +26,40 @@ describe('End point testing of the User subsystem', () => {
     });
 
     beforeEach(async () => {
+        Jwt=new JwtService({
+            secret: process.env.JWT_SECRET,
+            signOptions: { expiresIn: process.env.EXPIRY_TIME },
+        })
+        userServ=new UserService(Jwt)
         await ActualPrisma().prisma.user.deleteMany();
     })
 
-    it(`Testing signUp`, async () => {
-        return request(app.getHttpServer())
-            .post('/User/signUp')
-            .send({
+    it(`Testing login endpoint with valid data, should return status 404`, async () => {
 
-                "user":{
-                    "firstName": "Zelu",
-                    "lastName": "Tesema",
-                    "email": "zelu2@gmail.com",
-                    "userType":"PLANNER",
-                    "password": "Zelu2000#"
-                }
+        const user= await ActualPrisma().prisma.user.create({
+            data:{
+                "firstName": "Zelu",
+                "lastName": "Tesema",
+                "email": "zelu2@gmail.com",
+                "userType":"PLANNER",
+                "password": "Zelu2000#"
+            }
+        })
+
+       let users= await ActualPrisma().prisma.user.findMany();
+
+        return request(app.getHttpServer())
+            .post('/User/login')
+            .send({
+                "username": "zelu20@gmail.com",
+                "password": "Zelu2000#"
             })
-            .expect(201)
+            .expect(404)
+
+
     });
 
-    it(`Testing login`, async () => {
-        return request(app.getHttpServer())
-            .post('/User/signUp')
-            .send({
-                "user":{
-                    "firstName": "Zelu",
-                    "lastName": "Tesema",
-                    "email": "zelu2@gmail.com",
-                    "userType":"PLANNER",
-                    "password": "Zelu2000#"
-                }
-            })
-            .expect(201)
-    });
+
 
     afterAll(async () => {
         await app.close();

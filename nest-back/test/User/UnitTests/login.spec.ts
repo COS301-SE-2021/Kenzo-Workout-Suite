@@ -20,14 +20,14 @@ beforeEach(() => {
     ctx = (mockCtx as unknown) as Context
 })
 
-test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
+test('Null User passed to signUp, Should throw PreconditionFailedException', async () => {
 
     let user;
-    await expect(userService.login(user)).rejects.toThrow("Invalid user object passed in.")
+    await expect(userService.login(user)).rejects.toThrow("Invalid User object passed in.")
 })
 
 
-test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
+test('Null User passed to signUp, Should throw PreconditionFailedException', async () => {
 
     spyOn(Jwt,"sign").and.returnValue("signedValue");
 
@@ -40,7 +40,7 @@ test('Null user passed to signUp, Should throw PreconditionFailedException', asy
 })
 
 
-test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
+test('Null User passed to signUp, Should throw PreconditionFailedException', async () => {
 
     spyOn(Jwt,"sign").and.returnValue("signedValue");
 
