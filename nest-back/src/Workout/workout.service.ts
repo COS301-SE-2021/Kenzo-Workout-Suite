@@ -301,6 +301,7 @@ export class WorkoutService{
                     planner_ID: id
                 },
                 select: {
+                    exercise: true,
                     title: true,
                     description: true,
                     repRange: true,

@@ -78,7 +78,7 @@ test('Test, Valid User returned by mock prisma service', async () => {
         dateOfBirth: null
     }
 
-    const userId=uuidv4;
+    const userId=uuidv4();
 
     await expect(userService.findUserByUUID(userId,ctx)).rejects.toThrow("No User with such UUID")
 

@@ -56,5 +56,5 @@ test('Incomplete exercise passed in, should throw PreconditionFailedException', 
 })
 
 test('Nonexistent exercise, should throw NotFoundException', async () => {
-    await expect(workoutService.updateExercise('test','test','test','test',0,'test',0,[],0,"",ctx)).rejects.toThrow("Exercise with provided ID does not exist.")
+    await expect(workoutService.updateExercise('test','test','test','test',0,'test',0,[],0,"",ctx)).rejects.toThrow("Invalid exercise object passed in.")
 })
