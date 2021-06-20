@@ -44,7 +44,15 @@ export class WorkoutController {
         this.ctx = ActualPrisma();
     }
 
-
+    /**
+     *Workout Controller - Get Workouts
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No workouts were found in the database.
+     * @return  Promise array of workout object/s.
+     * @author Tinashe Chamisa
+     *
+     */
     @Get('getWorkouts')
     @ApiOkResponse({
         description: 'A workout object.'
@@ -60,6 +68,17 @@ export class WorkoutController {
         return this.workoutService.getWorkouts(ActualPrisma());
     }
 
+    /**
+     *Workout Controller - Get Workouts by ID
+     *
+     * @param id This is the ID of the workout to be found in the database.
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No workouts were found in the database with the specified ID.
+     * @return  Promise array of workout object/s.
+     * @author Tinashe Chamisa
+     *
+     */
     @Get('getWorkoutById/:id')
     @ApiOkResponse({
         description: 'A workout object.'
@@ -75,6 +94,16 @@ export class WorkoutController {
     ) {
         return this.workoutService.getWorkoutById(id,ActualPrisma());
     }
+
+    /**
+     *Workout Controller - Get Exercises
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No exercises were found in the database.
+     * @return  Promise array of exercise object/s.
+     * @author Tinashe Chamisa
+     *
+     */
     @Get('getExercises')
     @ApiOkResponse({
         description: 'An exercise object.'
@@ -90,6 +119,17 @@ export class WorkoutController {
         return this.workoutService.getExercises(ActualPrisma());
     }
 
+    /**
+     *Workout Controller - Get Exercises by Title
+     *
+     * @param title This is the title of the exercise/s to be found in the database.
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No exercises were found in the database with the specified title.
+     * @return  Promise array of exercises object/s.
+     * @author Tinashe Chamisa
+     *
+     */
     @Get('getExerciseByTitle/:title')
     @ApiOkResponse({
         description: 'A workout object.'
@@ -105,6 +145,7 @@ export class WorkoutController {
     ) {
         return this.workoutService.getExerciseByTitle(title,ActualPrisma());
     }
+
     @Get('getExerciseByID/:ID')
     @ApiOkResponse({
         description: 'A workout object.'
@@ -121,6 +162,17 @@ export class WorkoutController {
         return this.workoutService.getExerciseByID(id,ActualPrisma());
     }
 
+    /**
+     *Workout Controller - Get Workouts by Planner
+     *
+     * @param id This is the ID of the planner of the workout/s to be found in the database.
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No workouts were found in the database with the specified planner ID.
+     * @return  Promise array of workout object/s.
+     * @author Tinashe Chamisa
+     *
+     */
     @UseGuards(JwtAuthGuard)
     @Get('getWorkoutByPlanner')
     @ApiOkResponse({
@@ -184,6 +236,27 @@ export class WorkoutController {
         return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,tags,duration,req.user.userId  ,this.ctx);
     }
 
+    /**
+     *Workout Controller - Update Exercise
+     *
+     * @param exercise This is the ID of the exercise.
+     * @param title This is the title of the exercise.
+     * @param description This is the description of the exercise.
+     * @param repRange This is the amount of reps.
+     * @param sets This is the amount of sets.
+     * @param Posedescription This is the pose description.
+     * @param restPeriod This is the rest period of the exercise.
+     * @param difficulty This is the difficulty of the exercise.
+     * @param duratime This is the duration of the exercise.
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws PreconditionFailedException if:
+     *                               -Not all parameters are given.
+     * @throws NotFoundException if:
+     *                               -An exercise with provided ID does not exist.
+     * @return  Message indicating success.
+     * @author Tinashe Chamisa
+     *
+     */
     @UseGuards(JwtAuthGuard)
     @Put('updateExercise')
     @ApiBody({type: updateExerciseDTO})
@@ -215,6 +288,19 @@ export class WorkoutController {
         return this.workoutService.updateExercise(exercise,title,description,repRange,sets,Posedescription,restPeriod,tags,duratime, req.user.userId,ActualPrisma());
     }
 
+    /**
+     *Workout Controller - Delete Exercise
+     *
+     * @param exercise This is the ID of the exercise.
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws PreconditionFailedException if:
+     *                               -Parameter can not be left empty.
+     * @throws NotFoundException if:
+     *                               -An exercise with provided ID does not exist.
+     * @return  Message indicating success.
+     * @author Tinashe Chamisa
+     *
+     */
     @Delete("deleteExercise")
     @ApiBody({type: deleteExerciseDTO})
     @ApiOkResponse({
@@ -302,6 +388,23 @@ export class WorkoutController {
         return this.workoutService.deleteWorkout(workoutID, this.ctx);
     }
 
+    /**
+     *Workout Controller - Create Tag
+     *
+     * @param label This is the title of the tag.
+     * @param textColour This is the text colour of the tag.
+     * @param backgroundColour  This is the background colour of the tag.
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotAcceptableException if:
+     *                               -There is any type of profanity found in the label, using npm 'bad-words'.
+     * @throws ConflictException if:
+     *                               -There is already a tag that exists in the database with the given label.
+     * @throws BadRequestException if:
+     *                               -There is a precondition net met, such as parameters not given.
+     * @return  Promise tag object.
+     * @author Tinashe Chamisa
+     *
+     */
     @Post('createTag')
     @ApiOkResponse({
         description: 'Successfully created Tag.'
@@ -330,6 +433,16 @@ export class WorkoutController {
         return this.workoutService.createTag(label,textColour,backgroundColour,ActualPrisma());
     }
 
+    /**
+     *Workout Controller - Get Tags
+     *
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No tags were found in the database.
+     * @return  Promise array of tag object/s.
+     * @author Tinashe Chamisa
+     *
+     */
     @Get('getTags')
     @ApiOkResponse({
         description: 'Successfully created Tag.'
