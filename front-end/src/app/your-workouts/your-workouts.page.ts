@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
 import {AlertController} from "@ionic/angular";
 import { Router } from "@angular/router";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-your-workouts',
@@ -10,8 +11,8 @@ import { Router } from "@angular/router";
   styleUrls: ['./your-workouts.page.scss'],
 })
 export class YourWorkoutsPage implements OnInit {
-  workouts : Promise<any>;
-  exercises: Promise<any>;
+  workouts : Observable<any>;
+  exercises: Observable<any>;
   constructor(private http:HttpClient,
               private workoutService:WorkoutService,
               public alertController:AlertController,
@@ -44,7 +45,6 @@ export class YourWorkoutsPage implements OnInit {
     let tempExercises = await this.workoutService.attemptGetExercisesByPlanner();
     if (tempExercises.status==200){
       this.exercises = tempExercises.data;
-      console.log(this.exercises)
       return 200;
     }else if (tempExercises.status==404){
       return 404;
@@ -111,6 +111,26 @@ export class YourWorkoutsPage implements OnInit {
       .then(() => {
         window.location.reload();
       })
+  }
+
+  eventHandler(event) {
+    let text = event.srcElement.value.toLowerCase();
+    this.workouts.forEach(data => {
+      let currElement =  document.getElementById(data.workoutID);
+      if (!(data.workoutTitle.toLowerCase().includes(text)) && !(data.workoutDescription.toLowerCase().includes(text))) {
+        currElement.style.display = "none";
+      } else {
+        currElement.style.display = "block";
+      }
+    })
+    this.exercises.forEach(data => {
+      let currElement = document.getElementById(data.exercise)
+      if (!(data.title.toLowerCase().includes(text)) && !(data.description.toLowerCase().includes(text))) {
+        currElement.style.display = "none";
+      } else {
+        currElement.style.display = "block";
+      }
+    })
   }
 
 }

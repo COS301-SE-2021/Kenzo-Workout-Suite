@@ -3,7 +3,6 @@ import {Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
 import { Router } from "@angular/router";
-import {HostListener} from "@angular/core";
 
 @Component({
   selector: 'app-search',
@@ -57,21 +56,19 @@ export class SearchPage implements OnInit {
    * on keypress or enter key is pressed, filter the cards based on what is typed
    * @param event
    */
-  @HostListener('document:keypress', ['$event'])
-  eventHandler(event: KeyboardEvent) {
-    let TypedValue = (<HTMLInputElement>document.getElementById("workout-searchbar")).value;
-    let currElement;
+  eventHandler(event) {
+    let text = event.srcElement.value.toLowerCase();
     this.searchWorkouts.forEach(data => {
-      currElement =  document.getElementById(data.workoutID);
-      if (!(data.workoutTitle.includes(TypedValue)) && !(data.workoutDescription.includes(TypedValue))) {
+      let currElement =  document.getElementById(data.workoutID);
+      if (!(data.workoutTitle.toLowerCase().includes(text)) && !(data.workoutDescription.toLowerCase().includes(text))) {
         currElement.style.display = "none";
       } else {
         currElement.style.display = "block";
       }
     })
     this.searchExercises.forEach(data => {
-      currElement = document.getElementById(data.exercise)
-      if (!(data.title.includes(TypedValue)) && !(data.description.includes(TypedValue))) {
+      let currElement = document.getElementById(data.exercise)
+      if (!(data.title.toLowerCase().includes(text)) && !(data.description.toLowerCase().includes(text))) {
         currElement.style.display = "none";
       } else {
         currElement.style.display = "block";

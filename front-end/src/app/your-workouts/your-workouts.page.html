@@ -19,7 +19,7 @@
     </div>
   </div>
   <div class="Spacing-div" id="SearchBarDiv">
-    <ion-searchbar id="workout-searchbar"  mode="ios" showCancelButton="never" inputmode="search"></ion-searchbar>
+    <ion-searchbar  #searchbar (ionInput)="eventHandler($event)" id="workout-searchbar" mode="ios" inputmode="search"></ion-searchbar>
   </div>
   <div>
     <ion-button class="filterBtns" id="workoutBtn" (click)="showWorkouts()">Workouts</ion-button>
@@ -41,7 +41,7 @@
           <ion-card-title><u>Exercise</u><br> {{ exercise.title }}</ion-card-title>
         </ion-card-header>
         <ion-card-content>{{ exercise.description}}</ion-card-content>
-        <ion-button mode="ios" value="{{exercise.exercise}}" class="editBtn" (click)="sendExerciseID(exercise.exercise)">Edit</ion-button>
+        <ion-button mode="ios" class="editBtn" (click)="sendExerciseID(exercise.exercise)">Edit</ion-button>
       </ion-card>
     </ion-virtual-scroll>
   </div>

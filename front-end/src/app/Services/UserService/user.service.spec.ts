@@ -90,11 +90,21 @@ describe('UserServiceService', () => {
 
   it('should sign up planner successfully and return a 200 status',async () => {
 
-    let respStatus = service.attemptSignUp("Portal", "Bot", "thecake@isfake.com" ,"Potato@123","Planner");
+    let respStatus = service.attemptSignUp("Portal", "Bot", "thecake@isfake.com" ,"Potato@123","PLANNER");
 
-    const req = httpMock.expectOne("http://localhost:3000/user/signupPlanner");
+    const body: Object = { //Object to be saved into DB
+      user: {
+        "firstName": "Portal",
+        "lastName": "Bot",
+        "email": "thecake@isfake.com",
+        "userType": "PLANNER",
+        "password": "Potato@123"
+      }
+    }
+
+    const req = httpMock.expectOne("http://localhost:3000/user/signUp");
     expect(req.request.method).toEqual('POST');
-    expect(req.request.body).toEqual({"firstName":"Portal", "lastName":"Bot", "email": "thecake@isfake.com", "password": "Potato@123"});
+    expect(req.request.body).toEqual(body);
 
     let resp = new HttpResponse({
       status: 200,
@@ -104,16 +114,24 @@ describe('UserServiceService', () => {
     req.flush(resp);
 
     let status = await respStatus;
-    expect(status).toEqual(200);
+    expect(status).toEqual(201);
   });
 
   it('should fail to sign up planner because credentials are incorrect and return a 400 status',async () => {
 
-    let respStatus = service.attemptSignUp("Jackster", "Wang","luca@me.com","Potat","Planner");
-
-    const req = httpMock.expectOne("http://localhost:3000/user/signupPlanner");
+    let respStatus = service.attemptSignUp("Jackster", "Wang","luca@me.com","Potat","PLANNER");
+    const body: Object = { //Object to be saved into DB
+      user: {
+        "firstName": "Jackster",
+        "lastName": "Wang",
+        "email": "luca@me.com",
+        "userType": "PLANNER",
+        "password": "Potat"
+      }
+    }
+    const req = httpMock.expectOne("http://localhost:3000/user/signUp");
     expect(req.request.method).toEqual('POST');
-    expect(req.request.body).toEqual({"firstName":"Jackster", "lastName":"Wang", "email": "luca@me.com", "password": "Potat"});
+    expect(req.request.body).toEqual(body);
 
     let error = new HttpErrorResponse({
       status: 400,
@@ -128,11 +146,19 @@ describe('UserServiceService', () => {
 
   it('should fail to sign up planner because email is already registered and return a 400 status',async () => {
 
-    let respStatus = service.attemptSignUp("Jackie", "Wang","jackiewang1999@outlook.com","Test@123","Planner");
-
-    const req = httpMock.expectOne("http://localhost:3000/user/signupPlanner");
+    let respStatus = service.attemptSignUp("Jackie", "Wang","j@j.com","Jackie@123","PLANNER");
+    const body: Object = { //Object to be saved into DB
+      user: {
+        "firstName": "Jackie",
+        "lastName": "Wang",
+        "email": "j@j.com",
+        "userType": "PLANNER",
+        "password": "Jackie@123"
+      }
+    }
+    const req = httpMock.expectOne("http://localhost:3000/user/signUp");
     expect(req.request.method).toEqual('POST');
-    expect(req.request.body).toEqual({"firstName":"Jackie", "lastName":"Wang", "email": "jackiewang1999@outlook.com", "password": "Test@123"});
+    expect(req.request.body).toEqual(body);
 
     let error = new HttpErrorResponse({
       status: 400,
@@ -147,11 +173,20 @@ describe('UserServiceService', () => {
 
   it('should fail to sign up planner because server is not responding and return a 500 status',async () => {
 
-    let respStatus = service.attemptSignUp("Zelealem", "Wang","luca@me.com","Potat@123","Planner");
+    let respStatus = service.attemptSignUp("Zelealem", "Wang","luca@me.com","Potat@123","PLANNER");
 
-    const req = httpMock.expectOne("http://localhost:3000/user/signupPlanner");
+    const body: Object = { //Object to be saved into DB
+      user: {
+        "firstName": "Zelealem",
+        "lastName": "Wang",
+        "email": "luca@me.com",
+        "userType": "PLANNER",
+        "password": "Potat@123"
+      }
+    }
+    const req = httpMock.expectOne("http://localhost:3000/user/signUp");
     expect(req.request.method).toEqual('POST');
-    expect(req.request.body).toEqual({"firstName":"Zelealem", "lastName":"Wang", "email": "luca@me.com", "password": "Potat@123"});
+    expect(req.request.body).toEqual(body);
 
     let error = new HttpErrorResponse({
       status: 500,
@@ -166,11 +201,21 @@ describe('UserServiceService', () => {
 
   it('should sign up client successfully and return a 200 status',async () => {
 
-    let respStatus = service.attemptSignUp("League","Legends","League@Legends.com","League@123","Client");
+    let respStatus = service.attemptSignUp("League","Legends","League@Legends.com","League@123","CLIENT");
 
-    const req = httpMock.expectOne("http://localhost:3000/user/signupClient");
+    const body: Object = { //Object to be saved into DB
+      user: {
+        "firstName": "League",
+        "lastName": "Legends",
+        "email": "League@Legends.com",
+        "userType": "CLIENT",
+        "password": "League@123"
+      }
+    }
+
+    const req = httpMock.expectOne("http://localhost:3000/user/signUp");
     expect(req.request.method).toEqual('POST');
-    expect(req.request.body).toEqual({"firstName":"League","lastName":"Legends","email": "League@Legends.com", "password": "League@123"});
+    expect(req.request.body).toEqual(body);
 
     let resp = new HttpResponse({
       status: 200,
@@ -180,17 +225,22 @@ describe('UserServiceService', () => {
     req.flush(resp);
 
     let status = await respStatus;
-    expect(status).toEqual(200);
+    expect(status).toEqual(201);
   });
 
   it('should fail to sign up client because credentials are incorrect and return a 400 status',async () => {
 
-    let respStatus = service.attemptSignUp("Jackster", "Wang","luca@me.com","Potat","Client");
-
-    const req = httpMock.expectOne("http://localhost:3000/user/signupClient");
-    expect(req.request.method).toEqual('POST');
-    expect(req.request.body).toEqual({"firstName":"Jackster", "lastName":"Wang", "email": "luca@me.com", "password": "Potat"});
-
+    let respStatus = service.attemptSignUp("Jackster", "Wang","luca@me.com","Potat","CLIENT");
+    const body: Object = { //Object to be saved into DB
+      user: {
+        "firstName": "Jackster",
+        "lastName": "Wang",
+        "email": "luca@me.com",
+        "userType": "CLIENT",
+        "password": "Potat"
+      }
+    }
+    const req = httpMock.expectOne("http://localhost:3000/user/signUp");
     let error = new HttpErrorResponse({
       status: 400,
       statusText: "Bad request, invalid details"
@@ -203,12 +253,19 @@ describe('UserServiceService', () => {
   });
 
   it('should fail to sign up client because email is already registered and return a 400 status',async () => {
-
-    let respStatus = service.attemptSignUp("Jaminda", "Maritz","jam@gmail.com","Test@123","Client");
-
-    const req = httpMock.expectOne("http://localhost:3000/user/signupClient");
+    let respStatus = service.attemptSignUp("Jackie", "Wang","j@j.com","Jackie@123","CLIENT");
+    const body: Object = { //Object to be saved into DB
+      user: {
+        "firstName": "Jackie",
+        "lastName": "Wang",
+        "email": "j@j.com",
+        "userType": "CLIENT",
+        "password": "Jackie@123"
+      }
+    }
+    const req = httpMock.expectOne("http://localhost:3000/user/signUp");
     expect(req.request.method).toEqual('POST');
-    expect(req.request.body).toEqual({"firstName":"Jaminda", "lastName":"Maritz", "email": "jam@gmail.com", "password": "Test@123"});
+    expect(req.request.body).toEqual(body);
 
     let error = new HttpErrorResponse({
       status: 400,
@@ -223,11 +280,20 @@ describe('UserServiceService', () => {
 
   it('should fail to sign up client because server is not responding and return a 500 status',async () => {
 
-    let respStatus = service.attemptSignUp("Zelealem", "Wang","luca@me.com","Potat@123","Client");
+    let respStatus = service.attemptSignUp("Zelealem", "Wang","luca@me.com","Potat@123","CLIENT");
 
-    const req = httpMock.expectOne("http://localhost:3000/user/signupClient");
+    const body: Object = { //Object to be saved into DB
+      user: {
+        "firstName": "Zelealem",
+        "lastName": "Wang",
+        "email": "luca@me.com",
+        "userType": "CLIENT",
+        "password": "Potat@123"
+      }
+    }
+    const req = httpMock.expectOne("http://localhost:3000/user/signUp");
     expect(req.request.method).toEqual('POST');
-    expect(req.request.body).toEqual({"firstName":"Zelealem", "lastName":"Wang", "email": "luca@me.com", "password": "Potat@123"});
+    expect(req.request.body).toEqual(body);
 
     let error = new HttpErrorResponse({
       status: 500,
