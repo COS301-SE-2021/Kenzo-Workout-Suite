@@ -8,21 +8,25 @@ let ctx: Context
 let workoutService: WorkoutService
 let prisma: PrismaClient
 
-beforeEach(() => {
-    workoutService = new WorkoutService(prisma);
-    mockCtx = createMockContext()
-    ctx = (mockCtx as unknown) as Context
-})
+describe('Unit tests of the getTags function in the Workout Service', () => {
 
-test('Should receive valid information about all tags', async () => {
-    const tag = [{
-        label: 'test',
-        textColour: 'test',
-        backgroundColour: 'test'
-    }]
-    mockCtx.prisma.tag.findMany.mockResolvedValue(tag)
+    beforeEach(() => {
+        workoutService = new WorkoutService(prisma);
+        mockCtx = createMockContext()
+        ctx = (mockCtx as unknown) as Context
+    })
 
-    const response=await workoutService.getTags(ctx)
+    test('Should receive valid information about all tags', async () => {
+        const tag = [{
+            label: 'test',
+            textColour: 'test',
+            backgroundColour: 'test'
+        }]
+        mockCtx.prisma.tag.findMany.mockResolvedValue(tag)
 
-    expect(response).toBe(tag);
+        const response = await workoutService.getTags(ctx)
+
+        expect(response).toBe(tag);
+    })
+
 })

@@ -8,30 +8,34 @@ let ctx: Context
 let workoutService: WorkoutService
 let prisma: PrismaClient
 
-beforeEach(() => {
-    workoutService = new WorkoutService(prisma);
-    mockCtx = createMockContext()
-    ctx = (mockCtx as unknown) as Context
-})
+describe('Unit tests of the getWorkoutByPlanner function in the Workout Service', () => {
 
-test('Should receive valid information about workout with corresponding planner', async () => {
-    const uuidPlanner = uuidv4();
-    const workout = [{
-        workoutID: uuidv4(),
-        workoutTitle: "test",
-        workoutDescription: "test",
-        tags:[],
-        planner_ID: uuidPlanner
-    }]
-    mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
+    beforeEach(() => {
+        workoutService = new WorkoutService(prisma);
+        mockCtx = createMockContext()
+        ctx = (mockCtx as unknown) as Context
+    })
 
-    const response=await workoutService.getWorkoutByPlanner(uuidPlanner,ctx)
+    test('Should receive valid information about workout with corresponding planner', async () => {
+        const uuidPlanner = uuidv4();
+        const workout = [{
+            workoutID: uuidv4(),
+            workoutTitle: "test",
+            workoutDescription: "test",
+            tags: [],
+            planner_ID: uuidPlanner
+        }]
+        mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
 
-    expect(response).toBe(workout);
-})
+        const response = await workoutService.getWorkoutByPlanner(uuidPlanner, ctx)
 
-test('Should not receive valid information about workout with corresponding planner as workout does not exist', async () => {
-    let workout;
-    mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
-    await expect(workoutService.getWorkoutByPlanner("000",ctx)).rejects.toThrow("No workouts were found in the database with the specified planner.")
+        expect(response).toBe(workout);
+    })
+
+    test('Should not receive valid information about workout with corresponding planner as workout does not exist', async () => {
+        let workout;
+        mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
+        await expect(workoutService.getWorkoutByPlanner("000", ctx)).rejects.toThrow("No workouts were found in the database with the specified planner.")
+    })
+
 })

@@ -10,28 +10,32 @@ let prisma: PrismaClient
 
 const uuidExercise = uuidv4();
 
-beforeEach(() => {
-    workoutService = new WorkoutService(prisma);
-    mockCtx = createMockContext()
-    ctx = (mockCtx as unknown) as Context
-})
+describe('Unit tests of the updateExercise function in the Workout Service', () => {
 
-test('Null exercise passed in, should throw PreconditionFailedException', async () => {
-    let exercise;
-    mockCtx.prisma.tag.update.mockResolvedValue(exercise)
-    await expect(workoutService.updateExercise('','','','',0,'',0,[],0,"",ctx)).rejects.toThrow("Invalid exercise object passed in.")
-})
+    beforeEach(() => {
+        workoutService = new WorkoutService(prisma);
+        mockCtx = createMockContext()
+        ctx = (mockCtx as unknown) as Context
+    })
 
-test('Incomplete exercise passed in, should throw PreconditionFailedException', async () => {
-    let exercise;
-    mockCtx.prisma.tag.update.mockResolvedValue(exercise)
-    await expect(workoutService.updateExercise('test','','test','',0,'test',0,[],0,"",ctx)).rejects.toThrow("Invalid exercise object passed in.")
-})
+    test('Null exercise passed in, should throw PreconditionFailedException', async () => {
+        let exercise;
+        mockCtx.prisma.tag.update.mockResolvedValue(exercise)
+        await expect(workoutService.updateExercise('', '', '', '', 0, '', 0, [], 0, "", ctx)).rejects.toThrow("Invalid exercise object passed in.")
+    })
 
-test('Nonexistent exercise, should throw NotFoundException', async () => {
-    let exercise;
-    mockCtx.prisma.tag.update.mockResolvedValue(exercise)
-    await expect(workoutService.updateExercise('test','test','test','test',0,'test',0,[],0,"",ctx)).rejects.toThrow("Invalid exercise object passed in.")
+    test('Incomplete exercise passed in, should throw PreconditionFailedException', async () => {
+        let exercise;
+        mockCtx.prisma.tag.update.mockResolvedValue(exercise)
+        await expect(workoutService.updateExercise('test', '', 'test', '', 0, 'test', 0, [], 0, "", ctx)).rejects.toThrow("Invalid exercise object passed in.")
+    })
+
+    test('Nonexistent exercise, should throw NotFoundException', async () => {
+        let exercise;
+        mockCtx.prisma.tag.update.mockResolvedValue(exercise)
+        await expect(workoutService.updateExercise('test', 'test', 'test', 'test', 0, 'test', 0, [], 0, "", ctx)).rejects.toThrow("Invalid exercise object passed in.")
+    })
+
 })
 
 
