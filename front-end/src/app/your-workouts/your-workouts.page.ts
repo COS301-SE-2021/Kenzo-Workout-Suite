@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
-import {Workout} from "../Models/workout";
 import {AlertController} from "@ionic/angular";
 import { Router } from "@angular/router";
 
@@ -35,11 +33,13 @@ export class YourWorkoutsPage implements OnInit {
       }else if (tempWorkouts.status==404){
         return 404;
       }else{
-        throw new Error("Server is not responding.");
         return 500;
       }
   }
 
+  /**
+   * Load all the exercises
+   */
   async loadExercises(){
     let tempExercises = await this.workoutService.attemptGetExercisesByPlanner();
     if (tempExercises.status==200){
@@ -48,7 +48,6 @@ export class YourWorkoutsPage implements OnInit {
     }else if (tempExercises.status==404){
       return 404;
     }else{
-      throw new Error("Server is not responding.");
       return 500;
     }
   }
@@ -96,6 +95,13 @@ export class YourWorkoutsPage implements OnInit {
         id: id
       }
     }
+  }
+
+  async goToSearch(){
+    await this.router.navigate(['/search'])
+      .then(() => {
+        window.location.reload();
+      });
   }
 
 }
