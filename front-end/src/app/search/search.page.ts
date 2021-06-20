@@ -56,7 +56,7 @@ export class SearchPage implements OnInit {
    * on keypress or enter key is pressed, filter the cards based on what is typed
    * @param event
    */
-  eventHandler(event){
+  eventHandler(event: KeyboardEvent){
     let TypedValue = (<HTMLInputElement>document.getElementById("workout-searchbar")).value;
     this.searchWorkouts.then(result=>{
       result.forEach(data=>{
