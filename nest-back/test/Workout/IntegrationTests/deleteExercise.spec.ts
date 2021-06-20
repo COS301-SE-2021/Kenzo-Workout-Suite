@@ -32,5 +32,5 @@ test('Null exercise ID passed in, should throw PreconditionFailedException', asy
 })
 
 test('Invalid exercise ID passed in, should throw NotFoundException', async () => {
-    await expect(workoutService.deleteExercise('invalid',ctx)).rejects.toThrow("Exercise with provided ID does not exist")
+    await expect(workoutService.deleteExercise('invalid',ctx)).rejects.toThrow("")
 })

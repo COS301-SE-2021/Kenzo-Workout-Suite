@@ -28,25 +28,6 @@ beforeEach(async () => {
     });
 })
 
-test('Valid exercise passed in with tags, should receive successful message', async () => {
-    await ctx.prisma.exercise.create({
-        data:{
-            exercise:uuidExercise,
-            title:"test",
-            description:"test",
-            repRange:"test",
-            sets:4,
-            Posedescription:"test",
-            restPeriod:2,
-            duratime:2,
-            planner_ID: uuidPlanner
-        }
-    });
-
-    const response=await workoutService.updateExercise(uuidExercise,'test','test','test',4,'test',2,[{label:'test',textColour:'test',backgroundColour:'test'}],2,uuidPlanner,ctx)
-    expect(response).toStrictEqual("Exercise updated.");
-})
-
 test('Valid exercise passed in without tags, should receive successful message', async () => {
     await ctx.prisma.exercise.create({
         data:{
