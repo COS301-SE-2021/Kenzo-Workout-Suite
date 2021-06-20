@@ -23,14 +23,15 @@ export class Interceptor implements HttpInterceptor {
   constructor(private alertController: AlertController, private storage: Storage) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
     return from(this.storage.get(TOKEN_KEY))
       .pipe(
         switchMap(token => {
-          token = token.replaceAll("\"","");
+
           if (token) {
+            token = token.replaceAll("\"","");
             request = request.clone({ headers: request.headers.set('Authorization', 'Bearer ' + token) });
           }
+
           return next.handle(request).pipe(
             map((event: HttpEvent<any>) => {
               return event;
