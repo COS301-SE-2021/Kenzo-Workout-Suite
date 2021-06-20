@@ -424,8 +424,9 @@ export class WorkoutService{
      * @author Tinashe Chamisa
      *
      */
+
     async updateExercise(exercise: string, title: string,description: string,repRange: string,sets: number,Posedescription: string,restPeriod: number,tags: Tag[],duratime: number,planner_ID:string ,ctx: Context): Promise<any> {
-        if(title=="" || description=="" || repRange=="" || sets==0 || Posedescription=="" || restPeriod==0 || duratime==0 || tags==null || planner_ID == "" || title==null || description==null || repRange==null || sets==null || Posedescription==null || restPeriod==null || duratime==null  || planner_ID == ""){
+        if(exercise=="" || title=="" || description=="" || repRange=="" || sets==0 || Posedescription=="" || restPeriod==0 || duratime==0 || tags==null || planner_ID == "" || title==null || description==null || repRange==null || sets==null || Posedescription==null || restPeriod==null || duratime==null  || planner_ID == ""){
             throw new PreconditionFailedException("Invalid exercise object passed in.")
         }
 
@@ -442,7 +443,6 @@ export class WorkoutService{
             if(!(Array.isArray(Exercise) && Exercise.length)){
                 throw new NotFoundException("Exercise with provided ID does not exist.");
             }
-
             if(tags!= null) { //run update query with tags
                 await this.addNewTags(tags, ctx);
                 let tagConnection = tags.map(n => {
@@ -525,11 +525,13 @@ export class WorkoutService{
             throw new PreconditionFailedException("Parameter can not be left empty.")
         }
         try{
+
             const Exercise = await ctx.prisma.exercise.delete({
                 where:{
                     exercise
                 }
             });
+
             if(!(Array.isArray(Exercise) && Exercise.length)){
                 throw new NotFoundException("Exercise with provided ID does not exist");
             }

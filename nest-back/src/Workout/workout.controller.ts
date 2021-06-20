@@ -35,6 +35,7 @@ import {
 } from "./workout.model";
 import {JwtAuthGuard} from "../User/AuthGuards/jwt-auth.guard";
 
+
 @Controller('workout')
 export class WorkoutController {
 
@@ -255,6 +256,7 @@ export class WorkoutController {
     ){
         return this.workoutService.deleteExercise(exercise,ActualPrisma());
     }
+
     /**
      *Workout Service - Create Workout
      *
