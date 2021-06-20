@@ -50,7 +50,7 @@ describe('YourWorkoutsPage', () => {
     // spyOn(userService, 'addToken').and.stub();
     // spyOn(userService, "getToken").and.stub();
     spyOn(service, 'attemptGetWorkoutsByPlanner').and.resolveTo({"status": 404});
-    await component.loadWorkouts().catch(error=>{
+    await component.loadWorkouts().then(error=>{
       expect(error).toEqual(404);
     });
   });

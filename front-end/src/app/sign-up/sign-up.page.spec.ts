@@ -6,6 +6,7 @@ import {Router} from "@angular/router";
 import {RouterTestingModule} from "@angular/router/testing";
 import {FormsModule} from "@angular/forms";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {IonicStorageModule} from "@ionic/storage-angular";
 
 describe('SignUpPage', () => {
   let component: SignUpPage;
@@ -17,7 +18,13 @@ describe('SignUpPage', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SignUpPage ],
-      imports: [IonicModule.forRoot(), HttpClientTestingModule, RouterTestingModule, FormsModule]
+      imports: [
+        IonicModule.forRoot(),
+        HttpClientTestingModule,
+        RouterTestingModule,
+        FormsModule,
+        IonicStorageModule.forRoot()
+      ]
     }).compileComponents();
 
     service = TestBed.inject(UserService);
@@ -38,7 +45,7 @@ describe('SignUpPage', () => {
     spyOn(service, 'attemptSignUp').and.resolveTo(400);
     spyOn(alertController, "create").and.stub();
     spyOn(component, "presentAlert").and.stub();
-    await component.signUp().catch(error=>{
+    await component.signUp().then(error=>{
       expect(error).toEqual(new Error('User credentials are incorrect.'));
     });
   });
@@ -47,13 +54,15 @@ describe('SignUpPage', () => {
     spyOn(service, 'attemptSignUp').and.resolveTo(500);
     spyOn(alertController, "create").and.stub();
     spyOn(component, "presentAlert").and.stub();
-    await component.signUp().catch(error=>{
+    await component.signUp().then(error=>{
       expect(error).toEqual(new Error('Server is not responding.'));
     });
   });
   it('should successfully sign up an account with valid details.', async () => {
     spyOn(service, 'attemptSignUp').and.resolveTo(200);
     spyOn(routeMock, "navigate").and.resolveTo();
+    spyOn(alertController, "create").and.stub();
+    spyOn(component, "presentAlert").and.stub();
     await component.signUp().then(data=>{
       expect(data).toEqual(200);
     });

@@ -101,7 +101,7 @@ export class ProfilePage implements OnInit {
       });
       await this.presentAlert(alert);
     }
-    window.location.reload();
+    this.reloadWindow();
     return status;
   }
 
@@ -112,5 +112,9 @@ export class ProfilePage implements OnInit {
   async presentAlert(alert:any) {
     await alert.present();
     await alert.onDidDismiss();
+  }
+
+  reloadWindow(){
+    window.location.reload();
   }
 }

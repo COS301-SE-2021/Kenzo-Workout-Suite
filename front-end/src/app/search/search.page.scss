@@ -55,7 +55,7 @@
 }
 
 .filterBtns{
-  display: inline-block;
+  display: block;
   margin-left: auto;
   margin-right: auto;
   width: 187.5px;
@@ -63,9 +63,6 @@
   --border-radius: var(--border-radius);
 }
 
-#searchExerciseBtn{
-  opacity:0.3;
-}
 
 .footer{
   --background: var(--ion-off-white);
@@ -79,41 +76,32 @@
 .navThumbnail{
   display: block;
   float: left;
-  margin-left: 10%;
-
+  margin-left: auto;
+  margin-right: auto;
+  width: 25%;
 }
 
 .NavButtons{
   width: var(--icon-size);
   height: var(--icon-size);
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
 }
 
 .NavLabel{
   display: block;
   float: left;
-  position: absolute;
-  top: 35px;
-  left: 40px;
+  font-size: 15px;
+  margin-left: 43%;
+  margin-right: auto;
 }
 
-#WorkoutsBtn{
-  margin-left: 10%;
-}
-
-#SearchBtn, #ContactsBtn, #SettingsBtn{
-  margin-left: 15%;
-}
-
-.browseLabel{
-  margin-left: 22%;
-}
-
-.clientsLabel{
-  margin-left: 45%;
-}
-
-.profileLabel{
-  margin-left: 67%;
+@media only screen and (max-width: 400px){
+  .NavLabel{
+    margin-left: 25%;
+  }
 }
 
 .workoutScroll{
