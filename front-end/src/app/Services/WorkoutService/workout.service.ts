@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Workout} from "../../Models/workout";
 import {Exercise} from "../../Models/exercise";
 import {UserService} from "../UserService/user.service";
+import {Route, Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
 })
 export class WorkoutService {
 
-  constructor(private http:HttpClient, private user:UserService) {}
+  constructor(private http:HttpClient, private user:UserService) {
+  }
 
   /** This function attempts to submit a workout by using the following parameters:
    * @author Luca Azmanov, u19004185
@@ -63,7 +65,7 @@ export class WorkoutService {
     let userToken = await this.user.getToken();
     const headers = {'Authorization': 'Bearer '+userToken['access_token']};
 
-    return this.http.post(url, body, {headers} ).toPromise().then(data=>{
+    return this.http.put(url, body, {headers} ).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
       if(error.status==0) return 500;
@@ -80,7 +82,7 @@ export class WorkoutService {
    * @returns 200,400,500 represent a success, user error and server error, respectively.
    */
   async attemptRemoveWorkout(id:string) : Promise<Number> {
-    const url : string = "http://localhost:3000/workout/createWorkout";
+    const url : string = "http://localhost:3000/workout/deleteWorkout";
 
     const body:Object = {
       "workoutID":id,
@@ -88,8 +90,13 @@ export class WorkoutService {
 
     let userToken = await this.user.getToken();
     const headers = {'Authorization': 'Bearer '+userToken['access_token']};
-
-    return this.http.post(url, body, {headers}).toPromise().then(data=>{
+    const options = {
+      headers: new HttpHeaders({
+        'Authorization': 'Bearer '+userToken['access_token'],
+      }),
+      body: body
+    };
+    return this.http.delete(url, options).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
       if(error.status==0) return 500;
@@ -107,7 +114,6 @@ export class WorkoutService {
    */
   async attemptSubmitExercise(exercise:Exercise) : Promise<Number> {
     const url : string = "http://localhost:3000/workout/createExercise";
-
     const body:Object = {
       "title": exercise.title,
       "description": exercise.description,
@@ -121,7 +127,6 @@ export class WorkoutService {
 
     let userToken = await this.user.getToken();
     const headers = {'Authorization': 'Bearer '+userToken['access_token']};
-
     return this.http.post(url, body, {headers}).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
@@ -139,7 +144,7 @@ export class WorkoutService {
    * @returns 200,400,500 represent a success, user error and server error, respectively.
    */
   async attemptUpdateExercise(exercise:Exercise, id:string) : Promise<Number> {
-    const url : string = "http://localhost:3000/workout/createExercise";
+    const url : string = "http://localhost:3000/workout/updateExercise";
 
     const body:Object = {
       "exercise":id,
@@ -156,7 +161,7 @@ export class WorkoutService {
     let userToken = await this.user.getToken();
     const headers = {'Authorization': 'Bearer '+userToken['access_token']};
 
-    return this.http.post(url, body, {headers}).toPromise().then(data=>{
+    return this.http.put(url, body, {headers}).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
       if(error.status==0) return 500;
@@ -172,16 +177,20 @@ export class WorkoutService {
    * @returns 200,400,500 represent a success, user error and server error, respectively.
    */
   async attemptRemoveExercise(id:string) : Promise<Number> {
-    const url : string = "http://localhost:3000/workout/createExercise";
+    const url : string = "http://localhost:3000/workout/deleteExercise";
 
     const body:Object = {
       "exercise":id,
     };
 
     let userToken = await this.user.getToken();
-    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
-
-    return this.http.post(url, body, {headers}).toPromise().then(data=>{
+    const options = {
+      headers: new HttpHeaders({
+        'Authorization': 'Bearer '+userToken['access_token'],
+      }),
+      body: body
+    };
+    return this.http.delete(url, options).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
       if(error.status==0) return 500;

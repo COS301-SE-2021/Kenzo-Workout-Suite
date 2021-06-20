@@ -12,12 +12,11 @@ import {KenzoTag} from "../Models/kenzo-tag";
   styleUrls: ['./create-exercise.page.scss'],
 })
 export class CreateExercisePage implements OnInit {
-  title: string;
-  description: string;
-  diff: string;
-  range: string;
-  sets: number;
-  pose_description: string;
+  title: string ="";
+  description: string ="";
+  range: string ="";
+  sets: number ;
+  pose_description: string ="";
   rest: number;
   duration: number;
 

@@ -12,7 +12,6 @@ import {Workout} from "../Models/workout";
   styleUrls: ['./update-workout.page.scss'],
 })
 export class UpdateWorkoutPage implements OnInit {
-  diff: string="";
   description: string="";
   title: string="";
 
@@ -21,6 +20,7 @@ export class UpdateWorkoutPage implements OnInit {
   newTag: KenzoTag;
 
   @ViewChild('searchBar', {static: false}) searchbar: IonSearchbar;
+  id:string;
 
   constructor(private http:HttpClient,
               private route:Router,
@@ -28,12 +28,39 @@ export class UpdateWorkoutPage implements OnInit {
               public alertController:AlertController,) {
     this.getTags();
     this.newTag = this.getRandomTag("");
+    this.id = route.getCurrentNavigation().extras.state.id;
+    this.getDetails();
   }
 
   ngOnInit() {
   }
 
-  /** This function uses the workout service to submit a request to create a workout.
+  async getDetails(){
+    let workout = await this.workoutService.attemptGetWorkouts();
+    let data = workout['data'];
+    let unit;
+    for (let i = 0; i < data.length; i++) {
+      unit = data[i];
+
+      if(unit['workoutID']==this.id){
+        break;
+      }
+    }
+    console.log(unit)
+    this.title = unit['workoutTitle'];
+    this.description = unit['workoutDescription'];
+
+    let tags = unit['tags'];
+    for (const tagsKey in tags) {
+      console.log(tagsKey)
+      let tg = new KenzoTag(tagsKey['textColour'],tagsKey['backgroundColour'], tagsKey['label'], true);
+      console.log(tg)
+    }
+
+
+  }
+
+  /** This function uses the workout service to submit a request to update a workout.
    * The workout service will return the status of the request:
    * 200 -> Success
    * 400 -> Incorrect Data
@@ -44,7 +71,7 @@ export class UpdateWorkoutPage implements OnInit {
    * Success states [200] will result in a logged in a Planner being navigated to the logged in User's homescreen.
    * @author Luca Azmanov, u19004185
    */
-  async submitCreateRequest() {
+  async submitUpdateRequest() {
     let selected:KenzoTag[] = new Array();
     for (let i = 0; i < this.tags.length; i++) {
       if(this.tags[i].selected){
@@ -53,13 +80,13 @@ export class UpdateWorkoutPage implements OnInit {
     }
 
     let new_workout = new Workout(this.title, this.description, selected);
-    let status = await this.workoutService.attemptSubmitWorkout(new_workout);
+    let status = await this.workoutService.attemptUpdateWorkout(new_workout, this.id);
 
     if (status < 400) {
       // Success State
       const alert = await this.alertController.create({
         cssClass: 'kenzo-alert',
-        header: 'Workout Submitted',
+        header: 'Workout Updated',
         buttons: ['Go Back']
       });
 
@@ -73,7 +100,7 @@ export class UpdateWorkoutPage implements OnInit {
       // Invalid Input
       const alert = await this.alertController.create({
         cssClass: 'kenzo-alert',
-        header: 'Could not create workout',
+        header: 'Could not update workout',
         message: 'Please fill all of the fields.',
         buttons: ['Dismiss']
       });
