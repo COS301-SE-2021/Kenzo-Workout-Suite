@@ -10,7 +10,16 @@ import {Route, Router} from "@angular/router";
 })
 export class WorkoutService {
 
+  id:string;
+
   constructor(private http:HttpClient, private user:UserService) {
+    this.populateJWT();
+  }
+
+  async populateJWT(){
+    // let userToken = await this.user.getToken();
+    // this.id = userToken['access_token'];
+    // console.log(this.id)
   }
 
   /** This function attempts to submit a workout by using the following parameters:
@@ -32,8 +41,7 @@ export class WorkoutService {
       "tags": workout.tags
     };
 
-    let userToken = await this.user.getToken();
-    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
+    const headers = {'Authorization': 'Bearer '+this.id};
 
     return this.http.post(url, body, {headers} ).toPromise().then(data=>{
       return 200;
@@ -62,8 +70,7 @@ export class WorkoutService {
       "tags": workout.tags
     };
 
-    let userToken = await this.user.getToken();
-    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
+    const headers = {'Authorization': 'Bearer '+this.id};
 
     return this.http.put(url, body, {headers} ).toPromise().then(data=>{
       return 200;
@@ -88,11 +95,9 @@ export class WorkoutService {
       "workoutID":id,
     };
 
-    let userToken = await this.user.getToken();
-    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
     const options = {
       headers: new HttpHeaders({
-        'Authorization': 'Bearer '+userToken['access_token'],
+        'Authorization': 'Bearer '+this.id,
       }),
       body: body
     };
@@ -124,9 +129,8 @@ export class WorkoutService {
       "tags": exercise.tags,
       "duratime": exercise.duratime
     };
-
-    let userToken = await this.user.getToken();
-    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
+    // await this.populateJWT();
+    const headers = {'Authorization': 'Bearer '+this.id};
     return this.http.post(url, body, {headers}).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
@@ -158,8 +162,7 @@ export class WorkoutService {
       "duratime": exercise.duratime
     };
 
-    let userToken = await this.user.getToken();
-    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
+    const headers = {'Authorization': 'Bearer '+this.id};
 
     return this.http.put(url, body, {headers}).toPromise().then(data=>{
       return 200;
@@ -183,10 +186,9 @@ export class WorkoutService {
       "exercise":id,
     };
 
-    let userToken = await this.user.getToken();
     const options = {
       headers: new HttpHeaders({
-        'Authorization': 'Bearer '+userToken['access_token'],
+        'Authorization': 'Bearer '+this.id,
       }),
       body: body
     };
@@ -232,8 +234,8 @@ export class WorkoutService {
 
   async attemptGetWorkoutsByPlanner() : Promise<any>{
     const url: string = "http://localhost:3000/workout/getWorkoutByPlanner";
-    let userToken = await this.user.getToken();
-    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
+    await this.populateJWT();
+    const headers = {'Authorization': 'Bearer '+this.id};
 
     return this.http.get(url, {headers}).toPromise().then(data=>{
       data = {
@@ -249,8 +251,8 @@ export class WorkoutService {
 
   async attemptGetExercisesByPlanner() : Promise<any>{
     const url: string = "http://localhost:3000/workout/getExercisesByPlanner";
-    let userToken = await this.user.getToken();
-    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
+    await this.populateJWT();
+    const headers = {'Authorization': 'Bearer '+this.id};
 
     return this.http.get(url, {headers}).toPromise().then(data=>{
       data = {
