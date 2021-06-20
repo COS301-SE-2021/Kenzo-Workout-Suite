@@ -10,20 +10,24 @@ let prisma: PrismaClient
 
 const uuidExercise = uuidv4();
 
-beforeEach(() => {
-    workoutService = new WorkoutService(prisma);
-    mockCtx = createMockContext()
-    ctx = (mockCtx as unknown) as Context
-})
+describe('Unit tests of the deleteExercise function in the Workout Service', () => {
 
-test('Null exercise ID passed in, should throw PreconditionFailedException', async () => {
-    let exercise;
-    mockCtx.prisma.exercise.delete.mockResolvedValue(exercise)
-    await expect(workoutService.deleteExercise('',ctx)).rejects.toThrow("Parameter can not be left empty.")
-})
+    beforeEach(() => {
+        workoutService = new WorkoutService(prisma);
+        mockCtx = createMockContext()
+        ctx = (mockCtx as unknown) as Context
+    })
 
-test('Invalid exercise ID passed in, should throw NotFoundException', async () => {
-    let exercise;
-    mockCtx.prisma.exercise.delete.mockResolvedValue(exercise)
-    await expect(workoutService.deleteExercise('invalid',ctx)).rejects.toThrow("Exercise with provided ID does not exist")
+    test('Null exercise ID passed in, should throw PreconditionFailedException', async () => {
+        let exercise;
+        mockCtx.prisma.exercise.delete.mockResolvedValue(exercise)
+        await expect(workoutService.deleteExercise('', ctx)).rejects.toThrow("Parameter can not be left empty.")
+    })
+
+    test('Valid exercise returned should return success message', async () => {
+        let exercise;
+        mockCtx.prisma.exercise.delete.mockResolvedValue(exercise)
+        expect(await workoutService.deleteExercise('valid', ctx)).toStrictEqual("Exercise Deleted.")
+    })
+
 })

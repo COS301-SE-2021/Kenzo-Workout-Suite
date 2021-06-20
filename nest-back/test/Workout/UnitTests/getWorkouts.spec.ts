@@ -8,23 +8,27 @@ let ctx: Context
 let workoutService: WorkoutService
 let prisma: PrismaClient
 
-beforeEach(() => {
-    workoutService = new WorkoutService(prisma);
-    mockCtx = createMockContext()
-    ctx = (mockCtx as unknown) as Context
-})
+describe('Unit tests of the getWorkouts function in the Workout Service', () => {
 
-test('Should receive valid information about all workouts', async () => {
-    const workout = [{
-        workoutID: uuidv4(),
-        workoutTitle: "test",
-        workoutDescription: "test",
-        tags: [],
-        planner_ID: uuidv4()
-    }]
-    mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
+    beforeEach(() => {
+        workoutService = new WorkoutService(prisma);
+        mockCtx = createMockContext()
+        ctx = (mockCtx as unknown) as Context
+    })
 
-    const response=await workoutService.getWorkouts(ctx)
+    test('Should receive valid information about all workouts', async () => {
+        const workout = [{
+            workoutID: uuidv4(),
+            workoutTitle: "test",
+            workoutDescription: "test",
+            tags: [],
+            planner_ID: uuidv4()
+        }]
+        mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
 
-    expect(response).toBe(workout);
+        const response = await workoutService.getWorkouts(ctx)
+
+        expect(response).toBe(workout);
+    })
+
 })

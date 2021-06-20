@@ -16,6 +16,7 @@ let ctx: Context
 let userService: UserService
 let Jwt : JwtService
 
+describe('Unit tests of the function findUserByUUID in the UserService', () => {
 beforeEach(() => {
     userService = new UserService(Jwt);
     mockCtx = createMockContext()
@@ -62,5 +63,5 @@ test('Test, Valid User returned by mock prisma service should return the User de
 
     expect(response).toStrictEqual(expectedReturn);
 })
-
+    })
 

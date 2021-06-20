@@ -9,32 +9,36 @@ let prisma: PrismaClient
 
 const uuidPlanner = uuidv4();
 
-beforeEach(async () => {
-    workoutService = new WorkoutService(prisma);
-    ctx = ActualPrisma()
-    await ctx.prisma.tag.deleteMany();
-})
+describe('Integration tests of the getTags function in the Workout Service', () => {
 
-test('Should receive valid information about all tags', async () => {
-    await ctx.prisma.tag.create({
-        data:{
+    beforeEach(async () => {
+        workoutService = new WorkoutService(prisma);
+        ctx = ActualPrisma()
+        await ctx.prisma.tag.deleteMany();
+    })
+
+    test('Should receive valid information about all tags', async () => {
+        await ctx.prisma.tag.create({
+            data: {
+                label: 'test',
+                textColour: 'test',
+                backgroundColour: 'test'
+            }
+        });
+
+        const tag = [{
             label: 'test',
             textColour: 'test',
             backgroundColour: 'test'
-        }
-    });
+        }]
 
-    const tag = [{
-        label: 'test',
-        textColour: 'test',
-        backgroundColour: 'test'
-    }]
+        const response = await workoutService.getTags(ctx)
 
-    const response=await workoutService.getTags(ctx)
+        expect(response).toStrictEqual(tag);
+    })
 
-    expect(response).toStrictEqual(tag);
-})
+    test('No tags created, should throw NotFoundException', async () => {
+        await expect(workoutService.getTags(ctx)).rejects.toThrow("No tags were found in the database.")
+    })
 
-test('No tags created, should throw NotFoundException', async () => {
-    await expect(workoutService.getTags(ctx)).rejects.toThrow("No tags were found in the database.")
 })

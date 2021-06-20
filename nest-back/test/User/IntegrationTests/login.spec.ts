@@ -14,6 +14,9 @@ let ctx: Context
 let userService: UserService
 let Jwt : JwtService
 
+describe('Integration tests of the function login in the UserService', () => {
+
+
 beforeEach(async () => {
     Jwt=new JwtService({
         secret: process.env.JWT_SECRET,
@@ -44,3 +47,4 @@ test('Valid details passed into login, should return access token of length 128'
 
     expect(typeof response.access_token).toBe("string")
 })
+});

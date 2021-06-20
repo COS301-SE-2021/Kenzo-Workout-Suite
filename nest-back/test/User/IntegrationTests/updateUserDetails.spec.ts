@@ -9,6 +9,8 @@ let ctx: Context
 let userService: UserService
 let Jwt : JwtService
 
+describe('Integration tests of the function updateUserDetails in the UserService', () => {
+
 beforeEach(async () => {
     userService=new UserService(Jwt)
     ctx = ActualPrisma()
@@ -70,3 +72,4 @@ test('Valid details passed in, User details should be updated and should reflect
     expect(response.lastName).toBe("updatedLast");
 
 })
+});
