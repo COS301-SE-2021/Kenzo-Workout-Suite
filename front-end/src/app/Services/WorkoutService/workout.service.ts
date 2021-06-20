@@ -81,7 +81,7 @@ export class WorkoutService {
       "workoutID":id,
     };
 
-    return this.http.delete(url).toPromise().then(data=>{
+    return this.http.request('delete',url,{body}).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
       if(error.status==0) return 500;
@@ -162,7 +162,7 @@ export class WorkoutService {
       "exercise":id,
     };
 
-    return this.http.delete(url).toPromise().then(data=>{
+    return this.http.request('delete',url,{body}).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
       if(error.status==0) return 500;
