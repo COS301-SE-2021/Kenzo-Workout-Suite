@@ -23,8 +23,6 @@ describe('WorkoutService', () => {
     userService = TestBed.inject(UserService);
     httpMock = TestBed.inject(HttpTestingController);
     httpClient = TestBed.inject(HttpClient);
-    // spyOn(userService,"getToken").and.resolveTo(JSON.parse('{"access_token" : "1234"}'));
-    // spyOn(service, "populateJWT");
   });
 
   afterEach(()=>{
@@ -226,7 +224,7 @@ describe('WorkoutService', () => {
 
     let respStatus = service.attemptGetWorkouts();
 
-    const req = httpMock.expectOne("http://localhost:3000/workout/getworkout");
+    const req = httpMock.expectOne("http://localhost:3000/workout/getWorkouts");
     expect(req.request.method).toEqual('GET');
 
     let resp = new HttpResponse({
@@ -283,15 +281,14 @@ describe('WorkoutService', () => {
   it('should fail to get all workouts because none exist in the database', async ()=>{
     let respStatus = service.attemptGetWorkouts();
 
-    const req = httpMock.expectOne("http://localhost:3000/workout/getworkout");
+    const req = httpMock.expectOne("http://localhost:3000/workout/getWorkouts");
     expect(req.request.method).toEqual('GET');
 
-    let resp = new HttpResponse({
+    let resp = new HttpErrorResponse({
       status: 404,
       statusText: "No workouts were found in the database",
-      body : {"message": "Failed to retrieve workouts"}
     });
-    req.flush(resp);
+    req.flush(null,resp);
     let status = await respStatus;
     let StatusValue = <number>status['status'];
     expect(StatusValue).toEqual(404);
@@ -299,7 +296,7 @@ describe('WorkoutService', () => {
 
   it("should fail to obtain the workouts because server does not respond and returns status 500", async () => {
     let respStatus = service.attemptGetWorkouts();
-    const req = httpMock.expectOne("http://localhost:3000/workout/getworkout");
+    const req = httpMock.expectOne("http://localhost:3000/workout/getWorkouts");
     expect(req.request.method).toEqual('GET');
 
     let resp = new HttpErrorResponse({
