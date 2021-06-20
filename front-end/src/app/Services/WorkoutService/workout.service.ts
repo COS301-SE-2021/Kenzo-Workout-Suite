@@ -28,7 +28,8 @@ export class WorkoutService {
     const body:Object = {
       "workoutTitle": workout.title,
       "workoutDescription": workout.description,
-      "tags": workout.tags
+      "tags": workout.tags,
+      "exercises":[]
     };
 
     return this.http.post(url, body ).toPromise().then(data=>{
@@ -55,9 +56,10 @@ export class WorkoutService {
       "workoutID":id,
       "workoutTitle": workout.title,
       "workoutDescription": workout.description,
-      "tags": workout.tags
+      "tags": workout.tags,
+      "exercises":[]
     };
-
+    console.log(body)
     return this.http.put(url, body ).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
