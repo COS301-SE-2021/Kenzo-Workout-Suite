@@ -50,7 +50,6 @@ describe('WorkoutService', () => {
       "tags": exercise.tags,
       "duratime": exercise.duratime
     });
-    expect(req.request.headers).toEqual(new HttpHeaders({"Authorization":"Bearer 1234"}));
 
     let resp = new HttpResponse({
       status: 200

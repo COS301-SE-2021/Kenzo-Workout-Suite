@@ -10,7 +10,18 @@ import {Route, Router} from "@angular/router";
 })
 export class WorkoutService {
 
+  id:string;
+
   constructor(private http:HttpClient, private user:UserService) {
+    this.populateJWT();
+  }
+
+  async populateJWT(){
+    let userToken = await this.user.getToken();
+    console.log(userToken)
+    console.log(userToken['access_token'])
+
+    this.id = userToken['access_token'];
   }
 
   /** This function attempts to submit a workout by using the following parameters:
@@ -125,8 +136,10 @@ export class WorkoutService {
       "duratime": exercise.duratime
     };
 
-    let userToken = await this.user.getToken();
-    const headers = {'Authorization': 'Bearer '+userToken['access_token']};
+    const headers = {'Authorization': 'Bearer '+this.id};
+    console.log(headers)
+
+    console.log(url, body, headers)
     return this.http.post(url, body, {headers}).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
