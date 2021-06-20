@@ -231,6 +231,21 @@ export class WorkoutService {
       return 404;
     });
   }
+
+  async getTags() : Promise<any>{
+    const url: string = "http://localhost:3000/workout/getTags";
+
+    return this.http.get(url).toPromise().then(data=>{
+      data = {
+        status: 200,
+        data: data
+      }
+      return data;
+    }).catch(error=>{
+      if(error.status==0 || error.status == 500) return 500;
+      return 404;
+    });
+  }
 }
 
 

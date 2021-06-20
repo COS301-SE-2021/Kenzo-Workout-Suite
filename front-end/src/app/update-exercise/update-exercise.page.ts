@@ -118,16 +118,15 @@ export class UpdateExercisePage implements OnInit {
    * With these tags, the user will be able to select tags for their exercise
    * @author Luca Azmanov, u19004185
    */
-  getTags() {
-    // Mocking tags for now
-    this.tags.push(new KenzoTag("BLUE","BLUE","Leg Day", false));
-    this.tags.push(new KenzoTag("GREEN","GREEN","Arms", false));
-    this.tags.push(new KenzoTag("YELLOW","YELLOW","Chest Pump", false));
-    this.tags.push(new KenzoTag("ORANGE","ORANGE","Level 4", false));
-    this.tags.push(new KenzoTag("RED","RED","Pain", false));
-    this.tags.push(new KenzoTag("PURPLE","PURPLE","Hard", false));
-    this.tags.push(new KenzoTag("BLACK","PINK","Thighs", false));
-    this.tags.push(new KenzoTag("BLACK","RED","Creatine", false));
+  async getTags() {
+    let allTags = await this.workoutService.getTags();
+
+    let data = allTags['data'];
+    for (let i = 0; i < data.length; i++) {
+      let tagsKey = data[i];
+      let tg = new KenzoTag(tagsKey['textColour'],tagsKey['backgroundColour'], tagsKey['label'], false);
+      this.tags.push(tg);
+    }
   }
 
   /** This function serves the purpose of selecting and deselecting tags for the creation of an exercise

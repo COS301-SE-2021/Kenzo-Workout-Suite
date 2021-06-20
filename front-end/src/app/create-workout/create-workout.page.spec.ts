@@ -6,6 +6,7 @@ import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
 import {FormsModule} from "@angular/forms";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
+import {IonicStorageModule} from "@ionic/storage-angular";
 
 describe('CreateWorkoutPage', () => {
   let component: CreateWorkoutPage;
@@ -17,7 +18,7 @@ describe('CreateWorkoutPage', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CreateWorkoutPage ],
-      imports: [IonicModule.forRoot(), HttpClientTestingModule, RouterTestingModule, FormsModule]
+      imports: [IonicModule.forRoot(), HttpClientTestingModule, RouterTestingModule, FormsModule, IonicStorageModule.forRoot()]
     }).compileComponents();
 
     routeMock = TestBed.inject(Router);

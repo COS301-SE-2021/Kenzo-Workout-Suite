@@ -46,18 +46,16 @@ export class UpdateWorkoutPage implements OnInit {
         break;
       }
     }
-    console.log(unit)
     this.title = unit['workoutTitle'];
     this.description = unit['workoutDescription'];
 
     let tags = unit['tags'];
-    for (const tagsKey in tags) {
-      console.log(tagsKey)
+    for (let i=0; i<tags.length; i++) {
+      let tagsKey = tags[i];
       let tg = new KenzoTag(tagsKey['textColour'],tagsKey['backgroundColour'], tagsKey['label'], true);
       console.log(tg)
+      // this.tags.push(tg);
     }
-
-
   }
 
   /** This function uses the workout service to submit a request to update a workout.
@@ -140,15 +138,15 @@ export class UpdateWorkoutPage implements OnInit {
    *
    * @author Luca Azmanov, u19004185
    */
-  getTags() {
-    // Mocking tags for now
-    this.tags.push(new KenzoTag("BLUE","BLUE","Leg Day", false));
-    this.tags.push(new KenzoTag("GREEN","GREEN","Arms", false));
-    this.tags.push(new KenzoTag("YELLOW","YELLOW","Chest Pump", false));
-    this.tags.push(new KenzoTag("ORANGE","ORANGE","Level 4", false));
-    this.tags.push(new KenzoTag("RED","RED","Pain", false));
-    this.tags.push(new KenzoTag("PURPLE","PURPLE","Hard", false));
-    this.tags.push(new KenzoTag("BLACK","PINK","Thighs", false));
+  async getTags() {
+    let allTags = await this.workoutService.getTags();
+
+    let data = allTags['data'];
+    for (let i = 0; i < data.length; i++) {
+      let tagsKey = data[i];
+      let tg = new KenzoTag(tagsKey['textColour'],tagsKey['backgroundColour'], tagsKey['label'], false);
+      this.tags.push(tg);
+    }
   }
 
   /** This function serves the purpose of selecting and deselecting tags for the creation of a workout

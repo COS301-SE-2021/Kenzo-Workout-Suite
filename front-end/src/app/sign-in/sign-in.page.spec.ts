@@ -6,6 +6,7 @@ import {RouterTestingModule} from "@angular/router/testing";
 import {UserService} from "../Services/UserService/user.service";
 import {FormsModule} from "@angular/forms";
 import {Router} from "@angular/router";
+import {IonicStorageModule} from "@ionic/storage-angular";
 
 describe('SignInPage', () => {
   let component: SignInPage;
@@ -17,7 +18,7 @@ describe('SignInPage', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SignInPage ],
-      imports: [IonicModule.forRoot(), HttpClientTestingModule, RouterTestingModule, FormsModule],
+      imports: [IonicModule.forRoot(), HttpClientTestingModule, RouterTestingModule, FormsModule, IonicStorageModule.forRoot()],
     }).compileComponents();
 
     routeMock = TestBed.inject(Router);
