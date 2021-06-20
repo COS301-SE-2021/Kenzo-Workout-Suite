@@ -14,25 +14,19 @@ describe('WorkoutService', () => {
   let userService: UserService;
   let httpMock:HttpTestingController;
   let httpClient:HttpClient;
-  let storage:Storage;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, IonicStorageModule.forRoot({
-        name: '__mydb',
-        driverOrder: ['localstorage']
-      })]
+      imports: [HttpClientTestingModule, IonicStorageModule.forRoot()]
     });
     service = TestBed.inject(WorkoutService);
     userService = TestBed.inject(UserService);
     httpMock = TestBed.inject(HttpTestingController);
     httpClient = TestBed.inject(HttpClient);
-    storage = TestBed.inject(Storage);
   });
 
   afterEach(()=>{
     httpMock.verify();
-    storage.clear().then();
   });
 
   it('should be created', () => {
