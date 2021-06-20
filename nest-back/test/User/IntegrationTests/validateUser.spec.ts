@@ -9,6 +9,8 @@ let ctx: Context
 let userService: UserService
 let Jwt : JwtService
 
+describe('Integration tests of the function validateUser in the UserService', () => {
+
 beforeEach(async () => {
     Jwt=new JwtService({
         secret:process.env.JWT_SECRET,
@@ -81,3 +83,4 @@ test('Valid details passed in, User should be validated and User object without 
 
     expect(response).toStrictEqual(finalExpectedUser)
 })
+});

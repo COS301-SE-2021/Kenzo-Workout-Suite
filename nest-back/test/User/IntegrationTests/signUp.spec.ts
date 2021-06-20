@@ -18,6 +18,9 @@ let ctx: Context
 let userService: UserService
 let Jwt : JwtService
 
+
+
+describe('Integration tests of the function signUp in the UserService', () => {
 beforeEach(async () => {
     Jwt=new JwtService({
         secret: process.env.JWT_SECRET,
@@ -199,3 +202,4 @@ test('Valid details passed in, should create an entry of a User with details in 
     expect(response.access_token.length).toBe(192)
     expect(typeof response.access_token).toBe("string")
 })
+});

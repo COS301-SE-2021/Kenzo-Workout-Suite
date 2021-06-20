@@ -22,8 +22,8 @@ test('Null exercise ID passed in, should throw PreconditionFailedException', asy
     await expect(workoutService.deleteExercise('',ctx)).rejects.toThrow("Parameter can not be left empty.")
 })
 
-test('Invalid exercise ID passed in, should throw NotFoundException', async () => {
+test('Valid exercise returned should return success message', async () => {
     let exercise;
     mockCtx.prisma.exercise.delete.mockResolvedValue(exercise)
-    await expect(workoutService.deleteExercise('invalid',ctx)).rejects.toThrow("Exercise with provided ID does not exist")
+     expect(await workoutService.deleteExercise('valid',ctx)).toStrictEqual("Exercise Deleted.")
 })

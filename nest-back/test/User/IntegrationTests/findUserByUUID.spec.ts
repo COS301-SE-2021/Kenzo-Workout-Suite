@@ -12,6 +12,8 @@ import {BadRequestException} from "@nestjs/common";
 import {create} from "domain";
 
 
+describe('Integration tests of the function findUserByUUID in the UserService', () => {
+
 let mockCtx: MockContext
 let ctx: Context
 let userService: UserService
@@ -78,8 +80,10 @@ test('User that is not in the database is attempted to be updated, should throw 
         dateOfBirth: null
     }
 
-    const userId=uuidv4;
+    const userId=uuidv4();
 
     await expect(userService.findUserByUUID(userId,ctx)).rejects.toThrow("No User with such UUID")
 
 })
+
+});
