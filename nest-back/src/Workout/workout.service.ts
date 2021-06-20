@@ -512,7 +512,7 @@ export class WorkoutService{
         if (workoutTitle=="" || workoutDescription==""  ){
             throw new NotFoundException("Parameters can not be left empty.");
         }
-        if(Array.isArray(tags) && tags.length){ //run create query with tags
+        if((Array.isArray(tags) && tags.length) && (Array.isArray(exercises) && exercises.length)){ //run create query with tags & exercises
             await this.addNewTags(tags,ctx);
             let tagConnection = tags.map( n => {
                 const container = {
@@ -521,11 +521,18 @@ export class WorkoutService{
 
                 return container;
             });
+            let exerciseConnection = exercises.map( n => {
+                const container = {
+                    exercise: n.exercise
+                };
+
+                return container;
+            });
             const Workout ={
                 workoutTitle: workoutTitle,
                 workoutDescription: workoutDescription,
                 exercises: {
-                    connect: exercises
+                    connect: exerciseConnection
                 },
                 tags: {
                     connect:tagConnection
@@ -542,13 +549,61 @@ export class WorkoutService{
             await this.generateWorkoutPDF(Workout, ctx);
             return("Workout Created.");
 
-        }else{ //run create query without tags
+        }else if(!(Array.isArray(tags) && tags.length) && (Array.isArray(exercises) && exercises.length)){ //run create query with exercises only
+            let exerciseConnection = exercises.map( n => {
+                const container = {
+                    exercise: n.exercise
+                };
+
+                return container;
+            });
             const Workout ={
                 workoutTitle: workoutTitle,
                 workoutDescription: workoutDescription,
                 exercises: {
-                    connect: exercises
+                    connect: exerciseConnection
                 },
+                planner: {
+                    connect: {
+                        userId: planner_ID
+                    }
+                }
+            }
+            await ctx.prisma.workout.create({
+                data: Workout
+            })
+            await this.generateWorkoutPDF(Workout, ctx);
+            return("Workout Created.");
+        }else if((Array.isArray(tags) && tags.length) && !(Array.isArray(exercises) && exercises.length)){ //run create query with tags only
+            await this.addNewTags(tags,ctx);
+            let tagConnection = tags.map( n => {
+                const container = {
+                    label: n.label
+                };
+
+                return container;
+            });
+            const Workout ={
+                workoutTitle: workoutTitle,
+                workoutDescription: workoutDescription,
+                tags: {
+                    connect:tagConnection
+                },
+                planner: {
+                    connect: {
+                        userId: planner_ID
+                    }
+                }
+            }
+            await ctx.prisma.workout.create({
+                data: Workout
+            })
+            await this.generateWorkoutPDF(Workout, ctx);
+            return("Workout Created.");
+        }else{
+            const Workout ={
+                workoutTitle: workoutTitle,
+                workoutDescription: workoutDescription,
                 planner: {
                     connect: {
                         userId: planner_ID
@@ -569,7 +624,82 @@ export class WorkoutService{
         if (workoutID == "" || workoutTitle=="" || workoutDescription=="" ){
             throw new NotFoundException("Parameters can not be left empty.");
         }
-        if(Array.isArray(tags) && tags.length) { //run update query with tags
+        if((Array.isArray(tags) && tags.length) && (Array.isArray(exercises) && exercises.length)) { //run update query with tags and exercises
+            await this.addNewTags(tags, ctx);
+            let tagConnection = tags.map(n => {
+                const container = {
+                    label: n.label
+                };
+
+                return container;
+            });
+            let exerciseConnection = exercises.map( n => {
+                const container = {
+                    exercise: n.exercise
+                };
+
+                return container;
+            });
+            const updateWorkout ={
+                workoutTitle: workoutTitle,
+                workoutDescription: workoutDescription,
+                exercises: {
+                    connect: exerciseConnection
+                },
+                tags: {
+                    connect:tagConnection
+                },
+                planner: {
+                    connect: {
+                        userId: planner_ID
+                    }
+                }
+            }
+            try{
+                await ctx.prisma.workout.update({
+                    where:{
+                        workoutID: workoutID,
+                    },
+                    data:updateWorkout
+                });
+                await this.generateWorkoutPDF(updateWorkout, ctx);
+                return("Workout Updated.");
+            }catch (e) {
+                throw new NotFoundException("Workout with provided ID does not exist");
+            }
+        }else if(!(Array.isArray(tags) && tags.length) && (Array.isArray(exercises) && exercises.length)){//run create query with exercises only
+            let exerciseConnection = exercises.map( n => {
+                const container = {
+                    exercise: n.exercise
+                };
+
+                return container;
+            });
+            const updateWorkout ={
+                workoutTitle: workoutTitle,
+                workoutDescription: workoutDescription,
+                exercises: {
+                    connect: exerciseConnection
+                },
+                planner: {
+                    connect: {
+                        userId: planner_ID
+                    }
+                }
+            }
+            try{
+                await ctx.prisma.workout.update({
+                    where:{
+                        workoutID: workoutID,
+                    },
+                    data:updateWorkout
+                });
+                await this.generateWorkoutPDF(updateWorkout, ctx);
+                return("Workout Updated.");
+            }catch (e) {
+                throw new NotFoundException("Workout with provided ID does not exist");
+            }
+        }else if((Array.isArray(tags) && tags.length) && !(Array.isArray(exercises) && exercises.length)){//tags only
             await this.addNewTags(tags, ctx);
             let tagConnection = tags.map(n => {
                 const container = {
@@ -581,9 +711,6 @@ export class WorkoutService{
             const updateWorkout ={
                 workoutTitle: workoutTitle,
                 workoutDescription: workoutDescription,
-                exercises: {
-                    connect: exercises
-                },
                 tags: {
                     connect:tagConnection
                 },
@@ -609,9 +736,6 @@ export class WorkoutService{
             const updateWorkout ={
                 workoutTitle: workoutTitle,
                 workoutDescription: workoutDescription,
-                exercises: {
-                    connect: exercises
-                },
                 planner: {
                     connect: {
                         userId: planner_ID
