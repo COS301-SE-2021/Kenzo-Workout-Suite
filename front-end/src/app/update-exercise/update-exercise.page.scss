@@ -64,6 +64,18 @@
   margin: 20px auto;
 }
 
+.delete{
+  width: var(--button-width);
+  display: block;
+  --background: var(--ion-color-tertiary);
+  --background-activated: var(--ion-color-primary);
+  --color-activated: var(--ion-color-tertiary);
+  --background-hover: var(--ion-color-primary);
+  --color-hover: var(--ion-color-tertiary);
+  margin: 20px auto;
+}
+
+
 .footer{
   --background: var(--ion-off-white);
   border: none;

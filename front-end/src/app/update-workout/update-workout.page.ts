@@ -124,7 +124,7 @@ export class UpdateWorkoutPage implements OnInit {
   /** This function uses the workout service to submit a request to delete a workout.
    * The workout service will return the status of the request:
    * 200 -> Success
-   * 400 -> Incorrect Data
+   * 400 -> Error
    * 500 -> Server not responding
    *
    * Thereafter,
