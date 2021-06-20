@@ -49,20 +49,44 @@ test('Should create new workout [Without Exercises]', async () => {
 
 test('Should create new workout [Without Tags]', async () => {
     let Workout ;
-    let Exercise ;
+    let exerciseUUID = uuidv4();
+    let userUUID = uuidv4()
+    const Exercise = {
+        exercise:exerciseUUID,
+        title:"TestExercise",
+        description:"TestDescription",
+        repRange:"TestRange",
+        sets:4,
+        Posedescription:"TestPDesc",
+        restPeriod:2,
+        duratime:2,
+        planner_ID:userUUID
+    }
     let emptyTag: Tag[] = [];
     let fullExercise: Exercise[] = [Exercise];
     spyOn(workoutService,"generateWorkoutPDF").and.stub();
     mockCtx.prisma.workout.create.mockResolvedValue(Workout);
 
 
-    await expect(workoutService.updateWorkout(uuidv4(),'Test','test',fullExercise,emptyTag,uuidv4(),ctx)).resolves.toEqual(
+    await expect(workoutService.updateWorkout(uuidv4(),'Test','test',fullExercise,emptyTag,userUUID,ctx)).resolves.toEqual(
         "Workout Updated."
     )
 })
 
-test('Should create new workout [With tags and exercises]', async () => {
-    let Exercise ;
+test('Should update new workout [With tags and exercises]', async () => {
+    let exerciseUUID = uuidv4();
+    let userUUID = uuidv4()
+    const Exercise = {
+        exercise:exerciseUUID,
+        title:"TestExercise",
+        description:"TestDescription",
+        repRange:"TestRange",
+        sets:4,
+        Posedescription:"TestPDesc",
+        restPeriod:2,
+        duratime:2,
+        planner_ID:userUUID
+    }
     let Workout ;
     let tagArray: Tag[] = [{"label":"painful","textColour":"blue","backgroundColour":"white"}];
     spyOn(workoutService,"addNewTags");
@@ -71,7 +95,7 @@ test('Should create new workout [With tags and exercises]', async () => {
     spyOn(workoutService,"generateWorkoutPDF").and.stub();
     mockCtx.prisma.workout.create.mockResolvedValue(Workout);
 
-    await expect(workoutService.updateWorkout(uuidv4(),'Test','test',fullExercise,tagArray,uuidv4(),ctx)).resolves.toEqual(
+    await expect(workoutService.updateWorkout(uuidv4(),'Test','test',fullExercise,tagArray,userUUID,ctx)).resolves.toEqual(
         "Workout Updated."
     )
 })
