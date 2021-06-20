@@ -563,11 +563,9 @@ describe('WorkoutService', () => {
           }
         ]
     });
-    req.flush(null,resp);
+    req.flush(resp);
     let actualResp = await tags;
-    console.log(actualResp.data)
-    console.log(resp.body)
-    expect(resp.body).toEqual(actualResp.data);
+    expect(resp.body).toEqual(actualResp.data.body);
   });
 
   /**
