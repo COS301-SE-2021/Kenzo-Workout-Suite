@@ -22,7 +22,7 @@ beforeEach(() => {
     ctx = (mockCtx as unknown) as Context
 })
 
-test('Test, Null values passed into findUserByUUID', async () => {
+test('Test, Null values passed into updateUserDetails should throw BadRequestException', async () => {
 
     const userUUID=uuidv4();
     const myUser={
@@ -39,7 +39,7 @@ test('Test, Null values passed into findUserByUUID', async () => {
     await expect(userService.updateUserDetails("","updatedLastName",new Date("2000-05-30"),userUUID,ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
 })
 
-test('Test, Null values passed into findUserByUUID', async () => {
+test('Test, Null last name passed into updateUserDetails, should throw BadRequestException', async () => {
 
     const userUUID=uuidv4();
     const myUser={
@@ -56,7 +56,7 @@ test('Test, Null values passed into findUserByUUID', async () => {
     await expect(userService.updateUserDetails("updatedFirstName","",new Date("2000-05-30"),userUUID,ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
 })
 
-test('Test, Null values passed into findUserByUUID', async () => {
+test('Test, Null first name passed into updateUserDetails, should throw bad request exception', async () => {
 
     const userUUID=uuidv4();
     const myUser={
@@ -75,7 +75,7 @@ test('Test, Null values passed into findUserByUUID', async () => {
     await expect(userService.updateUserDetails(nullFirstName,"updatedLastName",new Date("2000-05-30"),userUUID,ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
 })
 
-test('Test, Null values passed into findUserByUUID', async () => {
+test('Test, Null last name passed into updateUserDetails, should throw bad request exception', async () => {
 
     const userUUID=uuidv4();
     const myUser={
@@ -94,7 +94,7 @@ test('Test, Null values passed into findUserByUUID', async () => {
     await expect(userService.updateUserDetails("updatedFirstName",nullLastName,new Date("2000-05-30"),userUUID,ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
 })
 
-test('Test, Null values passed into findUserByUUID', async () => {
+test('Test, Null last name passed into updateUserDetails, should throw BadRequestException', async () => {
 
     const userUUID=uuidv4();
     const myUser={
@@ -113,7 +113,7 @@ test('Test, Null values passed into findUserByUUID', async () => {
     await expect(userService.updateUserDetails("updatedFirstName",nullLastName,new Date("2000-05-30"),"",ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
 })
 
-test('Test, Null values passed into findUserByUUID', async () => {
+test('Test, Null userID passed into updateUserDetails function, should throw BadRequestException', async () => {
 
     const userUUID=uuidv4();
     const myUser={
@@ -132,26 +132,8 @@ test('Test, Null values passed into findUserByUUID', async () => {
     await expect(userService.updateUserDetails("updatedFirstName","updatedLastName",new Date("2000-05-30"),nullUserId,ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
 })
 
-test('Test, Null values passed into findUserByUUID', async () => {
 
-    const userUUID=uuidv4();
-    const myUser={
-        userId:userUUID,
-        email: "test@gmail.com",
-        firstName: "test",
-        lastName: "tester",
-        password:"thePassword",
-        userType: userType.PLANNER,
-        dateOfBirth: null
-    }
-    mockCtx.prisma.user.update.mockResolvedValue(myUser)
-
-    let nullUserId;
-
-    await expect(userService.updateUserDetails("updatedFirstName","updatedLastName",new Date("2000-05-30"),nullUserId,ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
-})
-
-test('Test, Null values passed into findUserByUUID', async () => {
+test('Test, Valid values passed into updateUserDetails, should return confirmation message.', async () => {
 
     const userUUID=uuidv4();
     const myUser={

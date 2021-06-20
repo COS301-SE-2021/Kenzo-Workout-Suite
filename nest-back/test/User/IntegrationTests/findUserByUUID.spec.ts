@@ -54,7 +54,7 @@ test('Test, Valid User returned by mock prisma service', async () => {
 })
 
 
-test('Test, Valid User returned by mock prisma service', async () => {
+test('User that is not in the database is attempted to be updated, should throw preconditionfailed exception', async () => {
     const createdUser =await ctx.prisma.user.create({
         data:{
             email: "test@gmail.com",
@@ -78,7 +78,7 @@ test('Test, Valid User returned by mock prisma service', async () => {
         dateOfBirth: null
     }
 
-    const userId=uuidv4();
+    const userId=uuidv4;
 
     await expect(userService.findUserByUUID(userId,ctx)).rejects.toThrow("No User with such UUID")
 
