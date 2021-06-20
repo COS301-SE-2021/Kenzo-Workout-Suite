@@ -19,7 +19,7 @@ export class ProfilePage implements OnInit {
   constructor(private http:HttpClient,
               private userService: UserService,
               public alertController: AlertController,
-              private route:Router) { }
+              private router:Router) { }
 
   ngOnInit() {
     this.getDetails();
@@ -116,5 +116,19 @@ export class ProfilePage implements OnInit {
 
   reloadWindow(){
     window.location.reload();
+  }
+
+  async goToFYP(){
+    await this.router.navigate(['/your-workouts'])
+      .then(() => {
+        window.location.reload();
+      });
+  }
+
+  async goToSearch(){
+    await this.router.navigate(['/search'])
+      .then(() => {
+        window.location.reload();
+      });
   }
 }

@@ -41,23 +41,23 @@
 </ion-content>
 <ion-footer>
   <ion-toolbar mode="ios" class="footer">
-    <ion-thumbnail slot="start" class="navThumbnail">
-      <ion-img src="../../assets/clipart/Clipboard.png" class="NavButtons" id="WorkoutsBtn" mode="ios" routerLink="/your-workouts"></ion-img>
+    <ion-thumbnail slot="start" class="navThumbnail" (click)="goToFYP()">
+      <ion-img src="../../assets/clipart/Clipboard.png" class="NavButtons" id="WorkoutsBtn" mode="ios" ></ion-img>
       <ion-label class="NavLabel">Home</ion-label>
     </ion-thumbnail>
 
-    <ion-thumbnail slot="start" class="navThumbnail">
-      <ion-img src="../../assets/clipart/Library.png" class="NavButtons" id="SearchBtn" mode="ios" routerLink="/search"></ion-img>
+    <ion-thumbnail slot="start" class="navThumbnail" (click)="goToSearch()">
+      <ion-img src="../../assets/clipart/Library.png" class="NavButtons" id="SearchBtn" mode="ios"></ion-img>
       <ion-label class="NavLabel browseLabel">Browse</ion-label>
     </ion-thumbnail>
 
-    <ion-thumbnail slot="start" class="navThumbnail">
-      <ion-img src="../../assets/clipart/Clients.png" class="NavButtons" id="ContactsBtn" mode="ios" routerLink="."></ion-img>
+    <ion-thumbnail slot="start" class="navThumbnail" routerLink=".">
+      <ion-img src="../../assets/clipart/Clients.png" class="NavButtons" id="ContactsBtn" mode="ios"></ion-img>
       <ion-label class="NavLabel clientsLabel">Clients</ion-label>
     </ion-thumbnail>
 
-    <ion-thumbnail slot="start" class="navThumbnail">
-      <ion-img src="../../assets/clipart/Setting_activated.png" class="NavButtons" id="SettingsBtn" mode="ios" routerLink="."></ion-img>
+    <ion-thumbnail slot="start" class="navThumbnail" routerLink=".">
+      <ion-img src="../../assets/clipart/Setting_activated.png" class="NavButtons" id="SettingsBtn" mode="ios"></ion-img>
       <ion-label class="NavLabel profileLabel">Settings</ion-label>
     </ion-thumbnail>
 

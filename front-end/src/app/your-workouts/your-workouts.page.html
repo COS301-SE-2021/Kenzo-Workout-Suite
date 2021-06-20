@@ -61,13 +61,13 @@
     </ion-thumbnail>
 
 
-    <ion-thumbnail slot="start" class="navThumbnail">
-      <ion-img src="../../assets/clipart/Clients.png" class="NavButtons" id="ContactsBtn" mode="ios" routerLink="."></ion-img>
+    <ion-thumbnail slot="start" class="navThumbnail" routerLink=".">
+      <ion-img src="../../assets/clipart/Clients.png" class="NavButtons" id="ContactsBtn" mode="ios" ></ion-img>
       <ion-label class="NavLabel clientsLabel">Clients</ion-label>
     </ion-thumbnail>
 
 
-    <ion-thumbnail slot="start" class="navThumbnail"  routerLink="/profile">
+    <ion-thumbnail slot="start" class="navThumbnail"  (click)="goToProfile()">
       <ion-img src="../../assets/clipart/Setting.png" class="NavButtons" id="SettingsBtn" mode="ios"></ion-img>
       <ion-label class="NavLabel profileLabel">Settings</ion-label>
     </ion-thumbnail>
