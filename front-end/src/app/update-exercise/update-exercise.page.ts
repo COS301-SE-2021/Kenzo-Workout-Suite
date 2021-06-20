@@ -26,14 +26,43 @@ export class UpdateExercisePage implements OnInit {
   newTag: KenzoTag;
 
   @ViewChild('searchBar', {static: false}) searchbar: IonSearchbar;
+  id:string;
 
   constructor(private http:HttpClient,
               private route:Router,
               public alertController:AlertController,
               private workoutService:WorkoutService) {
-    this.getTags();
     this.newTag = this.getRandomTag("");
+    this.id = route.getCurrentNavigation().extras.state.id;
+    this.getDetails();
   }
+
+  async getDetails(){
+    await this.getTags();
+    let workout = await this.workoutService.attemptGetWorkouts();
+    let data = workout['data'];
+    let unit;
+    for (let i = 0; i < data.length; i++) {
+      unit = data[i];
+
+      if(unit['workoutID']==this.id){
+        break;
+      }
+    }
+    this.title = unit['workoutTitle'];
+    this.description = unit['workoutDescription'];
+
+    let tags = unit['tags'];
+    for (let i=0; i<tags.length; i++) {
+      let currTag = tags[i];
+      for (let j = 0; j < this.tags.length; j++) {
+        if(this.tags[j].label==currTag['label']){
+          document.getElementById(this.tags[j].label).click();
+        }
+      }
+    }
+  }
+
 
   ngOnInit() {
   }
@@ -118,16 +147,15 @@ export class UpdateExercisePage implements OnInit {
    * With these tags, the user will be able to select tags for their exercise
    * @author Luca Azmanov, u19004185
    */
-  getTags() {
-    // Mocking tags for now
-    this.tags.push(new KenzoTag("BLUE","BLUE","Leg Day", false));
-    this.tags.push(new KenzoTag("GREEN","GREEN","Arms", false));
-    this.tags.push(new KenzoTag("YELLOW","YELLOW","Chest Pump", false));
-    this.tags.push(new KenzoTag("ORANGE","ORANGE","Level 4", false));
-    this.tags.push(new KenzoTag("RED","RED","Pain", false));
-    this.tags.push(new KenzoTag("PURPLE","PURPLE","Hard", false));
-    this.tags.push(new KenzoTag("BLACK","PINK","Thighs", false));
-    this.tags.push(new KenzoTag("BLACK","RED","Creatine", false));
+  async getTags() {
+    let allTags = await this.workoutService.getTags();
+
+    let data = allTags['data'];
+    for (let i = 0; i < data.length; i++) {
+      let tagsKey = data[i];
+      let tg = new KenzoTag(tagsKey['textColour'],tagsKey['backgroundColour'], tagsKey['label'], false);
+      this.tags.push(tg);
+    }
   }
 
   /** This function serves the purpose of selecting and deselecting tags for the creation of an exercise
