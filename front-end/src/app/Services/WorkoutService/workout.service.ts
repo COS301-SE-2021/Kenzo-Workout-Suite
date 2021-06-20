@@ -59,7 +59,6 @@ export class WorkoutService {
       "tags": workout.tags,
       "exercises":[]
     };
-    console.log(body)
     return this.http.put(url, body ).toPromise().then(data=>{
       return 200;
     }).catch(error=>{
