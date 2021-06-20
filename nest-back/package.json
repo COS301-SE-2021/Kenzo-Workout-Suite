@@ -16,12 +16,13 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
-    "test:watch": "jest --watch",
+    "test:watch": "jest --watch --detectOpenHandles --forceExit",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@google-cloud/text-to-speech": "^3.2.2",
     "@nestjs/common": "^7.6.15",
     "@nestjs/config": "^0.6.3",
     "@nestjs/core": "^7.6.15",
@@ -35,6 +36,7 @@
     "bcrypt": "^5.0.1",
     "config": "^3.3.6",
     "dotenv": "^10.0.0",
+    "gtts.js": "^1.0.1",
     "jspdf": "^2.3.1",
     "nodemon": "^2.0.7",
     "passport": "^0.4.1",

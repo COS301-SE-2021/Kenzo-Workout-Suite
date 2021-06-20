@@ -14,17 +14,15 @@ beforeEach(() => {
     ctx = (mockCtx as unknown) as Context
 })
 
-test('Should receive valid information about all workouts', async () => {
-    const workout = [{
-        workoutID: uuidv4(),
-        workoutTitle: "test",
-        workoutDescription: "test",
-        tags: [],
-        planner_ID: uuidv4()
+test('Should receive valid information about all tags', async () => {
+    const tag = [{
+        label: 'test',
+        textColour: 'test',
+        backgroundColour: 'test'
     }]
-    mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
+    mockCtx.prisma.tag.findMany.mockResolvedValue(tag)
 
-    const response=await workoutService.getWorkouts(ctx)
+    const response=await workoutService.getTags(ctx)
 
-    expect(response).toBe(workout);
+    expect(response).toBe(tag);
 })

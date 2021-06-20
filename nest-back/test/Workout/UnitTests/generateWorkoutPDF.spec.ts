@@ -1,6 +1,13 @@
 import { MockContext, Context, createMockContext } from "../../../context";
 import {WorkoutService} from "../../../src/Workout/workout.service";
 import {v4 as uuidv4 } from 'uuid';
+import {
+    Workout,
+    Exercise,
+    User,
+    Tag,
+    Prisma
+} from '@prisma/client';
 import {PrismaClient} from "@prisma/client/scripts/default-index";
 
 let mockCtx: MockContext
@@ -14,17 +21,17 @@ beforeEach(() => {
     ctx = (mockCtx as unknown) as Context
 })
 
-test('Should receive valid information about all workouts', async () => {
-    const workout = [{
+
+test('Should not Generate WorkoutPDF [Precondition Exception]', async () => {
+    let Workout = {
         workoutID: uuidv4(),
-        workoutTitle: "test",
-        workoutDescription: "test",
-        tags: [],
+        workoutTitle: "Test",
+        workoutDescription: "Test",
         planner_ID: uuidv4()
-    }]
-    mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
-
-    const response=await workoutService.getWorkouts(ctx)
-
-    expect(response).toBe(workout);
+    }
+    await expect(workoutService.generateWorkoutPDF(Workout,ctx)).resolves;
+})
+test('Should not Generate WorkoutPDF [Precondition Exception]', async () => {
+    let workout;
+    await expect(workoutService.generateWorkoutPDF(workout,ctx)).rejects.toThrow("Invalid workout provided");
 })

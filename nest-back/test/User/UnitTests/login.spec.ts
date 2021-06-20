@@ -2,7 +2,6 @@ import { MockContext, Context, createMockContext } from "../../../context";
 import {UserService} from "../../../src/User/user.service";
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import {jwtConstants} from "../../../src/user/constants";
 
 let mockCtx: MockContext
 let ctx: Context
@@ -13,22 +12,22 @@ let bcryptCompare: jest.Mock;
 
 beforeEach(() => {
     Jwt=new JwtService({
-        secret: jwtConstants.secret,
-        signOptions: { expiresIn: '60s' },
+        secret:process.env.JWT_SECRET,
+        signOptions: { expiresIn: process.env.EXPIRY_TIME },
     })
     userService = new UserService(Jwt);
     mockCtx = createMockContext()
     ctx = (mockCtx as unknown) as Context
 })
 
-test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
+test('Null User passed to signUp, Should throw PreconditionFailedException', async () => {
 
     let user;
-    await expect(userService.login(user)).rejects.toThrow("Invalid user object passed in.")
+    await expect(userService.login(user)).rejects.toThrow("Invalid User object passed in.")
 })
 
 
-test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
+test('Null User passed to signUp, Should throw PreconditionFailedException', async () => {
 
     spyOn(Jwt,"sign").and.returnValue("signedValue");
 
@@ -41,7 +40,7 @@ test('Null user passed to signUp, Should throw PreconditionFailedException', asy
 })
 
 
-test('Null user passed to signUp, Should throw PreconditionFailedException', async () => {
+test('Null User passed to signUp, Should throw PreconditionFailedException', async () => {
 
     spyOn(Jwt,"sign").and.returnValue("signedValue");
 

@@ -103,7 +103,7 @@ export class SignUpPage implements OnInit {
         }
       });
     }else{
-      this.InvalidPasswords();  //If passwords do not match, notify user
+      this.InvalidPasswords();  //If passwords do not match, notify User
     }                           //through an alert.
   }
 }

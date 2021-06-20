@@ -1,9 +1,6 @@
 import { MockContext, Context, createMockContext } from "../../../context";
 import {WorkoutService} from "../../../src/Workout/workout.service";
 import {v4 as uuidv4 } from 'uuid';
-import {
-    Difficulty
-} from '@prisma/client';
 import {PrismaClient} from "@prisma/client/scripts/default-index";
 
 let mockCtx: MockContext
@@ -23,7 +20,7 @@ test('Should receive valid information about workout with corresponding id', asy
         workoutID: uuidWorkout,
         workoutTitle: "test",
         workoutDescription: "test",
-        difficulty: Difficulty.EASY,
+        tags: [],
         planner_ID: uuidv4()
     }]
     mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
