@@ -3,7 +3,6 @@ import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {AlertController} from "@ionic/angular";
 import {UserService} from "../Services/UserService/user.service";
-import {Alerts} from "../Models/alerts";
 
 @Component({
   selector: 'app-sign-up',
@@ -33,7 +32,7 @@ export class SignUpPage implements OnInit {
    * @constructor
    */
   PlannerAccount() {
-    this.accountType="Planner";
+    this.accountType="PLANNER";
   }
 
   /**
@@ -41,7 +40,7 @@ export class SignUpPage implements OnInit {
    * @constructor
    */
   ClientAccount() {
-    this.accountType="Client";
+    this.accountType="CLIENT";
   }
 
   async signUp() {
@@ -56,6 +55,7 @@ export class SignUpPage implements OnInit {
           });
             await this.presentAlert(alert);
             await this.route.navigate(['/sign-in']);
+            return 200;
         }
         else if (status >= 400 && status < 500) {
           //Invalid entry or already existent client email

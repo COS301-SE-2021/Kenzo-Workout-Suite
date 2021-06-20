@@ -1,35 +1,37 @@
-export class Workout {
-  private _title:String;
-  private _description:String;
-  private _difficulty:String;
+import {KenzoTag} from "./kenzo-tag";
 
-  constructor(title: String, description: String, difficulty: String) {
+export class Workout {
+  private _title:string;
+  private _description:string;
+  private _tags:KenzoTag[];
+
+  constructor(title: string, description: string, tags: KenzoTag[]) {
     this._title = title;
     this._description = description;
-    this._difficulty = difficulty;
+    this._tags = tags;
   }
 
-  get title(): String {
+  get title(): string {
     return this._title;
   }
 
-  set title(value: String) {
+  set title(value: string) {
     this._title = value;
   }
 
-  get description(): String {
+  get description(): string {
     return this._description;
   }
 
-  set description(value: String) {
+  set description(value: string) {
     this._description = value;
   }
 
-  get difficulty(): String {
-    return this._difficulty;
+  get tags(): KenzoTag[] {
+    return this._tags;
   }
 
-  set difficulty(value: String) {
-    this._difficulty = value;
+  set tags(value: KenzoTag[]) {
+    this._tags = value;
   }
 }

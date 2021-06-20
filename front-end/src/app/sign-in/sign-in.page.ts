@@ -4,7 +4,6 @@ import {Router} from "@angular/router";
 import {ExceptionCode} from "@capacitor/core";
 import {AlertController} from "@ionic/angular";
 import {UserService} from "../Services/UserService/user.service";
-import {Alerts} from "../Models/alerts";
 
 @Component({
   selector: 'app-sign-in',
@@ -22,16 +21,24 @@ export class SignInPage implements OnInit {
   }
 
   ngOnInit() {
+    this.userService.removeToken();
   }
 
-  /**
+  /** This function uses the email and password entered to attempt a sign in through the user service.
+   * The user service will return the status of the login:
+   * 200 -> Success
+   * 400 -> Incorrect Credentials
+   * 500 -> Server not responding
    *
+   * Error states [400,500] will result in an alert
+   * Success states [200] will result in a logged in user being navigated to the logged in User's homescreen.
    */
   async signIn() {
     let status = await this.userService.attemptSignIn(this.email, this.password);
     if (status < 400) {
       // Success State
       await this.route.navigate(['/your-workouts']);
+      return 200;
     }
     else if (status >= 400 && status < 500) {
       // Invalid Sign In
@@ -42,6 +49,7 @@ export class SignInPage implements OnInit {
         buttons: ['OK']
       });
       await this.presentAlert(alert);
+      throw new Error("User credentials are incorrect.");
     }
     else {
       // Server Error
@@ -52,6 +60,7 @@ export class SignInPage implements OnInit {
         buttons: ['Dismiss']
       });
       await this.presentAlert(alert);
+      throw new Error("Server is not responding.");
     }
   }
 
