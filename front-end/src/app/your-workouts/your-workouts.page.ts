@@ -43,7 +43,7 @@ export class YourWorkoutsPage implements OnInit {
   async loadExercises(){
     let tempExercises = await this.workoutService.attemptGetExercisesByPlanner();
     if (tempExercises.status==200){
-      this.workouts = tempExercises.data;
+      this.exercises = tempExercises.data;
       return 200;
     }else if (tempExercises.status==404){
       return 404;

@@ -299,7 +299,6 @@ export class WorkoutService{
                     restPeriod: true,
                     duratime: true,
                     tags: true,
-                    planner: true,
                     planner_ID: true,
                 }
             });
@@ -495,14 +494,17 @@ export class WorkoutService{
             throw new PreconditionFailedException("Parameter can not be left empty.")
         }
         try{
-            await ctx.prisma.exercise.delete({
+            const Exercise = await ctx.prisma.exercise.delete({
                 where:{
                     exercise
                 }
             });
+            if(!(Array.isArray(Exercise) && Exercise.length)){
+                throw new NotFoundException("Exercise with provided ID does not exist");
+            }
             return("Exercise Deleted.");
         }catch (e) {
-            throw new NotFoundException("Exercise with provided ID does not exist");
+            throw e;
         }
     }
 
