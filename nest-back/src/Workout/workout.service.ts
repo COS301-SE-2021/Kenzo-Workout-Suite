@@ -890,7 +890,7 @@ export class WorkoutService{
                 doc.addPage("a4", "p");
                 doc.text(exercise.title, 90, 10);
                 if(exercise.tags.length != 0){
-                    const exerciseTagArray = exercise.tags.connect.map(({label}) => [label])
+                    const exerciseTagArray = exercise.tags.map(({label}) => [label])
                     let stringTags = exerciseTagArray.join();
                     let splitTags = doc.splitTextToSize(stringTags,180);
                     doc.text("Tags: " + splitTags, 15 , 30  );
