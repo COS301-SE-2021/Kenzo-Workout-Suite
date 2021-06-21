@@ -92,6 +92,7 @@ export class UserController {
     })
     @HttpCode(200)
     async login(@Request() req) {
+        console.log("HELLO")
         return this.userService.login(req.user);
     }
 

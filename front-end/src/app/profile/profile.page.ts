@@ -26,7 +26,7 @@ export class ProfilePage implements OnInit {
   }
 
   /**
-   * Get the details of the user through an API call
+   * Get the details of the User through an API call
    */
   async getDetails(){
     let UserDetails = await this.userService.obtainUserDetails();
@@ -55,7 +55,7 @@ export class ProfilePage implements OnInit {
   }
 
   /**
-   * Send request to update details of user
+   * Send request to update details of User
    */
   async updateDetails(){
     let userInputs = document.getElementsByClassName("enable-input") as HTMLCollectionOf<HTMLElement>;
@@ -85,7 +85,7 @@ export class ProfilePage implements OnInit {
       // Invalid Sign In
       const alert = await this.alertController.create({
         cssClass: 'kenzo-alert',
-        header: 'Unauthorized user',
+        header: 'Unauthorized User',
         message: 'You are not authorized to update these details.',
         buttons: ['OK']
       });
@@ -106,7 +106,7 @@ export class ProfilePage implements OnInit {
   }
 
   /**
-   * Helper Function to physically present alert to user independent of OS.
+   * Helper Function to physically present alert to User independent of OS.
    * @param alert
    */
   async presentAlert(alert:any) {

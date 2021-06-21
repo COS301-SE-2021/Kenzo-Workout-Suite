@@ -154,8 +154,6 @@ export class UserService {
             throw new BadRequestException("Could not create User")
         }
 
-
-
         return this.login(createdUser);
     }
 
@@ -284,9 +282,7 @@ export class UserService {
      *
      * @author Zelealem Tesema
      */
-
-
-    validateEmail(email:string){
+     validateEmail(email:string){
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
 
@@ -308,7 +304,7 @@ export class UserService {
      *
      *@author Zelealem Tesema
      */
-    validatePassword(password:string) {
+     validatePassword(password:string) {
         const re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
         return re.test(password);
     }

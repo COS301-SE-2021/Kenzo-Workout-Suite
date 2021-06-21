@@ -17,7 +17,7 @@ let prisma: PrismaClient
 let userUUID=uuidv4();
 let exerciseUUID=uuidv4();
 
-describe('Integration test for createWorkout for the user subsystem', () => {
+describe('Integration test for createWorkout for the User subsystem', () => {
 
     beforeEach(async () => {
         workoutService = new WorkoutService(prisma);

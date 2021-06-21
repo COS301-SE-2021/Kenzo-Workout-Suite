@@ -40,7 +40,7 @@ describe('SignInPage', () => {
   });
 
   // Sign In Unit Tests
-  it('should, given an incorrect email and password, fail to sign in an user.', async () => {
+  it('should, given an incorrect email and password, fail to sign in an User.', async () => {
     spyOn(service, 'attemptSignIn').and.resolveTo(400);
     spyOn(alertController, "create").and.stub();
     spyOn(component, "presentAlert").and.stub();
@@ -48,7 +48,7 @@ describe('SignInPage', () => {
       expect(error).toEqual(new Error('User credentials are incorrect.'));
     });
   });
-  it('should fail to sign in an user as server is not responding.', async () => {
+  it('should fail to sign in an User as server is not responding.', async () => {
     spyOn(service, 'attemptSignIn').and.resolveTo(500);
     spyOn(alertController, "create").and.stub();
     spyOn(component, "presentAlert").and.stub();
@@ -56,7 +56,7 @@ describe('SignInPage', () => {
       expect(error).toEqual(new Error('Server is not responding.'));
     });
   });
-  it('should successfully sign in an user with valid credentials.', async () => {
+  it('should successfully sign in an User with valid credentials.', async () => {
     spyOn(service, 'attemptSignIn').and.resolveTo(200);
     spyOn(routeMock, "navigate").and.resolveTo();
     await component.signIn().then(data=>{
