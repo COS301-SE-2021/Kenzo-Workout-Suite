@@ -29,19 +29,8 @@ jobs:
       # - node/install-packages:
       #     pkg-manager: yarn 
       - run:
-          name: Start Prisma server
-          command: |
-            cd nest-back
-            npm install && npm install -g prisma
-            docker-compose up -d
-            cd prisma
-            sleep 20
-            prisma deploy
-      - run:
           name: Run tests
-          command: |
-            cd nest-back
-            npm test
+          command: npm test
 
 workflows:
   # Below is the definition of your workflow.
