@@ -19,7 +19,8 @@ jobs:
     docker:
       - image: cimg/node:15.1
     # Then run your tests!
-    # CircleCI will report the results back to your VCS provider.
+    # CircleCI will report the results back to your VCS provider
+    working_directory: ~/nest-back
     steps:
       # Checkout the code as the first step.
       - checkout
