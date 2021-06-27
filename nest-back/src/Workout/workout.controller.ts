@@ -189,7 +189,7 @@ export class WorkoutController {
     getWorkoutByPlanner(
         @Request() req
     ) {
-        return this.workoutService.getWorkoutByPlanner(req.user.userId,ActualPrisma());
+        return this.workoutService.getWorkoutByPlanner(req.user.userID,ActualPrisma());
     }
 
     @UseGuards(JwtAuthGuard)
@@ -207,7 +207,7 @@ export class WorkoutController {
     getExercisesPlanner(
         @Request() req
     ) {
-        return this.workoutService.getExercisesByPlanner(req.user.userId,ActualPrisma());
+        return this.workoutService.getExercisesByPlanner(req.user.userID,ActualPrisma());
     }
 
     /**
@@ -217,12 +217,11 @@ export class WorkoutController {
      * @param description This is the description of the exercise.
      * @param repRange This is the amount of reps.
      * @param sets This is the amount of sets.
-     * @param poseDescription This is the description of the poses
+     * @param Posedescription
      * @param restPeriod This is the rest period of the exercise.
      * @param tags this is an array of tags
-     * @param duratime This is the duration of the exercise.
-     * @param planner_ID This is the planner ID
-     * @param ctx  This is the prisma context that is injected into the function.
+     * @param duration
+     * @param req
      * @throws PreconditionFailedException if:
      *                               -Not all parameters are given.
      * @throws NotFoundException if:
@@ -245,17 +244,17 @@ export class WorkoutController {
     @ApiBody({type: CreateExerciseDTO})
     @ApiBearerAuth()
     createExercise(
-        @Body('title') title: string,
-        @Body('description') description: string,
+        @Body('exerciseTitle') title: string,
+        @Body('exerciseDescription') description: string,
         @Body('repRange') repRange: string,
         @Body('sets') sets: number,
-        @Body('Posedescription') Posedescription: string,
+        @Body('poseDescription') Posedescription: string,
         @Body('restPeriod') restPeriod: number,
         @Body('tags') tags: Tag[],
-        @Body('duratime') duration: number,
+        @Body('duration') duration: number,
         @Request() req
     ) {
-        return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,tags,duration,req.user.userId  ,this.ctx);
+        return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,tags,duration,req.user.userID  ,this.ctx);
     }
 
     /**
@@ -268,9 +267,9 @@ export class WorkoutController {
      * @param sets This is the amount of sets.
      * @param Posedescription This is the pose description.
      * @param restPeriod This is the rest period of the exercise.
-     * @param difficulty This is the difficulty of the exercise.
-     * @param duratime This is the duration of the exercise.
-     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @param tags these are the tags related to an exercise
+     * @param duration this is the duration of an exercise
+     * @param req This is the user request object
      * @throws PreconditionFailedException if:
      *                               -Not all parameters are given.
      * @throws NotFoundException if:
@@ -296,18 +295,18 @@ export class WorkoutController {
     })
     @ApiBearerAuth()
     updateExercise(
-        @Body('exercise') exercise: string,
-        @Body('title') title: string,
-        @Body('description') description: string,
+        @Body('exerciseID') exercise: string,
+        @Body('exerciseTitle') title: string,
+        @Body('exerciseDescription') description: string,
         @Body('repRange') repRange: string,
         @Body('sets') sets: number,
-        @Body('Posedescription') Posedescription: string,
+        @Body('poseDescription') Posedescription: string,
         @Body('restPeriod') restPeriod: number,
         @Body('tags') tags: Tag[],
-        @Body('duratime') duratime: number,
+        @Body('duration') duration: number,
         @Request() req
     ) {
-        return this.workoutService.updateExercise(exercise,title,description,repRange,sets,Posedescription,restPeriod,tags,duratime, req.user.userId,ActualPrisma());
+        return this.workoutService.updateExercise(exercise,title,description,repRange,sets,Posedescription,restPeriod,tags,duration, req.user.userID,ActualPrisma());
     }
 
     /**
@@ -349,9 +348,7 @@ export class WorkoutController {
      * @param workoutTitle This is the string workout title
      * @param workoutDescription This is the string workout description
      * @param exercises This is an array of exercises
-     * @param tags This is an array of tags
      * @param req This contains the User object of the User currently logged in [from this the string User id is retrieved]
-     * @param ctx  This is the prisma context that is injected into the function.
      * @throws PreconditionFailedException if:
      *                               -Parameters can not be left empty.
      *
@@ -376,11 +373,10 @@ export class WorkoutController {
         @Body('workoutTitle') workoutTitle: string,
         @Body('workoutDescription') workoutDescription: string,
         @Body('exercises') exercises : Exercise[],
-        @Body('tags') tags: Tag[],
         @Request() req
     ) {
 
-        return this.workoutService.createWorkout(workoutTitle,workoutDescription,exercises,tags,req.user.userId , this.ctx)
+        return this.workoutService.createWorkout(workoutTitle,workoutDescription,exercises,req.user.userID , this.ctx)
 
     }
 
@@ -391,9 +387,7 @@ export class WorkoutController {
      * @param workoutTitle This is the string workout title
      * @param workoutDescription This is the string workout description
      * @param exercises This is an array of exercises
-     * @param tags This is an array of tags
      * @param req This contains the User object of the User currently logged in [from this the string User id is retrieved]
-     * @param ctx  This is the prisma context that is injected into the function.
      * @throws PreconditionFailedException if:
      *                               -Parameters can not be left empty.
      *
@@ -419,17 +413,15 @@ export class WorkoutController {
         @Body('workoutTitle') workoutTitle: string,
         @Body('workoutDescription') workoutDescription: string,
         @Body('exercises') exercises : Exercise[],
-        @Body('tags') tags: Tag[],
         @Request() req
     ){
-        return this.workoutService.updateWorkout(workoutID,workoutTitle,workoutDescription,exercises,tags,req.user.userId,this.ctx);
+        return this.workoutService.updateWorkout(workoutID,workoutTitle,workoutDescription,exercises,req.user.userID,this.ctx);
     }
 
     /**
      *Workout Service - Delete Workout
      *
      * @param workoutID this is the string ID of the workout to be delete
-     * @param ctx  This is the prisma context that is injected into the function.
      * @throws PreconditionFailedException if:
      *                               -Parameters can not be left empty.
      *

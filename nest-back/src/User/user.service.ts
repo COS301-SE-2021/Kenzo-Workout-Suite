@@ -72,12 +72,12 @@ export class UserService {
             throw new NotFoundException("Invalid User object passed in.")
         }
 
-        if (user.userId==null)
+        if (user.userID==null)
         {
-            throw new NotFoundException("User object with no userId passed in")
+            throw new NotFoundException("User object with no userID passed in")
         }
 
-        const payload = { userId: user.userId};
+        const payload = { userID: user.userID};
 
         return {
             access_token: this.jwtService.sign(payload),
@@ -185,7 +185,7 @@ export class UserService {
         try {
             const user = await ctx.prisma.user.findUnique({
                 where: {
-                    userId: passedUserId
+                    userID: passedUserId
                 },
             })
 
@@ -193,7 +193,7 @@ export class UserService {
                 throw new NotFoundException("No User with such UUID")
             }
 
-            const { password, userId, ...result } = user;
+            const { password, userID, ...result } = user;
             return result;
         }
         catch (err)
@@ -208,7 +208,7 @@ export class UserService {
      * @param firstName This is the first name of the User that is required to be updated
      * @param lastName  This is the last name of the User that is required to be updated.
      * @param dateOfBirth  This is the date of birth of the User that is required to be updated.
-     * @param userId    This is the User ID of the User that is required to be updated. ( This UserID should be passed in through the bearer token Authorisation header)
+     * @param userID    This is the User ID of the User that is required to be updated. ( This UserID should be passed in through the bearer token Authorisation header)
      * @param ctx   This is the prisma context that can be passed in as a mock
      *
      * @throws BadRequestException if:
@@ -227,7 +227,7 @@ export class UserService {
         try {
             const updatedUser=await ctx.prisma.user.update({
                 where:{
-                    userId: userId,
+                    userID: userId,
                 },
                 data:{
                     firstName:firstName,

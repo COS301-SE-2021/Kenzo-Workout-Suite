@@ -72,8 +72,7 @@ export class WorkoutService{
                     workoutTitle: true,
                     workoutDescription: true,
                     exercises: true,
-                    tags: true,
-                    planner_ID: true
+                    plannerID: true
                 }
             });
 
@@ -102,7 +101,7 @@ export class WorkoutService{
      */
     async getWorkoutById(id: string, ctx: Context): Promise<any> {
         try{
-            const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
+            const workout = await ctx.prisma.workout.findUnique({//search for workouts that meet the requirement
                 where: {
                     workoutID: id
                 },
@@ -111,16 +110,14 @@ export class WorkoutService{
                     workoutTitle: true,
                     workoutDescription: true,
                     exercises: true,
-                    tags: true,
-                    planner_ID: true
+                    plannerID: true
                 }
             });
-
-            if(!(Array.isArray(workouts) && workouts.length)){//if JSON object is empty, send error code
+            if(!workout){//if JSON object is empty, send error code
                 throw new NotFoundException("No workouts were found in the database with the specified id.");
             }
             else{
-                return workouts;
+                return workout;
             }
         }
         catch(err){
@@ -141,15 +138,15 @@ export class WorkoutService{
         try{
             const exercises = await ctx.prisma.exercise.findMany({//search for exercises that meet the requirement
                 select: {
-                    exercise: true,
-                    title: true,
-                    description: true,
+                    exerciseID: true,
+                    exerciseTitle: true,
+                    exerciseDescription: true,
                     repRange: true,
                     sets: true,
-                    Posedescription: true,
+                    poseDescription: true,
                     restPeriod: true,
                     tags: true,
-                    duratime: true
+                    duration: true
                 }
             });
 
@@ -179,18 +176,18 @@ export class WorkoutService{
         try{
             const exercise = await ctx.prisma.exercise.findMany({//search for exercises that meet the requirement
                 where: {
-                    title : title
+                    exerciseTitle : title
                 },
                 select: {
-                    exercise: true,
-                    title: true,
-                    description: true,
+                    exerciseID: true,
+                    exerciseTitle: true,
+                    exerciseDescription: true,
                     repRange: true,
                     sets: true,
-                    Posedescription: true,
+                    poseDescription: true,
                     restPeriod: true,
                     tags: true,
-                    duratime: true
+                    duration: true
                 }
             });
 
@@ -221,18 +218,18 @@ export class WorkoutService{
         try{
             const exercise = await ctx.prisma.exercise.findUnique({//search for exercises that meet the requirement
                 where: {
-                    exercise : id
+                    exerciseID : id
                 },
                 select: {
-                    exercise: true,
-                    title: true,
-                    description: true,
+                    exerciseID: true,
+                    exerciseTitle: true,
+                    exerciseDescription: true,
                     repRange: true,
                     sets: true,
-                    Posedescription: true,
+                    poseDescription: true,
                     restPeriod: true,
                     tags: true,
-                    duratime: true
+                    duration: true
                 }
             });
             if(exercise==null){//if JSON object is empty, send error code
@@ -262,15 +259,14 @@ export class WorkoutService{
         try {
             const workouts = await ctx.prisma.workout.findMany({//search for workouts that meet the requirement
                 where: {
-                    planner_ID: id
+                    plannerID: id
                 },
                 select: {
                     workoutID: true,
                     workoutTitle: true,
                     workoutDescription: true,
                     exercises: true,
-                    tags: true,
-                    planner_ID: true
+                    plannerID: true
                 }
             });
             if (!(Array.isArray(workouts) && workouts.length)) {//if JSON object is empty, send error code
@@ -298,19 +294,19 @@ export class WorkoutService{
         try {
             const exercise = await ctx.prisma.exercise.findMany({//search for workouts that meet the requirement
                 where: {
-                    planner_ID: id
+                    plannerID: id
                 },
                 select: {
-                    exercise: true,
-                    title: true,
-                    description: true,
+                    exerciseID: true,
+                    exerciseTitle: true,
+                    exerciseDescription: true,
                     repRange: true,
                     sets: true,
-                    Posedescription: true,
+                    poseDescription: true,
                     restPeriod: true,
-                    duratime: true,
                     tags: true,
-                    planner_ID: true,
+                    duration: true,
+                    plannerID: true
                 }
             });
             if (!(Array.isArray(exercise) && exercise.length)) {//if JSON object is empty, send error code
@@ -348,7 +344,7 @@ export class WorkoutService{
 
         if (title=="" || description=="" || repRange=="" || sets==0 || poseDescription=="" || restPeriod==0 || duratime==0 || tags==null || planner_ID == "" || title==null || description==null || repRange==null || sets==null || poseDescription==null || restPeriod==null || duratime==null  || planner_ID == "")
         {
-            throw new NotFoundException("Parameters can not be left empty.");
+            throw new NotFoundException("Parameters can not be left empty!");
         }
 
         if(Array.isArray(tags) && tags.length){
@@ -360,44 +356,42 @@ export class WorkoutService{
 
                 return container;
             });
-            let Exercise = {
-                title: title,
-                description: description,
-                repRange: repRange,
-                sets: sets,
-                Posedescription: poseDescription,
-                restPeriod: restPeriod,
-                duratime: duratime,
-                tags: {
-                    connect: tagConnection
-                },
-                planner: {
-                    connect: {
-                        userId: planner_ID
+            await ctx.prisma.exercise.create({
+                data: {
+                    exerciseTitle: title,
+                    exerciseDescription: description,
+                    repRange: repRange,
+                    sets: sets,
+                    poseDescription: poseDescription,
+                    restPeriod: restPeriod,
+                    duration: duratime,
+                    tags: {
+                        connect: tagConnection
+                    },
+                    planner: {
+                        connect: {
+                            userID: planner_ID
+                        }
                     }
                 }
-            }
-            await ctx.prisma.exercise.create({
-                data:Exercise
             })
             return("Exercise created.");
         }else{
-            let Exercise = {
-                title: title,
-                description: description,
-                repRange: repRange,
-                sets: sets,
-                Posedescription: poseDescription,
-                restPeriod: restPeriod,
-                duratime: duratime,
-                planner: {
-                    connect: {
-                        userId: planner_ID
+            await ctx.prisma.exercise.create({
+                data:{
+                    exerciseTitle: title,
+                    exerciseDescription: description,
+                    repRange: repRange,
+                    sets: sets,
+                    poseDescription: poseDescription,
+                    restPeriod: restPeriod,
+                    duration: duratime,
+                    planner: {
+                        connect: {
+                            userID: planner_ID
+                        }
                     }
                 }
-            }
-            await ctx.prisma.exercise.create({
-                data:Exercise
             })
             return("Exercise created.");
         }
@@ -433,10 +427,10 @@ export class WorkoutService{
         try{
             const Exercise = await ctx.prisma.exercise.findMany({
                 where: {
-                    exercise
+                    exerciseID: exercise
                 },
                 select: {
-                    exercise: true
+                    exerciseID: true
                 }
             });
 
@@ -454,26 +448,25 @@ export class WorkoutService{
                 });
                 await ctx.prisma.exercise.update({
                     where:{
-                        exercise
+                        exerciseID: exercise
                     },
                     data:{
-                        exercise,
-                        title,
-                        description,
-                        repRange,
-                        sets,
-                        Posedescription,
-                        restPeriod,
+                        exerciseID: exercise,
+                        exerciseTitle: title,
+                        exerciseDescription: description,
+                        repRange: repRange,
+                        sets: sets,
+                        poseDescription: Posedescription,
+                        restPeriod: restPeriod,
                         tags: {
                             connect:tagConnection
                         },
-                        duratime,
+                        duration: duratime,
                         planner: {
                             connect: {
-                                userId: planner_ID
+                                userID: planner_ID
                             }
                         }
-
                     }
                 });
 
@@ -481,25 +474,24 @@ export class WorkoutService{
             }else{
                 await ctx.prisma.exercise.update({
                     where:{
-                        exercise
+                        exerciseID: exercise
                     },
                     data:{
-                        exercise,
-                        title,
-                        description,
-                        repRange,
-                        sets,
-                        Posedescription,
-                        restPeriod,
-                        duratime,
+                        exerciseID: exercise,
+                        exerciseTitle: title,
+                        exerciseDescription: description,
+                        repRange: repRange,
+                        sets: sets,
+                        poseDescription: Posedescription,
+                        restPeriod: restPeriod,
+                        duration: duratime,
                         planner: {
                             connect: {
-                                userId: planner_ID
+                                userID: planner_ID
                             }
                         }
                     }
                 });
-
                 return "Exercise updated."
             }
         } catch (err) {
@@ -527,7 +519,7 @@ export class WorkoutService{
         try{
             await ctx.prisma.exercise.delete({
                 where:{
-                    exercise: exercise
+                    exerciseID: exercise
                 }
             });
             return("Exercise Deleted.");
@@ -551,112 +543,47 @@ export class WorkoutService{
      * @author Msi Sibanyoni
      *
      */
-    async createWorkout(workoutTitle: string, workoutDescription: string, exercises : Exercise[],tags: Tag[],planner_ID :string,ctx: Context) {
-        if (workoutTitle=="" || workoutDescription==""  || planner_ID=="" || tags == null || exercises == null || workoutTitle==null || workoutDescription==null  || planner_ID==null){
+    async createWorkout(workoutTitle: string, workoutDescription: string, exercises : Exercise[],planner_ID :string,ctx: Context) {
+        if (workoutTitle=="" || workoutDescription==""  || planner_ID=="" || exercises == null || workoutTitle==null || workoutDescription==null  || planner_ID==null){
             throw new NotFoundException("Parameters can not be left empty.");
         }
-        if((Array.isArray(tags) && tags.length) && (Array.isArray(exercises) && exercises.length)){ //run create query with tags & exercises
-            await this.addNewTags(tags,ctx);
-            let tagConnection = tags.map( n => {
-                const container = {
-                    label: n.label
-                };
-
-                return container;
-            });
+        if((Array.isArray(exercises) && exercises.length)){ //run create query with exercises only
             let exerciseConnection = exercises.map( n => {
                 const container = {
-                    exercise: n.exercise
+                    exerciseID: n.exerciseID
                 };
 
                 return container;
             });
-            const Workout ={
-                workoutTitle: workoutTitle,
-                workoutDescription: workoutDescription,
-                exercises: {
-                    connect: exerciseConnection
-                },
-                tags: {
-                    connect:tagConnection
-                },
-                planner: {
-                    connect: {
-                        userId: planner_ID
+            let createdWorkout = await ctx.prisma.workout.create({
+                data: {
+                    workoutTitle: workoutTitle,
+                    workoutDescription: workoutDescription,
+                    exercises: {
+                        connect: exerciseConnection
+                    },
+                    planner: {
+                        connect: {
+                            userID: planner_ID
+                        }
                     }
                 }
-            }
-            await ctx.prisma.workout.create({
-                data: Workout
             })
-            await this.generateWorkoutPDF(Workout, ctx);
-            return("Workout Created.");
-
-        }else if(!(Array.isArray(tags) && tags.length) && (Array.isArray(exercises) && exercises.length)){ //run create query with exercises only
-            let exerciseConnection = exercises.map( n => {
-                const container = {
-                    exercise: n.exercise
-                };
-
-                return container;
-            });
-            const Workout ={
-                workoutTitle: workoutTitle,
-                workoutDescription: workoutDescription,
-                exercises: {
-                    connect: exerciseConnection
-                },
-                planner: {
-                    connect: {
-                        userId: planner_ID
-                    }
-                }
-            }
-            await ctx.prisma.workout.create({
-                data: Workout
-            })
-            await this.generateWorkoutPDF(Workout, ctx);
-            return("Workout Created.");
-        }else if((Array.isArray(tags) && tags.length) && !(Array.isArray(exercises) && exercises.length)){ //run create query with tags only
-            await this.addNewTags(tags,ctx);
-            let tagConnection = tags.map( n => {
-                const container = {
-                    label: n.label
-                };
-
-                return container;
-            });
-            const Workout ={
-                workoutTitle: workoutTitle,
-                workoutDescription: workoutDescription,
-                tags: {
-                    connect:tagConnection
-                },
-                planner: {
-                    connect: {
-                        userId: planner_ID
-                    }
-                }
-            }
-            await ctx.prisma.workout.create({
-                data: Workout
-            })
-            await this.generateWorkoutPDF(Workout, ctx);
+            await this.generateWorkoutPDF(createdWorkout, ctx);
             return("Workout Created.");
         }else{
-            const Workout ={
-                workoutTitle: workoutTitle,
-                workoutDescription: workoutDescription,
-                planner: {
-                    connect: {
-                        userId: planner_ID
+            let createdWorkout = await ctx.prisma.workout.create({
+                data: {
+                    workoutTitle: workoutTitle,
+                    workoutDescription: workoutDescription,
+                    planner: {
+                        connect: {
+                            userID: planner_ID
+                        }
                     }
                 }
-            }
-            await ctx.prisma.workout.create({
-                data: Workout
             })
-            await this.generateWorkoutPDF(Workout, ctx);
+            await this.generateWorkoutPDF(createdWorkout, ctx);
             return("Workout Created.");
         }
 
@@ -679,136 +606,60 @@ export class WorkoutService{
      * @author Msi Sibanyoni
      *
      */
-    async updateWorkout(workoutID: string, workoutTitle: string, workoutDescription: string, exercises : Exercise[],tags:Tag[],planner_ID :string,ctx: Context){
-        if (workoutTitle=="" || workoutDescription==""  || planner_ID=="" || tags == null || exercises == null || workoutTitle==null || workoutDescription==null  || planner_ID==null){
+    async updateWorkout(workoutID: string, workoutTitle: string, workoutDescription: string, exercises : Exercise[],planner_ID :string,ctx: Context){
+        if (workoutTitle=="" || workoutDescription==""  || planner_ID=="" || exercises == null || workoutTitle==null || workoutDescription==null  || planner_ID==null){
             throw new NotFoundException("Parameters can not be left empty.");
         }
-        if((Array.isArray(tags) && tags.length) && (Array.isArray(exercises) && exercises.length)) { //run update query with tags and exercises
-            await this.addNewTags(tags, ctx);
-            let tagConnection = tags.map(n => {
-                const container = {
-                    label: n.label
-                };
-
-                return container;
-            });
+        if((Array.isArray(exercises) && exercises.length)){//run create query with exercises only
             let exerciseConnection = exercises.map( n => {
                 const container = {
-                    exercise: n.exercise
+                    exerciseID: n.exerciseID
                 };
 
                 return container;
             });
-            const updateWorkout ={
-                workoutTitle: workoutTitle,
-                workoutDescription: workoutDescription,
-                exercises: {
-                    connect: exerciseConnection
-                },
-                tags: {
-                    connect:tagConnection
-                },
-                planner: {
-                    connect: {
-                        userId: planner_ID
-                    }
-                }
-            }
             try{
                 await ctx.prisma.workout.update({
                     where:{
                         workoutID: workoutID,
                     },
-                    data:updateWorkout
-                });
-                await this.generateWorkoutPDF(updateWorkout, ctx);
-                return("Workout Updated.");
-            }catch (e) {
-                throw new NotFoundException("Workout with provided ID does not exist");
-            }
-        }else if(!(Array.isArray(tags) && tags.length) && (Array.isArray(exercises) && exercises.length)){//run create query with exercises only
-            let exerciseConnection = exercises.map( n => {
-                const container = {
-                    exercise: n.exercise
-                };
-
-                return container;
-            });
-            const updateWorkout ={
-                workoutTitle: workoutTitle,
-                workoutDescription: workoutDescription,
-                exercises: {
-                    connect: exerciseConnection
-                },
-                planner: {
-                    connect: {
-                        userId: planner_ID
+                    data:{
+                        workoutTitle: workoutTitle,
+                        workoutDescription: workoutDescription,
+                        exercises: {
+                            set: exerciseConnection
+                        },
+                        planner: {
+                            connect: {
+                                userID: planner_ID
+                            }
+                        }
                     }
-                }
-            }
-            try{
-                await ctx.prisma.workout.update({
-                    where:{
-                        workoutID: workoutID,
-                    },
-                    data:updateWorkout
                 });
-                await this.generateWorkoutPDF(updateWorkout, ctx);
-                return("Workout Updated.");
-            }catch (e) {
-                throw new NotFoundException("Workout with provided ID does not exist");
-            }
-        }else if((Array.isArray(tags) && tags.length) && !(Array.isArray(exercises) && exercises.length)){//tags only
-            await this.addNewTags(tags, ctx);
-            let tagConnection = tags.map(n => {
-                const container = {
-                    label: n.label
-                };
-
-                return container;
-            });
-            const updateWorkout ={
-                workoutTitle: workoutTitle,
-                workoutDescription: workoutDescription,
-                tags: {
-                    connect:tagConnection
-                },
-                planner: {
-                    connect: {
-                        userId: planner_ID
-                    }
-                }
-            }
-            try{
-                await ctx.prisma.workout.update({
-                    where:{
-                        workoutID: workoutID,
-                    },
-                    data:updateWorkout
-                });
-                await this.generateWorkoutPDF(updateWorkout, ctx);
+                let updatedWorkout = await this.getWorkoutById(workoutID, ctx);
+                await this.generateWorkoutPDF(updatedWorkout, ctx);
                 return("Workout Updated.");
             }catch (e) {
                 throw new NotFoundException("Workout with provided ID does not exist");
             }
         }else{
-            const updateWorkout ={
-                workoutTitle: workoutTitle,
-                workoutDescription: workoutDescription,
-                planner: {
-                    connect: {
-                        userId: planner_ID
-                    }
-                }
-            }
             try{
                 await ctx.prisma.workout.update({
                     where:{
                         workoutID: workoutID,
                     },
-                    data:updateWorkout
+                    data:{
+                        workoutTitle: workoutTitle,
+                        workoutDescription: workoutDescription,
+                        planner: {
+                            connect: {
+                                userID: planner_ID
+                            }
+                        }
+                    }
                 });
-                await this.generateWorkoutPDF(updateWorkout, ctx);
+                let updatedWorkout = await this.getWorkoutById(workoutID, ctx);
+                await this.generateWorkoutPDF(updatedWorkout, ctx);
                 return("Workout Updated.");
             }catch (e) {
                 throw new NotFoundException("Workout with provided ID does not exist");
@@ -864,31 +715,23 @@ export class WorkoutService{
      *
      */
     async generateWorkoutPDF(workout: any, ctx: Context){
-
         if(workout==null){
             throw new PreconditionFailedException("Invalid workout provided");
         }
         const doc = new jsPDF();
         //TODO: Make heading font and a normal font & Consider adding an image
         doc.text(workout.workoutTitle, 80, 10);
-        if(workout.tags !== undefined){
-            const workoutTagArray = workout.tags.connect.map(({label}) => [label])
-            let stringTags = workoutTagArray.join();
-            let splitTags = doc.splitTextToSize(stringTags,180);
-            doc.text("Tags: " + splitTags, 15 , 50  );
-        }
-
+        //TODO: getTags from exercises
         let splitWorkoutDesc = doc.splitTextToSize(workout.workoutDescription,180);
         doc.text(splitWorkoutDesc, 15, 130 );
-
         if(workout.exercises === undefined){
             doc.save("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf");
         }else{
 
-            for(let i =0; i < workout.exercises.connect.length ; i++){
-                let exercise = await this.getExerciseByID(workout.exercises.connect[i].exercise, ctx);
+            for(let i =0; i < workout.exercises.length ; i++){
+                let exercise = await this.getExerciseByID(workout.exercises[i].exerciseID, ctx);
                 doc.addPage("a4", "p");
-                doc.text(exercise.title, 90, 10);
+                doc.text(exercise.exerciseTitle, 90, 10);
                 if(exercise.tags.length != 0){
                     const exerciseTagArray = exercise.tags.map(({label}) => [label])
                     let stringTags = exerciseTagArray.join();
@@ -896,13 +739,13 @@ export class WorkoutService{
                     doc.text("Tags: " + splitTags, 15 , 30  );
                 }
 
-                let splitExerciseDesc = doc.splitTextToSize(exercise.description,180)
+                let splitExerciseDesc = doc.splitTextToSize(exercise.exerciseDescription,180)
                 doc.text(splitExerciseDesc, 15, 50);
                 doc.text("Rep Range: " + exercise.repRange, 15, (60+(splitExerciseDesc.length*10)) );
                 doc.text("Sets: " + exercise.sets.toString(), 90, (60+(splitExerciseDesc.length*10)) );
                 //doc.text(exercise.Posedescription, 10, 90);
                 doc.text("Rest Period: " + exercise.restPeriod.toString() + " seconds.", 15, (80+(splitExerciseDesc.length*10)) );
-                doc.text("Exercise Duration: " + exercise.duratime.toString() + " seconds or " + (exercise.duratime/60).toString() + " minutes", 15, (100+(splitExerciseDesc.length*10)) );
+                doc.text("Exercise Duration: " + exercise.duration.toString() + " seconds or " + (exercise.duratime/60).toString() + " minutes", 15, (100+(splitExerciseDesc.length*10)) );
             }
             doc.save("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf");
         }

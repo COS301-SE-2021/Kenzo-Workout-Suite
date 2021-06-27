@@ -26,7 +26,7 @@ model Avatar {
 }
 
 model User {
-  userId      String     @id @default(uuid())
+  userID      String     @id @default(uuid())
   email       String     @unique
   firstName   String
   lastName    String
@@ -35,7 +35,7 @@ model User {
   avatar      Avatar?
   userType    userType
   workouts    Workout[]
-  Exercise    Exercise[]
+  exercises   Exercise[]
 }
 
 model Workout {
@@ -44,32 +44,30 @@ model Workout {
   workoutDescription String
 
   exercises Exercise[]
-  tags      Tag[]
 
-  planner    User?   @relation(fields: [planner_ID], references: [userId])
-  planner_ID String?
+  planner   User?   @relation(fields: [plannerID], references: [userID])
+  plannerID String?
 }
 
 model Exercise {
-  exercise        String    @id @default(uuid())
-  title           String
-  description     String
-  repRange        String
-  sets            Int
-  Posedescription String
-  restPeriod      Int
-  tags            Tag[]
-  duratime        Int
-  workouts        Workout[]
+  exerciseID          String    @id @default(uuid())
+  exerciseTitle       String
+  exerciseDescription String
+  repRange            String
+  sets                Int
+  poseDescription     String
+  restPeriod          Int
+  tags                Tag[]
+  duration            Int
+  workouts            Workout[]
 
-  planner    User?   @relation(fields: [planner_ID], references: [userId])
-  planner_ID String?
+  planner   User?   @relation(fields: [plannerID], references: [userID])
+  plannerID String?
 }
 
 model Tag {
   label            String     @id
   textColour       String
   backgroundColour String
-  workouts         Workout[]
   exercises        Exercise[]
 }
