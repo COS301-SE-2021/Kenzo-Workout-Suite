@@ -1,32 +1,29 @@
-import {Body, Controller, Get, Post, Put, UseGuards, Request, Req, HttpCode} from '@nestjs/common';
-import {UserService} from "./user.service";
-import { AuthGuard } from '@nestjs/passport';
-import {LocalAuthGuard} from "./AuthGuards/local-auth.guard";
-import {JwtAuthGuard} from "./AuthGuards/jwt-auth.guard";
-import {User} from "@prisma/client";
-import {ActualPrisma} from "../../context";
+import { Body, Controller, Get, Post, Put, UseGuards, Request, Req, HttpCode } from '@nestjs/common'
+import { UserService } from './user.service'
+import { AuthGuard } from '@nestjs/passport'
+import { LocalAuthGuard } from './AuthGuards/local-auth.guard'
+import { JwtAuthGuard } from './AuthGuards/jwt-auth.guard'
+import { User } from '@prisma/client'
+import { ActualPrisma } from '../../context'
 
-import {v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 import {
-    ApiBadRequestResponse,
-    ApiBearerAuth,
-    ApiBody, ApiCreatedResponse,
-    ApiInternalServerErrorResponse,
-    ApiNotFoundResponse,
-    ApiOkResponse, ApiPreconditionFailedResponse, ApiUnauthorizedResponse
-} from "@nestjs/swagger";
-import {loginDTO, signUpDTO, updateUserDTO} from "./user.model";
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiBody, ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse, ApiPreconditionFailedResponse, ApiUnauthorizedResponse
+} from '@nestjs/swagger'
 
-
+import { loginDTO, signUpDTO, updateUserDTO } from './user.model'
 
 @Controller('user')
 export class UserController {
+  constructor (private readonly userService: UserService) {
+  }
 
-    constructor(private readonly userService: UserService) {
-    }
-
-
-    /**
+  /**
      * User Controller- signUp
      *
      * @param user User that is to be signed up
@@ -46,26 +43,25 @@ export class UserController {
 
     @Post('signUp')
     @ApiCreatedResponse({
-        description: 'User has been successfully created.'
+      description: 'User has been successfully created.'
     })
     @ApiBadRequestResponse({
-        description: 'User with this email already exists.'
+      description: 'User with this email already exists.'
     })
     @ApiPreconditionFailedResponse({
-        description: 'Invalid email address or password.'
+      description: 'Invalid email address or password.'
     })
     @ApiInternalServerErrorResponse({
-        description: 'Could not create User due to server.'
+      description: 'Could not create User due to server.'
     })
     @ApiBody({
-        type:signUpDTO
+      type: signUpDTO
     })
-    signUpUser(
-        @Body('user') user: User,
-    ) {
-        return this.userService.signUp(user,ActualPrisma());
-    }
-
+  signUpUser (
+        @Body('user') user: User
+  ) {
+    return this.userService.signUp(user, ActualPrisma())
+  }
 
     /**
      *User Controller- login
@@ -82,19 +78,18 @@ export class UserController {
     @UseGuards(LocalAuthGuard)
     @Post('login')
     @ApiOkResponse({
-        description: 'Login successful.'
+      description: 'Login successful.'
     })
     @ApiNotFoundResponse({
-        description: 'Invalid Email or Password'
+      description: 'Invalid Email or Password'
     })
     @ApiBody({
-        type: loginDTO
+      type: loginDTO
     })
     @HttpCode(200)
-    async login(@Request() req) {
-        return this.userService.login(req.user);
+    async login (@Request() req) {
+      return this.userService.login(req.user)
     }
-
 
     /**
      * User Controller- googleLogin
@@ -106,8 +101,7 @@ export class UserController {
      */
     @Get('googleLogin')
     @UseGuards(AuthGuard('google'))
-    async googleAuth(@Req() req) {}
-
+    async googleAuth (@Req() req) {}
 
     /**
      * User Controller- googleRedirect
@@ -118,10 +112,9 @@ export class UserController {
      */
     @Get('googleRedirect')
     @UseGuards(AuthGuard('google'))
-    googleAuthRedirect(@Req() req) {
-        return this.userService.googleLogin(req)
+    googleAuthRedirect (@Req() req) {
+      return this.userService.googleLogin(req)
     }
-
 
     /**
      * User Controller- getUserDetails
@@ -140,14 +133,14 @@ export class UserController {
     @ApiBearerAuth()
     @Get('getUserDetails')
     @ApiOkResponse({
-        description: 'Login successful.'
+      description: 'Login successful.'
     })
     @ApiNotFoundResponse({
-        description: 'Invalid Email or Password'
+      description: 'Invalid Email or Password'
     })
     @HttpCode(200)
-    getUserData(@Request() req){
-        return this.userService.findUserByUUID(req.user.userId,ActualPrisma())
+    getUserData (@Request() req) {
+      return this.userService.findUserByUUID(req.user.userId, ActualPrisma())
     }
 
     /**
@@ -170,21 +163,21 @@ export class UserController {
     @ApiBearerAuth()
     @Put('updateUserDetail')
     @ApiOkResponse({
-        description: 'User details successfully retrieved'
+      description: 'User details successfully retrieved'
     })
     @ApiUnauthorizedResponse({
-        description: 'Unauthorized User'
+      description: 'Unauthorized User'
     })
     @ApiBody({
-        type:updateUserDTO
+      type: updateUserDTO
     })
     @ApiInternalServerErrorResponse({
-        description: 'Could not create User due to server.'
+      description: 'Could not create User due to server.'
     })
-    updateUserDetail(@Request() req,
+    updateUserDetail (@Request() req,
                      @Body('firstName') firstName: string,
                      @Body('lastName') lastName: string,
-                     @Body('dateOfBirth') dateOfBirth: Date){
-        return this.userService.updateUserDetails(firstName,lastName,dateOfBirth,req.user.userId,ActualPrisma())
+                     @Body('dateOfBirth') dateOfBirth: Date) {
+      return this.userService.updateUserDetails(firstName, lastName, dateOfBirth, req.user.userId, ActualPrisma())
     }
 }
