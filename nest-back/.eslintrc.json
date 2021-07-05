@@ -16,6 +16,8 @@
         "@typescript-eslint"
     ],
     "rules": {
-        
+        "no-useless-constructor": "off",
+        "quotes": ["error","double"],
+        "no-undef": "off"
     }
 }
