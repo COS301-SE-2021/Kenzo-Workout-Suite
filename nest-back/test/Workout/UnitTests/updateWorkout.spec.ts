@@ -1,124 +1,92 @@
-import { MockContext, Context, createMockContext } from "../../../context";
-import {WorkoutService} from "../../../src/Workout/workout.service";
-import {v4 as uuidv4 } from 'uuid';
+import { MockContext, Context, createMockContext } from "../../../context"
+import { WorkoutService } from "../../../src/Workout/workout.service"
+import { v4 as uuidv4 } from "uuid"
 import {
-    Workout,
-    Exercise,
-    User,
-    Tag,
-    Prisma
-} from '@prisma/client';
-import {PrismaClient} from "@prisma/client/scripts/default-index";
+  Exercise
+} from "@prisma/client"
+import { PrismaClient } from "@prisma/client/scripts/default-index"
 
 let mockCtx: MockContext
 let ctx: Context
 let workoutService: WorkoutService
 let prisma: PrismaClient
+const workoutUUID = uuidv4()
+const plannerUUID = uuidv4()
 
 beforeEach(() => {
-    workoutService = new WorkoutService(prisma);
-    mockCtx = createMockContext()
-    ctx = (mockCtx as unknown) as Context
+  workoutService = new WorkoutService(prisma)
+  mockCtx = createMockContext()
+  ctx = (mockCtx as unknown) as Context
 })
-
-test('Should update new workout [Without Tags or Exercises]', async () => {
-    let workout;
-    let emptyTag: Tag[] = [];
-    let emptyExercise: Exercise[] = [];
-    mockCtx.prisma.tag.update.mockResolvedValue(workout);
-    spyOn(workoutService,"generateWorkoutPDF").and.stub();
-    await expect(workoutService.updateWorkout(uuidv4(),'Test','test',emptyExercise,emptyTag,uuidv4(),ctx)).resolves.toEqual(
-        "Workout Updated."
-    )
-})
-
-test('Should create new workout [Without Exercises]', async () => {
-    let Workout ;
-    let tagArray: Tag[] = [{"label":"painful","textColour":"blue","backgroundColour":"white"}];
-    spyOn(workoutService,"addNewTags");
-    spyOn(workoutService,"createTag").and.returnValue(tagArray);
-    let emptyExercise: Exercise[] = [];
-    spyOn(workoutService,"generateWorkoutPDF").and.stub();
-    mockCtx.prisma.workout.create.mockResolvedValue(Workout);
-
-
-    await expect(workoutService.updateWorkout(uuidv4(),'Test','test',emptyExercise,tagArray,uuidv4(),ctx)).resolves.toEqual(
-        "Workout Updated."
-    )
-})
-
-test('Should create new workout [Without Tags]', async () => {
-    let Workout ;
-    let exerciseUUID = uuidv4();
-    let userUUID = uuidv4()
-    const Exercise = {
-        exercise:exerciseUUID,
-        title:"TestExercise",
-        description:"TestDescription",
-        repRange:"TestRange",
-        sets:4,
-        Posedescription:"TestPDesc",
-        restPeriod:2,
-        duratime:2,
-        planner_ID:userUUID
+describe("Unit tests for updateWorkout in workout subsystem", () => {
+  test("Should update new workout [Without Exercises]", async () => {
+    const Workout = {
+      workoutID: workoutUUID,
+      workoutTitle: "Test",
+      workoutDescription: "Test",
+      plannerID: plannerUUID
     }
-    let emptyTag: Tag[] = [];
-    let fullExercise: Exercise[] = [Exercise];
-    spyOn(workoutService,"generateWorkoutPDF").and.stub();
-    mockCtx.prisma.workout.create.mockResolvedValue(Workout);
-
-
-    await expect(workoutService.updateWorkout(uuidv4(),'Test','test',fullExercise,emptyTag,userUUID,ctx)).resolves.toEqual(
-        "Workout Updated."
+    const emptyExercise: Exercise[] = []
+    mockCtx.prisma.workout.create.mockResolvedValue(Workout)
+    mockCtx.prisma.workout.update.mockResolvedValue(Workout)
+    spyOn(workoutService, "getWorkoutById").and.stub()
+    spyOn(workoutService, "generateWorkoutPDF").and.stub()
+    await expect(workoutService.updateWorkout(workoutUUID, "Test", "test", emptyExercise, plannerUUID, mockCtx)).resolves.toEqual(
+      "Workout Updated."
     )
-})
+  })
 
-test('Should update new workout [With tags and exercises]', async () => {
-    let exerciseUUID = uuidv4();
-    let userUUID = uuidv4()
-    const Exercise = {
-        exercise:exerciseUUID,
-        title:"TestExercise",
-        description:"TestDescription",
-        repRange:"TestRange",
-        sets:4,
-        Posedescription:"TestPDesc",
-        restPeriod:2,
-        duratime:2,
-        planner_ID:userUUID
+  test("Should create new workout [With Exercises]", async () => {
+    const Workout = {
+      workoutID: workoutUUID,
+      workoutTitle: "Test",
+      workoutDescription: "Test",
+      plannerID: plannerUUID
     }
-    let Workout ;
-    let tagArray: Tag[] = [{"label":"painful","textColour":"blue","backgroundColour":"white"}];
-    spyOn(workoutService,"addNewTags");
-    spyOn(workoutService,"createTag").and.returnValue(tagArray);
-    let fullExercise: Exercise[] = [Exercise];
-    spyOn(workoutService,"generateWorkoutPDF").and.stub();
-    mockCtx.prisma.workout.create.mockResolvedValue(Workout);
+    const exerciseUUID = uuidv4()
+    const userUUID = uuidv4()
+    const Exercise = {
+      exerciseID: exerciseUUID,
+      exerciseTitle: "TestExercise",
+      exerciseDescription: "TestDescription",
+      repRange: "TestRange",
+      sets: 4,
+      poseDescription: "TestPDesc",
+      restPeriod: 2,
+      duration: 2,
+      plannerID: userUUID
+    }
 
-    await expect(workoutService.updateWorkout(uuidv4(),'Test','test',fullExercise,tagArray,userUUID,ctx)).resolves.toEqual(
-        "Workout Updated."
+    const fullExercise: Exercise[] = [Exercise]
+    mockCtx.prisma.workout.create.mockResolvedValue(Workout)
+    mockCtx.prisma.workout.update.mockResolvedValue(Workout)
+    spyOn(workoutService, "getWorkoutById").and.stub()
+    spyOn(workoutService, "generateWorkoutPDF").and.stub()
+
+    await expect(workoutService.updateWorkout(workoutUUID, "Test", "test", fullExercise, userUUID, mockCtx)).resolves.toEqual(
+      "Workout Updated."
     )
-})
+  })
 
-test('Should not update workout, [Throws Empty Parameters error(workoutTitle)]  ', async () => {
-    let workout;
-    let emptyTag: Tag[] = [];
-    let emptyExercise: Exercise[] = [];
-    mockCtx.prisma.tag.update.mockResolvedValue(workout);
-    spyOn(workoutService,"generateWorkoutPDF").and.stub();
-    await expect(workoutService.updateWorkout(uuidv4(),'','test',emptyExercise,emptyTag,uuidv4(),ctx)).rejects.toThrow(
-        "Parameters can not be left empty."
+  test("Should not update workout, [Throws Empty Parameters error(workoutTitle)]  ", async () => {
+    let workout
+
+    const emptyExercise: Exercise[] = []
+    mockCtx.prisma.tag.update.mockResolvedValue(workout)
+    spyOn(workoutService, "generateWorkoutPDF").and.stub()
+    await expect(workoutService.updateWorkout(uuidv4(), "", "test", emptyExercise, uuidv4(), ctx)).rejects.toThrow(
+      "Parameters can not be left empty."
     )
-})
+  })
 
-test('Should not update workout, [Throws Empty Parameters error(workoutTitle)]  ', async () => {
-    let workout;
-    let emptyTag: Tag[] = [];
-    let emptyExercise: Exercise[] = [];
-    mockCtx.prisma.tag.update.mockResolvedValue(workout);
-    spyOn(workoutService,"generateWorkoutPDF").and.stub();
-    await expect(workoutService.updateWorkout(uuidv4(),'test','',emptyExercise,emptyTag,uuidv4(),ctx)).rejects.toThrow(
-        "Parameters can not be left empty."
+  test("Should not update workout, [Throws Empty Parameters error(workoutTitle)]  ", async () => {
+    let workout
+
+    const emptyExercise: Exercise[] = []
+    mockCtx.prisma.tag.update.mockResolvedValue(workout)
+    spyOn(workoutService, "generateWorkoutPDF").and.stub()
+    await expect(workoutService.updateWorkout(uuidv4(), "test", "", emptyExercise, uuidv4(), ctx)).rejects.toThrow(
+      "Parameters can not be left empty."
     )
+  })
 })
-

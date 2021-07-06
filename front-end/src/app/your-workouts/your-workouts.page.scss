@@ -54,6 +54,16 @@
   z-index: 100;
 }
 
+.filterBtns{
+  display: block;
+  width: 187.5px;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: "SF Pro Regular", serif;
+  --border-radius: var(--border-radius);
+
+}
+
 .footer{
     --background: var(--ion-off-white);
     padding-top: 10px;
@@ -63,27 +73,56 @@
     //margin-bottom: 20px;
 }
 
+.editBtn{
+  display: block;
+}
+
+.navThumbnail{
+  display: block;
+  float: left;
+  margin-left: auto;
+  margin-right: auto;
+  width: 25%;
+}
+
 .NavButtons{
-    display: block;
-    float: left;
-    margin-right: auto;
-    width: var(--icon-size);
-    height: var(--icon-size);
+  width: var(--icon-size);
+  height: var(--icon-size);
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
 }
 
-#WorkoutsBtn{
-    margin-left: 10%;
+.NavLabel{
+  display: block;
+  float: left;
+  font-size: 15px;
+  margin-left: 45%;
+  margin-right: auto;
 }
 
-#SearchBtn{
-    margin-left: 15%;
+@media only screen and (max-width: 400px){
+  .NavLabel{
+    margin-left: 25%;
+  }
 }
 
-#ContactsBtn{
-    margin-left: 15%;
+.text{
+  display: inline-block;
+  vertical-align: middle;
 }
 
-#SettingsBtn{
-    margin-left: 15%;
+.fabButton[data-desc] {
+  position: relative;
 }
-
+.fabButton[data-desc]::after{
+  position: absolute;
+  content: attr(data-desc);
+  z-index: 1;
+  right: 50px;
+  bottom: 8px;
+  color: var(--ion-color-tertiary);
+  font-size: 16px;
+  font-weight: bold;
+}
