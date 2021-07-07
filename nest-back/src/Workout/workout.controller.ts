@@ -1,161 +1,217 @@
 import {
-    Controller,
-    Get,
-    Param,
-    Post,
-    Body,
-    Put,
-    Delete, UseGuards, Request,
-} from '@nestjs/common';
-import {WorkoutService} from "./workout.service";
+  Controller,
+  Get,
+  Param,
+  Post,
+  Body,
+  Put,
+  Delete, UseGuards, Request
+} from "@nestjs/common"
+import { WorkoutService } from "./workout.service"
 import {
-    Workout,
-    Exercise,
-    User,
-    Tag,
-    PrismaClient,
-    Prisma
-} from '@prisma/client';
-import {ActualPrisma, Context} from "../../context";
+  Exercise,
+  Tag
+} from "@prisma/client"
+import { ActualPrisma, Context } from "../../context"
 import {
-    ApiBadRequestResponse, ApiBearerAuth,
-    ApiBody, ApiConflictResponse,
-    ApiInternalServerErrorResponse, ApiNotAcceptableResponse,
-    ApiNotFoundResponse,
-    ApiOkResponse, ApiPreconditionFailedResponse
-} from "@nestjs/swagger";
+  ApiBadRequestResponse, ApiBearerAuth,
+  ApiBody, ApiConflictResponse,
+  ApiInternalServerErrorResponse, ApiNotAcceptableResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse, ApiPreconditionFailedResponse
+} from "@nestjs/swagger"
 
 import {
-    CreateExerciseDTO,
-    CreateWorkoutDTO,
-    DeleteWorkoutDTO,
-    UpdateWorkoutDTO,
-    createTagDTO,
-    deleteExerciseDTO, updateExerciseDTO
-} from "./workout.model";
-import {JwtAuthGuard} from "../User/AuthGuards/jwt-auth.guard";
+  CreateExerciseDTO,
+  CreateWorkoutDTO,
+  DeleteWorkoutDTO,
+  UpdateWorkoutDTO,
+  createTagDTO,
+  deleteExerciseDTO, updateExerciseDTO
+} from "./workout.model"
+import { JwtAuthGuard } from "../User/AuthGuards/jwt-auth.guard"
 
-
-@Controller('workout')
+@Controller("workout")
 export class WorkoutController {
-
     ctx: Context
 
-    constructor(private readonly workoutService: WorkoutService) {
-        this.ctx = ActualPrisma();
+    constructor (private readonly workoutService: WorkoutService) {
+      this.ctx = ActualPrisma()
     }
 
-
-    @Get('getWorkouts')
+    /**
+     *Workout Controller - Get Workouts
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No workouts were found in the database.
+     * @return  Promise array of workout object/s.
+     * @author Tinashe Chamisa
+     *
+     */
+    @Get("getWorkouts")
     @ApiOkResponse({
-        description: 'A workout object.'
+      description: "A workout object."
     })
     @ApiNotFoundResponse({
-        description: 'No workouts were found in the database.'
+      description: "No workouts were found in the database."
     })
     @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
+      description: "Internal server error."
     })
-    getWorkouts(
+    getWorkouts (
     ) {
-        return this.workoutService.getWorkouts(ActualPrisma());
+      return this.workoutService.getWorkouts(ActualPrisma())
     }
 
-    @Get('getWorkoutById/:id')
+    /**
+     *Workout Controller - Get Workouts by ID
+     *
+     * @param id This is the ID of the workout to be found in the database.
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No workouts were found in the database with the specified ID.
+     * @return  Promise array of workout object/s.
+     * @author Tinashe Chamisa
+     *
+     */
+    @Get("getWorkoutById/:id")
     @ApiOkResponse({
-        description: 'A workout object.'
+      description: "A workout object."
     })
     @ApiNotFoundResponse({
-        description: 'No workouts were found in the database.'
+      description: "No workouts were found in the database."
     })
     @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
+      description: "Internal server error."
     })
-    getWorkoutById(
-        @Param('id') id: string,
+    getWorkoutById (
+        @Param("id") id: string
     ) {
-        return this.workoutService.getWorkoutById(id,ActualPrisma());
-    }
-    @Get('getExercises')
-    @ApiOkResponse({
-        description: 'An exercise object.'
-    })
-    @ApiNotFoundResponse({
-        description: 'No exercises were found in the database.'
-    })
-    @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
-    })
-    getExercises(
-    ) {
-        return this.workoutService.getExercises(ActualPrisma());
+      return this.workoutService.getWorkoutById(id, this.ctx)
     }
 
-    @Get('getExerciseByTitle/:title')
+    /**
+     *Workout Controller - Get Exercises
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No exercises were found in the database.
+     * @return  Promise array of exercise object/s.
+     * @author Tinashe Chamisa
+     *
+     */
+    @Get("getExercises")
     @ApiOkResponse({
-        description: 'A workout object.'
+      description: "An exercise object."
     })
     @ApiNotFoundResponse({
-        description: 'No workouts were found in the database.'
+      description: "No exercises were found in the database."
     })
     @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
+      description: "Internal server error."
     })
-    getExerciseByTitle(
-        @Param('title') title: string,
+    getExercises (
     ) {
-        return this.workoutService.getExerciseByTitle(title,ActualPrisma());
+      return this.workoutService.getExercises(ActualPrisma())
     }
-    @Get('getExerciseByID/:ID')
+
+    /**
+     *Workout Controller - Get Exercises by Title
+     *
+     * @param title This is the title of the exercise/s to be found in the database.
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No exercises were found in the database with the specified title.
+     * @return  Promise array of exercises object/s.
+     * @author Tinashe Chamisa
+     *
+     */
+    @Get("getExerciseByTitle/:title")
     @ApiOkResponse({
-        description: 'A workout object.'
+      description: "A workout object."
     })
     @ApiNotFoundResponse({
-        description: 'No workouts were found in the database.'
+      description: "No workouts were found in the database."
     })
     @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
+      description: "Internal server error."
     })
-    getExerciseByID(
-        @Param('id') id: string,
+    getExerciseByTitle (
+        @Param("title") title: string
     ) {
-        return this.workoutService.getExerciseByID(id,ActualPrisma());
+      return this.workoutService.getExerciseByTitle(title, ActualPrisma())
+    }
+
+    /**
+     *Workout Controller - Get Exercise by ID
+     *
+     * @param id This is the ID of the exercise to be found in the database.
+     * @throws NotFoundException if:
+     *                               -No workouts were found in the database with the specified ID.
+     * @return  Promise array of workout object/s.
+     * @author Msi Sibanyoni
+     *
+     */
+    @Get("getExerciseByID/:ID")
+    @ApiOkResponse({
+      description: "A workout object."
+    })
+    @ApiNotFoundResponse({
+      description: "No workouts were found in the database."
+    })
+    @ApiInternalServerErrorResponse({
+      description: "Internal server error."
+    })
+    getExerciseByID (
+        @Param("id") id: string
+    ) {
+      return this.workoutService.getExerciseByID(id, this.ctx)
+    }
+
+    /**
+     *Workout Controller - Get Workouts by Planner
+     *
+     * @param id This is the ID of the planner of the workout/s to be found in the database.
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No workouts were found in the database with the specified planner ID.
+     * @return  Promise array of workout object/s.
+     * @author Tinashe Chamisa
+     *
+     */
+    @UseGuards(JwtAuthGuard)
+    @Get("getWorkoutByPlanner")
+    @ApiOkResponse({
+      description: "A workout object."
+    })
+    @ApiNotFoundResponse({
+      description: "No workouts were found in the database."
+    })
+    @ApiInternalServerErrorResponse({
+      description: "Internal server error."
+    })
+    @ApiBearerAuth()
+    getWorkoutByPlanner (
+        @Request() req
+    ) {
+      return this.workoutService.getWorkoutByPlanner(req.user.userID, ActualPrisma())
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('getWorkoutByPlanner')
+    @Get("getExercisesByPlanner")
     @ApiOkResponse({
-        description: 'A workout object.'
+      description: "A exercise object."
     })
     @ApiNotFoundResponse({
-        description: 'No workouts were found in the database.'
+      description: "No exercises were found in the database."
     })
     @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
+      description: "Internal server error."
     })
     @ApiBearerAuth()
-    getWorkoutByPlanner(
+    getExercisesPlanner (
         @Request() req
     ) {
-        return this.workoutService.getWorkoutByPlanner(req.user.userId,ActualPrisma());
-    }
-
-    @UseGuards(JwtAuthGuard)
-    @Get('getExercisesByPlanner')
-    @ApiOkResponse({
-        description: 'A exercise object.'
-    })
-    @ApiNotFoundResponse({
-        description: 'No exercises were found in the database.'
-    })
-    @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
-    })
-    @ApiBearerAuth()
-    getExercisesPlanner(
-        @Request() req
-    ) {
-        return this.workoutService.getExercisesByPlanner(req.user.userId,ActualPrisma());
+      return this.workoutService.getExercisesByPlanner(req.user.userID, ActualPrisma())
     }
 
     /**
@@ -165,12 +221,11 @@ export class WorkoutController {
      * @param description This is the description of the exercise.
      * @param repRange This is the amount of reps.
      * @param sets This is the amount of sets.
-     * @param poseDescription This is the description of the poses
+     * @param Posedescription
      * @param restPeriod This is the rest period of the exercise.
      * @param tags this is an array of tags
-     * @param duratime This is the duration of the exercise.
-     * @param planner_ID This is the planner ID
-     * @param ctx  This is the prisma context that is injected into the function.
+     * @param duration
+     * @param req
      * @throws PreconditionFailedException if:
      *                               -Not all parameters are given.
      * @throws NotFoundException if:
@@ -180,81 +235,115 @@ export class WorkoutController {
      *
      */
     @UseGuards(JwtAuthGuard)
-    @Post('createExercise')
+    @Post("createExercise")
     @ApiOkResponse({
-        description: 'Exercise Created'
+      description: "Exercise Created"
     })
     @ApiBadRequestResponse({
-        description: 'Could not create exercise.'
+      description: "Could not create exercise."
     })
     @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
+      description: "Internal server error."
     })
-    @ApiBody({type: CreateExerciseDTO})
+    @ApiBody({ type: CreateExerciseDTO })
     @ApiBearerAuth()
-    createExercise(
-        @Body('title') title: string,
-        @Body('description') description: string,
-        @Body('repRange') repRange: string,
-        @Body('sets') sets: number,
-        @Body('Posedescription') Posedescription: string,
-        @Body('restPeriod') restPeriod: number,
-        @Body('tags') tags: Tag[],
-        @Body('duratime') duration: number,
+    createExercise (
+        @Body("exerciseTitle") title: string,
+        @Body("exerciseDescription") description: string,
+        @Body("repRange") repRange: string,
+        @Body("sets") sets: number,
+        @Body("poseDescription") Posedescription: string,
+        @Body("restPeriod") restPeriod: number,
+        @Body("tags") tags: Tag[],
+        @Body("duration") duration: number,
         @Request() req
     ) {
-        return this.workoutService.createExercise(title,description,repRange,sets,Posedescription,restPeriod,tags,duration,req.user.userId  ,this.ctx);
+      return this.workoutService.createExercise(title, description, repRange, sets, Posedescription, restPeriod, tags, duration, req.user.userID, this.ctx)
     }
 
+    /**
+     *Workout Controller - Update Exercise
+     *
+     * @param exercise This is the ID of the exercise.
+     * @param title This is the title of the exercise.
+     * @param description This is the description of the exercise.
+     * @param repRange This is the amount of reps.
+     * @param sets This is the amount of sets.
+     * @param Posedescription This is the pose description.
+     * @param restPeriod This is the rest period of the exercise.
+     * @param tags these are the tags related to an exercise
+     * @param duration this is the duration of an exercise
+     * @param req This is the user request object
+     * @throws PreconditionFailedException if:
+     *                               -Not all parameters are given.
+     * @throws NotFoundException if:
+     *                               -An exercise with provided ID does not exist.
+     * @return  Message indicating success.
+     * @author Tinashe Chamisa
+     *
+     */
     @UseGuards(JwtAuthGuard)
-    @Put('updateExercise')
-    @ApiBody({type: updateExerciseDTO})
+    @Put("updateExercise")
+    @ApiBody({ type: updateExerciseDTO })
     @ApiOkResponse({
-        description: 'Exercise updated.'
+      description: "Exercise updated."
     })
     @ApiPreconditionFailedResponse({
-        description: 'Invalid exercise object passed in.'
+      description: "Invalid exercise object passed in."
     })
     @ApiNotFoundResponse({
-        description: 'Exercise with provided ID does not exist.'
+      description: "Exercise with provided ID does not exist."
     })
     @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
+      description: "Internal server error."
     })
     @ApiBearerAuth()
-    updateExercise(
-        @Body('exercise') exercise: string,
-        @Body('title') title: string,
-        @Body('description') description: string,
-        @Body('repRange') repRange: string,
-        @Body('sets') sets: number,
-        @Body('Posedescription') Posedescription: string,
-        @Body('restPeriod') restPeriod: number,
-        @Body('tags') tags: Tag[],
-        @Body('duratime') duratime: number,
+    updateExercise (
+        @Body("exerciseID") exercise: string,
+        @Body("exerciseTitle") title: string,
+        @Body("exerciseDescription") description: string,
+        @Body("repRange") repRange: string,
+        @Body("sets") sets: number,
+        @Body("poseDescription") Posedescription: string,
+        @Body("restPeriod") restPeriod: number,
+        @Body("tags") tags: Tag[],
+        @Body("duration") duration: number,
         @Request() req
     ) {
-        return this.workoutService.updateExercise(exercise,title,description,repRange,sets,Posedescription,restPeriod,tags,duratime, req.user.userId,ActualPrisma());
+      return this.workoutService.updateExercise(exercise, title, description, repRange, sets, Posedescription, restPeriod, tags, duration, req.user.userID, ActualPrisma())
     }
 
+    /**
+     *Workout Controller - Delete Exercise
+     *
+     * @param exercise This is the ID of the exercise.
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws PreconditionFailedException if:
+     *                               -Parameter can not be left empty.
+     * @throws NotFoundException if:
+     *                               -An exercise with provided ID does not exist.
+     * @return  Message indicating success.
+     * @author Tinashe Chamisa
+     *
+     */
     @Delete("deleteExercise")
-    @ApiBody({type: deleteExerciseDTO})
+    @ApiBody({ type: deleteExerciseDTO })
     @ApiOkResponse({
-        description: 'Exercise Deleted.'
+      description: "Exercise Deleted."
     })
     @ApiPreconditionFailedResponse({
-        description: 'Parameter can not be left empty.'
+      description: "Parameter can not be left empty."
     })
     @ApiNotFoundResponse({
-        description: 'Exercise with provided ID does not exist'
+      description: "Exercise with provided ID does not exist"
     })
     @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
+      description: "Internal server error."
     })
-    async deleteExercise(
-        @Body('exercise') exercise: string,
-    ){
-        return this.workoutService.deleteExercise(exercise,ActualPrisma());
+    async deleteExercise (
+        @Body("exercise") exercise: string
+    ) {
+      return this.workoutService.deleteExercise(exercise, ActualPrisma())
     }
 
     /**
@@ -263,9 +352,7 @@ export class WorkoutController {
      * @param workoutTitle This is the string workout title
      * @param workoutDescription This is the string workout description
      * @param exercises This is an array of exercises
-     * @param tags This is an array of tags
      * @param req This contains the User object of the User currently logged in [from this the string User id is retrieved]
-     * @param ctx  This is the prisma context that is injected into the function.
      * @throws PreconditionFailedException if:
      *                               -Parameters can not be left empty.
      *
@@ -274,28 +361,25 @@ export class WorkoutController {
      *
      */
     @UseGuards(JwtAuthGuard)
-    @Post('createWorkout')
-    @ApiBody({type: CreateWorkoutDTO})
+    @Post("createWorkout")
+    @ApiBody({ type: CreateWorkoutDTO })
     @ApiOkResponse({
-        description: 'Workout Created'
+      description: "Workout Created"
     })
     @ApiBadRequestResponse({
-        description: 'Could not create workout.'
+      description: "Could not create workout."
     })
     @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
+      description: "Internal server error."
     })
     @ApiBearerAuth()
-    async createWorkout(
-        @Body('workoutTitle') workoutTitle: string,
-        @Body('workoutDescription') workoutDescription: string,
-        @Body('exercises') exercises : Exercise[],
-        @Body('tags') tags: Tag[],
+    async createWorkout (
+        @Body("workoutTitle") workoutTitle: string,
+        @Body("workoutDescription") workoutDescription: string,
+        @Body("exercises") exercises : Exercise[],
         @Request() req
     ) {
-
-        return this.workoutService.createWorkout(workoutTitle,workoutDescription,exercises,tags,req.user.userId , this.ctx)
-
+      return this.workoutService.createWorkout(workoutTitle, workoutDescription, exercises, req.user.userID, this.ctx)
     }
 
     /**
@@ -305,9 +389,7 @@ export class WorkoutController {
      * @param workoutTitle This is the string workout title
      * @param workoutDescription This is the string workout description
      * @param exercises This is an array of exercises
-     * @param tags This is an array of tags
      * @param req This contains the User object of the User currently logged in [from this the string User id is retrieved]
-     * @param ctx  This is the prisma context that is injected into the function.
      * @throws PreconditionFailedException if:
      *                               -Parameters can not be left empty.
      *
@@ -316,34 +398,32 @@ export class WorkoutController {
      *
      */
     @UseGuards(JwtAuthGuard)
-    @Put ("updateWorkout")
-    @ApiBody({type: UpdateWorkoutDTO})
+    @Put("updateWorkout")
+    @ApiBody({ type: UpdateWorkoutDTO })
     @ApiOkResponse({
-        description: 'Workout Updated'
+      description: "Workout Updated"
     })
     @ApiBadRequestResponse({
-        description: 'Could not update workout.'
+      description: "Could not update workout."
     })
     @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
+      description: "Internal server error."
     })
     @ApiBearerAuth()
-    async updateWorkout(
-        @Body('workoutID') workoutID: string,
-        @Body('workoutTitle') workoutTitle: string,
-        @Body('workoutDescription') workoutDescription: string,
-        @Body('exercises') exercises : Exercise[],
-        @Body('tags') tags: Tag[],
+    async updateWorkout (
+        @Body("workoutID") workoutID: string,
+        @Body("workoutTitle") workoutTitle: string,
+        @Body("workoutDescription") workoutDescription: string,
+        @Body("exercises") exercises : Exercise[],
         @Request() req
-    ){
-        return this.workoutService.updateWorkout(workoutID,workoutTitle,workoutDescription,exercises,tags,req.user.userId,this.ctx);
+    ) {
+      return this.workoutService.updateWorkout(workoutID, workoutTitle, workoutDescription, exercises, req.user.userID, this.ctx)
     }
 
     /**
      *Workout Service - Delete Workout
      *
      * @param workoutID this is the string ID of the workout to be delete
-     * @param ctx  This is the prisma context that is injected into the function.
      * @throws PreconditionFailedException if:
      *                               -Parameters can not be left empty.
      *
@@ -355,62 +435,89 @@ export class WorkoutController {
      *
      */
     @Delete("deleteWorkout")
-    @ApiBody({type: DeleteWorkoutDTO})
+    @ApiBody({ type: DeleteWorkoutDTO })
     @ApiOkResponse({
-        description: 'Workout Deleted.'
+      description: "Workout Deleted."
     })
     @ApiNotFoundResponse({
-        description: 'Workout with provided ID does not exist'
+      description: "Workout with provided ID does not exist"
     })
     @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
+      description: "Internal server error."
     })
-    async deleteWorkout(
-        @Body('workoutID') workoutID: string,
-    ){
-        return this.workoutService.deleteWorkout(workoutID, this.ctx);
+    async deleteWorkout (
+        @Body("workoutID") workoutID: string
+    ) {
+      return this.workoutService.deleteWorkout(workoutID, this.ctx)
     }
 
-    @Post('createTag')
+    /**
+     *Workout Controller - Create Tag
+     *
+     * @param label This is the title of the tag.
+     * @param textColour This is the text colour of the tag.
+     * @param backgroundColour  This is the background colour of the tag.
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotAcceptableException if:
+     *                               -There is any type of profanity found in the label, using npm 'bad-words'.
+     * @throws ConflictException if:
+     *                               -There is already a tag that exists in the database with the given label.
+     * @throws BadRequestException if:
+     *                               -There is a precondition net met, such as parameters not given.
+     * @return  Promise tag object.
+     * @author Tinashe Chamisa
+     *
+     */
+    @Post("createTag")
     @ApiOkResponse({
-        description: 'Successfully created Tag.'
+      description: "Successfully created Tag."
     })
     @ApiNotAcceptableResponse({
-        description: 'Profanity contained in label title.'
+      description: "Profanity contained in label title."
     })
     @ApiPreconditionFailedResponse({
-        description: 'Parameter can not be left empty.'
+      description: "Parameter can not be left empty."
     })
     @ApiConflictResponse({
-        description: 'Label already exists in database.'
+      description: "Label already exists in database."
     })
     @ApiBadRequestResponse({
-        description: 'Could not create tag.'
+      description: "Could not create tag."
     })
     @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
+      description: "Internal server error."
     })
-    @ApiBody({type: createTagDTO})
-    createTag(
-        @Body('label') label: string,
-        @Body('textColour') textColour: string,
-        @Body('backgroundColour') backgroundColour: string,
+    @ApiBody({ type: createTagDTO })
+    createTag (
+        @Body("label") label: string,
+        @Body("textColour") textColour: string,
+        @Body("backgroundColour") backgroundColour: string
     ) {
-        return this.workoutService.createTag(label,textColour,backgroundColour,ActualPrisma());
+      return this.workoutService.createTag(label, textColour, backgroundColour, ActualPrisma())
     }
 
-    @Get('getTags')
+    /**
+     *Workout Controller - Get Tags
+     *
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No tags were found in the database.
+     * @return  Promise array of tag object/s.
+     * @author Tinashe Chamisa
+     *
+     */
+    @Get("getTags")
     @ApiOkResponse({
-        description: 'Successfully created Tag.'
+      description: "Successfully created Tag."
     })
     @ApiNotFoundResponse({
-        description: 'No tags were found in the database.'
+      description: "No tags were found in the database."
     })
     @ApiInternalServerErrorResponse({
-        description: 'Internal server error.'
+      description: "Internal server error."
     })
-    getTags(
+    getTags (
     ) {
-        return this.workoutService.getTags(ActualPrisma());
+      return this.workoutService.getTags(ActualPrisma())
     }
 }

@@ -16,158 +16,144 @@ let ctx: Context
 let userService: UserService
 let Jwt : JwtService
 
-beforeEach(() => {
-    userService = new UserService(Jwt);
-    mockCtx = createMockContext()
-    ctx = (mockCtx as unknown) as Context
-})
+describe('Unit tests of the function updateUserDetails in the UserService', () => {
 
-test('Test, Null values passed into findUserByUUID', async () => {
 
-    const userUUID=uuidv4();
-    const myUser={
-        userId:userUUID,
-        email: "test@gmail.com",
-        firstName: "test",
-        lastName: "tester",
-        password:"thePassword",
-        userType: userType.PLANNER,
-        dateOfBirth: null
-    }
-    mockCtx.prisma.user.update.mockResolvedValue(myUser)
+    beforeEach(() => {
+        userService = new UserService(Jwt);
+        mockCtx = createMockContext()
+        ctx = (mockCtx as unknown) as Context
+    })
 
-    await expect(userService.updateUserDetails("","updatedLastName",new Date("2000-05-30"),userUUID,ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
-})
+    test('Test, Null values passed into updateUserDetails should throw BadRequestException', async () => {
 
-test('Test, Null values passed into findUserByUUID', async () => {
+        const userUUID = uuidv4();
+        const myUser = {
+            userId: userUUID,
+            email: "test@gmail.com",
+            firstName: "test",
+            lastName: "tester",
+            password: "thePassword",
+            userType: userType.PLANNER,
+            dateOfBirth: null
+        }
+        mockCtx.prisma.user.update.mockResolvedValue(myUser)
 
-    const userUUID=uuidv4();
-    const myUser={
-        userId:userUUID,
-        email: "test@gmail.com",
-        firstName: "test",
-        lastName: "tester",
-        password:"thePassword",
-        userType: userType.PLANNER,
-        dateOfBirth: null
-    }
-    mockCtx.prisma.user.update.mockResolvedValue(myUser)
+        await expect(userService.updateUserDetails("", "updatedLastName", new Date("2000-05-30"), userUUID, ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
+    })
 
-    await expect(userService.updateUserDetails("updatedFirstName","",new Date("2000-05-30"),userUUID,ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
-})
+    test('Test, Null last name passed into updateUserDetails, should throw BadRequestException', async () => {
 
-test('Test, Null values passed into findUserByUUID', async () => {
+        const userUUID = uuidv4();
+        const myUser = {
+            userId: userUUID,
+            email: "test@gmail.com",
+            firstName: "test",
+            lastName: "tester",
+            password: "thePassword",
+            userType: userType.PLANNER,
+            dateOfBirth: null
+        }
+        mockCtx.prisma.user.update.mockResolvedValue(myUser)
 
-    const userUUID=uuidv4();
-    const myUser={
-        userId:userUUID,
-        email: "test@gmail.com",
-        firstName: "test",
-        lastName: "tester",
-        password:"thePassword",
-        userType: userType.PLANNER,
-        dateOfBirth: null
-    }
-    mockCtx.prisma.user.update.mockResolvedValue(myUser)
+        await expect(userService.updateUserDetails("updatedFirstName", "", new Date("2000-05-30"), userUUID, ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
+    })
 
-    let nullFirstName;
+    test('Test, Null first name passed into updateUserDetails, should throw bad request exception', async () => {
 
-    await expect(userService.updateUserDetails(nullFirstName,"updatedLastName",new Date("2000-05-30"),userUUID,ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
-})
+        const userUUID = uuidv4();
+        const myUser = {
+            userId: userUUID,
+            email: "test@gmail.com",
+            firstName: "test",
+            lastName: "tester",
+            password: "thePassword",
+            userType: userType.PLANNER,
+            dateOfBirth: null
+        }
+        mockCtx.prisma.user.update.mockResolvedValue(myUser)
 
-test('Test, Null values passed into findUserByUUID', async () => {
+        let nullFirstName;
 
-    const userUUID=uuidv4();
-    const myUser={
-        userId:userUUID,
-        email: "test@gmail.com",
-        firstName: "test",
-        lastName: "tester",
-        password:"thePassword",
-        userType: userType.PLANNER,
-        dateOfBirth: null
-    }
-    mockCtx.prisma.user.update.mockResolvedValue(myUser)
+        await expect(userService.updateUserDetails(nullFirstName, "updatedLastName", new Date("2000-05-30"), userUUID, ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
+    })
 
-    let nullLastName;
+    test('Test, Null last name passed into updateUserDetails, should throw bad request exception', async () => {
 
-    await expect(userService.updateUserDetails("updatedFirstName",nullLastName,new Date("2000-05-30"),userUUID,ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
-})
+        const userUUID = uuidv4();
+        const myUser = {
+            userId: userUUID,
+            email: "test@gmail.com",
+            firstName: "test",
+            lastName: "tester",
+            password: "thePassword",
+            userType: userType.PLANNER,
+            dateOfBirth: null
+        }
+        mockCtx.prisma.user.update.mockResolvedValue(myUser)
 
-test('Test, Null values passed into findUserByUUID', async () => {
+        let nullLastName;
 
-    const userUUID=uuidv4();
-    const myUser={
-        userId:userUUID,
-        email: "test@gmail.com",
-        firstName: "test",
-        lastName: "tester",
-        password:"thePassword",
-        userType: userType.PLANNER,
-        dateOfBirth: null
-    }
-    mockCtx.prisma.user.update.mockResolvedValue(myUser)
+        await expect(userService.updateUserDetails("updatedFirstName", nullLastName, new Date("2000-05-30"), userUUID, ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
+    })
 
-    let nullLastName;
+    test('Test, Null last name passed into updateUserDetails, should throw BadRequestException', async () => {
 
-    await expect(userService.updateUserDetails("updatedFirstName",nullLastName,new Date("2000-05-30"),"",ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
-})
+        const userUUID = uuidv4();
+        const myUser = {
+            userId: userUUID,
+            email: "test@gmail.com",
+            firstName: "test",
+            lastName: "tester",
+            password: "thePassword",
+            userType: userType.PLANNER,
+            dateOfBirth: null
+        }
+        mockCtx.prisma.user.update.mockResolvedValue(myUser)
 
-test('Test, Null values passed into findUserByUUID', async () => {
+        let nullLastName;
 
-    const userUUID=uuidv4();
-    const myUser={
-        userId:userUUID,
-        email: "test@gmail.com",
-        firstName: "test",
-        lastName: "tester",
-        password:"thePassword",
-        userType: userType.PLANNER,
-        dateOfBirth: null
-    }
-    mockCtx.prisma.user.update.mockResolvedValue(myUser)
+        await expect(userService.updateUserDetails("updatedFirstName", nullLastName, new Date("2000-05-30"), "", ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
+    })
 
-    let nullUserId;
+    test('Test, Null userID passed into updateUserDetails function, should throw BadRequestException', async () => {
 
-    await expect(userService.updateUserDetails("updatedFirstName","updatedLastName",new Date("2000-05-30"),nullUserId,ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
-})
+        const userUUID = uuidv4();
+        const myUser = {
+            userId: userUUID,
+            email: "test@gmail.com",
+            firstName: "test",
+            lastName: "tester",
+            password: "thePassword",
+            userType: userType.PLANNER,
+            dateOfBirth: null
+        }
+        mockCtx.prisma.user.update.mockResolvedValue(myUser)
 
-test('Test, Null values passed into findUserByUUID', async () => {
+        let nullUserId;
 
-    const userUUID=uuidv4();
-    const myUser={
-        userId:userUUID,
-        email: "test@gmail.com",
-        firstName: "test",
-        lastName: "tester",
-        password:"thePassword",
-        userType: userType.PLANNER,
-        dateOfBirth: null
-    }
-    mockCtx.prisma.user.update.mockResolvedValue(myUser)
+        await expect(userService.updateUserDetails("updatedFirstName", "updatedLastName", new Date("2000-05-30"), nullUserId, ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
+    })
 
-    let nullUserId;
 
-    await expect(userService.updateUserDetails("updatedFirstName","updatedLastName",new Date("2000-05-30"),nullUserId,ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
-})
+    test('Test, Valid values passed into updateUserDetails, should return confirmation message.', async () => {
 
-test('Test, Null values passed into findUserByUUID', async () => {
+        const userUUID = uuidv4();
+        const myUser = {
+            userId: userUUID,
+            email: "test@gmail.com",
+            firstName: "test",
+            lastName: "tester",
+            password: "thePassword",
+            userType: userType.PLANNER,
+            dateOfBirth: null
+        }
 
-    const userUUID=uuidv4();
-    const myUser={
-        userId:userUUID,
-        email: "test@gmail.com",
-        firstName: "test",
-        lastName: "tester",
-        password:"thePassword",
-        userType: userType.PLANNER,
-        dateOfBirth: null
-    }
+        mockCtx.prisma.user.update.mockResolvedValue(myUser)
 
-    mockCtx.prisma.user.update.mockResolvedValue(myUser)
-
-    const expectedMessage={
-        message: 'User data updated'
-    }
-    await expect(await userService.updateUserDetails("updatedFirstName","updatedLastName",new Date("2000-05-30"),userUUID,ctx)).toStrictEqual(expectedMessage)
+        const expectedMessage = {
+            message: 'User data updated'
+        }
+        await expect(await userService.updateUserDetails("updatedFirstName", "updatedLastName", new Date("2000-05-30"), userUUID, ctx)).toStrictEqual(expectedMessage)
+    })
 })

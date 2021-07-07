@@ -5,8 +5,8 @@
       <excludeFolder url="file://$MODULE_DIR$/temp" />
       <excludeFolder url="file://$MODULE_DIR$/.tmp" />
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
-      <excludeFolder url="file://$MODULE_DIR$/front-end/www" />
       <excludeFolder url="file://$MODULE_DIR$/back-end/prisma/migrations" />
+      <excludeFolder url="file://$MODULE_DIR$/front-end/www" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
