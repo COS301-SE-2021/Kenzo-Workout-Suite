@@ -23,6 +23,7 @@ describe('End point testing of the User subsystem', () => {
         app = moduleRef.createNestApplication();
         await app.init();
 
+        ctx=ActualPrisma();
     });
 
     beforeEach(async () => {
@@ -31,12 +32,12 @@ describe('End point testing of the User subsystem', () => {
             signOptions: { expiresIn: process.env.EXPIRY_TIME },
         })
         userServ=new UserService(Jwt)
-        await ActualPrisma().prisma.user.deleteMany();
+        await ctx.prisma.user.deleteMany();
     })
 
     it(`Testing login endpoint with valid data, should return status 404`, async () => {
 
-        const user= await ActualPrisma().prisma.user.create({
+        const user= await ctx.prisma.user.create({
             data:{
                 "firstName": "Zelu",
                 "lastName": "Tesema",
@@ -46,7 +47,7 @@ describe('End point testing of the User subsystem', () => {
             }
         })
 
-       let users= await ActualPrisma().prisma.user.findMany();
+       let users= await ctx.prisma.user.findMany();
 
         return request(app.getHttpServer())
             .post('/User/login')
