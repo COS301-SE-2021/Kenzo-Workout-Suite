@@ -1,39 +1,29 @@
-import { MockContext, Context, createMockContext } from "../../../context";
-import {UserService} from "../../../src/User/user.service";
-import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
-import {userType} from "@prisma/client";
-import {v4 as uuidv4 } from 'uuid';
-
+import { UserService } from "../../../src/User/user.service"
+import { JwtService } from "@nestjs/jwt"
 let userService: UserService
 let Jwt : JwtService
 
-describe('Unit tests of the function googleLogin in the UserService', () => {
+describe("Unit tests of the function googleLogin in the UserService", () => {
+  beforeEach(() => {
+    userService = new UserService(Jwt)
+  })
 
-    beforeEach(() => {
-        userService = new UserService(Jwt);
-    })
+  test("Null request passed into googleLogin function ", async () => {
+    await expect(userService.googleLogin(null)).rejects.toThrow("No such google User")
+  })
 
-    test('Null request passed into googleLogin function ', async () => {
-        await expect(userService.googleLogin(null)).rejects.toThrow("No such google User")
-    })
+  test("Request passed into googleLogin function without User object ", async () => {
+    await expect(userService.googleLogin(null)).rejects.toThrow("No such google User")
+  })
 
-    test('Request passed into googleLogin function without User object ', async () => {
-
-        let request = {}
-        await expect(userService.googleLogin(null)).rejects.toThrow("No such google User")
-    })
-
-
-    test('Valid response ', async () => {
-
-        let request = {
-            user: "theUser"
-        }
-        let expected_response = {
-            message: 'User information from google',
-            user: "theUser"
-        }
-        await expect(await userService.googleLogin(request)).toStrictEqual(expected_response)
-    })
+  test("Valid response ", async () => {
+    const request = {
+      user: "theUser"
+    }
+    const expectedResponse = {
+      message: "User information from google",
+      user: "theUser"
+    }
+    await expect(await userService.googleLogin(request)).toStrictEqual(expectedResponse)
+  })
 })
