@@ -19,7 +19,7 @@ describe("Integration tests of the updateExercise function in the Workout Servic
     await ctx.prisma.user.deleteMany()
     await ctx.prisma.user.create({
       data: {
-        userId: uuidPlanner,
+        userID: uuidPlanner,
         email: "test&gmail.com",
         firstName: "test",
         lastName: "test",
@@ -33,15 +33,15 @@ describe("Integration tests of the updateExercise function in the Workout Servic
   test("Valid exercise passed in without tags, should receive successful message", async () => {
     await ctx.prisma.exercise.create({
       data: {
-        exercise: uuidExercise,
-        title: "test",
-        description: "test",
-        repRange: "test",
+        exerciseID: uuidExercise,
+        exerciseTitle: "TestExercise",
+        exerciseDescription: "TestDescription",
+        repRange: "TestRange",
         sets: 4,
-        Posedescription: "test",
+        poseDescription: "TestPDesc",
         restPeriod: 2,
-        duratime: 2,
-        planner_ID: uuidPlanner
+        duration: 2,
+        plannerID: uuidPlanner
       }
     })
 

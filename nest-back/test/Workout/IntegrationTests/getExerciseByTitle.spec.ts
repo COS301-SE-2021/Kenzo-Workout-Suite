@@ -36,6 +36,7 @@ describe("Integration tests of the getExerciseByTitle function in the Workout Se
       sets: 4,
       poseDescription: "TestPDesc",
       restPeriod: 2,
+      tags:[],
       duration: 2
     }]
 

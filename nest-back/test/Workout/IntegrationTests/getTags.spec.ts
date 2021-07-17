@@ -1,13 +1,10 @@
 import { Context, ActualPrisma } from "../../../context"
 import { WorkoutService } from "../../../src/Workout/workout.service"
-import { v4 as uuidv4 } from "uuid"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
 
 let ctx: Context
 let workoutService: WorkoutService
 let prisma: PrismaClient
-
-const uuidPlanner = uuidv4()
 
 describe("Integration tests of the getTags function in the Workout Service", () => {
   beforeEach(async () => {

@@ -38,13 +38,13 @@ describe("Integration tests of the getWorkoutById function in the Workout Servic
   })
 
   test("Should receive valid information about workout with corresponding id", async () => {
-    const workout = [{
+    const workout = {
       workoutID: uuidWorkout,
       workoutTitle: "test",
       workoutDescription: "test",
       exercises: [],
       plannerID: uuidPlanner
-    }]
+    }
 
     const response = await workoutService.getWorkoutById(uuidWorkout, ctx)
 
