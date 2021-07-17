@@ -1,8 +1,7 @@
 import { MockContext, Context, createMockContext } from "../../../context"
 import { WorkoutService } from "../../../src/Workout/workout.service"
-import { v4 as uuidv4 } from "uuid"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
-import {uuid} from "uuidv4";
+import { uuid } from "uuidv4"
 
 let mockCtx: MockContext
 let ctx: Context

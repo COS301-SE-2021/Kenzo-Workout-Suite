@@ -104,7 +104,7 @@ export class WorkoutService {
         return workout
       }
     } catch (err) {
-      throw new BadRequestException(err, "Could not fulfill request.")
+      throw err
     }
   }
 
