@@ -1,15 +1,22 @@
-# Kenzo-Workout-Suite
+# 🏋️Kenzo-Workout-Suite
 #### by Cracked Studios
+COS301-SE-2021
 
-## Description:
+## 📚Description:
 Kenzo Workout Suite is the workout customization tool that will allow users around the world to have full control in organizing their workouts. This app will allow users to follow workout plans, having the ability to tailor their own avatars, making workout sessions easy to follow and fun to participate in. Trainers/planners are able to fully customize models and will have the opportunity to be creative with the workouts they create.
 Workouts will be published in a public library where users will be able to pick their favourite ones. These workouts will have text-to-speech technology that will allow planners to explain exercises in workouts. Users will also have the option to export workouts in multiple formats: GIF, PNG, PDF.
 
-## Links:
+## 📄Links:
 ### Resources 
 [SRS-Demo1](https://www.overleaf.com/read/wdwqyfrstqtg)
 
+[SRS-Demo2](https://www.overleaf.com/read/mjcrqsxcddsx)
+
+[Architecture Design-Demo2](https://www.overleaf.com/read/vzbwdfzbvgmn)
+
 [CrackedStudios-Demo1](https://drive.google.com/drive/folders/1gj86A06fC_Pna694Nt6wo80G0pB5aQal?usp=sharing)
+
+[CrackedStudios-Demo2](https://drive.google.com/drive/folders/1gj86A06fC_Pna694Nt6wo80G0pB5aQal?usp=sharing)
 
 [Project Management](https://github.com/COS301-SE-2021/Kenzo-Workout-Suite/projects)
 
@@ -21,16 +28,26 @@ Workouts will be published in a public library where users will be able to pick 
 [Microsoft Teams](https://www.microsoft.com/en-za/microsoft-teams/group-chat-software)
 
 
-## Tech Stack:
+## 🔧Tech Stack:
 ### Application Server: NodeJS
 ### Persistence: Prisma
 ### Database: MySQL
 ### Web Service Framework: Express REST
 ### Web and Mobile application server: Ionic Angular
 
+## ⭐Badge Information:
+![](https://img.shields.io/badge/Language-Typescript-informational)
+![](https://img.shields.io/badge/Language-SCSS-informational)
+![](https://img.shields.io/badge/Language-HTML-informational)
+![](https://img.shields.io/github/languages/top/COS301-SE-2021/Kenzo-Workout-Suite)
+![](https://img.shields.io/github/stars/COS301-SE-2021/Kenzo-Workout-Suite)
+![](https://img.shields.io/github/repo-size/COS301-SE-2021/Kenzo-Workout-Suite)
+![](https://img.shields.io/github/issues-pr-raw/COS301-SE-2021/Kenzo-Workout-Suite)
+![](https://img.shields.io/github/issues-pr-closed-raw/COS301-SE-2021/Kenzo-Workout-Suite)
+
 ---
 
-## The Team
+## 🧍The Team
 
 | **Team Member** | **Profiles** | **Skills/Interest** | **About**
 | :-----: | :-----: | :-----: | :-----: |

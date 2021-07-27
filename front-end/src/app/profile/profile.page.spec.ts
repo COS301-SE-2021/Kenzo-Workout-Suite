@@ -40,7 +40,7 @@ describe('ProfilePage', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should fail to update user details for the currently logged in planner as server is not responding.', async () => {
+  it('should fail to update User details for the currently logged in planner as server is not responding.', async () => {
     spyOn(userService, 'attemptUpdateUserDetails').and.resolveTo(500);
     spyOn(alertController, "create").and.stub();
     spyOn(component, "presentAlert").and.stub();
@@ -50,7 +50,7 @@ describe('ProfilePage', () => {
     });
   });
 
-  it('should fail to update user details for the planner as currently logged on person is not authorized .', async () => {
+  it('should fail to update User details for the planner as currently logged on person is not authorized .', async () => {
     spyOn(userService, 'attemptUpdateUserDetails').and.resolveTo(401);
     spyOn(alertController, "create").and.stub();
     spyOn(component, "presentAlert").and.stub();

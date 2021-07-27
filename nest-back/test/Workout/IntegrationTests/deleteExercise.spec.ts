@@ -1,40 +1,57 @@
-import {MockContext, Context, createMockContext, ActualPrisma} from "../../../context";
-import {WorkoutService} from "../../../src/Workout/workout.service";
-import {v4 as uuidv4 } from 'uuid';
-import {PrismaClient} from "@prisma/client/scripts/default-index";
+import { Context, ActualPrisma } from "../../../context"
+import { WorkoutService } from "../../../src/Workout/workout.service"
+import { v4 as uuidv4 } from "uuid"
+import { PrismaClient } from "@prisma/client/scripts/default-index"
+import { userType } from "@prisma/client"
 
 let ctx: Context
 let workoutService: WorkoutService
 let prisma: PrismaClient
 
-const uuidExercise = uuidv4();
+const userUUID = uuidv4()
+const exerciseUUID = uuidv4()
 
-describe('Integration tests of the deleteExercise function in the Workout Service', () => {
+describe("Integration tests of the deleteExercise function in the Workout Service", () => {
+  beforeEach(async () => {
+    workoutService = new WorkoutService(prisma)
+    ctx = ActualPrisma()
+    await ctx.prisma.exercise.deleteMany()
+    await ctx.prisma.user.deleteMany()
+    await ctx.prisma.tag.deleteMany()
+    const myUser = {
+      userID: userUUID,
+      email: "test@gmail.com",
+      firstName: "test",
+      lastName: "tester",
+      password: "Test123*",
+      userType: userType.PLANNER,
+      dateOfBirth: null
+    }
 
-    beforeEach(async () => {
-        workoutService = new WorkoutService(prisma);
-        ctx = ActualPrisma()
-        await ctx.prisma.exercise.deleteMany();
-        await ctx.prisma.exercise.create({
-            data: {
-                exercise: uuidExercise,
-                title: "test",
-                description: "test",
-                repRange: "test",
-                sets: 4,
-                Posedescription: "test",
-                restPeriod: 2,
-                duratime: 2
-            }
-        });
+    await ctx.prisma.user.create({
+      data: myUser
     })
-
-    test('Null exercise ID passed in, should throw PreconditionFailedException', async () => {
-        await expect(workoutService.deleteExercise('', ctx)).rejects.toThrow("Parameter can not be left empty.")
+    await ctx.prisma.exercise.deleteMany()
+    await ctx.prisma.exercise.create({
+      data: {
+        exerciseID: exerciseUUID,
+        exerciseTitle: "TestExercise",
+        exerciseDescription: "TestDescription",
+        repRange: "TestRange",
+        sets: 4,
+        poseDescription: "TestPDesc",
+        restPeriod: 2,
+        duration: 2,
+        plannerID: userUUID
+      }
     })
+  })
 
-    test('Invalid exercise ID passed in, should throw NotFoundException', async () => {
-        await expect(workoutService.deleteExercise('invalid', ctx)).rejects.toThrow("")
-    })
+  test("Null exercise ID passed in, should throw PreconditionFailedException", async () => {
+    await expect(workoutService.deleteExercise("", ctx)).rejects.toThrow("Parameter can not be left empty.")
+  })
 
+  test("Invalid exercise ID passed in, should throw NotFoundException", async () => {
+    await expect(workoutService.deleteExercise("invalid", ctx)).rejects.toThrow("")
+  })
 })

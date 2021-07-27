@@ -29,7 +29,7 @@ describe('UserServiceService', () => {
 
   // Sign in testing
 
-  it('should sign in user successfully and return a 200 status',async () => {
+  it('should sign in User successfully and return a 200 status',async () => {
 
     let respStatus = service.attemptSignIn("luca@me.com", "Test123!");
 
@@ -48,7 +48,7 @@ describe('UserServiceService', () => {
     expect(status).toEqual(200);
   });
 
-  it('should fail to sign in user because credentials are incorrect and return a 400 status',async () => {
+  it('should fail to sign in User because credentials are incorrect and return a 400 status',async () => {
 
     let respStatus = service.attemptSignIn("luca@me.com", "Test123!");
 
@@ -67,7 +67,7 @@ describe('UserServiceService', () => {
     expect(status).toEqual(400);
   });
 
-  it('should fail to sign in user because server is not responding and return a 500 status',async () => {
+  it('should fail to sign in User because server is not responding and return a 500 status',async () => {
 
     let respStatus = service.attemptSignIn("luca@me.com", "Test123!");
 
