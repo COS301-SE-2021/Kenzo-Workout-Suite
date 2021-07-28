@@ -26,8 +26,7 @@ export class ProfilePage implements OnInit {
   }
 
   /**
-   * Get the details of the user through an API call
-   * @author Jia Hui Wang, u18080449
+   * Get the details of the User through an API call
    */
   async getDetails(){
     let UserDetails = await this.userService.obtainUserDetails();
@@ -40,7 +39,6 @@ export class ProfilePage implements OnInit {
 
   /**
    * Change form to allow editing of details
-   * @author Jia Hui Wang, u18080449
    */
   editDetails(){
     let userInputs = document.getElementsByClassName("enable-input") as HTMLCollectionOf<HTMLElement>;
@@ -57,8 +55,7 @@ export class ProfilePage implements OnInit {
   }
 
   /**
-   * Send request to update details of user based on the input fields that have been changed
-   * @author Jia Hui Wang, u18080449
+   * Send request to update details of User
    */
   async updateDetails(){
     let userInputs = document.getElementsByClassName("enable-input") as HTMLCollectionOf<HTMLElement>;
@@ -88,7 +85,7 @@ export class ProfilePage implements OnInit {
       // Invalid Sign In
       const alert = await this.alertController.create({
         cssClass: 'kenzo-alert',
-        header: 'Unauthorized user',
+        header: 'Unauthorized User',
         message: 'You are not authorized to update these details.',
         buttons: ['OK']
       });
@@ -109,27 +106,18 @@ export class ProfilePage implements OnInit {
   }
 
   /**
-   * Helper Function to physically present alert to user independent of OS.
+   * Helper Function to physically present alert to User independent of OS.
    * @param alert
-   * @author Jia Hui Wang, u18080449
    */
   async presentAlert(alert:any) {
     await alert.present();
     await alert.onDidDismiss();
   }
 
-  /**
-   * Helper function to reload the current window.
-   * @author Jia Hui Wang, u18080449
-   */
   reloadWindow(){
     window.location.reload();
   }
 
-  /**
-   * Helper function to navigate to the workouts page
-   * @author Jia Hui Wang, u18080449
-   */
   async goToFYP(){
     await this.router.navigate(['/your-workouts'])
       .then(() => {
@@ -137,10 +125,6 @@ export class ProfilePage implements OnInit {
       });
   }
 
-  /**
-   * Helper function to navigate to the search/browse page
-   * @author Jia Hui Wang, u18080449
-   */
   async goToSearch(){
     await this.router.navigate(['/search'])
       .then(() => {

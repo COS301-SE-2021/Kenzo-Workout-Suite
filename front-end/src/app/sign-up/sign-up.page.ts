@@ -89,7 +89,7 @@ export class SignUpPage implements OnInit {
         }
     }
     else {
-      await this.InvalidPasswords();  //If passwords do not match, notify user
+      await this.InvalidPasswords();  //If passwords do not match, notify User
     }                           //through an alert.
   }
 
@@ -109,7 +109,7 @@ export class SignUpPage implements OnInit {
   }
 
   /**
-   * Helper function to physically present alert to user independent of OS.
+   * Helper function to physically present alert to User independent of OS.
    * @param alert
    * @author Jia Hui Wang, u18080449
    */
