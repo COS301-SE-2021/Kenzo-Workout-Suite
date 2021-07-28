@@ -1,8 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException, PreconditionFailedException } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
-import { User } from '@prisma/client'
-import * as bcrypt from 'bcrypt'
-import { Context } from '../../context'
+import { BadRequestException, Injectable, NotFoundException, PreconditionFailedException } from "@nestjs/common"
+import { JwtService } from "@nestjs/jwt"
+import { User } from "@prisma/client"
+import * as bcrypt from "bcrypt"
+import { Context } from "../../context"
 
 @Injectable()
 export class UserService {
@@ -24,7 +24,7 @@ export class UserService {
      */
   async validateUser (email: string, pass: string, ctx: Context): Promise<any> {
     if (email == null || pass == null) {
-      throw new NotFoundException('Invalid Email or Password')
+      throw new NotFoundException("Invalid Email or Password")
     }
 
     const user = await ctx.prisma.user.findUnique({
@@ -34,13 +34,13 @@ export class UserService {
     })
 
     if (user == null) {
-      throw new NotFoundException('Invalid Email or Password')
+      throw new NotFoundException("Invalid Email or Password")
     }
 
     const isMatch = await bcrypt.compare(pass, user.password)
 
     if (!isMatch) {
-      throw new NotFoundException('Invalid Email or Password')
+      throw new NotFoundException("Invalid Email or Password")
     }
 
     const { password, ...result } = user
@@ -60,14 +60,14 @@ export class UserService {
      */
   async login (user: any) {
     if (user == null) {
-      throw new NotFoundException('Invalid User object passed in.')
+      throw new NotFoundException("Invalid User object passed in.")
     }
 
-    if (user.userId == null) {
-      throw new NotFoundException('User object with no userId passed in')
+    if (user.userID == null) {
+      throw new NotFoundException("User object with no userID passed in")
     }
 
-    const payload = { userId: user.userId }
+    const payload = { userID: user.userID }
 
     return {
       access_token: this.jwtService.sign(payload)
@@ -100,17 +100,17 @@ export class UserService {
      */
   async signUp (user:User, ctx: Context) : Promise<any> {
     if (user == null) {
-      throw new PreconditionFailedException('Invalid User object')
+      throw new PreconditionFailedException("Invalid User object")
     }
 
     const email = user.email.toLowerCase()
 
     if (!this.validateEmail(email)) {
-      throw new PreconditionFailedException('Invalid email address')
+      throw new PreconditionFailedException("Invalid email address")
     }
 
     if (!this.validatePassword(user.password)) {
-      throw new PreconditionFailedException('Invalid password')
+      throw new PreconditionFailedException("Invalid password")
     }
 
     const saltOrRounds = 10
@@ -123,7 +123,7 @@ export class UserService {
     })
 
     if (countEmail >= 1) {
-      throw new BadRequestException('User with this email already exists')
+      throw new BadRequestException("User with this email already exists")
     }
 
     const createdUser = await ctx.prisma.user.create({
@@ -137,7 +137,7 @@ export class UserService {
     })
 
     if (!createdUser) {
-      throw new BadRequestException('Could not create User')
+      throw new BadRequestException("Could not create User")
     }
 
     return this.login(createdUser)
@@ -161,25 +161,25 @@ export class UserService {
      * @author Zelealem Tesema
      */
   async findUserByUUID (passedUserId: string, ctx: Context) : Promise<any> {
-    if (passedUserId === null || passedUserId === '') {
-      throw new BadRequestException('Null values cannot be passed in for userId')
+    if (passedUserId === null || passedUserId === "") {
+      throw new BadRequestException("Null values cannot be passed in for userId")
     }
 
     try {
       const user = await ctx.prisma.user.findUnique({
         where: {
-          userId: passedUserId
+          userID: passedUserId
         }
       })
 
       if (!user) {
-        throw new NotFoundException('No User with such UUID')
+        throw new NotFoundException("No User with such UUID")
       }
 
-      const { password, userId, ...result } = user
+      const { password, userID, ...result } = user
       return result
     } catch (err) {
-      throw new BadRequestException('No User with such UUID')
+      throw new BadRequestException("No User with such UUID")
     }
   }
 
@@ -189,7 +189,7 @@ export class UserService {
      * @param firstName This is the first name of the User that is required to be updated
      * @param lastName  This is the last name of the User that is required to be updated.
      * @param dateOfBirth  This is the date of birth of the User that is required to be updated.
-     * @param userId    This is the User ID of the User that is required to be updated. ( This UserID should be passed in through the bearer token Authorisation header)
+     * @param userID    This is the User ID of the User that is required to be updated. ( This UserID should be passed in through the bearer token Authorisation header)
      * @param ctx   This is the prisma context that can be passed in as a mock
      *
      * @throws BadRequestException if:
@@ -200,14 +200,14 @@ export class UserService {
      * @author Zelealem Tesema
      */
   async updateUserDetails (firstName:string, lastName:string, dateOfBirth:Date, userId:string, ctx:Context) {
-    if (firstName == null || lastName == null || userId == null || firstName == '' || lastName == '' || userId == '') {
-      throw new BadRequestException('Null values can not be passed in for firstName, lastName or userId')
+    if (firstName == null || lastName == null || userId == null || firstName == "" || lastName == "" || userId == "") {
+      throw new BadRequestException("Null values can not be passed in for firstName, lastName or userId")
     }
 
     try {
       const updatedUser = await ctx.prisma.user.update({
         where: {
-          userId: userId
+          userID: userId
         },
         data: {
           firstName: firstName,
@@ -217,28 +217,28 @@ export class UserService {
       })
 
       if (updatedUser === null) {
-        throw new BadRequestException('Could not update User')
+        throw new BadRequestException("Could not update User")
       }
 
       return {
-        message: 'User data updated'
+        message: "User data updated"
       }
     } catch (err) {
-      throw new BadRequestException('Could not update User')
+      throw new BadRequestException("Could not update User")
     }
   }
 
   async googleLogin (req) {
     if (!req) {
-      throw new BadRequestException('No such google User')
+      throw new BadRequestException("No such google User")
     }
 
     if (!req.user) {
-      throw new BadRequestException('No such google User')
+      throw new BadRequestException("No such google User")
     }
 
     return {
-      message: 'User information from google',
+      message: "User information from google",
       user: req.user
     }
   }
@@ -256,7 +256,6 @@ export class UserService {
      *
      * @author Zelealem Tesema
      */
-
   validateEmail (email:string) {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     return re.test(String(email).toLowerCase())

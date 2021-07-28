@@ -20,7 +20,7 @@ export class WorkoutService {
    *
    * @return Number represents the status of the Http request.
    *
-   * @returns 200,400,500 represent a success, user error and server error, respectively.
+   * @returns 200,400,500 represent a success, User error and server error, respectively.
    */
   async attemptSubmitWorkout(workout:Workout) : Promise<Number> {
     const url : string = "http://localhost:3000/workout/createWorkout";
@@ -47,7 +47,7 @@ export class WorkoutService {
    *
    * @return Number represents the status of the Http request.
    *
-   * @returns 200,400,500 represent a success, user error and server error, respectively.
+   * @returns 200,400,500 represent a success, User error and server error, respectively.
    */
   async attemptUpdateWorkout(workout:Workout, id:string) : Promise<Number> {
     const url : string = "http://localhost:3000/workout/updateWorkout";
@@ -73,7 +73,7 @@ export class WorkoutService {
    *
    * @return Number represents the status of the Http request.
    *
-   * @returns 200,400,500 represent a success, user error and server error, respectively.
+   * @returns 200,400,500 represent a success, User error and server error, respectively.
    */
   async attemptRemoveWorkout(id:string) : Promise<Number> {
     const url : string = "http://localhost:3000/workout/deleteWorkout";
@@ -96,7 +96,7 @@ export class WorkoutService {
    *
    * @return Number represents the status of the Http request.
    *
-   * @returns 200,400,500 represent a success, user error and server error, respectively.
+   * @returns 200,400,500 represent a success, User error and server error, respectively.
    */
   async attemptSubmitExercise(exercise:Exercise) : Promise<Number> {
     const url : string = "http://localhost:3000/workout/createExercise";
@@ -124,7 +124,7 @@ export class WorkoutService {
    * @param id the id corresponding to the exercise
    * @return Number represents the status of the Http request.
    *
-   * @returns 200,400,500 represent a success, user error and server error, respectively.
+   * @returns 200,400,500 represent a success, User error and server error, respectively.
    */
   async attemptUpdateExercise(exercise:Exercise, id:string) : Promise<Number> {
     const url : string = "http://localhost:3000/workout/updateExercise";
@@ -154,7 +154,7 @@ export class WorkoutService {
    * @param id the id corresponding to the exercise
    * @return Number represents the status of the Http request.
    *
-   * @returns 200,400,500 represent a success, user error and server error, respectively.
+   * @returns 200,400,500 represent a success, User error and server error, respectively.
    */
   async attemptRemoveExercise(id:string) : Promise<Number> {
     const url : string = "http://localhost:3000/workout/deleteExercise";

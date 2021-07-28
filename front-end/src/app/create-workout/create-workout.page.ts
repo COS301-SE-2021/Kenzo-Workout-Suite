@@ -95,7 +95,7 @@ export class CreateWorkoutPage implements OnInit {
   }
 
   /**
-   * Helper Function to physically present alert to user independent of OS.
+   * Helper Function to physically present alert to User independent of OS.
    * @param alert
    * @author Luca Azmanov, u19004185
    */
@@ -109,7 +109,7 @@ export class CreateWorkoutPage implements OnInit {
   }
 
   /** This function uses the server to retrieve an array of all possible tags for the system
-   * With these tags, the user will be able to select tags for their workouts
+   * With these tags, the User will be able to select tags for their workouts
    *
    * @author Luca Azmanov, u19004185
    */

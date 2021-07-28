@@ -28,12 +28,12 @@ export class UserService {
 
   /** This function attempts to submit a workout by using the following parameters:
    *
-   * @param email is the email the user is attempting to login with.
-   * @param password is the password the user is attempting to login with.
+   * @param email is the email the User is attempting to login with.
+   * @param password is the password the User is attempting to login with.
    *
    * @return Number represents the status of the Http request.
    *
-   * @returns 200,400,500 represent a success, user error and server error, respectively.
+   * @returns 200,400,500 represent a success, User error and server error, respectively.
    */
   async attemptSignIn(email: string, password: string): Promise<Number> {
     const url: string = "http://localhost:3000/user/login";
@@ -61,7 +61,7 @@ export class UserService {
   }
 
   /**
-   * Attempt to register a new user.
+   * Attempt to register a new User.
    * @param firstName
    * @param lastName
    * @param email
@@ -103,7 +103,7 @@ export class UserService {
   }
 
   /**
-   * Get the details of the current user from the token in local storage
+   * Get the details of the current User from the token in local storage
    */
   async obtainUserDetails(): Promise<string>{
     const url ="http://localhost:3000/user/getUserDetails";
@@ -116,7 +116,7 @@ export class UserService {
   }
 
   /**
-   * Attempt to update the user details through means of the token in local storage
+   * Attempt to update the User details through means of the token in local storage
    * @param firstName
    * @param lastName
    * @param birthDate
