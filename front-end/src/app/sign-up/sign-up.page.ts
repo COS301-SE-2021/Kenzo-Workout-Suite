@@ -30,6 +30,7 @@ export class SignUpPage implements OnInit {
   /**
    * Function to be called upon button onClick to determine if the account is a Planner account
    * @constructor
+   * @author Jia Hui Wang, u18080449
    */
   PlannerAccount() {
     this.accountType="PLANNER";
@@ -38,11 +39,20 @@ export class SignUpPage implements OnInit {
   /**
    * Function to be called upon button onClick to determine if the account is a Client account
    * @constructor
+   * @author Jia Hui Wang, u18080449
    */
   ClientAccount() {
     this.accountType="CLIENT";
   }
 
+  /**
+   * Function to be called upon button onClick to signUp
+   * where a user's details will be obtained from the input fields
+   * then processed through the userService's attemptSignUp function,
+   * from there the attemptSignUp will return a response code based on the success of the sign up
+   * and from that code we return a human understandable message.
+   * @author Jia Hui Wang, u18080449
+   */
   async signUp() {
     if (this.password == this.confirmpassword) {
       let status = await this.userService.attemptSignUp(this.firstName, this.lastName, this.email, this.password, this.accountType);
@@ -86,6 +96,7 @@ export class SignUpPage implements OnInit {
   /**
    * Helper function to be called if both passwords do not match.
    * @constructor
+   * @author Jia Hui Wang, u18080449
    */
   async InvalidPasswords() {
     const alert = await this.alertController.create({
@@ -100,6 +111,7 @@ export class SignUpPage implements OnInit {
   /**
    * Helper function to physically present alert to user independent of OS.
    * @param alert
+   * @author Jia Hui Wang, u18080449
    */
   async presentAlert(alert:any){
     await alert.present();

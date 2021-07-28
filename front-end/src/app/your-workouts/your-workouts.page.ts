@@ -18,6 +18,11 @@ export class YourWorkoutsPage implements OnInit {
               public alertController:AlertController,
               private router: Router) { }
 
+  /**
+   * Upon loading of the current page, call functions to load all the workouts and exercises to be displayed.
+   * @author Jia Hui Wang, u18080449
+   */
+
   ngOnInit() {
     this.loadWorkouts();
     this.loadExercises();
@@ -25,6 +30,7 @@ export class YourWorkoutsPage implements OnInit {
 
   /**
    * Load all the workouts by calling the workoutService function and then return data accordingly based on status code
+   * @author Jia Hui Wang, u18080449
    */
   async loadWorkouts(){
     let tempWorkouts = await this.workoutService.attemptGetWorkoutsByPlanner();
@@ -40,6 +46,7 @@ export class YourWorkoutsPage implements OnInit {
 
   /**
    * Load all the exercises
+   * @author Jia Hui Wang, u18080449
    */
   async loadExercises(){
     let tempExercises = await this.workoutService.attemptGetExercisesByPlanner();
@@ -60,6 +67,7 @@ export class YourWorkoutsPage implements OnInit {
 
   /**
    * Filter out the exercises and only show workouts
+   * @author Jia Hui Wang, u18080449
    */
   showWorkouts(){
     let exerciseBtn = document.getElementById("exerciseBtn");
@@ -72,6 +80,7 @@ export class YourWorkoutsPage implements OnInit {
 
   /**
    * Filter out the workouts and only show exercises
+   * @author Jia Hui Wang, u18080449
    */
   showExercises(){
     let exerciseBtn = document.getElementById("exerciseBtn");
@@ -82,6 +91,12 @@ export class YourWorkoutsPage implements OnInit {
     document.getElementById("exerciseScroll").style.display = "block";
   }
 
+  /**
+   * Helper function to navigate to the update-workout page while passing through the ID
+   * of the workout that is to be updated.
+   * @param id
+   * @author Jia Hui Wang, u18080449
+   */
   async sendWorkoutID(id: string){
     console.log(id)
     await this.router.navigate(['/update-workout'],{
@@ -91,6 +106,12 @@ export class YourWorkoutsPage implements OnInit {
     })
   }
 
+  /**
+   * Helper function to navigate to the update-exercise page while passing through the ID
+   * of the exercise that is to be updated.
+   * @param id
+   * @author Jia Hui Wang, u18080449
+   */
   async sendExerciseID(id: string){
     await this.router.navigate(['/update-exercise'],{
       state:{
@@ -99,6 +120,10 @@ export class YourWorkoutsPage implements OnInit {
     });
   }
 
+  /**
+   * Helper function to navigate to the search/browse page
+   * @author Jia Hui Wang, u18080449
+   */
   async goToSearch(){
     await this.router.navigate(['/search'])
       .then(() => {
@@ -106,6 +131,10 @@ export class YourWorkoutsPage implements OnInit {
       });
   }
 
+  /**
+   * Helper function to navigate to the profile page
+   * @author Jia Hui Wang, u18080449
+   */
   async goToProfile(){
     await this.router.navigate(['/profile'])
       .then(() => {
@@ -113,6 +142,11 @@ export class YourWorkoutsPage implements OnInit {
       })
   }
 
+  /**
+   * Event Handler for on-key change search bar filtering by title or description
+   * @param event
+   * @author Jia Hui Wang, u18080449
+   */
   eventHandler(event) {
     let text = event.srcElement.value.toLowerCase();
     this.workouts.forEach(data => {

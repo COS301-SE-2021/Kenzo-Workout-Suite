@@ -24,6 +24,7 @@ export class SearchPage implements OnInit {
 
   /**
    * Load all the workouts
+   * @author Jia Hui Wang, u18080449
    */
   async loadWorkouts(){
     let tempWorkouts = await this.workoutService.attemptGetWorkouts();
@@ -39,6 +40,7 @@ export class SearchPage implements OnInit {
 
   /**
    * Load all the exercises
+   * @author Jia Hui Wang, u18080449
    */
   async loadExercises(){
     let tempExercises = await this.workoutService.attemptGetExercises();
@@ -55,6 +57,7 @@ export class SearchPage implements OnInit {
   /**
    * on keypress or enter key is pressed, filter the cards based on what is typed
    * @param event
+   * @author Jia Hui Wang, u18080449
    */
   eventHandler(event) {
     let text = event.srcElement.value.toLowerCase();
@@ -79,6 +82,7 @@ export class SearchPage implements OnInit {
 
   /**
    * Filter out the exercises and only show workouts
+   * @author Jia Hui Wang, u18080449
    */
   showWorkouts(){
     let exerciseBtn = document.getElementById("searchExerciseBtn");
@@ -91,6 +95,7 @@ export class SearchPage implements OnInit {
 
   /**
    * Filter out the workouts and only show exercises
+   * @author Jia Hui Wang, u18080449
    */
   showExercises(){
     let exerciseBtn = document.getElementById("searchExerciseBtn");

@@ -62,11 +62,12 @@ export class UserService {
 
   /**
    * Attempt to register a new user.
-   * @param firstName
-   * @param lastName
-   * @param email
-   * @param password
-   * @param accountType
+   * @param firstName is the first name of the user
+   * @param lastName is the last name of the user
+   * @param email is the email address the user wishes to register with
+   * @param password is the password of the user's account
+   * @param accountType is the type of account that the user has made.
+   * @author Jia Hui Wang, u18080449
    */
   async attemptSignUp(firstName: string, lastName: string, email: string, password: string, accountType: string): Promise<Number>{
     const url ="http://localhost:3000/user/signUp";;
@@ -104,6 +105,7 @@ export class UserService {
 
   /**
    * Get the details of the current user from the token in local storage
+   * @author Jia Hui Wang, u18080449
    */
   async obtainUserDetails(): Promise<string>{
     const url ="http://localhost:3000/user/getUserDetails";
@@ -117,9 +119,10 @@ export class UserService {
 
   /**
    * Attempt to update the user details through means of the token in local storage
-   * @param firstName
-   * @param lastName
-   * @param birthDate
+   * @param firstName is the firstname that the user wishes to change to if different from the current one.
+   * @param lastName is the lastname that the user wishes to change to if different from the current one.
+   * @param birthDate is the birthdate that the user wishes to change to if different from the current one.
+   * @author Jia Hui Wang, u18080449
    */
   async attemptUpdateUserDetails(firstName: string, lastName: string, birthDate: Date): Promise<any>{
     const user = {

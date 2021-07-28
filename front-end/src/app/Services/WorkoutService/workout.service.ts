@@ -173,6 +173,7 @@ export class WorkoutService {
 
   /**
    * attempt to get all the workouts in the database for the library page
+   * @author Jia Hui Wang, u18080449
    */
   async attemptGetWorkouts() : Promise<any>{
     const url: string = "http://localhost:3000/workout/getWorkouts";
@@ -189,6 +190,7 @@ export class WorkoutService {
 
   /**
    * attempt to get all the exercises in the database for the library page
+   * @author Jia Hui Wang, u18080449
    */
   async attemptGetExercises() : Promise<any>{
     const url: string = "http://localhost:3000/workout/getExercises";
@@ -203,6 +205,10 @@ export class WorkoutService {
     });
   }
 
+  /**
+   * Attempt to obtain all workouts by the currently logged in Planner
+   * @author Jia Hui Wang, u18080449
+   */
   async attemptGetWorkoutsByPlanner() : Promise<any>{
     const url: string = "http://localhost:3000/workout/getWorkoutByPlanner";
 
@@ -218,6 +224,10 @@ export class WorkoutService {
     });
   }
 
+  /**
+   * Attempt to obtain all the exercises by the currently logged in Planner
+   * @author Jia Hui Wang, u18080449
+   */
   async attemptGetExercisesByPlanner() : Promise<any>{
     const url: string = "http://localhost:3000/workout/getExercisesByPlanner";
 
