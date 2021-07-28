@@ -1,13 +1,11 @@
 import { MockContext, Context, createMockContext } from "../../../context"
 import { WorkoutService } from "../../../src/Workout/workout.service"
-import { v4 as uuidv4 } from "uuid"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
 
 let mockCtx: MockContext
 let ctx: Context
 let workoutService: WorkoutService
 let prisma: PrismaClient
-const uuidWorkout = uuidv4()
 
 describe("Unit tests of the getWorkoutById function in the Workout Service", () => {
   beforeEach(() => {
