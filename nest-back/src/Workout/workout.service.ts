@@ -4,8 +4,6 @@ import {
   NotAcceptableException,
   NotFoundException, PreconditionFailedException
 } from "@nestjs/common"
-
-import { gTTS } from "gtts.js"
 import { Context } from "../../context"
 
 import {
@@ -857,11 +855,13 @@ export class WorkoutService {
   async textToSpeech (text:String, fileName:String) {
     const gtts = require("node-gtts")("en")
     const path = require("path")
-    const filepath = path.join(__dirname, fileName + ".wav")
+    const filepath = path.join("./src/GeneratedTextSpeech/", fileName + ".wav")
 
     try {
       gtts.save(filepath, text, function () {
       })
+
+      return "text file has been created"
     } catch (err) {
       throw new BadRequestException("Could not generate text to speech")
     }
