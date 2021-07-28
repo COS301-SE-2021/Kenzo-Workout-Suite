@@ -16,20 +16,6 @@ describe("Unit tests of the getWorkoutById function in the Workout Service", () 
     ctx = (mockCtx as unknown) as Context
   })
 
-  test("Should receive valid information about workout with corresponding id", async () => {
-    const workout = [{
-      workoutID: uuidWorkout,
-      workoutTitle: "test",
-      workoutDescription: "test",
-      plannerID: uuidv4()
-    }]
-    mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
-
-    const response = await workoutService.getWorkoutById(uuidWorkout, ctx)
-
-    expect(response).toBe(workout)
-  })
-
   test("Should not receive valid information about workout with corresponding id as workout does not exist", async () => {
     let workout
     mockCtx.prisma.workout.findUnique.mockResolvedValue(workout)
