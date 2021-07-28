@@ -35,7 +35,27 @@
             "prefix": "app",
             "style": "camelCase"
           }
-        ]
+        ],
+        "quotes": ["error","double"],
+        "@typescript-eslint/quotes": "off",
+        "no-multi-spaces": "error",
+        "no-self-assign": "error",
+        "no-useless-catch": "error",
+        "no-useless-return": "error",
+        "no-undef": "off",
+        "no-unused-vars": "error",
+        "no-undef-init": "off",
+        "camelcase": "error",
+        "@typescript-eslint/prefer-for-of": "off",
+        "no-duplicate-imports": "error",
+        "no-unused-expressions": "error",
+        "no-unused-labels": "error",
+        "brace-style": "error",
+        "block-spacing": "error",
+        "comma-spacing": "error",
+        "comma-style": "error",
+        "indent": "error",
+        "@typescript-eslint/member-ordering": "off"
       }
     },
     {
