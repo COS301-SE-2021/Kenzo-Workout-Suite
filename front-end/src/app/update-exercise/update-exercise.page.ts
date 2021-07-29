@@ -50,13 +50,13 @@ export class UpdateExercisePage implements OnInit {
         break;
       }
     }
-    this.title = unit['title'];
-    this.description = unit['description'];
+    this.title = unit['exerciseTitle'];
+    this.description = unit['exerciseDescription'];
     this.range = unit['repRange'];
     this.sets = unit['sets'];
-    this.pose_description = unit['Posedescription'];
+    this.pose_description = unit['poseDescription'];
     this.rest = unit['restPeriod'];
-    this.duration = unit['duratime'];
+    this.duration = unit['duration'];
 
     let tags = unit['tags'];
     for (let i=0; i<tags.length; i++) {

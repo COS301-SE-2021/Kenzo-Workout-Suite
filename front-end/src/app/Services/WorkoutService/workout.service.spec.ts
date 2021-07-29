@@ -41,14 +41,14 @@ describe('WorkoutService', () => {
     const req = httpMock.expectOne("http://localhost:3000/workout/createExercise");
     expect(req.request.method).toEqual('POST');
     expect(req.request.body).toEqual({
-      "title": exercise.title,
-      "description": exercise.description,
+      "exerciseTitle": exercise.title,
+      "exerciseDescription": exercise.description,
       "repRange": exercise.repRange,
       "sets": exercise.sets,
-      "Posedescription": exercise.Posedescription,
+      "poseDescription": exercise.Posedescription,
       "restPeriod": exercise.restPeriod,
       "tags": exercise.tags,
-      "duratime": exercise.duratime
+      "duration": exercise.duratime
     });
 
     let resp = new HttpResponse({
@@ -66,14 +66,14 @@ describe('WorkoutService', () => {
     const req = httpMock.expectOne("http://localhost:3000/workout/createExercise");
     expect(req.request.method).toEqual('POST');
     expect(req.request.body).toEqual({
-      "title": exercise.title,
-      "description": exercise.description,
+      "exerciseTitle": exercise.title,
+      "exerciseDescription": exercise.description,
       "repRange": exercise.repRange,
       "sets": exercise.sets,
-      "Posedescription": exercise.Posedescription,
+      "poseDescription": exercise.Posedescription,
       "restPeriod": exercise.restPeriod,
       "tags": exercise.tags,
-      "duratime": exercise.duratime
+      "duration": exercise.duratime
     });
 
     let resp = new HttpErrorResponse({
@@ -91,14 +91,14 @@ describe('WorkoutService', () => {
     const req = httpMock.expectOne("http://localhost:3000/workout/createExercise");
     expect(req.request.method).toEqual('POST');
     expect(req.request.body).toEqual({
-      "title": exercise.title,
-      "description": exercise.description,
+      "exerciseTitle": exercise.title,
+      "exerciseDescription": exercise.description,
       "repRange": exercise.repRange,
       "sets": exercise.sets,
-      "Posedescription": exercise.Posedescription,
+      "poseDescription": exercise.Posedescription,
       "restPeriod": exercise.restPeriod,
       "tags": exercise.tags,
-      "duratime": exercise.duratime
+      "duration": exercise.duratime
     });
 
     let resp = new HttpErrorResponse({
@@ -116,14 +116,14 @@ describe('WorkoutService', () => {
     const req = httpMock.expectOne("http://localhost:3000/workout/createExercise");
     expect(req.request.method).toEqual('POST');
     expect(req.request.body).toEqual({
-      "title": exercise.title,
-      "description": exercise.description,
+      "exerciseTitle": exercise.title,
+      "exerciseDescription": exercise.description,
       "repRange": exercise.repRange,
       "sets": exercise.sets,
-      "Posedescription": exercise.Posedescription,
+      "poseDescription": exercise.Posedescription,
       "restPeriod": exercise.restPeriod,
       "tags": exercise.tags,
-      "duratime": exercise.duratime
+      "duration": exercise.duratime
     });
 
     let resp = new HttpErrorResponse({
@@ -315,15 +315,15 @@ describe('WorkoutService', () => {
     const req = httpMock.expectOne("http://localhost:3000/workout/updateExercise");
     expect(req.request.method).toEqual('PUT');
     expect(req.request.body).toEqual({
-      "exercise" : "A VALID ID",
-      "title": exercise.title,
-      "description": exercise.description,
+      "exerciseID" : "A VALID ID",
+      "exerciseTitle": exercise.title,
+      "exerciseDescription": exercise.description,
       "repRange": exercise.repRange,
       "sets": exercise.sets,
-      "Posedescription": exercise.Posedescription,
+      "poseDescription": exercise.Posedescription,
       "restPeriod": exercise.restPeriod,
       "tags": exercise.tags,
-      "duratime": exercise.duratime
+      "duration": exercise.duratime
     });
 
     let resp = new HttpResponse({
@@ -341,15 +341,15 @@ describe('WorkoutService', () => {
     const req = httpMock.expectOne("http://localhost:3000/workout/updateExercise");
     expect(req.request.method).toEqual('PUT');
     expect(req.request.body).toEqual({
-      "exercise":"A VALID ID",
-      "title": exercise.title,
-      "description": exercise.description,
+      "exerciseID" : "A VALID ID",
+      "exerciseTitle": exercise.title,
+      "exerciseDescription": exercise.description,
       "repRange": exercise.repRange,
       "sets": exercise.sets,
-      "Posedescription": exercise.Posedescription,
+      "poseDescription": exercise.Posedescription,
       "restPeriod": exercise.restPeriod,
       "tags": exercise.tags,
-      "duratime": exercise.duratime
+      "duration": exercise.duratime
     });
 
     let resp = new HttpErrorResponse({
@@ -366,15 +366,15 @@ describe('WorkoutService', () => {
     const req = httpMock.expectOne("http://localhost:3000/workout/updateExercise");
     expect(req.request.method).toEqual('PUT');
     expect(req.request.body).toEqual({
-      "exercise":"A VALID ID",
-      "title": exercise.title,
-      "description": exercise.description,
+      "exerciseID" : "A VALID ID",
+      "exerciseTitle": exercise.title,
+      "exerciseDescription": exercise.description,
       "repRange": exercise.repRange,
       "sets": exercise.sets,
-      "Posedescription": exercise.Posedescription,
+      "poseDescription": exercise.Posedescription,
       "restPeriod": exercise.restPeriod,
       "tags": exercise.tags,
-      "duratime": exercise.duratime
+      "duration": exercise.duratime
     });
 
     let resp = new HttpErrorResponse({
@@ -391,15 +391,15 @@ describe('WorkoutService', () => {
     const req = httpMock.expectOne("http://localhost:3000/workout/updateExercise");
     expect(req.request.method).toEqual('PUT');
     expect(req.request.body).toEqual({
-      "exercise":"A VALID ID",
-      "title": exercise.title,
-      "description": exercise.description,
+      "exerciseID" : "A VALID ID",
+      "exerciseTitle": exercise.title,
+      "exerciseDescription": exercise.description,
       "repRange": exercise.repRange,
       "sets": exercise.sets,
-      "Posedescription": exercise.Posedescription,
+      "poseDescription": exercise.Posedescription,
       "restPeriod": exercise.restPeriod,
       "tags": exercise.tags,
-      "duratime": exercise.duratime
+      "duration": exercise.duratime
     });
 
     let resp = new HttpErrorResponse({
@@ -417,7 +417,7 @@ describe('WorkoutService', () => {
     const req = httpMock.expectOne("http://localhost:3000/workout/deleteExercise");
     expect(req.request.method).toEqual('DELETE');
     expect(req.request.body).toEqual({
-      "exercise" : "A VALID ID"
+      "exerciseID" : "A VALID ID"
     });
 
     let resp = new HttpResponse({
@@ -433,7 +433,7 @@ describe('WorkoutService', () => {
     const req = httpMock.expectOne("http://localhost:3000/workout/deleteExercise");
     expect(req.request.method).toEqual('DELETE');
     expect(req.request.body).toEqual({
-      "exercise" : "AN INVALID ID"
+      "exerciseID" : "AN INVALID ID"
     });
 
     let resp = new HttpErrorResponse({
@@ -449,7 +449,7 @@ describe('WorkoutService', () => {
     const req = httpMock.expectOne("http://localhost:3000/workout/deleteExercise");
     expect(req.request.method).toEqual('DELETE');
     expect(req.request.body).toEqual({
-      "exercise" : "AN INVALID ID"
+      "exerciseID" : "AN INVALID ID"
     });
 
     let resp = new HttpErrorResponse({
@@ -465,7 +465,7 @@ describe('WorkoutService', () => {
     const req = httpMock.expectOne("http://localhost:3000/workout/deleteExercise");
     expect(req.request.method).toEqual('DELETE');
     expect(req.request.body).toEqual({
-      "exercise" : "AN INVALID ID"
+      "exerciseID" : "AN INVALID ID"
     });
 
     let resp = new HttpErrorResponse({

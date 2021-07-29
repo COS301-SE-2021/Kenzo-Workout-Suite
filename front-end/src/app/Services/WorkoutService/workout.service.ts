@@ -101,14 +101,14 @@ export class WorkoutService {
   async attemptSubmitExercise(exercise:Exercise) : Promise<Number> {
     const url : string = "http://localhost:3000/workout/createExercise";
     const body:Object = {
-      "title": exercise.title,
-      "description": exercise.description,
+      "exerciseTitle": exercise.title,
+      "exerciseDescription": exercise.description,
       "repRange": exercise.repRange,
       "sets": exercise.sets,
-      "Posedescription": exercise.Posedescription,
+      "poseDescription": exercise.Posedescription,
       "restPeriod": exercise.restPeriod,
       "tags": exercise.tags,
-      "duratime": exercise.duratime
+      "duration": exercise.duratime
     };
     return this.http.post(url, body).toPromise().then(data=>{
       return 200;
@@ -130,15 +130,15 @@ export class WorkoutService {
     const url : string = "http://localhost:3000/workout/updateExercise";
 
     const body:Object = {
-      "exercise":id,
-      "title": exercise.title,
-      "description": exercise.description,
+      "exerciseID":id,
+      "exerciseTitle": exercise.title,
+      "exerciseDescription": exercise.description,
       "repRange": exercise.repRange,
       "sets": exercise.sets,
-      "Posedescription": exercise.Posedescription,
+      "poseDescription": exercise.Posedescription,
       "restPeriod": exercise.restPeriod,
       "tags": exercise.tags,
-      "duratime": exercise.duratime
+      "duration": exercise.duratime
     };
 
     return this.http.put(url, body).toPromise().then(data=>{
@@ -160,7 +160,7 @@ export class WorkoutService {
     const url : string = "http://localhost:3000/workout/deleteExercise";
 
     const body:Object = {
-      "exercise":id,
+      "exerciseID":id,
     };
 
     return this.http.request('delete',url,{body}).toPromise().then(data=>{
