@@ -55,7 +55,9 @@
         "comma-spacing": "error",
         "comma-style": "error",
         "indent": "error",
-        "@typescript-eslint/member-ordering": "off"
+        "@typescript-eslint/member-ordering": "off",
+        "object-shorthand": [0],
+        "@typescript-eslint/dot-notation": "off"
       }
     },
     {
