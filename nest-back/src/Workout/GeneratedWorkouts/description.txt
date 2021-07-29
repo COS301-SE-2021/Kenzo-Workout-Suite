@@ -1,0 +1,1 @@
+This is a folder in which PDF's of generated files are stored
