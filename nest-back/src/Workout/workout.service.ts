@@ -5,7 +5,6 @@ import {
   NotFoundException, PreconditionFailedException
 } from "@nestjs/common"
 
-import { gTTS } from "gtts.js"
 import { Context } from "../../context"
 
 import {
