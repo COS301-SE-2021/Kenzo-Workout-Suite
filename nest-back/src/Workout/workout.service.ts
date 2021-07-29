@@ -12,8 +12,11 @@ import {
 } from "@prisma/client"
 import { jsPDF } from "jspdf"
 import { PrismaService } from "../Prisma/prisma.service"
+import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import * as fs from 'fs';
 
 const Filter = require("bad-words"); const filter = new Filter()
+import fetch from "node-fetch"
 
 @Injectable()
 export class WorkoutService {
@@ -544,6 +547,7 @@ export class WorkoutService {
         }
       })
       await this.generateWorkoutPDF(createdWorkout, ctx)
+      await this.generatePrettyWorkoutPDF(createdWorkout, ctx)
       return ("Workout Created.")
     } else {
       const createdWorkout = await ctx.prisma.workout.create({
@@ -558,6 +562,7 @@ export class WorkoutService {
         }
       })
       await this.generateWorkoutPDF(createdWorkout, ctx)
+      await this.generatePrettyWorkoutPDF(createdWorkout, ctx)
       return ("Workout Created.")
     }
   }
@@ -721,6 +726,46 @@ export class WorkoutService {
       doc.save("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf")
     }
   }
+
+  /**
+   *Workout Service - Generate Pretty Workout PDF
+   *
+   * @param workout This is the workout Object to be generated as a pdf
+   * @param ctx  This is the prisma context that is injected into the function.
+   * @throws PreconditionFailedException if:
+   *                               -Parameters can not be left empty.
+   *
+   * @throws NotFoundException if:
+   *                               -Workout with provided ID does not exist.
+   *
+   * @return  Message indicating success.
+   * @author Msi Sibanyoni
+   *
+   */
+  async generatePrettyWorkoutPDF (workout: any, ctx: Context) {
+    const uint8Array = fs.readFileSync("./src/GeneratedWorkouts/frontPageTemplate.pdf")
+    const pdfDoc = await PDFDocument.load(uint8Array)
+    const pages = pdfDoc.getPages()
+    const firstPage = pages[0]
+    const { width, height } = firstPage.getSize()
+    console.log(width)
+    console.log(height)
+    firstPage.drawText(workout.workoutTitle, {
+      x: 330,
+      y: 230,
+      size: 30
+    })
+    firstPage.drawText( "Description: " + workout.workoutDescription, {
+      x: 300,
+      y: 200,
+      size: 15
+    })
+
+
+    fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save() );
+  }
+
+
 
   /**
      *Workout Service - Create Tag
