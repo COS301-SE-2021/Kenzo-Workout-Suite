@@ -12,7 +12,7 @@ import {
 } from "@prisma/client"
 import { jsPDF } from "jspdf"
 import { PrismaService } from "../Prisma/prisma.service"
-import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { degrees, PDFDocument, rgb, StandardFonts,cmyk } from 'pdf-lib';
 import * as fs from 'fs';
 
 const Filter = require("bad-words"); const filter = new Filter()
@@ -755,10 +755,26 @@ export class WorkoutService {
       y: 230,
       size: 30
     })
-    firstPage.drawText( "Description: " + workout.workoutDescription, {
+    //firstPage.drawText( "Description: " + workout.workoutDescription, {
+    //  x: 300,
+    //  y: 200,
+    //  size: 15
+    //})
+
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
+
+    const form = pdfDoc.getForm()
+    const textField = form.createTextField('workout.description')
+    textField.enableMultiline()
+    textField.setText("Description: hujieswdhudhuew " + workout.workoutDescription)
+
+    textField.addToPage(firstPage,{
       x: 300,
-      y: 200,
-      size: 15
+      y: 30,
+      width: 280,
+      height: 190,
+      textColor: rgb(0,0,0),
+      borderWidth: 0
     })
 
 
