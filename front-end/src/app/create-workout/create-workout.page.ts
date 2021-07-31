@@ -16,18 +16,12 @@ export class CreateWorkoutPage implements OnInit {
   description: string="";
   title: string="";
 
-  tags:KenzoTag[] = new Array();
-  finalTags:KenzoTag[] = new Array();
-  newTag: KenzoTag;
-
   @ViewChild('searchBar', {static: false}) searchbar: IonSearchbar;
 
   constructor(private http:HttpClient,
               private route:Router,
               private workoutService:WorkoutService,
               public alertController:AlertController,) {
-    this.getTags();
-    this.newTag = this.getRandomTag("");
   }
 
   ngOnInit() {
@@ -45,14 +39,7 @@ export class CreateWorkoutPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async submitCreateRequest() {
-    let selected:KenzoTag[] = new Array();
-    for (let i = 0; i < this.tags.length; i++) {
-      if(this.tags[i].selected){
-        selected.push(this.tags[i]);
-      }
-    }
-
-    let new_workout = new Workout(this.title, this.description, selected);
+    let new_workout = new Workout(this.title, this.description, []);
     let status = await this.workoutService.attemptSubmitWorkout(new_workout);
 
     if (status < 400) {
@@ -108,139 +95,4 @@ export class CreateWorkoutPage implements OnInit {
     window.location.reload();
   }
 
-  /** This function uses the server to retrieve an array of all possible tags for the system
-   * With these tags, the User will be able to select tags for their workouts
-   *
-   * @author Luca Azmanov, u19004185
-   */
-  async getTags() {
-    let allTags = await this.workoutService.getTags();
-
-    let data = allTags['data'];
-    for (let i = 0; i < data.length; i++) {
-      let tagsKey = data[i];
-      let tg = new KenzoTag(tagsKey['textColour'],tagsKey['backgroundColour'], tagsKey['label'], false);
-      this.tags.push(tg);
-    }
-  }
-
-  /** This function serves the purpose of selecting and deselecting tags for the creation of a workout
-   *
-   * @param id specifies the id of the tag selected/deselected
-   *
-   * If the selected tag is already selected it is returned to the unselected, else it is placed in the new selected choices
-   *
-   * @author Luca Azmanov, u19004185
-   */
-  select(id) {
-    if(id===this.newTag.label && !this.newTag.selected){
-      this.tags.push(this.newTag);
-      this.reset(id);
-      this.newTag = this.getRandomTag("");
-      return;
-    }
-
-    for (let i = 0; i < this.tags.length; i++) {
-      let tag = this.tags[i];
-      if (tag.label === id) {
-        if(tag.selected){
-          tag.selected = false;
-          document.getElementById("tags").appendChild(document.getElementById(id));
-        }
-        else {
-          tag.selected = true;
-          document.getElementById("selected").appendChild(document.getElementById(id));
-        }
-      }
-    }
-  }
-
-  /** This function is called upon input of the search bar and will filter the selection of tags
-   * by the specified text. This function will be able to determine whether a tag is already
-   * selected or not and decide whether it is appropriate to display this tag.
-   *
-   * @param event contains the result of the search
-   *
-   * i.e. If a tag is selected, it must not be displayed under search results
-   *
-   * @author Luca Azmanov, u19004185
-   */
-  filterSelection(event) {
-    let text = event.srcElement.value;
-
-    let found = false;
-    for (let i = 0; i < this.tags.length; i++) {
-      let tag = this.tags[i];
-
-      if(tag.label.toLowerCase().includes(text.toLowerCase())) found = true;
-
-      // if not selected
-      if(!tag.selected){
-        let id = tag.label;
-        let tagElement = document.getElementById(id);
-
-        // if tag label does not contain the searched tag
-        if(!id.toLowerCase().includes(text.toLowerCase())){
-          tagElement.style.display = "none";
-        }
-        else{ // if tag label contains the searched tag
-          tagElement.style.display = "inline-block";
-        }
-      }
-    }
-
-    if(!found){
-      document.getElementById("no-tag-create").style.display="block";
-      this.newTag.label = text;
-    }
-    else{
-      document.getElementById("no-tag-create").style.display="none";
-    }
-
-  }
-
-  /** This function serves the purpose of resetting the selection div after
-   * the addition of a new tag is performed
-   *
-   * @param label is the name to be displayed after creation
-   *
-   * @author Luca Azmanov, u19004185
-   */
-  reset(label) {
-    this.searchbar.value = label;
-    let text = label;
-
-    for (let i = 0; i < this.tags.length; i++) {
-      let tag = this.tags[i];
-
-      // if not selected
-      if(!tag.selected){
-        let id = tag.label;
-        let tagElement = document.getElementById(id);
-
-        // if tag label does not contain the searched tag
-        if(!id.toLowerCase().includes(text.toLowerCase())){
-          tagElement.style.display = "none";
-        }
-        else{ // if tag label contains the searched tag
-          tagElement.style.display = "inline-block";
-        }
-      }
-    }
-    document.getElementById("no-tag-create").style.display="none";
-  }
-
-  /** This function creates a new random tag with random colors and waits for the new
-   * specified label
-   * @param label is the name for new newly created tag
-   * @author Luca Azmanov, u19004185
-   */
-  getRandomTag(label) : KenzoTag{
-    let colors = ["RED","PINK","PURPLE","BLUE","YELLOW","ORANGE","GREEN"];
-
-    let randomTC = Math.floor(Math.random() * (6 - 0 + 1)) + 0;
-    let randomBC = Math.floor(Math.random() * (6 - 0 + 1)) + 0;
-
-    return new KenzoTag(colors[randomTC],colors[randomBC],label, false);
-  }
 }
