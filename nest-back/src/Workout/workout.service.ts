@@ -14,13 +14,14 @@ import { jsPDF } from "jspdf"
 import { PrismaService } from "../Prisma/prisma.service"
 import { degrees, PDFDocument, rgb, StandardFonts,cmyk } from 'pdf-lib';
 import * as fs from 'fs';
+import { UserService } from "../User/user.service"
 
 const Filter = require("bad-words"); const filter = new Filter()
 import fetch from "node-fetch"
 
 @Injectable()
 export class WorkoutService {
-  constructor (private prisma: PrismaService) {
+  constructor (private prisma: PrismaService, private userService: UserService) {
   }
 
   /**
@@ -748,28 +749,48 @@ export class WorkoutService {
     const pages = pdfDoc.getPages()
     const firstPage = pages[0]
     const { width, height } = firstPage.getSize()
-    console.log(width)
-    console.log(height)
+    //console.log(width)
+    //console.log(height)
+
     firstPage.drawText(workout.workoutTitle, {
-      x: 330,
-      y: 230,
-      size: 30
+      x: 310,
+      y: 210,
+      size: 40
+    })
+    console.log(workout.plannerID)
+    const userObject = await this.userService.findUserByUUID(workout.plannerID, ctx);
+    const userFisrtLastName = userObject.firstName + " " + userObject.lastName;
+    firstPage.drawText("Author: " , {
+      x: 300,
+      y: 160,
+      size: 21
+    })
+    firstPage.drawText(userFisrtLastName, {
+      x: 390,
+      y: 160,
+      size: 16
+    })
+
+
+    firstPage.drawText("Description " , {
+      x: 300,
+      y: 120,
+      size: 18
     })
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
     const form = pdfDoc.getForm()
     const textField = form.createTextField('workout.description')
     textField.enableMultiline()
-    textField.setText("Description: hujieswdhudhuew " + workout.workoutDescription)
+    textField.setText("hujieswdhudhuew " + workout.workoutDescription)
     textField.addToPage(firstPage,{
       x: 300,
-      y: 30,
+      y: 22,
       width: 280,
-      height: 190,
+      height: 90,
       textColor: rgb(0,0,0),
       borderWidth: 0
     })
     //TODO: Get author details from workout service retrieval methods
-
 
     fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save() );
   }
