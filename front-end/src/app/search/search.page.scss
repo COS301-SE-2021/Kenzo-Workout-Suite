@@ -1,4 +1,4 @@
-.your-workout-background{
+.your-exercises-background{
   --background: var(--ion-off-white);
 }
 
@@ -10,6 +10,14 @@
   margin-top: 50px;
 }
 
+#exerciseHeading{
+  font-family: "SF Pro Medium", serif;
+  font-size: 25px;
+  color: black;
+  font-weight: bold;
+}
+
+
 #SearchBarDiv, #ItemsDiv{
   margin-top: 13px;
 }
@@ -19,12 +27,6 @@
   font-size: 23px;
   color: black;
   font-weight: bold;
-}
-
-#AddWorkout{
-  width: var(--icon-size);
-  height: var(--icon-size);
-  float: right;
 }
 
 #workout-searchbar{
@@ -43,8 +45,11 @@
   margin-right: auto;
 }
 
-.workouts, .exercises{
+.exercises{
   display: block;
+  border: 2px;
+  border-style: solid;
+  border-color: #FF6969;
 }
 
 .container{
@@ -58,16 +63,6 @@
   right: 5px;
   z-index: 100;
 }
-
-.filterBtns{
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 187.5px;
-  font-family: "SF Pro Regular", serif;
-  --border-radius: var(--border-radius);
-}
-
 
 .footer{
   --background: var(--ion-off-white);
@@ -109,11 +104,6 @@
   }
 }
 
-.workoutScroll{
-  display: block;
-  float: left;
-}
-
 .exerciseScroll{
   display: block;
   float: left;
@@ -122,6 +112,7 @@
 .fabButton[data-desc] {
   position: relative;
 }
+
 .fabButton[data-desc]::after{
   position: absolute;
   content: attr(data-desc);

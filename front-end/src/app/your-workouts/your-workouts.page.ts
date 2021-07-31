@@ -12,7 +12,6 @@ import {Observable} from "rxjs";
 })
 export class YourWorkoutsPage implements OnInit {
   workouts: Observable<any>;
-  exercises: Observable<any>;
   constructor(private http: HttpClient,
               private workoutService: WorkoutService,
               public alertController: AlertController,
@@ -20,7 +19,6 @@ export class YourWorkoutsPage implements OnInit {
 
   ngOnInit() {
       this.loadWorkouts();
-      this.loadExercises();
   }
 
   /**
@@ -38,48 +36,9 @@ export class YourWorkoutsPage implements OnInit {
       }
   }
 
-  /**
-   * Load all the exercises
-   */
-  async loadExercises(){
-      const tempExercises = await this.workoutService.attemptGetExercisesByPlanner();
-      if (tempExercises.status===200){
-          this.exercises = tempExercises.data;
-          return 200;
-      }else if (tempExercises.status===404){
-          return 404;
-      }else{
-          return 500;
-      }
-  }
-
   async presentAlert(alert: any) {
       await alert.present();
       await alert.onDidDismiss();
-  }
-
-  /**
-   * Filter out the exercises and only show workouts
-   */
-  showWorkouts(){
-      const exerciseBtn = document.getElementById("exerciseBtn");
-      exerciseBtn.style.opacity = "0.5";
-      const workoutBtn = document.getElementById("workoutBtn");
-      workoutBtn.style.opacity = "1";
-      document.getElementById("workoutScroll").style.display = "block";
-      document.getElementById("exerciseScroll").style.display = "none";
-  }
-
-  /**
-   * Filter out the workouts and only show exercises
-   */
-  showExercises(){
-      const exerciseBtn = document.getElementById("exerciseBtn");
-      exerciseBtn.style.opacity = "1";
-      const workoutBtn = document.getElementById("workoutBtn");
-      workoutBtn.style.opacity = "0.5";
-      document.getElementById("workoutScroll").style.display = "none";
-      document.getElementById("exerciseScroll").style.display = "block";
   }
 
   async sendWorkoutID(id: string){
@@ -87,14 +46,6 @@ export class YourWorkoutsPage implements OnInit {
       await this.router.navigate(["/update-workout"], {
           state:{
               id: id
-          }
-      });
-  }
-
-  async sendExerciseID(id: string){
-      await this.router.navigate(["/update-exercise"], {
-          state:{
-              exercise: id
           }
       });
   }
@@ -118,14 +69,6 @@ export class YourWorkoutsPage implements OnInit {
       this.workouts.forEach(data => {
           const currElement = document.getElementById(data.workoutID);
           if (!(data.workoutTitle.toLowerCase().includes(text)) && !(data.workoutDescription.toLowerCase().includes(text))) {
-              currElement.style.display = "none";
-          } else {
-              currElement.style.display = "block";
-          }
-      });
-      this.exercises.forEach(data => {
-          const currElement = document.getElementById(data.exercise);
-          if (!(data.title.toLowerCase().includes(text)) && !(data.description.toLowerCase().includes(text))) {
               currElement.style.display = "none";
           } else {
               currElement.style.display = "block";

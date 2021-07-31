@@ -36,27 +36,6 @@ describe("SearchPage", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should, given an empty database, fail to obtain all workouts.", async () => {
-        spyOn(service, "attemptGetWorkouts").and.resolveTo({status: 404});
-        await component.loadWorkouts().catch(error=>{
-            expect(error).toEqual(404);
-        });
-    });
-
-    it("should fail to get all workouts as server is not responding.", async () => {
-        spyOn(service, "attemptGetWorkouts").and.resolveTo(500);
-        await component.loadWorkouts().catch(error=>{
-            expect(error).toEqual(500);
-        });
-    });
-
-    it("should successfully obtain all workouts.", async () => {
-        spyOn(service, "attemptGetWorkouts").and.resolveTo({status: 200});
-        await component.loadWorkouts().then(data=>{
-            expect(data).toEqual(200);
-        });
-    });
-
     it("should, given an empty database, fail to obtain all exercises.", async () => {
         spyOn(service, "attemptGetExercises").and.resolveTo({status: 404});
         await component.loadExercises().catch(error=>{
