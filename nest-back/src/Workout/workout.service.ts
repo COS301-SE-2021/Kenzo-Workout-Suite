@@ -321,7 +321,7 @@ export class WorkoutService {
      *
      */
   async createExercise (title:string, description:string, repRange:string, sets:number, poseDescription:string, restPeriod:number, tags:Tag[], duration:number, plannerID:string, ctx: Context) {
-    if (title === "" || description === "" || repRange === "" || sets === 0 || poseDescription === "" || restPeriod === 0 || duration === 0 || tags == null || plannerID === "" || title == null || description == null || repRange == null || sets == null || poseDescription == null || restPeriod == null || duration == null || plannerID === "") {
+    if (title === "" || description === "" || poseDescription === "" || tags == null || plannerID === "" || title == null || description == null || repRange == null || sets == null || poseDescription == null || restPeriod == null || duration == null ) {
       throw new NotFoundException("Parameters can not be left empty!")
     }
 
