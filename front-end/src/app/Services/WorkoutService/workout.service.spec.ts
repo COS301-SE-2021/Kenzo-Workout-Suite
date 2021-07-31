@@ -145,8 +145,7 @@ describe('WorkoutService', () => {
     expect(req.request.body).toEqual({
       "workoutTitle": workout.title,
       "workoutDescription": workout.description,
-      "tags": workout.tags,
-      "exercises":[]
+      "exercises":workout.exercises
     });
 
     let resp = new HttpResponse({
@@ -166,8 +165,7 @@ describe('WorkoutService', () => {
     expect(req.request.body).toEqual({
       "workoutTitle": workout.title,
       "workoutDescription": workout.description,
-      "tags": workout.tags,
-      "exercises":[]
+      "exercises":workout.exercises
     });
 
     let resp = new HttpErrorResponse({
@@ -187,8 +185,7 @@ describe('WorkoutService', () => {
     expect(req.request.body).toEqual({
       "workoutTitle": workout.title,
       "workoutDescription": workout.description,
-      "tags": workout.tags,
-      "exercises":[]
+      "exercises":workout.exercises
     });
 
     let resp = new HttpErrorResponse({
@@ -208,8 +205,7 @@ describe('WorkoutService', () => {
     expect(req.request.body).toEqual({
       "workoutTitle": workout.title,
       "workoutDescription": workout.description,
-      "tags": workout.tags,
-      "exercises":[]
+      "exercises":workout.exercises
     });
 
     let resp = new HttpErrorResponse({
@@ -231,8 +227,7 @@ describe('WorkoutService', () => {
       "workoutID":"A VALID ID",
       "workoutTitle": workout.title,
       "workoutDescription": workout.description,
-      "tags": workout.tags,
-      "exercises":[]
+      "exercises":workout.exercises
     });
 
     let resp = new HttpResponse({
@@ -252,8 +247,7 @@ describe('WorkoutService', () => {
       "workoutID":"A VALID ID",
       "workoutTitle": workout.title,
       "workoutDescription": workout.description,
-      "tags": workout.tags,
-      "exercises":[]
+      "exercises":workout.exercises
     });
 
     let resp = new HttpErrorResponse({
@@ -273,8 +267,7 @@ describe('WorkoutService', () => {
       "workoutID":"A VALID ID",
       "workoutTitle": workout.title,
       "workoutDescription": workout.description,
-      "tags": workout.tags,
-      "exercises":[]
+      "exercises":workout.exercises
     });
 
     let resp = new HttpErrorResponse({
@@ -294,8 +287,7 @@ describe('WorkoutService', () => {
       "workoutID":"A VALID ID",
       "workoutTitle": workout.title,
       "workoutDescription": workout.description,
-      "tags": workout.tags,
-      "exercises":[]
+      "exercises":workout.exercises
     });
 
     let resp = new HttpErrorResponse({
