@@ -755,19 +755,11 @@ export class WorkoutService {
       y: 230,
       size: 30
     })
-    //firstPage.drawText( "Description: " + workout.workoutDescription, {
-    //  x: 300,
-    //  y: 200,
-    //  size: 15
-    //})
-
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
-
     const form = pdfDoc.getForm()
     const textField = form.createTextField('workout.description')
     textField.enableMultiline()
     textField.setText("Description: hujieswdhudhuew " + workout.workoutDescription)
-
     textField.addToPage(firstPage,{
       x: 300,
       y: 30,
@@ -776,6 +768,7 @@ export class WorkoutService {
       textColor: rgb(0,0,0),
       borderWidth: 0
     })
+    //TODO: Get author details from workout service retrieval methods
 
 
     fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save() );
