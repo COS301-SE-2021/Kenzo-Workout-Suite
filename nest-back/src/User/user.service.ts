@@ -228,7 +228,7 @@ export class UserService {
     }
   }
 
-  async googleLogin (req) {
+  async googleLogin (req,ctx:Context) {
     if (!req) {
       throw new BadRequestException("No such google User")
     }
@@ -237,9 +237,61 @@ export class UserService {
       throw new BadRequestException("No such google User")
     }
 
-    return {
-      message: "User information from google",
-      user: req.user
+      try {
+        const myUser = await ctx.prisma.user.findUnique({
+          where: {
+            email: req.user.email
+          }
+        })
+
+        if (!myUser) {
+          const createdUser = await ctx.prisma.user.create({
+            data: {
+              firstName: req.user.firstName,
+              lastName: req.user.lastName,
+              userType: "PLANNER",
+              email: req.user.email,
+              password: "GOOGLE_PASSWORD"
+            }
+          })
+          const payload = { userID: createdUser.userID }
+
+          return {
+            access_token: this.jwtService.sign(payload),
+            first_time:"true"
+          }
+
+        }
+
+        if (myUser)
+        {
+          if (myUser.password!="GOOGLE_PASSWORD")
+          {
+            return "USER WITH THIS EMAIL HAS ALREADY BEEN REGISTERED AS A NON GOOGLE USER"
+          }
+
+          else
+          {
+            const payload = { userID: myUser.userID }
+
+            return {
+              access_token: this.jwtService.sign(payload)
+            }
+          }
+        }
+
+        else
+        {
+          return {
+            message: "User information from google",
+            user: req.user
+          }
+        }
+      }
+
+    catch (err)
+    {
+      throw new BadRequestException("Could not perform google login");
     }
   }
 
