@@ -6,9 +6,13 @@ import {
   userType
 } from "@prisma/client"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
+import { UserService } from "../../../src/User/user.service"
+import { JwtService } from "@nestjs/jwt"
 
 let ctx: Context
 let workoutService: WorkoutService
+let userService: UserService
+let Jwt : JwtService
 let prisma: PrismaClient
 const userUUID = uuidv4()
 const exerciseUUID = uuidv4()
@@ -26,7 +30,8 @@ const exercise = {
 }
 
 beforeEach(async () => {
-  workoutService = new WorkoutService(prisma)
+  userService = new UserService(Jwt)
+  workoutService = new WorkoutService(prisma, userService)
   ctx = ActualPrisma()
   await ctx.prisma.exercise.deleteMany()
   await ctx.prisma.user.deleteMany()
@@ -62,7 +67,7 @@ describe("Integration tests of the updateWorkout function in the Workout Service
         }
       }
     }
-    await ctx.prisma.workout.create({
+    let createdWorkout = await ctx.prisma.workout.create({
       data: Workout
     })
 

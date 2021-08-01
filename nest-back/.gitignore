@@ -12,9 +12,6 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
-src/GeneratedWorkouts/*.pdf
-src/GeneratedTextSpeech/*.wav
-
 # OS
 .DS_Store
 

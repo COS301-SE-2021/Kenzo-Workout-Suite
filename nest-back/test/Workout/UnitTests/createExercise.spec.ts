@@ -5,14 +5,16 @@ import {
   Tag
 } from "@prisma/client"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
+import { UserService } from "../../../src/User/user.service"
 
 let mockCtx: MockContext
 let ctx: Context
 let workoutService: WorkoutService
+let userService: UserService
 let prisma: PrismaClient
 
 beforeEach(() => {
-  workoutService = new WorkoutService(prisma)
+  workoutService = new WorkoutService(prisma, userService)
   mockCtx = createMockContext()
   ctx = (mockCtx as unknown) as Context
 })
@@ -100,46 +102,6 @@ describe("Unit tests for createExercise in workout subsystem", () => {
     )
   })
 
-  test("Should not create exercise, [Throws Empty Parameters error(repRange)]  ", async () => {
-    const Exercise = {
-      exerciseID: uuidv4(),
-      exerciseTitle: "TestExercise",
-      exerciseDescription: "TestDescription",
-      repRange: "TestRange",
-      sets: 4,
-      poseDescription: "TestPDesc",
-      restPeriod: 2,
-      duration: 2,
-      plannerID: uuidv4()
-    }
-    mockCtx.prisma.exercise.create.mockResolvedValue(Exercise)
-    const empty: Tag[] = []
-
-    await expect(workoutService.createExercise(Exercise.exerciseTitle, Exercise.exerciseDescription, "", Exercise.sets, Exercise.poseDescription, Exercise.restPeriod, empty, Exercise.duration, Exercise.plannerID, ctx)).rejects.toThrow(
-      "Parameters can not be left empty!"
-    )
-  })
-
-  test("Should not create exercise, [Throws Empty Parameters error(Sets)]  ", async () => {
-    const Exercise = {
-      exerciseID: uuidv4(),
-      exerciseTitle: "TestExercise",
-      exerciseDescription: "TestDescription",
-      repRange: "TestRange",
-      sets: 4,
-      poseDescription: "TestPDesc",
-      restPeriod: 2,
-      duration: 2,
-      plannerID: uuidv4()
-    }
-    mockCtx.prisma.exercise.create.mockResolvedValue(Exercise)
-    const empty: Tag[] = []
-
-    await expect(workoutService.createExercise(Exercise.exerciseTitle, Exercise.exerciseDescription, Exercise.repRange, 0, Exercise.poseDescription, Exercise.restPeriod, empty, Exercise.duration, Exercise.plannerID, ctx)).rejects.toThrow(
-      "Parameters can not be left empty!"
-    )
-  })
-
   test("Should not create exercise, [Throws Empty Parameters error(poseDescription)]  ", async () => {
     const Exercise = {
       exerciseID: uuidv4(),
@@ -160,43 +122,5 @@ describe("Unit tests for createExercise in workout subsystem", () => {
     )
   })
 
-  test("Should not create exercise, [Throws Empty Parameters error(restPeriod)]  ", async () => {
-    const Exercise = {
-      exerciseID: uuidv4(),
-      exerciseTitle: "TestExercise",
-      exerciseDescription: "TestDescription",
-      repRange: "TestRange",
-      sets: 4,
-      poseDescription: "TestPDesc",
-      restPeriod: 2,
-      duration: 2,
-      plannerID: uuidv4()
-    }
-    mockCtx.prisma.exercise.create.mockResolvedValue(Exercise)
-    const empty: Tag[] = []
 
-    await expect(workoutService.createExercise(Exercise.exerciseTitle, Exercise.exerciseDescription, Exercise.repRange, Exercise.sets, Exercise.poseDescription, 0, empty, Exercise.duration, Exercise.plannerID, ctx)).rejects.toThrow(
-      "Parameters can not be left empty!"
-    )
-  })
-
-  test("Should not create exercise, [Throws Empty Parameters error(duration/duration)]  ", async () => {
-    const Exercise = {
-      exerciseID: uuidv4(),
-      exerciseTitle: "TestExercise",
-      exerciseDescription: "TestDescription",
-      repRange: "TestRange",
-      sets: 4,
-      poseDescription: "TestPDesc",
-      restPeriod: 2,
-      duration: 2,
-      plannerID: uuidv4()
-    }
-    mockCtx.prisma.exercise.create.mockResolvedValue(Exercise)
-    const empty: Tag[] = []
-
-    await expect(workoutService.createExercise(Exercise.exerciseTitle, Exercise.exerciseDescription, Exercise.repRange, Exercise.sets, Exercise.poseDescription, Exercise.restPeriod, empty, 0, Exercise.plannerID, ctx)).rejects.toThrow(
-      "Parameters can not be left empty!"
-    )
-  })
 })
