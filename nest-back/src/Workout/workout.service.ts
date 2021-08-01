@@ -548,8 +548,11 @@ export class WorkoutService {
           }
         }
       })
+      console.log("Here Now")
       let fullWorkout = await this.getWorkoutById( createdWorkout.workoutID, ctx)
+      console.log("Here Now 2")
       await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
+      console.log("Here Now 3")
       return ("Workout Created.")
     } else {
       const createdWorkout = await ctx.prisma.workout.create({
@@ -1032,9 +1035,7 @@ export class WorkoutService {
     } else { // find uncommon tags and add them to tags table
       const databaseTags = await this.getTags(ctx)
       const uncommonElements = tags.filter(({ label: label1 }) => !databaseTags.some(({ label: label2 }) => label1 === label2))
-      if (uncommonElements.length === 0) {
-        // code will be added
-      } else {
+      if (uncommonElements.length !== 0) {
         for (let i = 0; i < uncommonElements.length; i++) {
           await this.createTag(uncommonElements[i].label, uncommonElements[i].textColour, uncommonElements[i].backgroundColour, ctx)
         }

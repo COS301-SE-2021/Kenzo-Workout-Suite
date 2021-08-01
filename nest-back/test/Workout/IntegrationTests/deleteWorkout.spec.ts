@@ -5,14 +5,16 @@ import {
   userType
 } from "@prisma/client"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
+import { UserService } from "../../../src/User/user.service"
 
 let ctx: Context
 let workoutService: WorkoutService
+let userService: UserService
 let prisma: PrismaClient
 const userUUID = uuidv4()
 
 beforeEach(async () => {
-  workoutService = new WorkoutService(prisma)
+  workoutService = new WorkoutService(prisma, userService)
   ctx = ActualPrisma()
   await ctx.prisma.exercise.deleteMany()
   await ctx.prisma.user.deleteMany()
