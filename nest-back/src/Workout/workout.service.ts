@@ -398,7 +398,7 @@ export class WorkoutService {
      *
      */
   async updateExercise (exercise: string, title: string, description: string, repRange: string, sets: number, Posedescription: string, restPeriod: number, tags: Tag[], duratime: number, plannerID:string, ctx: Context): Promise<any> {
-    if (exercise === "" || title === "" || description === "" || repRange === "" || sets === 0 || Posedescription === "" || restPeriod === 0 || duratime === 0 || tags == null || plannerID === "" || title == null || description == null || repRange == null || sets == null || Posedescription == null || restPeriod == null || duratime == null || plannerID === "") {
+    if (exercise === "" || title === "" || description === "" || Posedescription === "" || tags == null || plannerID === "" || title == null || description == null || repRange == null || sets == null || Posedescription == null || restPeriod == null || duratime == null || plannerID === "") {
       throw new PreconditionFailedException("Invalid exercise object passed in.")
     }
 
@@ -526,6 +526,7 @@ export class WorkoutService {
       throw new NotFoundException("Parameters can not be left empty.")
     }
     if ((Array.isArray(exercises) && exercises.length)) { // run create query with exercises only
+
       const exerciseConnection = exercises.map(n => {
         const container = {
           exerciseID: n.exerciseID
@@ -547,8 +548,8 @@ export class WorkoutService {
           }
         }
       })
-      await this.generateWorkoutPDF(createdWorkout, ctx)
-      await this.generatePrettyWorkoutPDF(createdWorkout, ctx)
+      let fullWorkout = await this.getWorkoutById( createdWorkout.workoutID, ctx)
+      await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
       return ("Workout Created.")
     } else {
       const createdWorkout = await ctx.prisma.workout.create({
@@ -562,8 +563,8 @@ export class WorkoutService {
           }
         }
       })
-      await this.generateWorkoutPDF(createdWorkout, ctx)
-      await this.generatePrettyWorkoutPDF(createdWorkout, ctx)
+      let fullWorkout = await this.getWorkoutById( createdWorkout.workoutID, ctx)
+      await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
       return ("Workout Created.")
     }
   }
@@ -615,7 +616,7 @@ export class WorkoutService {
           }
         })
         const updatedWorkout = await this.getWorkoutById(workoutID, ctx)
-        await this.generateWorkoutPDF(updatedWorkout, ctx)
+        await this.generatePrettyWorkoutPDF(updatedWorkout, ctx)
         return ("Workout Updated.")
       } catch (e) {
         throw new NotFoundException("Workout with provided ID does not exist")
@@ -637,7 +638,7 @@ export class WorkoutService {
           }
         })
         const updatedWorkout = await this.getWorkoutById(workoutID, ctx)
-        await this.generateWorkoutPDF(updatedWorkout, ctx)
+        await this.generatePrettyWorkoutPDF(updatedWorkout, ctx)
         return ("Workout Updated.")
       } catch (e) {
         throw new NotFoundException("Workout with provided ID does not exist")
@@ -692,6 +693,7 @@ export class WorkoutService {
      *
      */
   async generateWorkoutPDF (workout: any, ctx: Context) {
+
     if (workout == null) {
       throw new PreconditionFailedException("Invalid workout provided")
     }
@@ -724,7 +726,7 @@ export class WorkoutService {
         doc.text("Rest Period: " + exercise.restPeriod.toString() + " seconds.", 15, (80 + (splitExerciseDesc.length * 10)))
         doc.text("Exercise Duration: " + exercise.duration.toString() + " seconds or " + (exercise.duration / 60).toString() + " minutes", 15, (100 + (splitExerciseDesc.length * 10)))
       }
-      doc.save("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf")
+      doc.save("./src/GeneratedWorkouts/" + workout.workoutTitle + "WorkoutX.pdf")
     }
   }
 
@@ -744,23 +746,22 @@ export class WorkoutService {
    *
    */
   async generatePrettyWorkoutPDF (workout: any, ctx: Context) {
-    const uint8Array = fs.readFileSync("./src/GeneratedWorkouts/frontPageTemplate.pdf")
-    const pdfDoc = await PDFDocument.load(uint8Array)
-    const pages = pdfDoc.getPages()
-    const firstPage = pages[0]
+    const uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/frontPageTemplate.pdf")
+    const pdfDoc = await PDFDocument.load(uint8ArrayFP)
+    const frontPage = pdfDoc.getPages()
+    const firstPage = frontPage[0]
     const { width, height } = firstPage.getSize()
-    //console.log(width)
-    //console.log(height)
+    console.log(width)
+    console.log(height)
 
     firstPage.drawText(workout.workoutTitle, {
       x: 310,
       y: 210,
       size: 40
     })
-    console.log(workout.plannerID)
     const userObject = await this.userService.findUserByUUID(workout.plannerID, ctx);
     const userFisrtLastName = userObject.firstName + " " + userObject.lastName;
-    firstPage.drawText("Author: " , {
+    firstPage.drawText("Author " , {
       x: 300,
       y: 160,
       size: 21
@@ -788,11 +789,125 @@ export class WorkoutService {
       width: 280,
       height: 90,
       textColor: rgb(0,0,0),
+
       borderWidth: 0
     })
-    //TODO: Get author details from workout service retrieval methods
 
-    fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save() );
+    //OTHER PAGES
+
+    //Bring template in - [Amount of exercises]
+    if (workout.exercises === undefined) {
+      fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save() )
+    }else{
+      let exercisePosCount = 0;
+      for (let i = 0; i < workout.exercises.length; i++) {
+        if (exercisePosCount < 1){
+          const uint8ArrayOP = fs.readFileSync("./src/GeneratedWorkouts/otherPagesTemplate.pdf")
+          const pdfDoc2 = await PDFDocument.load(uint8ArrayOP)
+          const [existingPage] = await pdfDoc.copyPages(pdfDoc2, [0])
+          const currentPage = pdfDoc.addPage(existingPage)
+
+          const exercise = await this.getExerciseByID(workout.exercises[i].exerciseID, ctx)
+          currentPage.drawText(exercise.exerciseTitle, {
+            x: 20,
+            y: 740,
+            size: 19
+          })
+          //Description
+          currentPage.drawText('Description', {
+            x: 20,
+            y: 710,
+            size: 12
+          })
+          currentPage.drawText(exercise.exerciseDescription, {
+            x: 20,
+            y: 700,
+            size: 10
+          })
+          //Rep Range
+          currentPage.drawText("Rep Range " , {
+            x: 20,
+            y: 620,
+            size: 12
+          })
+          currentPage.drawText(exercise.repRange, {
+            x: 130,
+            y: 620,
+            size: 12
+          })
+          //Sets
+          currentPage.drawText("Sets " .toString(), {
+            x: 20,
+            y: 590,
+            size: 12
+          })
+          currentPage.drawText(exercise.sets.toString(), {
+            x: 130,
+            y: 590,
+            size: 12
+          })
+          //RestPeriod
+          currentPage.drawText("Rest Period ", {
+            x: 20,
+            y: 560,
+            size: 12
+          })
+          currentPage.drawText(exercise.restPeriod.toString(), {
+            x: 130,
+            y: 560,
+            size: 12
+          })
+          //Exercise Duration
+          currentPage.drawText("Exercise Duration ", {
+            x: 20,
+            y: 530,
+            size: 12
+          })
+          currentPage.drawText( (exercise.duration / 60).toString() + " minutes" , {
+            x: 130,
+            y: 530,
+            size: 12
+          })
+          //Planner
+          currentPage.drawText("Planner ", {
+            x: 20,
+            y: 500,
+            size: 12
+          })
+          currentPage.drawText(userFisrtLastName, {
+            x: 130,
+            y: 500,
+            size: 12
+          })
+          exercisePosCount += 1
+
+        }else{
+          const currentPage = pdfDoc.getPage(pdfDoc.getPageCount()-1)
+          const exercise = await this.getExerciseByID(workout.exercises[i].exerciseID, ctx)
+          currentPage.drawText(exercise.exerciseTitle, {
+            x: 20,
+            y: 370,
+            size: 19
+          })
+          exercisePosCount -= 1
+        }
+
+
+      }
+      fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save() )
+
+
+
+    }
+
+
+    //
+
+
+
+
+
+
   }
 
 
