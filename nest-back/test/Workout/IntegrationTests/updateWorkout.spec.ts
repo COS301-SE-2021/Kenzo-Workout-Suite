@@ -70,8 +70,6 @@ describe("Integration tests of the updateWorkout function in the Workout Service
     let createdWorkout = await ctx.prisma.workout.create({
       data: Workout
     })
-    console.log(createdWorkout)
-    console.log(workoutUUID)
 
     const emptyExercise: Exercise[] = []
 

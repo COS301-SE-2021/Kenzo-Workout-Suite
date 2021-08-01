@@ -48,7 +48,6 @@ describe("Integration test for createWorkout for the Workout Service", () => {
       workoutDescription: "Test",
       planner_ID: userUUID
     }
-    console.log(WorkoutService)
 
     const emptyExercise: Exercise[] = []
 
