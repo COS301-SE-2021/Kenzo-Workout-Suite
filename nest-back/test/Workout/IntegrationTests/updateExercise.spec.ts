@@ -3,9 +3,11 @@ import { WorkoutService } from "../../../src/Workout/workout.service"
 import { v4 as uuidv4 } from "uuid"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
 import { Tag } from "@prisma/client"
+import { UserService } from "../../../src/User/user.service"
 
 let ctx: Context
 let workoutService: WorkoutService
+let userService: UserService
 let prisma: PrismaClient
 
 const uuidExercise = uuidv4()
@@ -13,7 +15,7 @@ const uuidPlanner = uuidv4()
 
 describe("Integration tests of the updateExercise function in the Workout Service", () => {
   beforeEach(async () => {
-    workoutService = new WorkoutService(prisma)
+    workoutService = new WorkoutService(prisma, userService)
     ctx = ActualPrisma()
     await ctx.prisma.exercise.deleteMany()
     await ctx.prisma.user.deleteMany()

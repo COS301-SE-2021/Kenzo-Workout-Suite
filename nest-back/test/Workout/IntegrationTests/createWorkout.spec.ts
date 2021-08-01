@@ -6,16 +6,21 @@ import {
   userType
 } from "@prisma/client"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
+import { UserService } from "../../../src/User/user.service"
+import { JwtService } from "@nestjs/jwt"
 
 let ctx: Context
 let workoutService: WorkoutService
+let userService: UserService
 let prisma: PrismaClient
+let Jwt : JwtService
 const userUUID = uuidv4()
 const exerciseUUID = uuidv4()
 
 describe("Integration test for createWorkout for the Workout Service", () => {
   beforeEach(async () => {
-    workoutService = new WorkoutService(prisma)
+    userService = new UserService(Jwt)
+    workoutService = new WorkoutService(prisma, userService)
     ctx = ActualPrisma()
     await ctx.prisma.exercise.deleteMany()
     await ctx.prisma.user.deleteMany()
@@ -43,6 +48,7 @@ describe("Integration test for createWorkout for the Workout Service", () => {
       workoutDescription: "Test",
       planner_ID: userUUID
     }
+    console.log(WorkoutService)
 
     const emptyExercise: Exercise[] = []
 
