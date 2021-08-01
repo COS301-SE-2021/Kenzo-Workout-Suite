@@ -548,11 +548,8 @@ export class WorkoutService {
           }
         }
       })
-      console.log("Here Now")
       let fullWorkout = await this.getWorkoutById( createdWorkout.workoutID, ctx)
-      console.log("Here Now 2")
       await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
-      console.log("Here Now 3")
       return ("Workout Created.")
     } else {
       const createdWorkout = await ctx.prisma.workout.create({
@@ -749,13 +746,13 @@ export class WorkoutService {
    *
    */
   async generatePrettyWorkoutPDF (workout: any, ctx: Context) {
-    const uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/frontPageTemplate.pdf")
+    const uint8ArrayFP = fs.readFileSync("./src/Assets/frontPageTemplate.pdf")
     const pdfDoc = await PDFDocument.load(uint8ArrayFP)
     const frontPage = pdfDoc.getPages()
     const firstPage = frontPage[0]
     const { width, height } = firstPage.getSize()
-    console.log(width)
-    console.log(height)
+    //console.log(width)
+    //console.log(height)
 
     firstPage.drawText(workout.workoutTitle, {
       x: 310,
@@ -805,7 +802,7 @@ export class WorkoutService {
       let exercisePosCount = 0;
       for (let i = 0; i < workout.exercises.length; i++) {
         if (exercisePosCount < 1){
-          const uint8ArrayOP = fs.readFileSync("./src/GeneratedWorkouts/otherPagesTemplate.pdf")
+          const uint8ArrayOP = fs.readFileSync("./src/Assets/otherPagesTemplate.pdf")
           const pdfDoc2 = await PDFDocument.load(uint8ArrayOP)
           const [existingPage] = await pdfDoc.copyPages(pdfDoc2, [0])
           const currentPage = pdfDoc.addPage(existingPage)
@@ -895,21 +892,10 @@ export class WorkoutService {
           exercisePosCount -= 1
         }
 
-
       }
       fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save() )
 
-
-
     }
-
-
-    //
-
-
-
-
-
 
   }
 
