@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable, NotFoundException, PreconditionFailedException } from "@nestjs/common"
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  PreconditionFailedException,
+  UnauthorizedException
+} from "@nestjs/common"
 import { JwtService } from "@nestjs/jwt"
 import { User } from "@prisma/client"
 import * as bcrypt from "bcrypt"
@@ -35,6 +41,11 @@ export class UserService {
 
     if (user == null) {
       throw new NotFoundException("Invalid Email or Password")
+    }
+
+    if (user.password=="GOOGLE_PASSWORD")
+    {
+      throw new UnauthorizedException("This user has already been registered with google, please login via google.")
     }
 
     const isMatch = await bcrypt.compare(pass, user.password)
@@ -263,11 +274,11 @@ export class UserService {
 
         }
 
-        if (myUser)
+        else
         {
           if (myUser.password!="GOOGLE_PASSWORD")
           {
-            return "USER WITH THIS EMAIL HAS ALREADY BEEN REGISTERED AS A NON GOOGLE USER"
+            throw new UnauthorizedException("USER WITH THIS EMAIL HAS ALREADY BEEN REGISTERED AS A NON-GOOGLE USER")
           }
 
           else
@@ -279,18 +290,20 @@ export class UserService {
             }
           }
         }
-
-        else
-        {
-          return {
-            message: "User information from google",
-            user: req.user
-          }
-        }
       }
 
     catch (err)
     {
+      if (err.message=="USER WITH THIS EMAIL HAS ALREADY BEEN REGISTERED AS A NON-GOOGLE USER")
+      {
+        throw err;
+      }
+
+      if (err.message=="No such google User")
+      {
+        throw err;
+      }
+
       throw new BadRequestException("Could not perform google login");
     }
   }
