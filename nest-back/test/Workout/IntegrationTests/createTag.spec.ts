@@ -1,14 +1,16 @@
 import { Context, ActualPrisma } from "../../../context"
 import { WorkoutService } from "../../../src/Workout/workout.service"
+import { UserService } from "../../../src/User/user.service"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
 
 let ctx: Context
 let workoutService: WorkoutService
+let userService: UserService
 let prisma: PrismaClient
 
 describe("Integration tests of the createTag function in the Workout Service", () => {
   beforeEach(async () => {
-    workoutService = new WorkoutService(prisma)
+    workoutService = new WorkoutService(prisma, userService)
     ctx = ActualPrisma()
     await ctx.prisma.tag.deleteMany()
   })
