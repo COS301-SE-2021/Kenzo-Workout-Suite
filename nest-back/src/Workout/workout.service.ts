@@ -15,9 +15,10 @@ import { PrismaService } from "../Prisma/prisma.service"
 import { degrees, PDFDocument, rgb, StandardFonts,cmyk } from 'pdf-lib';
 import * as fs from 'fs';
 import { UserService } from "../User/user.service"
+import fontkit from '@pdf-lib/fontkit'
 
 const Filter = require("bad-words"); const filter = new Filter()
-import fetch from "node-fetch"
+import fetch from 'node-fetch'
 
 @Injectable()
 export class WorkoutService {
@@ -746,50 +747,59 @@ export class WorkoutService {
    *
    */
   async generatePrettyWorkoutPDF (workout: any, ctx: Context) {
-    const uint8ArrayFP = fs.readFileSync("./src/Assets/frontPageTemplate.pdf")
+    const uint8ArrayFP = fs.readFileSync("./src/Assets/PDFTemplates/frontPageTemplate.pdf")
     const pdfDoc = await PDFDocument.load(uint8ArrayFP)
+    pdfDoc.registerFontkit(fontkit)
     const frontPage = pdfDoc.getPages()
     const firstPage = frontPage[0]
     const { width, height } = firstPage.getSize()
-    //console.log(width)
-    //console.log(height)
+    //fonts
+
+    const SFBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
+    const SFRegular = await pdfDoc.embedFont(StandardFonts.Helvetica)
+
+    const titleHeadingColour = rgb(0.13,0.185,0.24)
+    const fieldsHeadingColour =  rgb(0.071, 0.22, 0.4117)
 
     firstPage.drawText(workout.workoutTitle, {
       x: 310,
       y: 210,
-      size: 40
+      size: 38,
+      font: SFBold
     })
     const userObject = await this.userService.findUserByUUID(workout.plannerID, ctx);
-    const userFisrtLastName = userObject.firstName + " " + userObject.lastName;
+    const userFirstLastName = userObject.firstName + " " + userObject.lastName;
     firstPage.drawText("Author " , {
       x: 300,
       y: 160,
-      size: 21
+      size: 21,
+      font: SFBold
     })
-    firstPage.drawText(userFisrtLastName, {
+    firstPage.drawText(userFirstLastName, {
       x: 390,
       y: 160,
-      size: 16
+      size: 16,
+      font: SFRegular
     })
 
 
     firstPage.drawText("Description " , {
       x: 300,
       y: 120,
-      size: 18
+      size: 18,
+      font: SFBold
     })
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
     const form = pdfDoc.getForm()
     const textField = form.createTextField('workout.description')
     textField.enableMultiline()
-    textField.setText("hujieswdhudhuew " + workout.workoutDescription)
+    textField.enableReadOnly()
+    textField.setText(workout.workoutDescription)
     textField.addToPage(firstPage,{
       x: 300,
       y: 22,
       width: 280,
       height: 90,
-      textColor: rgb(0,0,0),
-
       borderWidth: 0
     })
 
@@ -802,7 +812,7 @@ export class WorkoutService {
       let exercisePosCount = 0;
       for (let i = 0; i < workout.exercises.length; i++) {
         if (exercisePosCount < 1){
-          const uint8ArrayOP = fs.readFileSync("./src/Assets/otherPagesTemplate.pdf")
+          const uint8ArrayOP = fs.readFileSync("./src/Assets/PDFTemplates/otherPagesTemplate.pdf")
           const pdfDoc2 = await PDFDocument.load(uint8ArrayOP)
           const [existingPage] = await pdfDoc.copyPages(pdfDoc2, [0])
           const currentPage = pdfDoc.addPage(existingPage)
@@ -811,74 +821,104 @@ export class WorkoutService {
           currentPage.drawText(exercise.exerciseTitle, {
             x: 20,
             y: 740,
-            size: 19
+            size: 19,
+            font: SFBold,
+            color: titleHeadingColour
           })
           //Description
-          currentPage.drawText('Description', {
+          currentPage.drawText('Exercise Description', {
             x: 20,
             y: 710,
-            size: 12
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
           })
           currentPage.drawText(exercise.exerciseDescription, {
             x: 20,
             y: 700,
-            size: 10
+            size: 10,
+            font: SFRegular
           })
           //Rep Range
           currentPage.drawText("Rep Range " , {
             x: 20,
             y: 620,
-            size: 12
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
           })
           currentPage.drawText(exercise.repRange, {
             x: 130,
             y: 620,
-            size: 12
+            size: 12,
+            font: SFRegular
           })
           //Sets
           currentPage.drawText("Sets " .toString(), {
             x: 20,
-            y: 590,
-            size: 12
+            y: 600,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
           })
           currentPage.drawText(exercise.sets.toString(), {
             x: 130,
-            y: 590,
-            size: 12
+            y: 600,
+            size: 12,
+            font: SFRegular
           })
           //RestPeriod
           currentPage.drawText("Rest Period ", {
             x: 20,
-            y: 560,
-            size: 12
+            y: 570,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
           })
           currentPage.drawText(exercise.restPeriod.toString(), {
             x: 130,
-            y: 560,
-            size: 12
+            y: 570,
+            size: 12,
+            font: SFRegular
           })
           //Exercise Duration
           currentPage.drawText("Exercise Duration ", {
             x: 20,
-            y: 530,
-            size: 12
+            y: 540,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
           })
           currentPage.drawText( (exercise.duration / 60).toString() + " minutes" , {
             x: 130,
-            y: 530,
-            size: 12
+            y: 540,
+            size: 12,
+            font: SFRegular
           })
           //Planner
           currentPage.drawText("Planner ", {
             x: 20,
-            y: 500,
-            size: 12
+            y: 510,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
           })
-          currentPage.drawText(userFisrtLastName, {
+          currentPage.drawText(userFirstLastName, {
             x: 130,
-            y: 500,
-            size: 12
+            y: 510,
+            size: 12,
+            font: SFRegular
           })
+
+          const testImage = await pdfDoc.embedJpg(fs.readFileSync('./src/Assets/TestImages/idk.jpg'))
+          for(let c = 0; c < 4; c++){
+            currentPage.drawImage(testImage, {
+              x: 20 + (c*150),
+              y: 400,
+              width: 120,
+              height: 90
+            })
+          }
           exercisePosCount += 1
 
         }else{
@@ -889,6 +929,99 @@ export class WorkoutService {
             y: 370,
             size: 19
           })
+          currentPage.drawText('Exercise Description', {
+            x: 20,
+            y: 340,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          currentPage.drawText(exercise.exerciseDescription, {
+            x: 20,
+            y: 330,
+            size: 10,
+            font: SFRegular
+          })
+          //Rep Range
+          currentPage.drawText("Rep Range " , {
+            x: 20,
+            y: 300,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          currentPage.drawText(exercise.repRange, {
+            x: 130,
+            y: 300,
+            size: 12,
+            font: SFRegular
+          })
+          //Sets
+          currentPage.drawText("Sets " .toString(), {
+            x: 20,
+            y: 270,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          currentPage.drawText(exercise.sets.toString(), {
+            x: 130,
+            y: 270,
+            size: 12,
+            font: SFRegular
+          })
+          //RestPeriod
+          currentPage.drawText("Rest Period ", {
+            x: 20,
+            y: 240,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          currentPage.drawText(exercise.restPeriod.toString(), {
+            x: 130,
+            y: 240,
+            size: 12,
+            font: SFRegular
+          })
+          //Exercise Duration
+          currentPage.drawText("Exercise Duration ", {
+            x: 20,
+            y: 210,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          currentPage.drawText( (exercise.duration / 60).toString() + " minutes" , {
+            x: 130,
+            y: 210,
+            size: 12,
+            font: SFRegular
+          })
+          //Planner
+          currentPage.drawText("Planner ", {
+            x: 20,
+            y: 180,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          currentPage.drawText(userFirstLastName, {
+            x: 130,
+            y: 180,
+            size: 12,
+            font: SFRegular
+          })
+
+          const testImage = await pdfDoc.embedJpg(fs.readFileSync('./src/Assets/TestImages/idk.jpg'))
+          for(let c = 0; c < 4; c++){
+            currentPage.drawImage(testImage, {
+              x: 20 + (c*150),
+              y: 70,
+              width: 120,
+              height: 90
+            })
+          }
           exercisePosCount -= 1
         }
 
