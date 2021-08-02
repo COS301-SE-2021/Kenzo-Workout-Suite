@@ -927,7 +927,9 @@ export class WorkoutService {
           currentPage.drawText(exercise.exerciseTitle, {
             x: 20,
             y: 370,
-            size: 19
+            size: 19,
+            font: SFBold,
+            color: titleHeadingColour
           })
           currentPage.drawText('Exercise Description', {
             x: 20,
@@ -945,70 +947,70 @@ export class WorkoutService {
           //Rep Range
           currentPage.drawText("Rep Range " , {
             x: 20,
-            y: 300,
+            y: 250,
             size: 12,
             font: SFBold,
             color: fieldsHeadingColour
           })
           currentPage.drawText(exercise.repRange, {
             x: 130,
-            y: 300,
+            y: 250,
             size: 12,
             font: SFRegular
           })
           //Sets
           currentPage.drawText("Sets " .toString(), {
             x: 20,
-            y: 270,
+            y: 220,
             size: 12,
             font: SFBold,
             color: fieldsHeadingColour
           })
           currentPage.drawText(exercise.sets.toString(), {
             x: 130,
-            y: 270,
+            y: 220,
             size: 12,
             font: SFRegular
           })
           //RestPeriod
           currentPage.drawText("Rest Period ", {
             x: 20,
-            y: 240,
+            y: 190,
             size: 12,
             font: SFBold,
             color: fieldsHeadingColour
           })
           currentPage.drawText(exercise.restPeriod.toString(), {
             x: 130,
-            y: 240,
+            y: 190,
             size: 12,
             font: SFRegular
           })
           //Exercise Duration
           currentPage.drawText("Exercise Duration ", {
             x: 20,
-            y: 210,
+            y: 160,
             size: 12,
             font: SFBold,
             color: fieldsHeadingColour
           })
           currentPage.drawText( (exercise.duration / 60).toString() + " minutes" , {
             x: 130,
-            y: 210,
+            y: 160,
             size: 12,
             font: SFRegular
           })
           //Planner
           currentPage.drawText("Planner ", {
             x: 20,
-            y: 180,
+            y: 130,
             size: 12,
             font: SFBold,
             color: fieldsHeadingColour
           })
           currentPage.drawText(userFirstLastName, {
             x: 130,
-            y: 180,
+            y: 130,
             size: 12,
             font: SFRegular
           })
@@ -1017,7 +1019,7 @@ export class WorkoutService {
           for(let c = 0; c < 4; c++){
             currentPage.drawImage(testImage, {
               x: 20 + (c*150),
-              y: 70,
+              y: 20,
               width: 120,
               height: 90
             })
