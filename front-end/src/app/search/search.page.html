@@ -3,26 +3,26 @@
     <div class="Spacing-div">
       <ion-label id="exerciseHeading" >Browse page</ion-label>
       <div class="kenzo-fixed">
-        <ion-fab mode="ios" slot="fixed" size="small" vertical="bottom" horizontal="end">
+        <ion-fab slot="fixed" vertical="bottom" horizontal="end">
           <ion-fab-button>
             <ion-icon name="create"></ion-icon>
           </ion-fab-button>
           <ion-fab-list side="bottom">
-            <ion-fab-button>
-              <ion-icon class="fabButton" data-desc="Exercise" name="barbell-outline" routerLink="/create-exercise"></ion-icon>
+            <ion-fab-button class="fabButton" data-desc="Exercise">
+              <ion-icon name="barbell-outline" class="icons" routerLink="/create-exercise"></ion-icon>
             </ion-fab-button>
           </ion-fab-list>
         </ion-fab>
       </div>
     </div>
     <div class="Spacing-div" id="SearchBarDiv">
-      <ion-searchbar #searchbar (ionInput)="eventHandler($event)" id="workout-searchbar" mode="ios" inputmode="search"></ion-searchbar>
+      <ion-searchbar #searchbar (ionInput)="eventHandler($event)" id="exercise-searchbar" mode="ios" inputmode="search"></ion-searchbar>
     </div>
     <div class="Spacing-div" id="ItemsDiv">
       <ion-virtual-scroll [items]="searchExercises" approxItemHeight="320px" id="exerciseScroll">
         <ion-card *virtualItem="let exercise; let itemBounds = bounds;" class="exercises" id="{{exercise.exerciseID}}">
           <ion-card-header>
-            <ion-card-title><u>Exercise</u><br> {{ exercise.exerciseTitle }}</ion-card-title>
+            <ion-card-title>{{ exercise.exerciseTitle }}</ion-card-title>
           </ion-card-header>
           <ion-card-content>{{ exercise.exerciseDescription}}</ion-card-content>
         </ion-card>

@@ -2,6 +2,13 @@
     --background: var(--ion-off-white);
 }
 
+#WorkoutHeading{
+  font-family: "SF Pro Medium", serif;
+  font-size: 25px;
+  color: black;
+  font-weight: bold;
+}
+
 .Spacing-div{
     display: block;
     width: var(--input-width);
@@ -14,12 +21,17 @@
     margin-top: 13px;
 }
 
+.workouts{
+  margin-bottom: 5.5%;
+  transition: border 0.1s;
+  transition-timing-function: linear;
+}
 
-#WorkoutHeading{
-    font-family: "SF Pro Medium", serif;
-    font-size: 25px;
-    color: black;
-    font-weight: bold;
+.workouts:hover{
+  cursor: pointer;
+  border: 3px;
+  border-color: #FF6969;
+  border-style: ridge;
 }
 
 #AddWorkout{
@@ -50,7 +62,7 @@
 
 .kenzo-fixed{
   position: fixed;
-  top: 150px;
+  top: 100px;
   right: 5px;
   z-index: 100;
 }
@@ -65,61 +77,54 @@
 }
 
 .editBtn{
-  display: block;
+    display: block;
 }
 
 .navThumbnail{
-  display: block;
-  float: left;
-  margin-left: auto;
-  margin-right: auto;
-  width: 25%;
+    display: block;
+    float: left;
+    margin-left: auto;
+    margin-right: auto;
+    width: 25%;
 }
 
 .NavButtons{
-  width: var(--icon-size);
-  height: var(--icon-size);
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-
+    width: var(--icon-size);
+    height: var(--icon-size);
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .NavLabel{
-  display: block;
-  float: left;
-  font-size: 15px;
-  margin-left: 45%;
-  margin-right: auto;
-}
+    display: block;
+    float: left;
+    font-size: 15px;
+    margin-left: 45%;
+    margin-right: auto;
+  }
 
 @media only screen and (max-width: 400px){
-  .NavLabel{
-    margin-left: 25%;
-  }
+    .NavLabel{
+        margin-left: 25%;
+    }
 }
 
 .text{
-  display: inline-block;
-  vertical-align: middle;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .fabButton[data-desc] {
-  position: relative;
+    position: relative;
 }
 .fabButton[data-desc]::after{
-  position: absolute;
-  content: attr(data-desc);
-  z-index: 1;
-  right: 50px;
-  bottom: 8px;
-  color: var(--ion-color-tertiary);
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.workouts{
-  border: 2px;
-  border-style: solid;
-  border-color: #FF6969;
+    position: absolute;
+    content: attr(data-desc);
+    z-index: 1;
+    right: 50px;
+    bottom: 8px;
+    color: var(--ion-color-tertiary);
+    font-size: 16px;
+    font-weight: bold;
 }

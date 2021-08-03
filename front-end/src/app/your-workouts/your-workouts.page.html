@@ -1,7 +1,7 @@
 <ion-content class="your-workout-background">
 <div class="container">
   <div class="Spacing-div">
-    <ion-label id="WorkoutHeading" >For you page</ion-label>
+    <ion-label id="WorkoutHeading" >Workouts</ion-label>
     <div class="kenzo-fixed">
       <ion-fab slot="fixed" vertical="bottom" horizontal="end">
         <ion-fab-button>
@@ -22,7 +22,7 @@
     <ion-virtual-scroll [items]="workouts" approxItemHeight="320px" id="workoutScroll">
       <ion-card *virtualItem="let workout; let itemBounds = bounds;" class="workouts" id="{{workout.workoutID}}">
         <ion-card-header>
-          <ion-card-title><u>Workout</u><br> {{ workout.workoutTitle }}</ion-card-title>
+          <ion-card-title>{{ workout.workoutTitle }}</ion-card-title>
         </ion-card-header>
         <ion-card-content>{{ workout.workoutDescription}}</ion-card-content>
         <ion-button mode="ios" class="editBtn" (click)="sendWorkoutID(workout.workoutID)">Edit</ion-button>

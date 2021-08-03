@@ -29,7 +29,7 @@
   font-weight: bold;
 }
 
-#workout-searchbar{
+#exercise-searchbar{
   font-family: "SF Pro Medium", serif;
   height: 40px;
   --placeholder-font-weight: 590;
@@ -46,10 +46,16 @@
 }
 
 .exercises{
-  display: block;
-  border: 2px;
-  border-style: solid;
+  margin-bottom: 5.5%;
+  transition: border 0.1s;
+  transition-timing-function: linear;
+}
+
+.exercises:hover{
+  cursor: pointer;
+  border: 3px;
   border-color: #FF6969;
+  border-style: ridge;
 }
 
 .container{
