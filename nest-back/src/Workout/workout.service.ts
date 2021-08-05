@@ -1043,4 +1043,24 @@ export class WorkoutService {
       throw new BadRequestException("Could not generate text to speech")
     }
   }
+
+  createClientContact (contactEmail: string, name: string, surname: string, ctx: Context) {
+    console.log("Yes")
+  }
+
+  updateClientContact (contactEmail: string, name: string, surname: string, ctx: Context) {
+    console.log("Yes")
+  }
+
+  deleteClientContact (contactEmail: string, ctx: Context) {
+    console.log("Yes")
+  }
+
+  getClientContactDetails (contactEmail: string, ctx: Context) {
+    console.log("Yes")
+  }
+
+  getAllClientContacts (ctx: Context) {
+    console.log("Yes")
+  }
 }

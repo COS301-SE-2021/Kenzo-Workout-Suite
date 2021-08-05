@@ -74,7 +74,7 @@ model Tag {
 }
 
 model Contacts {
-  clientEmail  String @id
+  contactEmail  String @id
   name         String
   surname      String
 
