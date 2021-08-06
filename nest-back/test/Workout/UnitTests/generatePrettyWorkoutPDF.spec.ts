@@ -16,18 +16,18 @@ beforeEach(() => {
   mockCtx = createMockContext()
   ctx = (mockCtx as unknown) as Context
 })
-describe("Unit tests for generateWorkoutPDF in workout subsystem", () => {
-  test("Should not Generate WorkoutPDF [Precondition Exception]", async () => {
+describe("Unit tests for generatePrettyWorkoutPDF in workout subsystem", () => {
+  test("Should Generate WorkoutPDF", async () => {
     const Workout = {
       workoutID: uuidv4(),
       workoutTitle: "Test",
       workoutDescription: "Test",
       planner_ID: uuidv4()
     }
-    await expect(workoutService.generateWorkoutPDF(Workout, ctx)).resolves
+    await expect(workoutService.generatePrettyWorkoutPDF(Workout, mockCtx)).resolves
   })
   test("Should not Generate WorkoutPDF [Precondition Exception]", async () => {
     let workout
-    await expect(workoutService.generateWorkoutPDF(workout, ctx)).rejects.toThrow("Invalid workout provided")
+    await expect(workoutService.generatePrettyWorkoutPDF(workout, mockCtx)).rejects.toThrow("Could not generate workout PDF.")
   })
 })
