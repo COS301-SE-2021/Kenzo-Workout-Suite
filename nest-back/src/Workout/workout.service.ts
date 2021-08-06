@@ -10,15 +10,13 @@ import {
   Exercise,
   Tag
 } from "@prisma/client"
-import { jsPDF } from "jspdf"
 import { PrismaService } from "../Prisma/prisma.service"
-import { degrees, PDFDocument, rgb, StandardFonts,cmyk } from 'pdf-lib';
-import * as fs from 'fs';
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib"
+import * as fs from "fs"
 import { UserService } from "../User/user.service"
-import fontkit from '@pdf-lib/fontkit'
+import fontkit from "@pdf-lib/fontkit"
 
 const Filter = require("bad-words"); const filter = new Filter()
-import fetch from 'node-fetch'
 
 @Injectable()
 export class WorkoutService {
@@ -323,7 +321,7 @@ export class WorkoutService {
      *
      */
   async createExercise (title:string, description:string, repRange:string, sets:number, poseDescription:string, restPeriod:number, tags:Tag[], duration:number, plannerID:string, ctx: Context) {
-    if (title === "" || description === "" || poseDescription === "" || tags == null || plannerID === "" || title == null || description == null || repRange == null || sets == null || poseDescription == null || restPeriod == null || duration == null ) {
+    if (title === "" || description === "" || poseDescription === "" || tags == null || plannerID === "" || title == null || description == null || repRange == null || sets == null || poseDescription == null || restPeriod == null || duration == null) {
       throw new NotFoundException("Parameters can not be left empty!")
     }
 
@@ -527,7 +525,6 @@ export class WorkoutService {
       throw new NotFoundException("Parameters can not be left empty.")
     }
     if ((Array.isArray(exercises) && exercises.length)) { // run create query with exercises only
-
       const exerciseConnection = exercises.map(n => {
         const container = {
           exerciseID: n.exerciseID
@@ -549,7 +546,7 @@ export class WorkoutService {
           }
         }
       })
-      let fullWorkout = await this.getWorkoutById( createdWorkout.workoutID, ctx)
+      const fullWorkout = await this.getWorkoutById(createdWorkout.workoutID, ctx)
       await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
       return ("Workout Created.")
     } else {
@@ -564,7 +561,7 @@ export class WorkoutService {
           }
         }
       })
-      let fullWorkout = await this.getWorkoutById( createdWorkout.workoutID, ctx)
+      const fullWorkout = await this.getWorkoutById(createdWorkout.workoutID, ctx)
       await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
       return ("Workout Created.")
     }
@@ -679,59 +676,6 @@ export class WorkoutService {
   }
 
   /**
-     *Workout Service - Generate Workout PDF
-     *
-     * @param workout This is the workout Object to be generated
-     * @param ctx  This is the prisma context that is injected into the function.
-     * @throws PreconditionFailedException if:
-     *                               -Parameters can not be left empty.
-     *
-     * @throws NotFoundException if:
-     *                               -Workout with provided ID does not exist.
-     *
-     * @return  Message indicating success.
-     * @author Msi Sibanyoni
-     *
-     */
-  async generateWorkoutPDF (workout: any, ctx: Context) {
-
-    if (workout == null) {
-      throw new PreconditionFailedException("Invalid workout provided")
-    }
-    // eslint-disable-next-line new-cap
-    const doc = new jsPDF()
-    // TODO: Make heading font and a normal font & Consider adding an image
-    doc.text(workout.workoutTitle, 80, 10)
-    // TODO: getTags from exercises
-    const splitWorkoutDesc = doc.splitTextToSize(workout.workoutDescription, 180)
-    doc.text(splitWorkoutDesc, 15, 130)
-    if (workout.exercises === undefined) {
-      doc.save("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf")
-    } else {
-      for (let i = 0; i < workout.exercises.length; i++) {
-        const exercise = await this.getExerciseByID(workout.exercises[i].exerciseID, ctx)
-        doc.addPage("a4", "p")
-        doc.text(exercise.exerciseTitle, 90, 10)
-        if (exercise.tags.length !== 0) {
-          const exerciseTagArray = exercise.tags.map(({ label }) => [label])
-          const stringTags = exerciseTagArray.join()
-          const splitTags = doc.splitTextToSize(stringTags, 180)
-          doc.text("Tags: " + splitTags, 15, 30)
-        }
-
-        const splitExerciseDesc = doc.splitTextToSize(exercise.exerciseDescription, 180)
-        doc.text(splitExerciseDesc, 15, 50)
-        doc.text("Rep Range: " + exercise.repRange, 15, (60 + (splitExerciseDesc.length * 10)))
-        doc.text("Sets: " + exercise.sets.toString(), 90, (60 + (splitExerciseDesc.length * 10)))
-        // doc.text(exercise.Posedescription, 10, 90);
-        doc.text("Rest Period: " + exercise.restPeriod.toString() + " seconds.", 15, (80 + (splitExerciseDesc.length * 10)))
-        doc.text("Exercise Duration: " + exercise.duration.toString() + " seconds or " + (exercise.duration / 60).toString() + " minutes", 15, (100 + (splitExerciseDesc.length * 10)))
-      }
-      doc.save("./src/GeneratedWorkouts/" + workout.workoutTitle + "WorkoutX.pdf")
-    }
-  }
-
-  /**
    *Workout Service - Generate Pretty Workout PDF
    *
    * @param workout This is the workout Object to be generated as a pdf
@@ -752,14 +696,14 @@ export class WorkoutService {
     pdfDoc.registerFontkit(fontkit)
     const frontPage = pdfDoc.getPages()
     const firstPage = frontPage[0]
-    const { width, height } = firstPage.getSize()
-    //fonts
+    // const { width, height } = firstPage.getSize()
+    // fonts
 
     const SFBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
     const SFRegular = await pdfDoc.embedFont(StandardFonts.Helvetica)
 
-    const titleHeadingColour = rgb(0.13,0.185,0.24)
-    const fieldsHeadingColour =  rgb(0.071, 0.22, 0.4117)
+    const titleHeadingColour = rgb(0.13, 0.185, 0.24)
+    const fieldsHeadingColour = rgb(0.071, 0.22, 0.4117)
 
     firstPage.drawText(workout.workoutTitle, {
       x: 310,
@@ -767,9 +711,9 @@ export class WorkoutService {
       size: 38,
       font: SFBold
     })
-    const userObject = await this.userService.findUserByUUID(workout.plannerID, ctx);
-    const userFirstLastName = userObject.firstName + " " + userObject.lastName;
-    firstPage.drawText("Author " , {
+    const userObject = await this.userService.findUserByUUID(workout.plannerID, ctx)
+    const userFirstLastName = userObject.firstName + " " + userObject.lastName
+    firstPage.drawText("Author ", {
       x: 300,
       y: 160,
       size: 21,
@@ -782,20 +726,18 @@ export class WorkoutService {
       font: SFRegular
     })
 
-
-    firstPage.drawText("Description " , {
+    firstPage.drawText("Description ", {
       x: 300,
       y: 120,
       size: 18,
       font: SFBold
     })
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
     const form = pdfDoc.getForm()
-    const textField = form.createTextField('workout.description')
+    const textField = form.createTextField("workout.description")
     textField.enableMultiline()
     textField.enableReadOnly()
     textField.setText(workout.workoutDescription)
-    textField.addToPage(firstPage,{
+    textField.addToPage(firstPage, {
       x: 300,
       y: 22,
       width: 280,
@@ -803,15 +745,15 @@ export class WorkoutService {
       borderWidth: 0
     })
 
-    //OTHER PAGES
+    // OTHER PAGES
 
-    //Bring template in - [Amount of exercises]
+    // Bring template in - [Amount of exercises]
     if (workout.exercises === undefined) {
-      fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save() )
-    }else{
-      let exercisePosCount = 0;
+      fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save())
+    } else {
+      let exercisePosCount = 0
       for (let i = 0; i < workout.exercises.length; i++) {
-        if (exercisePosCount < 1){
+        if (exercisePosCount < 1) {
           const uint8ArrayOP = fs.readFileSync("./src/Assets/PDFTemplates/otherPagesTemplate.pdf")
           const pdfDoc2 = await PDFDocument.load(uint8ArrayOP)
           const [existingPage] = await pdfDoc.copyPages(pdfDoc2, [0])
@@ -825,8 +767,8 @@ export class WorkoutService {
             font: SFBold,
             color: titleHeadingColour
           })
-          //Description
-          currentPage.drawText('Exercise Description', {
+          // Description
+          currentPage.drawText("Exercise Description", {
             x: 20,
             y: 710,
             size: 12,
@@ -839,8 +781,8 @@ export class WorkoutService {
             size: 10,
             font: SFRegular
           })
-          //Rep Range
-          currentPage.drawText("Rep Range " , {
+          // Rep Range
+          currentPage.drawText("Rep Range ", {
             x: 20,
             y: 620,
             size: 12,
@@ -853,8 +795,8 @@ export class WorkoutService {
             size: 12,
             font: SFRegular
           })
-          //Sets
-          currentPage.drawText("Sets " .toString(), {
+          // Sets
+          currentPage.drawText("Sets ".toString(), {
             x: 20,
             y: 600,
             size: 12,
@@ -867,7 +809,7 @@ export class WorkoutService {
             size: 12,
             font: SFRegular
           })
-          //RestPeriod
+          // RestPeriod
           currentPage.drawText("Rest Period ", {
             x: 20,
             y: 570,
@@ -881,7 +823,7 @@ export class WorkoutService {
             size: 12,
             font: SFRegular
           })
-          //Exercise Duration
+          // Exercise Duration
           currentPage.drawText("Exercise Duration ", {
             x: 20,
             y: 540,
@@ -889,13 +831,13 @@ export class WorkoutService {
             font: SFBold,
             color: fieldsHeadingColour
           })
-          currentPage.drawText( (exercise.duration / 60).toString() + " minutes" , {
+          currentPage.drawText((exercise.duration / 60).toString() + " minutes", {
             x: 130,
             y: 540,
             size: 12,
             font: SFRegular
           })
-          //Planner
+          // Planner
           currentPage.drawText("Planner ", {
             x: 20,
             y: 510,
@@ -910,19 +852,18 @@ export class WorkoutService {
             font: SFRegular
           })
 
-          const testImage = await pdfDoc.embedJpg(fs.readFileSync('./src/Assets/TestImages/idk.jpg'))
-          for(let c = 0; c < 4; c++){
+          const testImage = await pdfDoc.embedJpg(fs.readFileSync("./src/Assets/TestImages/idk.jpg"))
+          for (let c = 0; c < 4; c++) {
             currentPage.drawImage(testImage, {
-              x: 20 + (c*150),
+              x: 20 + (c * 150),
               y: 400,
               width: 120,
               height: 90
             })
           }
           exercisePosCount += 1
-
-        }else{
-          const currentPage = pdfDoc.getPage(pdfDoc.getPageCount()-1)
+        } else {
+          const currentPage = pdfDoc.getPage(pdfDoc.getPageCount() - 1)
           const exercise = await this.getExerciseByID(workout.exercises[i].exerciseID, ctx)
           currentPage.drawText(exercise.exerciseTitle, {
             x: 20,
@@ -931,7 +872,7 @@ export class WorkoutService {
             font: SFBold,
             color: titleHeadingColour
           })
-          currentPage.drawText('Exercise Description', {
+          currentPage.drawText("Exercise Description", {
             x: 20,
             y: 340,
             size: 12,
@@ -944,8 +885,8 @@ export class WorkoutService {
             size: 10,
             font: SFRegular
           })
-          //Rep Range
-          currentPage.drawText("Rep Range " , {
+          // Rep Range
+          currentPage.drawText("Rep Range ", {
             x: 20,
             y: 250,
             size: 12,
@@ -958,8 +899,8 @@ export class WorkoutService {
             size: 12,
             font: SFRegular
           })
-          //Sets
-          currentPage.drawText("Sets " .toString(), {
+          // Sets
+          currentPage.drawText("Sets ".toString(), {
             x: 20,
             y: 220,
             size: 12,
@@ -972,7 +913,7 @@ export class WorkoutService {
             size: 12,
             font: SFRegular
           })
-          //RestPeriod
+          // RestPeriod
           currentPage.drawText("Rest Period ", {
             x: 20,
             y: 190,
@@ -986,7 +927,7 @@ export class WorkoutService {
             size: 12,
             font: SFRegular
           })
-          //Exercise Duration
+          // Exercise Duration
           currentPage.drawText("Exercise Duration ", {
             x: 20,
             y: 160,
@@ -994,13 +935,13 @@ export class WorkoutService {
             font: SFBold,
             color: fieldsHeadingColour
           })
-          currentPage.drawText( (exercise.duration / 60).toString() + " minutes" , {
+          currentPage.drawText((exercise.duration / 60).toString() + " minutes", {
             x: 130,
             y: 160,
             size: 12,
             font: SFRegular
           })
-          //Planner
+          // Planner
           currentPage.drawText("Planner ", {
             x: 20,
             y: 130,
@@ -1015,10 +956,10 @@ export class WorkoutService {
             font: SFRegular
           })
 
-          const testImage = await pdfDoc.embedJpg(fs.readFileSync('./src/Assets/TestImages/idk.jpg'))
-          for(let c = 0; c < 4; c++){
+          const testImage = await pdfDoc.embedJpg(fs.readFileSync("./src/Assets/TestImages/idk.jpg"))
+          for (let c = 0; c < 4; c++) {
             currentPage.drawImage(testImage, {
-              x: 20 + (c*150),
+              x: 20 + (c * 150),
               y: 20,
               width: 120,
               height: 90
@@ -1026,15 +967,43 @@ export class WorkoutService {
           }
           exercisePosCount -= 1
         }
-
       }
-      fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save() )
-
+      fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save())
     }
-
   }
 
+  /**
+   *Workout Service - Get workout PDF
+   *
+   * @param workoutID
+   * @param ctx  This is the prisma context that is injected into the function.
+   * @throws PreconditionFailedException if:
+   *                               -Parameters can not be left empty.
+   *
+   * @throws NotFoundException if:
+   *                               -Workout with provided ID does not exist.
+   *
+   * @return  Message indicating success.
+   * @author Msi Sibanyoni
+   *
+   */
+  async getWorkoutPDF (workoutID: string, ctx: Context): Promise<any> {
+    if (workoutID === null || workoutID === "") {
+      throw new NotAcceptableException("Workout ID cannot be empty")
+    }
 
+    try {
+      const workoutObject = await this.getWorkoutById(workoutID, ctx)
+      await this.generatePrettyWorkoutPDF(workoutObject, ctx)
+
+      fs.readFile("./src/GeneratedWorkouts/" + workoutObject.workoutTitle + "Workout.pdf", function (err, data) {
+        if (err) throw err
+        return data
+      })
+    } catch (E) {
+      throw new BadRequestException("Cannot return workout pdf.")
+    }
+  }
 
   /**
      *Workout Service - Create Tag

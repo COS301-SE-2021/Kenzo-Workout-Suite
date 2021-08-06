@@ -528,4 +528,25 @@ export class WorkoutController {
     ) {
       return this.workoutService.textToSpeech(text, fileName)
     }
+
+    /**
+     *Workout Controller - Get Workout PDF
+     *
+     * @param workoutID - id of workout pdf to be returned
+     * @throws NotAcceptableException if: -No ID was passed in.
+     * @throws BadRequestException if: - cannot return workout pdf
+     * @return Workout PDF
+     * @author Msi Sibanyoni
+     *
+     *
+     */
+    @Get("getWorkoutPDF/:workoutID")
+    @ApiOkResponse({
+      description: "A workout pdf."
+    })
+    getWorkoutPDF (
+      @Param("workoutID") workoutID: string
+    ) {
+      return this.workoutService.getWorkoutPDF(workoutID, this.ctx)
+    }
 }
