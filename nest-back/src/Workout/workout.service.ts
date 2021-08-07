@@ -12,12 +12,12 @@ import {
 } from "@prisma/client"
 import { jsPDF } from "jspdf"
 import { PrismaService } from "../Prisma/prisma.service"
-import { degrees, PDFDocument, rgb, StandardFonts,cmyk } from 'pdf-lib';
-import * as fs from 'fs';
+import { degrees, PDFDocument, rgb, StandardFonts, cmyk } from "pdf-lib"
+import * as fs from "fs"
 import { UserService } from "../User/user.service"
+import fetch from "node-fetch"
 
 const Filter = require("bad-words"); const filter = new Filter()
-import fetch from "node-fetch"
 
 @Injectable()
 export class WorkoutService {
@@ -322,7 +322,7 @@ export class WorkoutService {
      *
      */
   async createExercise (title:string, description:string, repRange:string, sets:number, poseDescription:string, restPeriod:number, tags:Tag[], duration:number, plannerID:string, ctx: Context) {
-    if (title === "" || description === "" || poseDescription === "" || tags == null || plannerID === "" || title == null || description == null || repRange == null || sets == null || poseDescription == null || restPeriod == null || duration == null ) {
+    if (title === "" || description === "" || poseDescription === "" || tags == null || plannerID === "" || title == null || description == null || repRange == null || sets == null || poseDescription == null || restPeriod == null || duration == null) {
       throw new NotFoundException("Parameters can not be left empty!")
     }
 
@@ -526,7 +526,6 @@ export class WorkoutService {
       throw new NotFoundException("Parameters can not be left empty.")
     }
     if ((Array.isArray(exercises) && exercises.length)) { // run create query with exercises only
-
       const exerciseConnection = exercises.map(n => {
         const container = {
           exerciseID: n.exerciseID
@@ -548,7 +547,7 @@ export class WorkoutService {
           }
         }
       })
-      let fullWorkout = await this.getWorkoutById( createdWorkout.workoutID, ctx)
+      const fullWorkout = await this.getWorkoutById(createdWorkout.workoutID, ctx)
       await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
       return ("Workout Created.")
     } else {
@@ -563,7 +562,7 @@ export class WorkoutService {
           }
         }
       })
-      let fullWorkout = await this.getWorkoutById( createdWorkout.workoutID, ctx)
+      const fullWorkout = await this.getWorkoutById(createdWorkout.workoutID, ctx)
       await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
       return ("Workout Created.")
     }
@@ -693,7 +692,6 @@ export class WorkoutService {
      *
      */
   async generateWorkoutPDF (workout: any, ctx: Context) {
-
     if (workout == null) {
       throw new PreconditionFailedException("Invalid workout provided")
     }
@@ -751,17 +749,17 @@ export class WorkoutService {
     const frontPage = pdfDoc.getPages()
     const firstPage = frontPage[0]
     const { width, height } = firstPage.getSize()
-    //console.log(width)
-    //console.log(height)
+    // console.log(width)
+    // console.log(height)
 
     firstPage.drawText(workout.workoutTitle, {
       x: 310,
       y: 210,
       size: 40
     })
-    const userObject = await this.userService.findUserByUUID(workout.plannerID, ctx);
-    const userFisrtLastName = userObject.firstName + " " + userObject.lastName;
-    firstPage.drawText("Author " , {
+    const userObject = await this.userService.findUserByUUID(workout.plannerID, ctx)
+    const userFisrtLastName = userObject.firstName + " " + userObject.lastName
+    firstPage.drawText("Author ", {
       x: 300,
       y: 160,
       size: 21
@@ -772,36 +770,35 @@ export class WorkoutService {
       size: 16
     })
 
-
-    firstPage.drawText("Description " , {
+    firstPage.drawText("Description ", {
       x: 300,
       y: 120,
       size: 18
     })
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
     const form = pdfDoc.getForm()
-    const textField = form.createTextField('workout.description')
+    const textField = form.createTextField("workout.description")
     textField.enableMultiline()
     textField.setText("hujieswdhudhuew " + workout.workoutDescription)
-    textField.addToPage(firstPage,{
+    textField.addToPage(firstPage, {
       x: 300,
       y: 22,
       width: 280,
       height: 90,
-      textColor: rgb(0,0,0),
+      textColor: rgb(0, 0, 0),
 
       borderWidth: 0
     })
 
-    //OTHER PAGES
+    // OTHER PAGES
 
-    //Bring template in - [Amount of exercises]
+    // Bring template in - [Amount of exercises]
     if (workout.exercises === undefined) {
-      fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save() )
-    }else{
-      let exercisePosCount = 0;
+      fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save())
+    } else {
+      let exercisePosCount = 0
       for (let i = 0; i < workout.exercises.length; i++) {
-        if (exercisePosCount < 1){
+        if (exercisePosCount < 1) {
           const uint8ArrayOP = fs.readFileSync("./src/Assets/otherPagesTemplate.pdf")
           const pdfDoc2 = await PDFDocument.load(uint8ArrayOP)
           const [existingPage] = await pdfDoc.copyPages(pdfDoc2, [0])
@@ -813,8 +810,8 @@ export class WorkoutService {
             y: 740,
             size: 19
           })
-          //Description
-          currentPage.drawText('Description', {
+          // Description
+          currentPage.drawText("Description", {
             x: 20,
             y: 710,
             size: 12
@@ -824,8 +821,8 @@ export class WorkoutService {
             y: 700,
             size: 10
           })
-          //Rep Range
-          currentPage.drawText("Rep Range " , {
+          // Rep Range
+          currentPage.drawText("Rep Range ", {
             x: 20,
             y: 620,
             size: 12
@@ -835,8 +832,8 @@ export class WorkoutService {
             y: 620,
             size: 12
           })
-          //Sets
-          currentPage.drawText("Sets " .toString(), {
+          // Sets
+          currentPage.drawText("Sets ".toString(), {
             x: 20,
             y: 590,
             size: 12
@@ -846,7 +843,7 @@ export class WorkoutService {
             y: 590,
             size: 12
           })
-          //RestPeriod
+          // RestPeriod
           currentPage.drawText("Rest Period ", {
             x: 20,
             y: 560,
@@ -857,18 +854,18 @@ export class WorkoutService {
             y: 560,
             size: 12
           })
-          //Exercise Duration
+          // Exercise Duration
           currentPage.drawText("Exercise Duration ", {
             x: 20,
             y: 530,
             size: 12
           })
-          currentPage.drawText( (exercise.duration / 60).toString() + " minutes" , {
+          currentPage.drawText((exercise.duration / 60).toString() + " minutes", {
             x: 130,
             y: 530,
             size: 12
           })
-          //Planner
+          // Planner
           currentPage.drawText("Planner ", {
             x: 20,
             y: 500,
@@ -880,9 +877,8 @@ export class WorkoutService {
             size: 12
           })
           exercisePosCount += 1
-
-        }else{
-          const currentPage = pdfDoc.getPage(pdfDoc.getPageCount()-1)
+        } else {
+          const currentPage = pdfDoc.getPage(pdfDoc.getPageCount() - 1)
           const exercise = await this.getExerciseByID(workout.exercises[i].exerciseID, ctx)
           currentPage.drawText(exercise.exerciseTitle, {
             x: 20,
@@ -891,15 +887,10 @@ export class WorkoutService {
           })
           exercisePosCount -= 1
         }
-
       }
-      fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save() )
-
+      fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save())
     }
-
   }
-
-
 
   /**
      *Workout Service - Create Tag
@@ -1044,23 +1035,91 @@ export class WorkoutService {
     }
   }
 
-  createClientContact (contactEmail: string, name: string, surname: string, ctx: Context) {
-    console.log("Yes")
+  async createClientContact (contactEmail: string, name: string, surname: string, ctx: Context) {
+    if (contactEmail === "" || name === "" || surname === "" || contactEmail == null || name === null || surname == null) {
+      throw new NotFoundException("Parameters can not be left empty!")
+    }
+    try {
+      await ctx.prisma.contacts.create({
+        data: {
+          contactEmail: contactEmail,
+          name: name,
+          surname: surname
+        }
+      })
+      return "Client contact created."
+    } catch (e) {
+      throw new BadRequestException(e)
+    }
   }
 
-  updateClientContact (contactEmail: string, name: string, surname: string, ctx: Context) {
-    console.log("Yes")
+  async updateClientContact (contactEmail: string, name: string, surname: string, ctx: Context) {
+    if (contactEmail === "" || name === "" || surname === "" || contactEmail == null || name === null || surname == null) {
+      throw new NotFoundException("Parameters can not be left empty!")
+    }
+    try {
+      await ctx.prisma.contacts.update({
+        where: {
+          contactEmail: contactEmail
+        },
+        data: {
+          contactEmail: contactEmail,
+          name: name,
+          surname: surname
+        }
+      })
+      return "Client contact updated."
+    } catch (e) {
+      throw new BadRequestException(e)
+    }
   }
 
-  deleteClientContact (contactEmail: string, ctx: Context) {
-    console.log("Yes")
+  async deleteClientContact (contactEmail: string, ctx: Context) {
+    if (contactEmail === "" || contactEmail == null) {
+      throw new NotFoundException("Parameters can not be left empty!")
+    }
+    try {
+      await ctx.prisma.contacts.delete({
+        where: {
+          contactEmail: contactEmail
+        }
+      })
+      return "Client contact deleted."
+    } catch (e) {
+      throw new BadRequestException(e)
+    }
   }
 
-  getClientContactDetails (contactEmail: string, ctx: Context) {
-    console.log("Yes")
+  async getClientContactDetails (contactEmail: string, ctx: Context) {
+    const clientContacts = await ctx.prisma.contacts.findUnique({ // search for workouts that meet the requirement
+      where: {
+        contactEmail: contactEmail
+      },
+      select: {
+        contactEmail: true,
+        name: true,
+        surname: true
+      }
+    })
+    if (clientContacts == null) {
+      throw new BadRequestException("No client contact with that email found.")
+    } else {
+      return clientContacts
+    }
   }
 
-  getAllClientContacts (ctx: Context) {
-    console.log("Yes")
+  async getAllClientContacts (ctx: Context) {
+    const clientContacts = await ctx.prisma.contacts.findMany({ // search for workouts that meet the requirement
+      select: {
+        contactEmail: true,
+        name: true,
+        surname: true
+      }
+    })
+    if (clientContacts == null) {
+      throw new BadRequestException("No client contacts found.")
+    } else {
+      return clientContacts
+    }
   }
 }

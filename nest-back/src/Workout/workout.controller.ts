@@ -31,7 +31,7 @@ import {
   updateExerciseDTO,
   createContactDTO,
   updateContactDTO,
-  deleteContactDTO,
+  deleteContactDTO
 } from "./workout.model"
 import { JwtAuthGuard } from "../User/AuthGuards/jwt-auth.guard"
 
@@ -564,6 +564,7 @@ export class WorkoutController {
     ) {
       return this.workoutService.createClientContact(contactEmail, name, surname, this.ctx)
     }
+
     /**
      *Workout Controller - Update Client Contact
      *
@@ -595,6 +596,7 @@ export class WorkoutController {
     ) {
       return this.workoutService.updateClientContact(contactEmail, name, surname, this.ctx)
     }
+
     /**
      *Workout Controller - Delete Client Contact
      *
@@ -606,7 +608,7 @@ export class WorkoutController {
      *
      */
     @UseGuards(JwtAuthGuard)
-    @Delete ("deleteClientContact")
+    @Delete("deleteClientContact")
     @ApiOkResponse({
       description: "Client deleted."
     })
@@ -618,10 +620,11 @@ export class WorkoutController {
     })
     @ApiBody({ type: deleteContactDTO })
     deleteClientContact (
-      @Body("contactEmail") contactEmail: string,
+      @Body("contactEmail") contactEmail: string
     ) {
       return this.workoutService.deleteClientContact(contactEmail, this.ctx)
     }
+
     /**
      *Workout Controller - Get Client Contact Details
      *
@@ -643,10 +646,11 @@ export class WorkoutController {
       description: "Internal server error."
     })
     getClientContactDetails (
-      @Body("contactEmail") contactEmail: string,
+      @Param("contactEmail") contactEmail: string
     ) {
       return this.workoutService.getClientContactDetails(contactEmail, this.ctx)
     }
+
     /**
      *Workout Controller - Create Client Contact
      *
