@@ -5,14 +5,16 @@ import {
   Exercise
 } from "@prisma/client"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
+import { UserService } from "../../../src/User/user.service"
 
 let mockCtx: MockContext
 let ctx: Context
+let userService: UserService
 let workoutService: WorkoutService
 let prisma: PrismaClient
 
 beforeEach(() => {
-  workoutService = new WorkoutService(prisma)
+  workoutService = new WorkoutService(prisma, userService)
   mockCtx = createMockContext()
   ctx = (mockCtx as unknown) as Context
 })
@@ -26,7 +28,8 @@ describe("Unit tests for createWorkout in workout subsystem", () => {
     }
 
     const emptyExercise: Exercise[] = []
-    spyOn(workoutService, "generateWorkoutPDF").and.stub()
+    spyOn(workoutService, "getWorkoutById").and.stub()
+    spyOn(workoutService, "generatePrettyWorkoutPDF").and.stub()
     mockCtx.prisma.workout.create.mockResolvedValue(Workout)
 
     await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, emptyExercise, Workout.plannerID, ctx)).resolves.toEqual(
@@ -54,7 +57,8 @@ describe("Unit tests for createWorkout in workout subsystem", () => {
     }
 
     const fullExercise: Exercise[] = [Exercise]
-    spyOn(workoutService, "generateWorkoutPDF").and.stub()
+    spyOn(workoutService, "getWorkoutById").and.stub()
+    spyOn(workoutService, "generatePrettyWorkoutPDF").and.stub()
     mockCtx.prisma.workout.create.mockResolvedValue(Workout)
 
     await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, fullExercise, Workout.plannerID, ctx)).resolves.toEqual(
@@ -72,7 +76,8 @@ describe("Unit tests for createWorkout in workout subsystem", () => {
     mockCtx.prisma.workout.create.mockResolvedValue(Workout)
 
     const emptyExercise: Exercise[] = []
-    spyOn(workoutService, "generateWorkoutPDF").and.stub()
+    spyOn(workoutService, "getWorkoutById").and.stub()
+    spyOn(workoutService, "generatePrettyWorkoutPDF").and.stub()
 
     await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, emptyExercise, Workout.plannerID, ctx)).rejects.toThrow(
       "Parameters can not be left empty."
@@ -89,7 +94,8 @@ describe("Unit tests for createWorkout in workout subsystem", () => {
     mockCtx.prisma.workout.create.mockResolvedValue(Workout)
 
     const emptyExercise: Exercise[] = []
-    spyOn(workoutService, "generateWorkoutPDF").and.stub()
+    spyOn(workoutService, "getWorkoutById").and.stub()
+    spyOn(workoutService, "generatePrettyWorkoutPDF").and.stub()
 
     await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, emptyExercise, Workout.plannerID, ctx)).rejects.toThrow(
       "Parameters can not be left empty."

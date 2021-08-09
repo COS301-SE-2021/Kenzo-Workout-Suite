@@ -4,7 +4,6 @@ import {
   NotAcceptableException,
   NotFoundException, PreconditionFailedException
 } from "@nestjs/common"
-
 import { Context } from "../../context"
 
 import {
@@ -13,12 +12,16 @@ import {
 } from "@prisma/client"
 import { jsPDF } from "jspdf"
 import { PrismaService } from "../Prisma/prisma.service"
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib"
+import * as fs from "fs"
+import { UserService } from "../User/user.service"
+import { PythonShell } from "python-shell"
 
 const Filter = require("bad-words"); const filter = new Filter()
 
 @Injectable()
 export class WorkoutService {
-  constructor (private prisma: PrismaService) {
+  constructor (private prisma: PrismaService, private userService: UserService) {
   }
 
   /**
@@ -85,6 +88,7 @@ export class WorkoutService {
      *
      */
   async getWorkoutById (id: string, ctx: Context): Promise<any> {
+    // eslint-disable-next-line no-useless-catch
     try {
       const workout = await ctx.prisma.workout.findUnique({ // search for workouts that meet the requirement
         where: {
@@ -319,7 +323,7 @@ export class WorkoutService {
      *
      */
   async createExercise (title:string, description:string, repRange:string, sets:number, poseDescription:string, restPeriod:number, tags:Tag[], duration:number, plannerID:string, ctx: Context) {
-    if (title === "" || description === "" || repRange === "" || sets === 0 || poseDescription === "" || restPeriod === 0 || duration === 0 || tags == null || plannerID === "" || title == null || description == null || repRange == null || sets == null || poseDescription == null || restPeriod == null || duration == null || plannerID === "") {
+    if (title === "" || description === "" || poseDescription === "" || tags == null || plannerID === "" || title == null || description == null || repRange == null || sets == null || poseDescription == null || restPeriod == null || duration == null) {
       throw new NotFoundException("Parameters can not be left empty!")
     }
 
@@ -395,7 +399,7 @@ export class WorkoutService {
      *
      */
   async updateExercise (exercise: string, title: string, description: string, repRange: string, sets: number, Posedescription: string, restPeriod: number, tags: Tag[], duratime: number, plannerID:string, ctx: Context): Promise<any> {
-    if (exercise === "" || title === "" || description === "" || repRange === "" || sets === 0 || Posedescription === "" || restPeriod === 0 || duratime === 0 || tags == null || plannerID === "" || title == null || description == null || repRange == null || sets == null || Posedescription == null || restPeriod == null || duratime == null || plannerID === "") {
+    if (exercise === "" || title === "" || description === "" || Posedescription === "" || tags == null || plannerID === "" || title == null || description == null || repRange == null || sets == null || Posedescription == null || restPeriod == null || duratime == null || plannerID === "") {
       throw new PreconditionFailedException("Invalid exercise object passed in.")
     }
 
@@ -544,7 +548,8 @@ export class WorkoutService {
           }
         }
       })
-      await this.generateWorkoutPDF(createdWorkout, ctx)
+      const fullWorkout = await this.getWorkoutById(createdWorkout.workoutID, ctx)
+      await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
       return ("Workout Created.")
     } else {
       const createdWorkout = await ctx.prisma.workout.create({
@@ -558,7 +563,8 @@ export class WorkoutService {
           }
         }
       })
-      await this.generateWorkoutPDF(createdWorkout, ctx)
+      const fullWorkout = await this.getWorkoutById(createdWorkout.workoutID, ctx)
+      await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
       return ("Workout Created.")
     }
   }
@@ -610,7 +616,7 @@ export class WorkoutService {
           }
         })
         const updatedWorkout = await this.getWorkoutById(workoutID, ctx)
-        await this.generateWorkoutPDF(updatedWorkout, ctx)
+        await this.generatePrettyWorkoutPDF(updatedWorkout, ctx)
         return ("Workout Updated.")
       } catch (e) {
         throw new NotFoundException("Workout with provided ID does not exist")
@@ -632,7 +638,7 @@ export class WorkoutService {
           }
         })
         const updatedWorkout = await this.getWorkoutById(workoutID, ctx)
-        await this.generateWorkoutPDF(updatedWorkout, ctx)
+        await this.generatePrettyWorkoutPDF(updatedWorkout, ctx)
         return ("Workout Updated.")
       } catch (e) {
         throw new NotFoundException("Workout with provided ID does not exist")
@@ -719,7 +725,173 @@ export class WorkoutService {
         doc.text("Rest Period: " + exercise.restPeriod.toString() + " seconds.", 15, (80 + (splitExerciseDesc.length * 10)))
         doc.text("Exercise Duration: " + exercise.duration.toString() + " seconds or " + (exercise.duration / 60).toString() + " minutes", 15, (100 + (splitExerciseDesc.length * 10)))
       }
-      doc.save("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf")
+      doc.save("./src/GeneratedWorkouts/" + workout.workoutTitle + "WorkoutX.pdf")
+    }
+  }
+
+  /**
+   *Workout Service - Generate Pretty Workout PDF
+   *
+   * @param workout This is the workout Object to be generated as a pdf
+   * @param ctx  This is the prisma context that is injected into the function.
+   * @throws PreconditionFailedException if:
+   *                               -Parameters can not be left empty.
+   *
+   * @throws NotFoundException if:
+   *                               -Workout with provided ID does not exist.
+   *
+   * @return  Message indicating success.
+   * @author Msi Sibanyoni
+   *
+   */
+  async generatePrettyWorkoutPDF (workout: any, ctx: Context) {
+    const uint8ArrayFP = fs.readFileSync("./src/Assets/frontPageTemplate.pdf")
+    const pdfDoc = await PDFDocument.load(uint8ArrayFP)
+    const frontPage = pdfDoc.getPages()
+    const firstPage = frontPage[0]
+    // eslint-disable-next-line no-unused-vars
+    const { width, height } = firstPage.getSize()
+    // console.log(width)
+    // console.log(height)
+
+    firstPage.drawText(workout.workoutTitle, {
+      x: 310,
+      y: 210,
+      size: 40
+    })
+    const userObject = await this.userService.findUserByUUID(workout.plannerID, ctx)
+    const userFisrtLastName = userObject.firstName + " " + userObject.lastName
+    firstPage.drawText("Author ", {
+      x: 300,
+      y: 160,
+      size: 21
+    })
+    firstPage.drawText(userFisrtLastName, {
+      x: 390,
+      y: 160,
+      size: 16
+    })
+
+    firstPage.drawText("Description ", {
+      x: 300,
+      y: 120,
+      size: 18
+    })
+    // eslint-disable-next-line no-unused-vars
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
+    const form = pdfDoc.getForm()
+    const textField = form.createTextField("workout.description")
+    textField.enableMultiline()
+    textField.setText("hujieswdhudhuew " + workout.workoutDescription)
+    textField.addToPage(firstPage, {
+      x: 300,
+      y: 22,
+      width: 280,
+      height: 90,
+      textColor: rgb(0, 0, 0),
+
+      borderWidth: 0
+    })
+
+    // OTHER PAGES
+
+    // Bring template in - [Amount of exercises]
+    if (workout.exercises === undefined) {
+      fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save())
+    } else {
+      let exercisePosCount = 0
+      for (let i = 0; i < workout.exercises.length; i++) {
+        if (exercisePosCount < 1) {
+          const uint8ArrayOP = fs.readFileSync("./src/Assets/otherPagesTemplate.pdf")
+          const pdfDoc2 = await PDFDocument.load(uint8ArrayOP)
+          const [existingPage] = await pdfDoc.copyPages(pdfDoc2, [0])
+          const currentPage = pdfDoc.addPage(existingPage)
+
+          const exercise = await this.getExerciseByID(workout.exercises[i].exerciseID, ctx)
+          currentPage.drawText(exercise.exerciseTitle, {
+            x: 20,
+            y: 740,
+            size: 19
+          })
+          // Description
+          currentPage.drawText("Description", {
+            x: 20,
+            y: 710,
+            size: 12
+          })
+          currentPage.drawText(exercise.exerciseDescription, {
+            x: 20,
+            y: 700,
+            size: 10
+          })
+          // Rep Range
+          currentPage.drawText("Rep Range ", {
+            x: 20,
+            y: 620,
+            size: 12
+          })
+          currentPage.drawText(exercise.repRange, {
+            x: 130,
+            y: 620,
+            size: 12
+          })
+          // Sets
+          currentPage.drawText("Sets ".toString(), {
+            x: 20,
+            y: 590,
+            size: 12
+          })
+          currentPage.drawText(exercise.sets.toString(), {
+            x: 130,
+            y: 590,
+            size: 12
+          })
+          // RestPeriod
+          currentPage.drawText("Rest Period ", {
+            x: 20,
+            y: 560,
+            size: 12
+          })
+          currentPage.drawText(exercise.restPeriod.toString(), {
+            x: 130,
+            y: 560,
+            size: 12
+          })
+          // Exercise Duration
+          currentPage.drawText("Exercise Duration ", {
+            x: 20,
+            y: 530,
+            size: 12
+          })
+          currentPage.drawText((exercise.duration / 60).toString() + " minutes", {
+            x: 130,
+            y: 530,
+            size: 12
+          })
+          // Planner
+          currentPage.drawText("Planner ", {
+            x: 20,
+            y: 500,
+            size: 12
+          })
+          currentPage.drawText(userFisrtLastName, {
+            x: 130,
+            y: 500,
+            size: 12
+          })
+          exercisePosCount += 1
+        } else {
+          const currentPage = pdfDoc.getPage(pdfDoc.getPageCount() - 1)
+          const exercise = await this.getExerciseByID(workout.exercises[i].exerciseID, ctx)
+          currentPage.drawText(exercise.exerciseTitle, {
+            x: 20,
+            y: 370,
+            size: 19
+          })
+          exercisePosCount -= 1
+        }
+      }
+      fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save())
     }
   }
 
@@ -843,13 +1015,41 @@ export class WorkoutService {
     } else { // find uncommon tags and add them to tags table
       const databaseTags = await this.getTags(ctx)
       const uncommonElements = tags.filter(({ label: label1 }) => !databaseTags.some(({ label: label2 }) => label1 === label2))
-      if (uncommonElements.length === 0) {
-        // code will be added
-      } else {
+      if (uncommonElements.length !== 0) {
         for (let i = 0; i < uncommonElements.length; i++) {
           await this.createTag(uncommonElements[i].label, uncommonElements[i].textColour, uncommonElements[i].backgroundColour, ctx)
         }
       }
     }
+  }
+
+  async textToSpeech (text:String, fileName:String) {
+    const gtts = require("node-gtts")("en")
+    const path = require("path")
+    const filepath = path.join("./src/GeneratedTextSpeech/", fileName + ".wav")
+
+    try {
+      gtts.save(filepath, text, function () {
+      })
+
+      return "text file has been created"
+    } catch (err) {
+      throw new BadRequestException("Could not generate text to speech")
+    }
+  }
+
+  async convertToVideo () {
+    const options = {
+      pythonOptions: ["-u"],
+      pythonPath: "../venv/Scripts/python.exe",
+      scriptPath: "./src/videoGeneration",
+      args: []
+    }
+    try {
+      PythonShell.run("videoPython.py", options, function (err, results) {
+        if (err) throw err
+        console.log(results)
+      })
+    } catch (e) { console.log(e) }
   }
 }

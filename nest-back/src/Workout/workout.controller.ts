@@ -520,4 +520,18 @@ export class WorkoutController {
     ) {
       return this.workoutService.getTags(ActualPrisma())
     }
+
+    @Get("createTTS")
+    createTTS (
+      @Body("text") text: string,
+      @Body("fileName") fileName: string
+    ) {
+      return this.workoutService.textToSpeech(text, fileName)
+    }
+
+    @Get("convertToVideo")
+    convertToVideo (
+    ) {
+        return this.workoutService.convertToVideo()
+    }
 }

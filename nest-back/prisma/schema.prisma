@@ -53,12 +53,12 @@ model Exercise {
   exerciseID          String    @id @default(uuid())
   exerciseTitle       String
   exerciseDescription String
-  repRange            String
-  sets                Int
+  repRange            String?
+  sets                Int?
   poseDescription     String
-  restPeriod          Int
+  restPeriod          Int?
   tags                Tag[]
-  duration            Int
+  duration            Int?
   workouts            Workout[]
 
   planner   User?   @relation(fields: [plannerID], references: [userID])
