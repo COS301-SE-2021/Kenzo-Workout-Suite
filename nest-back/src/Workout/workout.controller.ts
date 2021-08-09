@@ -528,4 +528,10 @@ export class WorkoutController {
     ) {
       return this.workoutService.textToSpeech(text, fileName)
     }
+
+    @Get("convertToVideo")
+    convertToVideo (
+    ) {
+        return this.workoutService.convertToVideo()
+    }
 }
