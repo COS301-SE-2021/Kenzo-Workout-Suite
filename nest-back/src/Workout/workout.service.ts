@@ -12,10 +12,9 @@ import {
 } from "@prisma/client"
 import { jsPDF } from "jspdf"
 import { PrismaService } from "../Prisma/prisma.service"
-import { degrees, PDFDocument, rgb, StandardFonts, cmyk } from "pdf-lib"
+import { PDFDocument, rgb } from "pdf-lib"
 import * as fs from "fs"
 import { UserService } from "../User/user.service"
-import fetch from "node-fetch"
 
 const Filter = require("bad-words"); const filter = new Filter()
 
@@ -748,9 +747,6 @@ export class WorkoutService {
     const pdfDoc = await PDFDocument.load(uint8ArrayFP)
     const frontPage = pdfDoc.getPages()
     const firstPage = frontPage[0]
-    const { width, height } = firstPage.getSize()
-    // console.log(width)
-    // console.log(height)
 
     firstPage.drawText(workout.workoutTitle, {
       x: 310,
@@ -775,7 +771,6 @@ export class WorkoutService {
       y: 120,
       size: 18
     })
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
     const form = pdfDoc.getForm()
     const textField = form.createTextField("workout.description")
     textField.enableMultiline()
@@ -1035,7 +1030,10 @@ export class WorkoutService {
     }
   }
 
-  async createClientContact (contactEmail: string, name: string, surname: string, ctx: Context) {
+  async createClientContact (contactEmail: string, name: string, surname: string, plannerID:string, ctx: Context) {
+    if (plannerID === "" || plannerID === null) {
+      throw new BadRequestException("Planner needs to be logged in.")
+    }
     if (contactEmail === "" || name === "" || surname === "" || contactEmail == null || name === null || surname == null) {
       throw new NotFoundException("Parameters can not be left empty!")
     }
@@ -1044,7 +1042,12 @@ export class WorkoutService {
         data: {
           contactEmail: contactEmail,
           name: name,
-          surname: surname
+          surname: surname,
+          planner: {
+            connect: {
+              userID: plannerID
+            }
+          }
         }
       })
       return "Client contact created."
@@ -1053,7 +1056,10 @@ export class WorkoutService {
     }
   }
 
-  async updateClientContact (contactEmail: string, name: string, surname: string, ctx: Context) {
+  async updateClientContact (contactEmail: string, name: string, surname: string, plannerID:string, ctx: Context) {
+    if (plannerID === "" || plannerID === null) {
+      throw new BadRequestException("Planner needs to be logged in.")
+    }
     if (contactEmail === "" || name === "" || surname === "" || contactEmail == null || name === null || surname == null) {
       throw new NotFoundException("Parameters can not be left empty!")
     }
@@ -1065,7 +1071,12 @@ export class WorkoutService {
         data: {
           contactEmail: contactEmail,
           name: name,
-          surname: surname
+          surname: surname,
+          planner: {
+            connect: {
+              userID: plannerID
+            }
+          }
         }
       })
       return "Client contact updated."

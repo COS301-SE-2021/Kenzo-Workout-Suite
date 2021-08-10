@@ -539,6 +539,7 @@ export class WorkoutController {
      * @param contactEmail - Email to create contact.
      * @param name - Name to create contact.
      * @param surname - Surname to create contact.
+     * @param req - Details of user who made request
      * @throws BadRequestException if:
      * @return Message indicating success.
      *
@@ -560,9 +561,10 @@ export class WorkoutController {
     createClientContact (
       @Body("contactEmail") contactEmail: string,
       @Body("name") name: string,
-      @Body("surname") surname: string
+      @Body("surname") surname: string,
+      @Request() req
     ) {
-      return this.workoutService.createClientContact(contactEmail, name, surname, this.ctx)
+      return this.workoutService.createClientContact(contactEmail, name, surname, req.user.userID, this.ctx)
     }
 
     /**
@@ -592,9 +594,10 @@ export class WorkoutController {
     updateClientContact (
       @Body("contactEmail") contactEmail: string,
       @Body("name") name: string,
-      @Body("surname") surname: string
+      @Body("surname") surname: string,
+      @Request() req
     ) {
-      return this.workoutService.updateClientContact(contactEmail, name, surname, this.ctx)
+      return this.workoutService.updateClientContact(contactEmail, name, surname, req.user.userID, this.ctx)
     }
 
     /**
@@ -607,7 +610,6 @@ export class WorkoutController {
      * @author Msi Sibanyoni & Tinashe Chamisa
      *
      */
-    @UseGuards(JwtAuthGuard)
     @Delete("deleteClientContact")
     @ApiOkResponse({
       description: "Client deleted."
@@ -634,7 +636,6 @@ export class WorkoutController {
      * @author Msi Sibanyoni & Tinashe Chamisa
      *
      */
-    @UseGuards(JwtAuthGuard)
     @Get("getClientContactDetails")
     @ApiOkResponse({
       description: "A client contact object."
@@ -659,7 +660,6 @@ export class WorkoutController {
      * @author Msi Sibanyoni & Tinashe Chamisa
      *
      */
-    @UseGuards(JwtAuthGuard)
     @Get("getAllClientContacts")
     @ApiOkResponse({
       description: "An array of client contact objects."
