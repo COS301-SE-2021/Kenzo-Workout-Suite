@@ -15,7 +15,6 @@ import { PDFDocument, rgb, StandardFonts } from "pdf-lib"
 import * as fs from "fs"
 import { UserService } from "../User/user.service"
 import fontkit from "@pdf-lib/fontkit"
-import { log } from "util"
 
 const Filter = require("bad-words"); const filter = new Filter()
 
