@@ -872,7 +872,6 @@ export class WorkoutService {
       gtts.save(filepath, text, function () {
       })
 
-
       return "text file has been created"
     } catch (err) {
       throw new BadRequestException("Could not generate text to speech")

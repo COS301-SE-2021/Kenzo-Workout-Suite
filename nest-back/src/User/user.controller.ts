@@ -111,7 +111,7 @@ export class UserController {
     @Get("googleRedirect")
     @UseGuards(AuthGuard("google"))
     googleAuthRedirect (@Req() req) {
-      return this.userService.googleLogin(req,ActualPrisma())
+      return this.userService.googleLogin(req, ActualPrisma())
     }
 
     /**

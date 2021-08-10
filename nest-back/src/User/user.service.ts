@@ -9,7 +9,6 @@ import { JwtService } from "@nestjs/jwt"
 import { User } from "@prisma/client"
 import * as bcrypt from "bcrypt"
 import { Context } from "../../context"
-import {log} from "util";
 
 @Injectable()
 export class UserService {
@@ -44,8 +43,7 @@ export class UserService {
       throw new NotFoundException("Invalid Email or Password")
     }
 
-    if (user.password=="GOOGLE_PASSWORD")
-    {
+    if (user.password === "GOOGLE_PASSWORD") {
       throw new UnauthorizedException("This user has already been registered with google, please login via google.")
     }
 
@@ -212,11 +210,11 @@ export class UserService {
      * @author Zelealem Tesema
      */
   async updateUserDetails (firstName:string, lastName:string, dateOfBirth:string, userId:string, ctx:Context) {
-    if (firstName == null || lastName == null || userId == null || firstName == "" || lastName == "" || userId == "") {
+    if (firstName == null || lastName == null || userId == null || firstName === "" || lastName === "" || userId === "") {
       throw new BadRequestException("Null values can not be passed in for firstName, lastName or userId")
     }
 
-    let date= new Date(dateOfBirth);
+    const date = new Date(dateOfBirth)
     try {
       const updatedUser = await ctx.prisma.user.update({
         where: {
@@ -241,7 +239,7 @@ export class UserService {
     }
   }
 
-  async googleLogin (req,ctx:Context) {
+  async googleLogin (req, ctx:Context) {
     if (!req) {
       throw new BadRequestException("No such google User")
     }
@@ -250,64 +248,51 @@ export class UserService {
       throw new BadRequestException("No such google User")
     }
 
-      try {
-        const myUser = await ctx.prisma.user.findUnique({
-          where: {
-            email: req.user.email
+    try {
+      const myUser = await ctx.prisma.user.findUnique({
+        where: {
+          email: req.user.email
+        }
+      })
+
+      if (!myUser) {
+        const createdUser = await ctx.prisma.user.create({
+          data: {
+            firstName: req.user.firstName,
+            lastName: req.user.lastName,
+            userType: "PLANNER",
+            email: req.user.email,
+            password: "GOOGLE_PASSWORD"
           }
         })
+        const payload = { userID: createdUser.userID }
 
-        if (!myUser) {
-          const createdUser = await ctx.prisma.user.create({
-            data: {
-              firstName: req.user.firstName,
-              lastName: req.user.lastName,
-              userType: "PLANNER",
-              email: req.user.email,
-              password: "GOOGLE_PASSWORD"
-            }
-          })
-          const payload = { userID: createdUser.userID }
+        return {
+          access_token: this.jwtService.sign(payload),
+          first_time: "true"
+        }
+      } else {
+        if (myUser.password !== "GOOGLE_PASSWORD") {
+          throw new UnauthorizedException("USER WITH THIS EMAIL HAS ALREADY BEEN REGISTERED AS A NON-GOOGLE USER")
+        } else {
+          const payload = { userID: myUser.userID }
 
           return {
             access_token: this.jwtService.sign(payload),
-            first_time:"true"
-          }
-
-        }
-
-        else
-        {
-          if (myUser.password!="GOOGLE_PASSWORD")
-          {
-            throw new UnauthorizedException("USER WITH THIS EMAIL HAS ALREADY BEEN REGISTERED AS A NON-GOOGLE USER")
-          }
-
-          else
-          {
-            const payload = { userID: myUser.userID }
-
-            return {
-              access_token: this.jwtService.sign(payload),
-              "first_time":"false"
-            }
+            first_time: "false"
           }
         }
       }
-
-    catch (err)
-    {
-      if (err.message=="USER WITH THIS EMAIL HAS ALREADY BEEN REGISTERED AS A NON-GOOGLE USER")
-      {
-        throw err;
+    } catch (err) {
+      if (err.message === "USER WITH THIS EMAIL HAS ALREADY BEEN REGISTERED AS A NON-GOOGLE USER") {
+        throw err
       }
 
-      if (err.message=="No such google User")
-      {
-        throw err;
+      if (err.message === "No such google User") {
+        throw err
       }
 
-      throw new BadRequestException("Could not perform google login");
+      throw new BadRequestException("Could not perform google login")
     }
   }
 
