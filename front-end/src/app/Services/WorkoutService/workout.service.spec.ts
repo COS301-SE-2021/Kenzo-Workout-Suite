@@ -39,7 +39,7 @@ describe("WorkoutService", () => {
             exerciseDescription: exercise.description,
             repRange: exercise.repRange,
             sets: exercise.sets,
-            poseDescription: exercise.Posedescription,
+            poseDescription: exercise.poseDescription,
             restPeriod: exercise.restPeriod,
             tags: exercise.tags,
             duration: exercise.duratime
@@ -64,7 +64,7 @@ describe("WorkoutService", () => {
             exerciseDescription: exercise.description,
             repRange: exercise.repRange,
             sets: exercise.sets,
-            poseDescription: exercise.Posedescription,
+            poseDescription: exercise.poseDescription,
             restPeriod: exercise.restPeriod,
             tags: exercise.tags,
             duration: exercise.duratime
@@ -89,7 +89,7 @@ describe("WorkoutService", () => {
             exerciseDescription: exercise.description,
             repRange: exercise.repRange,
             sets: exercise.sets,
-            poseDescription: exercise.Posedescription,
+            poseDescription: exercise.poseDescription,
             restPeriod: exercise.restPeriod,
             tags: exercise.tags,
             duration: exercise.duratime
@@ -114,7 +114,7 @@ describe("WorkoutService", () => {
             exerciseDescription: exercise.description,
             repRange: exercise.repRange,
             sets: exercise.sets,
-            poseDescription: exercise.Posedescription,
+            poseDescription: exercise.poseDescription,
             restPeriod: exercise.restPeriod,
             tags: exercise.tags,
             duration: exercise.duratime
@@ -306,7 +306,7 @@ describe("WorkoutService", () => {
             exerciseDescription: exercise.description,
             repRange: exercise.repRange,
             sets: exercise.sets,
-            poseDescription: exercise.Posedescription,
+            poseDescription: exercise.poseDescription,
             restPeriod: exercise.restPeriod,
             tags: exercise.tags,
             duration: exercise.duratime
@@ -332,7 +332,7 @@ describe("WorkoutService", () => {
             exerciseDescription: exercise.description,
             repRange: exercise.repRange,
             sets: exercise.sets,
-            poseDescription: exercise.Posedescription,
+            poseDescription: exercise.poseDescription,
             restPeriod: exercise.restPeriod,
             tags: exercise.tags,
             duration: exercise.duratime
@@ -357,7 +357,7 @@ describe("WorkoutService", () => {
             exerciseDescription: exercise.description,
             repRange: exercise.repRange,
             sets: exercise.sets,
-            poseDescription: exercise.Posedescription,
+            poseDescription: exercise.poseDescription,
             restPeriod: exercise.restPeriod,
             tags: exercise.tags,
             duration: exercise.duratime
@@ -382,7 +382,7 @@ describe("WorkoutService", () => {
             exerciseDescription: exercise.description,
             repRange: exercise.repRange,
             sets: exercise.sets,
-            poseDescription: exercise.Posedescription,
+            poseDescription: exercise.poseDescription,
             restPeriod: exercise.restPeriod,
             tags: exercise.tags,
             duration: exercise.duratime
