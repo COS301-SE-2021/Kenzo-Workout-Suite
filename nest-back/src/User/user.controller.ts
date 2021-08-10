@@ -175,7 +175,7 @@ export class UserController {
     updateUserDetail (@Request() req,
                      @Body("firstName") firstName: string,
                      @Body("lastName") lastName: string,
-                     @Body("dateOfBirth") dateOfBirth: Date) {
+                     @Body("dateOfBirth") dateOfBirth: string) {
       return this.userService.updateUserDetails(firstName, lastName, dateOfBirth, req.user.userID, ActualPrisma())
     }
 }

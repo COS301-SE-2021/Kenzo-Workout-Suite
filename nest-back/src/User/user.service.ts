@@ -9,6 +9,7 @@ import { JwtService } from "@nestjs/jwt"
 import { User } from "@prisma/client"
 import * as bcrypt from "bcrypt"
 import { Context } from "../../context"
+import {log} from "util";
 
 @Injectable()
 export class UserService {
@@ -210,11 +211,12 @@ export class UserService {
      *
      * @author Zelealem Tesema
      */
-  async updateUserDetails (firstName:string, lastName:string, dateOfBirth:Date, userId:string, ctx:Context) {
+  async updateUserDetails (firstName:string, lastName:string, dateOfBirth:string, userId:string, ctx:Context) {
     if (firstName == null || lastName == null || userId == null || firstName == "" || lastName == "" || userId == "") {
       throw new BadRequestException("Null values can not be passed in for firstName, lastName or userId")
     }
 
+    let date= new Date(dateOfBirth);
     try {
       const updatedUser = await ctx.prisma.user.update({
         where: {
@@ -223,7 +225,7 @@ export class UserService {
         data: {
           firstName: firstName,
           lastName: lastName,
-          dateOfBirth: dateOfBirth
+          dateOfBirth: date
         }
       })
 
