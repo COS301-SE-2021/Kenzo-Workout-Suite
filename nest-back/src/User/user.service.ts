@@ -286,7 +286,8 @@ export class UserService {
             const payload = { userID: myUser.userID }
 
             return {
-              access_token: this.jwtService.sign(payload)
+              access_token: this.jwtService.sign(payload),
+              "first_time":"false"
             }
           }
         }
