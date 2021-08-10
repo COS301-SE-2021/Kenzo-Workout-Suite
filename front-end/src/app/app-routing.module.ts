@@ -42,6 +42,10 @@ const routes: Routes = [
   {
     path: 'update-exercise',
     loadChildren: () => import('./update-exercise/update-exercise.module').then( m => m.UpdateExercisePageModule)
+  },
+  {
+    path: 'client-list',
+    loadChildren: () => import('./client-list/client-list.module').then( m => m.ClientListPageModule)
   }
 
 ];
