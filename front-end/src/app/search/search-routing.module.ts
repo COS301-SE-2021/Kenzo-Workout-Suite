@@ -4,6 +4,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { SearchPage } from "./search.page";
 import { YourWorkoutsPage } from "../your-workouts/your-workouts.page";
 import {ProfilePage} from "../profile/profile.page";
+import {ClientListPage} from "../client-list/client-list.page";
 
 const routes: Routes = [
     {
@@ -17,6 +18,10 @@ const routes: Routes = [
     {
         path: "profile",
         component: ProfilePage
+    },
+    {
+        path: "client-list",
+        component: ClientListPage
     }
 ];
 

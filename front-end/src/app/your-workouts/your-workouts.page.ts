@@ -64,6 +64,13 @@ export class YourWorkoutsPage implements OnInit {
           });
   }
 
+  async goToClients(){
+      await this.router.navigate(["/client-list"])
+          .then(() => {
+              window.location.reload();
+          });
+  }
+
   eventHandler(event) {
       const text = event.srcElement.value.toLowerCase();
       this.workouts.forEach(data => {

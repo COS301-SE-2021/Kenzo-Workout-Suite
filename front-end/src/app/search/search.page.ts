@@ -66,4 +66,11 @@ export class SearchPage implements OnInit {
           });
   }
 
+  async goToClients(){
+      await this.router.navigate(["/client-list"])
+          .then(() => {
+              window.location.reload();
+          });
+  }
+
 }

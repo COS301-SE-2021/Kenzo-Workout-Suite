@@ -1,0 +1,33 @@
+.footer{
+  --background: var(--ion-off-white);
+  padding-top: 10px;
+  //border-style: solid;
+  //border-radius: var(--secondary-radius);
+  //margin-top: 20px;
+  //margin-bottom: 20px;
+}
+
+.navThumbnail{
+  display: block;
+  float: left;
+  margin-left: auto;
+  margin-right: auto;
+  width: 25%;
+}
+
+.NavButtons{
+  width: var(--icon-size);
+  height: var(--icon-size);
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+.NavLabel{
+  display: block;
+  float: left;
+  font-size: 15px;
+  margin-left: 45%;
+  margin-right: auto;
+}
