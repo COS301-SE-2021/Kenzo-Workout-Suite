@@ -1,33 +1,19 @@
 import { MockContext, Context, createMockContext } from "../../../context"
 import { WorkoutService } from "../../../src/Workout/workout.service"
-import { v4 as uuidv4 } from "uuid"
+import { UserService } from "../../../src/User/user.service"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
 
 let mockCtx: MockContext
 let ctx: Context
 let workoutService: WorkoutService
+let userService: UserService
 let prisma: PrismaClient
-const uuidWorkout = uuidv4()
 
 describe("Unit tests of the getWorkoutById function in the Workout Service", () => {
   beforeEach(() => {
-    workoutService = new WorkoutService(prisma)
+    workoutService = new WorkoutService(prisma, userService)
     mockCtx = createMockContext()
     ctx = (mockCtx as unknown) as Context
-  })
-
-  test("Should receive valid information about workout with corresponding id", async () => {
-    const workout = [{
-      workoutID: uuidWorkout,
-      workoutTitle: "test",
-      workoutDescription: "test",
-      plannerID: uuidv4()
-    }]
-    mockCtx.prisma.workout.findMany.mockResolvedValue(workout)
-
-    const response = await workoutService.getWorkoutById(uuidWorkout, ctx)
-
-    expect(response).toBe(workout)
   })
 
   test("Should not receive valid information about workout with corresponding id as workout does not exist", async () => {
