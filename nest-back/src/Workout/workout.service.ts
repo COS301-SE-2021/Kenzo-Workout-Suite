@@ -311,7 +311,7 @@ export class WorkoutService {
    * @param tags this is an array of tags
    * @param duration This is the duration of the exercise.
    * @param plannerID This is the planner ID
-   * @param images
+   * @param images This is the image array of the poses for the exercise
    * @param ctx  This is the prisma context that is injected into the function.
    * @throws PreconditionFailedException if:
    *                               -Not all parameters are given.
@@ -416,28 +416,30 @@ export class WorkoutService {
   }
 
   /**
-     *Workout Service - Update Exercise
-     *
-     * @param exercise This is the ID of the exercise.
-     * @param title This is the title of the exercise.
-     * @param description This is the description of the exercise.
-     * @param repRange This is the amount of reps.
-     * @param sets This is the amount of sets.
-     * @param Posedescription This is the pose description.
-     * @param restPeriod This is the rest period of the exercise.
-     * @param difficulty This is the difficulty of the exercise.
-     * @param duration This is the duration of the exercise.
-     * @param ctx  This is the prisma context that is injected into the function.
-     * @throws PreconditionFailedException if:
-     *                               -Not all parameters are given.
-     * @throws NotFoundException if:
-     *                               -An exercise with provided ID does not exist.
-     * @return  Message indicating success.
-     * @author Tinashe Chamisa
-     *
-     */
-  async updateExercise (exercise: string, title: string, description: string, repRange: string, sets: number, Posedescription: string, restPeriod: number, tags: Tag[], duratime: number, plannerID:string, ctx: Context): Promise<any> {
-    if (exercise === "" || title === "" || description === "" || Posedescription === "" || tags == null || plannerID === "" || title == null || description == null || repRange == null || sets == null || Posedescription == null || restPeriod == null || duratime == null || plannerID === "") {
+   *Workout Service - Update Exercise
+   *
+   * @param exercise This is the ID of the exercise.
+   * @param title This is the title of the exercise.
+   * @param description This is the description of the exercise.
+   * @param repRange This is the amount of reps.
+   * @param sets This is the amount of sets.
+   * @param poseDescription This is the description of the poses
+   * @param restPeriod This is the rest period of the exercise.
+   * @param tags this is an array of tags
+   * @param duration This is the duration of the exercise.
+   * @param plannerID This is the planner ID
+   * @param images This is the image array of the poses for the exercise
+   * @param ctx  This is the prisma context that is injected into the function.
+   * @throws PreconditionFailedException if:
+   *                               -Not all parameters are given.
+   * @throws NotFoundException if:
+   *                               -An exercise with provided ID does not exist.
+   * @return  Message indicating success.
+   * @author Tinashe Chamisa
+   *
+   */
+  async updateExercise (exercise: string, title: string, description: string, repRange: string, sets: number, poseDescription: string, restPeriod: number, tags: Tag[], duration: number, plannerID:string, images:string[], ctx: Context): Promise<any> {
+    if (exercise === "" || title === "" || description === "" || poseDescription === "" || tags == null || plannerID === "" || title == null || description == null || repRange == null || sets == null || poseDescription == null || restPeriod == null || duration == null || plannerID === "") {
       throw new PreconditionFailedException("Invalid exercise object passed in.")
     }
 
@@ -463,7 +465,7 @@ export class WorkoutService {
 
           return container
         })
-        await ctx.prisma.exercise.update({
+        const updatedExercise = await ctx.prisma.exercise.update({
           where: {
             exerciseID: exercise
           },
@@ -473,12 +475,12 @@ export class WorkoutService {
             exerciseDescription: description,
             repRange: repRange,
             sets: sets,
-            poseDescription: Posedescription,
+            poseDescription: poseDescription,
             restPeriod: restPeriod,
             tags: {
               connect: tagConnection
             },
-            duration: duratime,
+            duration: duration,
             planner: {
               connect: {
                 userID: plannerID
@@ -486,10 +488,11 @@ export class WorkoutService {
             }
           }
         })
-
+        const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
+        await this.saveImagesToJSON(exerciseDetails, images)
         return "Exercise updated."
       } else {
-        await ctx.prisma.exercise.update({
+        const updatedExercise = await ctx.prisma.exercise.update({
           where: {
             exerciseID: exercise
           },
@@ -499,9 +502,9 @@ export class WorkoutService {
             exerciseDescription: description,
             repRange: repRange,
             sets: sets,
-            poseDescription: Posedescription,
+            poseDescription: poseDescription,
             restPeriod: restPeriod,
-            duration: duratime,
+            duration: duration,
             planner: {
               connect: {
                 userID: plannerID
@@ -509,6 +512,8 @@ export class WorkoutService {
             }
           }
         })
+        const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
+        await this.saveImagesToJSON(exerciseDetails, images)
         return "Exercise updated."
       }
     } catch (err) {
