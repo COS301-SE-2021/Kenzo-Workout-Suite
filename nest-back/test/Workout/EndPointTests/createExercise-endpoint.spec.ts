@@ -53,6 +53,7 @@ describe("End point testing of the Workout subsystem", () => {
     const response = await userServ.login(myUser)
     const accessToken = response.access_token
     const emptyTag: Tag[] = []
+    const imagesArray:string[] = ["base64line"]
 
     return request(app.getHttpServer())
       .post("/workout/createExercise")
@@ -65,7 +66,8 @@ describe("End point testing of the Workout subsystem", () => {
         poseDescription: "TestPDesc",
         restPeriod: 2,
         tags: emptyTag,
-        duration: 2
+        duration: 2,
+        images: imagesArray
       })
       .expect(201)
   })
