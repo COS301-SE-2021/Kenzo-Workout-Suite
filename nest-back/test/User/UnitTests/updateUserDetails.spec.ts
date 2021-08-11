@@ -140,4 +140,25 @@ describe("Unit tests of the function updateUserDetails in the UserService", () =
     }
     await expect(await userService.updateUserDetails("updatedFirstName", "updatedLastName", "2000-05-30", userUUID, ctx)).toStrictEqual(expectedMessage)
   })
+
+  test("Test, Valid values passed into updateUserDetails, should return confirmation message.", async () => {
+    const testDate = new Date("2000-05-30")
+    const userUUID = uuidv4()
+    const myUser = {
+      userID: userUUID,
+      email: "test@gmail.com",
+      firstName: "test",
+      lastName: "tester",
+      password: "thePassword",
+      userType: userType.PLANNER,
+      dateOfBirth: testDate
+    }
+
+    mockCtx.prisma.user.update.mockResolvedValue(myUser)
+
+    const expectedMessage = {
+      message: "User data updated"
+    }
+    await expect(await userService.updateUserDetails("updatedFirstName", "updatedLastName", "2000-05-30", userUUID, ctx)).toStrictEqual(expectedMessage)
+  })
 })

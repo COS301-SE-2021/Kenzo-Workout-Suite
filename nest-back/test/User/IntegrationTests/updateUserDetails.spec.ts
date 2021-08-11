@@ -62,4 +62,34 @@ describe("Integration tests of the function updateUserDetails in the UserService
     expect(response!.firstName).toBe("updatedTest")
     expect(response!.lastName).toBe("updatedLast")
   })
+
+  test("Valid details passed in, User details should be updated and should reflect update in the database", async () => {
+    const updatedDate = new Date("2000-05-30")
+    const myUser = {
+      userID: "123456",
+      email: "test@gmail.com",
+      firstName: "test",
+      lastName: "tester",
+      password: "thePassword2000#",
+      userType: userType.PLANNER,
+      dateOfBirth: updatedDate
+    }
+
+    await ctx.prisma.user.create({
+      data: myUser
+    })
+
+    let date
+
+    await userService.updateUserDetails("updatedTest", "updatedLast", date, "123456", ctx)
+
+    const response = await ctx.prisma.user.findUnique({
+      where: {
+        email: "test@gmail.com"
+      }
+    })
+
+    expect(response!.firstName).toBe("updatedTest")
+    expect(response!.lastName).toBe("updatedLast")
+  })
 })
