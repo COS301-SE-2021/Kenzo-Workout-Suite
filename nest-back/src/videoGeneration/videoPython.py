@@ -49,7 +49,7 @@ for file in os.listdir('.'):
 
         # resizing
         imResize = im.resize((mean_width, mean_height), Image.ANTIALIAS)
-        imResize.save(file, 'JPEG', quality=95)  # setting quality
+        imResize.save(file, 'JPEG', quality=120)  # setting quality
         # printing each resized image name
         print(im.filename.split('\\')[-1], " is resized")
 
