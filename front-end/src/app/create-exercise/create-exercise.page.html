@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button class="back" mode="ios" defaultHref="/your-workouts"></ion-back-button>
+      <ion-back-button class="back" mode="ios" defaultHref="/search"></ion-back-button>
     </ion-buttons>
     <ion-title class="title">Create an Exercise</ion-title>
   </ion-toolbar>
@@ -60,11 +60,6 @@
     </div>
     <br>
     <div class="input-div">
-      <ion-label class="input-description">Pose Description</ion-label>
-      <ion-input [(ngModel)]="poseDescription" placeholder="Ensure that your shoulders are straight" class="kenzo-input"></ion-input>
-    </div>
-    <br>
-    <div class="input-div">
       <ion-label class="input-description">Rest Period (seconds)</ion-label>
       <ion-input [(ngModel)]="rest"  type="number" placeholder="40" class="kenzo-input"></ion-input>
     </div>
@@ -72,6 +67,16 @@
     <div class="input-div">
       <ion-label class="input-description">Duration of exercise (minutes)</ion-label>
       <ion-input [(ngModel)]="duration"  type="number" placeholder="10" class="kenzo-input"></ion-input>
+    </div>
+    <br>
+    <div class="input-div">
+      <ion-label class="input-description">Poses</ion-label>
+      <ion-button (click)="poseMaker()">Add Poses</ion-button>
+    </div>
+    <br>
+    <div class="input-div">
+      <ion-label class="input-description">Pose Description</ion-label>
+      <ion-input [(ngModel)]="poseDescription" placeholder="Ensure that your shoulders are straight" class="kenzo-input"></ion-input>
     </div>
     <br>
 </ion-content>

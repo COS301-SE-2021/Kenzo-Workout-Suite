@@ -245,4 +245,15 @@ export class CreateExercisePage implements OnInit {
 
       return new KenzoTag(colors[randomTC], colors[randomBC], label, false);
   }
+
+  /** This function moves the user to a screen which allows them to manipulate a 3D avatar into specific poses which can be framed
+   * and used to depict the exercise
+   *
+   * @author Luca Azmanov, u1900415
+   */
+  async poseMaker() {
+      await this.route.navigate(["/pose-maker"], {
+
+      });
+  }
 }
