@@ -529,9 +529,28 @@ export class WorkoutController {
       return this.workoutService.textToSpeech(text, fileName)
     }
 
+    /**
+     *Workout Controller - Get Tags
+     *
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No tags were found in the database.
+     * @return  Promise array of tag object/s.
+     * @author Tinashe Chamisa
+     *
+     */
     @Get("convertToVideo")
+    @ApiOkResponse({
+      description: "Successfully created video."
+    })
+    @ApiNotFoundResponse({
+      description: "No images were found."
+    })
+    @ApiInternalServerErrorResponse({
+      description: "Internal server error."
+    })
     convertToVideo (
     ) {
-        return this.workoutService.convertToVideo()
+      return this.workoutService.convertToVideo(ActualPrisma())
     }
 }
