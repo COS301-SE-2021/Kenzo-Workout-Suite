@@ -225,6 +225,7 @@ export class WorkoutController {
      * @param restPeriod This is the rest period of the exercise.
      * @param tags this is an array of tags
      * @param duration
+     * @param images
      * @param req
      * @throws PreconditionFailedException if:
      *                               -Not all parameters are given.
@@ -256,9 +257,10 @@ export class WorkoutController {
         @Body("restPeriod") restPeriod: number,
         @Body("tags") tags: Tag[],
         @Body("duration") duration: number,
+        @Body("images") images: string[],
         @Request() req
     ) {
-      return this.workoutService.createExercise(title, description, repRange, sets, Posedescription, restPeriod, tags, duration, req.user.userID, this.ctx)
+      return this.workoutService.createExercise(title, description, repRange, sets, Posedescription, restPeriod, tags, duration, req.user.userID, images, this.ctx)
     }
 
     /**
@@ -527,5 +529,26 @@ export class WorkoutController {
       @Body("fileName") fileName: string
     ) {
       return this.workoutService.textToSpeech(text, fileName)
+    }
+
+    /**
+     *Workout Controller - Get Workout PDF
+     *
+     * @param workoutID - id of workout pdf to be returned
+     * @throws NotAcceptableException if: -No ID was passed in.
+     * @throws BadRequestException if: - cannot return workout pdf
+     * @return Workout PDF
+     * @author Msi Sibanyoni
+     *
+     *
+     */
+    @Get("getWorkoutPDF/:workoutID")
+    @ApiOkResponse({
+      description: "A workout pdf."
+    })
+    getWorkoutPDF (
+      @Param("workoutID") workoutID: string
+    ) {
+      return this.workoutService.getWorkoutPDF(workoutID, this.ctx)
     }
 }
