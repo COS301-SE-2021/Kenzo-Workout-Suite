@@ -1038,6 +1038,15 @@ export class WorkoutService {
     }
   }
 
+  /**
+   *Workout Service - Convert to Video
+   * @param ctx  This is the prisma context that is injected into the function.
+   * @throws NotFoundException if:
+   *                               -No images are found.
+   * @return  Message indicating success.
+   * @author Tinashe Chamisa
+   *
+   */
   async convertToVideo () {
     const options = {
       pythonOptions: ["-u"],
