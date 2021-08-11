@@ -388,11 +388,12 @@ export class WorkoutService {
     images.forEach(function (item, index) {
       arrayImages.push(item)
     })
-
+    // TODO: Add create if file doesnt exist
     fs.readFile("./src/createdWorkoutImages.json", function (err, data) {
       if (err) throw err
       const json = JSON.parse(data.toString())
       const final = {}
+      // TODO: Fix eslint rules for objecting
       final["ID"] = exercise.exerciseID
       final["images"] = arrayImages
       json.push(final)
@@ -1028,8 +1029,11 @@ export class WorkoutService {
 
       fs.readFile("./src/GeneratedWorkouts/" + workoutObject.workoutTitle + "Workout.pdf", function (err, data) {
         if (err) throw err
-        return data
+        console.log(data)
       })
+      const uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutTitle + "Workout.pdf")
+      const pdfDoc = await PDFDocument.load(uint8ArrayFP)
+      return await pdfDoc.saveAsBase64({ dataUri: true })
     } catch (E) {
       throw new BadRequestException("Cannot return workout pdf.")
     }
