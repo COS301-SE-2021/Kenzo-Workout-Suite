@@ -1047,7 +1047,7 @@ export class WorkoutService {
    * @author Tinashe Chamisa
    *
    */
-  async convertToVideo () {
+  async convertToVideo (ctx: Context): Promise<any> {
     const options = {
       pythonOptions: ["-u"],
       pythonPath: "../venv/Scripts/python.exe",
