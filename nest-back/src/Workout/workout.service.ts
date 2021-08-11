@@ -383,6 +383,19 @@ export class WorkoutService {
     }
   }
 
+  /**
+   *Workout Service - Update Exercise
+   *
+   * @param exercise This is the ID of the exercise.
+   * @param images String array of base64 images to use for workout
+   * @throws PreconditionFailedException if:
+   *                               -Not all parameters are given.
+   * @throws NotFoundException if:
+   *                               -An exercise with provided ID does not exist.
+   * @return  Message indicating success.
+   * @author Tinashe Chamisa
+   *
+   */
   async saveImagesToJSON (exercise:any, images:string[]) {
     const arrayImages : Array<string> = []
     images.forEach(function (item, index) {
@@ -393,7 +406,6 @@ export class WorkoutService {
       if (err) throw err
       const json = JSON.parse(data.toString())
       const final = {}
-      // TODO: Fix eslint rules for objecting
       final["ID"] = exercise.exerciseID
       final["images"] = arrayImages
       json.push(final)
