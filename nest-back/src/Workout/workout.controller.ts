@@ -225,6 +225,7 @@ export class WorkoutController {
      * @param restPeriod This is the rest period of the exercise.
      * @param tags this is an array of tags
      * @param duration
+     * @param images
      * @param req
      * @throws PreconditionFailedException if:
      *                               -Not all parameters are given.
@@ -256,9 +257,10 @@ export class WorkoutController {
         @Body("restPeriod") restPeriod: number,
         @Body("tags") tags: Tag[],
         @Body("duration") duration: number,
+        @Body("images") images: string[],
         @Request() req
     ) {
-      return this.workoutService.createExercise(title, description, repRange, sets, Posedescription, restPeriod, tags, duration, req.user.userID, this.ctx)
+      return this.workoutService.createExercise(title, description, repRange, sets, Posedescription, restPeriod, tags, duration, req.user.userID, images, this.ctx)
     }
 
     /**

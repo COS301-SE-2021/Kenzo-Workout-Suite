@@ -300,27 +300,31 @@ export class WorkoutService {
   }
 
   /**
-     *Workout Service - Create Exercise
-     *
-     * @param title This is the title of the exercise.
-     * @param description This is the description of the exercise.
-     * @param repRange This is the amount of reps.
-     * @param sets This is the amount of sets.
-     * @param poseDescription This is the description of the poses
-     * @param restPeriod This is the rest period of the exercise.
-     * @param tags this is an array of tags
-     * @param duration This is the duration of the exercise.
-     * @param plannerID This is the planner ID
-     * @param ctx  This is the prisma context that is injected into the function.
-     * @throws PreconditionFailedException if:
-     *                               -Not all parameters are given.
-     * @throws NotFoundException if:
-     *                               -An exercise with provided ID does not exist.
-     * @return  Message indicating success.
-     * @author Msi Sibanyoni
-     *
-     */
-  async createExercise (title:string, description:string, repRange:string, sets:number, poseDescription:string, restPeriod:number, tags:Tag[], duration:number, plannerID:string, ctx: Context) {
+   *Workout Service - Create Exercise
+   *
+   * @param title This is the title of the exercise.
+   * @param description This is the description of the exercise.
+   * @param repRange This is the amount of reps.
+   * @param sets This is the amount of sets.
+   * @param poseDescription This is the description of the poses
+   * @param restPeriod This is the rest period of the exercise.
+   * @param tags this is an array of tags
+   * @param duration This is the duration of the exercise.
+   * @param plannerID This is the planner ID
+   * @param images
+   * @param ctx  This is the prisma context that is injected into the function.
+   * @throws PreconditionFailedException if:
+   *                               -Not all parameters are given.
+   * @throws NotFoundException if:
+   *                               -An exercise with provided ID does not exist.
+   * @return  Message indicating success.
+   * @author Msi Sibanyoni
+   *
+   */
+  async createExercise (title:string, description:string, repRange:string, sets:number, poseDescription:string, restPeriod:number, tags:Tag[], duration:number, plannerID:string, images:string[], ctx: Context) {
+    if (images.length === 0) {
+      throw new PreconditionFailedException("Cannot create exercise with no images.")
+    }
     if (title === "" || description === "" || poseDescription === "" || tags == null || plannerID === "" || title == null || description == null || repRange == null || sets == null || poseDescription == null || restPeriod == null || duration == null) {
       throw new NotFoundException("Parameters can not be left empty!")
     }
@@ -334,7 +338,7 @@ export class WorkoutService {
 
         return container
       })
-      await ctx.prisma.exercise.create({
+      const createdExercise = await ctx.prisma.exercise.create({
         data: {
           exerciseTitle: title,
           exerciseDescription: description,
@@ -353,9 +357,11 @@ export class WorkoutService {
           }
         }
       })
+      const exerciseDetails = await this.getExerciseByID(createdExercise.exerciseID, ctx)
+      await this.saveImagesToJSON(exerciseDetails, images)
       return ("Exercise created.")
     } else {
-      await ctx.prisma.exercise.create({
+      const createdExercise = await ctx.prisma.exercise.create({
         data: {
           exerciseTitle: title,
           exerciseDescription: description,
@@ -371,8 +377,29 @@ export class WorkoutService {
           }
         }
       })
+      const exerciseDetails = await this.getExerciseByID(createdExercise.exerciseID, ctx)
+      await this.saveImagesToJSON(exerciseDetails, images)
       return ("Exercise created.")
     }
+  }
+
+  async saveImagesToJSON (exercise:any, images:string[]) {
+    const arrayImages : Array<string> = []
+    images.forEach(function (item, index) {
+      arrayImages.push(item)
+    })
+
+    fs.readFile("./src/createdWorkoutImages.json", function (err, data) {
+      if (err) throw err
+      const json = JSON.parse(data.toString())
+      const final = {}
+      final["ID"] = exercise.exerciseID
+      final["images"] = arrayImages
+      json.push(final)
+      fs.writeFile("./src/createdWorkoutImages.json", JSON.stringify(json), function (err) {
+        if (err) throw err
+      })
+    })
   }
 
   /**
@@ -696,8 +723,6 @@ export class WorkoutService {
     pdfDoc.registerFontkit(fontkit)
     const frontPage = pdfDoc.getPages()
     const firstPage = frontPage[0]
-    // const { width, height } = firstPage.getSize()
-    // fonts
 
     const SFBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
     const SFRegular = await pdfDoc.embedFont(StandardFonts.Helvetica)
