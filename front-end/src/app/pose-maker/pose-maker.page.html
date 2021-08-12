@@ -15,6 +15,12 @@
     <br>
     <ion-title class="title">Controls</ion-title>
     <ion-item>
+      <ion-button mode="ios" (click)="saveFrame(0)">Frame 1</ion-button>
+      <ion-button mode="ios" (click)="saveFrame(1)">Frame 2</ion-button>
+      <ion-button mode="ios" (click)="saveFrame(2)">Frame 3</ion-button>
+      <ion-button mode="ios" (click)="saveFrame(3)">Frame 4</ion-button>
+    </ion-item>
+    <ion-item>
       <ion-label>Body Parts</ion-label>
       <ion-select [(ngModel)]="selection" #val (ionChange)="getCoordinates(val.value)" placeholder="Choose Body Part" mode="ios">
         <ion-select-option value="0">Whole Body</ion-select-option>

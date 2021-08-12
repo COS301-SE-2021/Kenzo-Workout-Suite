@@ -44,10 +44,6 @@ export class PoseMakerPage implements OnInit {
     public leftKnee;
     public leftFoot;
 
-    // Potential Raycasting
-    public mouse: THREE.Vector2;
-    public rayCaster: THREE.Raycaster;
-
     // Height used to get canvas size
     public headerHeight;
     public footerHeight;
@@ -57,6 +53,9 @@ export class PoseMakerPage implements OnInit {
     public yCoordinate: number;
     public zCoordinate: number;
     public selection: number;
+
+    // Stored Frames
+    private frames: string[] = new Array(4);
 
     constructor() {
         this.xCoordinate = 0;
@@ -122,9 +121,6 @@ export class PoseMakerPage implements OnInit {
       this.renderer = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
       this.renderer.setSize(window.innerWidth, window.innerHeight-this.headerHeight-this.footerHeight);
       this.element.appendChild(this.renderer.domElement);
-
-      this.mouse = new THREE.Vector2();
-      this.rayCaster = new THREE.Raycaster();
 
       // Load GLBs
       const loader = new GLTFLoader();
@@ -253,35 +249,20 @@ export class PoseMakerPage implements OnInit {
       this.animate();
   }
 
-  /**
-   * This function initialises the normalised mouse position with respect to the canvas
-   *
-   * @author Luca Azmanov, u19004185
-   * @param value
-   */
-  // @HostListener("click", ["$event"])
-  // onMouseClick(event){
-  //     if(this.mouse!=null) {
-  //         this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  //         this.mouse.y = (event.clientY / (window.innerHeight-this.headerHeight-this.footerHeight)) * 2 - 1;
-  //         console.log(this.mouse);
-  //         this.castRay();
-  //     }
-  // }
-  //
-  // castRay() {
-  //     this.rayCaster.setFromCamera(this.mouse, this.camera);
-  //     const intersects = this.rayCaster.intersectObjects(this.scene.children);
-  //     for (let i=0; i<intersects.length; i++){
-  //         console.log("ITEM "+i+"\t"+intersects[i].object.id);
-  //     }
-  // }
-
   getCoordinates(value) {
       this.selection = value;
       this.xCoordinate = this.mesh.skeleton.bones[value].rotation.x;
       this.yCoordinate = this.mesh.skeleton.bones[value].rotation.y;
       this.zCoordinate = this.mesh.skeleton.bones[value].rotation.z;
       console.log(this.xCoordinate, this.yCoordinate, this.zCoordinate);
+  }
+
+  saveFrame(frame: number) {
+      const strMime = "image/jpeg";
+      const imgData = this.renderer.domElement.toDataURL(strMime);
+
+      this.frames[frame] = imgData;
+      // console.log(frame, imgData);
+      // console.log(this.frames);
   }
 }
