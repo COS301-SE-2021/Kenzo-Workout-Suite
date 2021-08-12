@@ -7,6 +7,10 @@ import numpy as np
 # Checking the current directory path
 print(os.getcwd())
 
+# remove movie.avi if exists
+if os.path.isfile("./src/videoGeneration/Images/movieTemp.avi"):
+    os.remove("./src/videoGeneration/Images/movieTemp.avi")
+
 # Folder which contains all the images
 # from which video is to be generated
 os.chdir("./src/videoGeneration/Images/")
@@ -79,7 +83,7 @@ for file in os.listdir('.'):
 # Video Generating function
 def generate_video():
     image_folder = './src/videoGeneration/Images/'
-    video_name = 'movie.avi'
+    video_name = 'movieTemp.avi'
     # os.chdir("./src/videoGeneration/Videos/")
 
     images = [img for img in os.listdir('.')  # changed image_folder -> '.'

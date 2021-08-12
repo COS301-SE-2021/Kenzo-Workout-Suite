@@ -18,6 +18,7 @@ import { UserService } from "../User/user.service"
 import { PythonShell } from "python-shell"
 
 const Filter = require("bad-words"); const filter = new Filter()
+const { exec } = require("child_process")
 
 @Injectable()
 export class WorkoutService {
@@ -1048,6 +1049,8 @@ export class WorkoutService {
    *
    */
   async convertToVideo (ctx: Context): Promise<any> {
+
+    /*
     const options = {
       pythonOptions: ["-u"],
       pythonPath: "../venv/Scripts/python.exe",
@@ -1057,8 +1060,22 @@ export class WorkoutService {
     try {
       PythonShell.run("videoPython.py", options, function (err, results) {
         if (err) throw err
-        console.log(results)
+        console.log(results+"s")
       })
     } catch (e) { console.log(e) }
+
+    setTimeout(function () {
+      exec("ffmpeg -i ./src/videoGeneration/Images/movieTemp.avi -i ./src/videoGeneration/Sounds/audio1.mp3 -map 0 -map 1:a -c:v copy -shortest ./src/videoGeneration/Videos/output.mkv", (error, stdout, stderr) => {
+        if (error) {
+          console.log(`error: ${error.message}`)
+        }
+        if (stderr) {
+          console.log(`stderr: ${stderr}`)
+        }
+        console.log(`stdout: ${stdout}`)
+      })
+    }, 5000)
+
+     */
   }
 }
