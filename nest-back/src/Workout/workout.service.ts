@@ -1063,6 +1063,34 @@ export class WorkoutService {
    *
    */
   async createVideo (workout: Workout, ctx: Context): Promise<any> {
+    /*
+      First, check for validity of workout object. Next, loop through exercises. While on each exercise, add poses to image array. Finally, create video.
+    */
+
+    if (workout == null) {
+      throw new PreconditionFailedException("Invalid Workout object passed in.")
+    }
+
+    let exercises: Object[] = []
+
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const listOfExercises = await ctx.prisma.exercise.findMany({
+        where: {
+          plannerID: workout.plannerID
+        },
+        select: {
+          exerciseID: true
+        }
+      })
+      if (!(Array.isArray(listOfExercises) && listOfExercises.length)) { // if JSON object is empty, send error code
+        throw new NotFoundException("No Exercises were found in the database with the specified workout.")
+      } else {
+        exercises = listOfExercises
+      }
+    } catch (err) {
+      throw err
+    }
     
     const images = [
       {
