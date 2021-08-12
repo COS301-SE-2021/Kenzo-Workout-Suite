@@ -18,7 +18,7 @@ import * as fs from "fs"
 import { UserService } from "../User/user.service"
 
 const Filter = require("bad-words"); const filter = new Filter()
-const videoshow = require("videoshow")
+// const videoshow = require("videoshow")
 const baseImages = require("../Workout/createdWorkoutImages.json")
 
 @Injectable()
@@ -1071,7 +1071,7 @@ export class WorkoutService {
       throw new PreconditionFailedException("Invalid Workout object passed in.")
     }
 
-    let exercises: Object[] = []
+    const exercises: string[] = []
 
     // eslint-disable-next-line no-useless-catch
     try {
@@ -1086,12 +1086,23 @@ export class WorkoutService {
       if (!(Array.isArray(listOfExercises) && listOfExercises.length)) { // if JSON object is empty, send error code
         throw new NotFoundException("No Exercises were found in the database with the specified workout.")
       } else {
-        exercises = listOfExercises
+        listOfExercises.forEach(element => {
+          exercises.push(element.exerciseID)
+        })
       }
     } catch (err) {
       throw err
     }
-    
+
+    for (let i = 0; i < exercises.length; i++) {
+      if (this.getExerciseBase64(exercises[i]) === -1) {
+        console.log("error")
+      } else {
+        console.log("exists")
+      }
+    }
+
+    /*
     const images = [
       {
         path: "./src/Workout/images/workoutImagere.jpg",
@@ -1143,31 +1154,6 @@ export class WorkoutService {
       .on("end", function (output) {
         console.error("Video created in:", output)
       })
-    /*
-    const options = {
-      pythonOptions: ["-u"],
-      pythonPath: "../venv/Scripts/python.exe",
-      scriptPath: "./src/videoGeneration",
-      args: []
-    }
-    try {
-      PythonShell.run("videoPython.py", options, function (err, results) {
-        if (err) throw err
-        console.log(results+"s")
-      })
-    } catch (e) { console.log(e) }
-
-    setTimeout(function () {
-      exec("ffmpeg -i ./src/videoGeneration/Images/movieTemp.avi -i ./src/videoGeneration/Sounds/audio1.mp3 -map 0 -map 1:a -c:v copy -shortest ./src/videoGeneration/Videos/output.mkv", (error, stdout, stderr) => {
-        if (error) {
-          console.log(`error: ${error.message}`)
-        }
-        if (stderr) {
-          console.log(`stderr: ${stderr}`)
-        }
-        console.log(`stdout: ${stdout}`)
-      })
-    }, 5000)
 
      */
   }
