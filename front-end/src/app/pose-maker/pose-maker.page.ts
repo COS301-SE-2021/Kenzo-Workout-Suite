@@ -38,7 +38,8 @@ export class PoseMakerPage implements OnInit {
     onResize(event) {
         this.camera.aspect = event.target.innerWidth / event.target.innerHeight;
         this.camera.updateProjectionMatrix();
-        this.renderer.setSize(event.target.innerWidth, event.target.innerHeight-60);
+        const headerHeight = document.getElementById("header").offsetHeight;
+        this.renderer.setSize(event.target.innerWidth, event.target.innerHeight-headerHeight);
     }
 
   /**
@@ -78,7 +79,10 @@ export class PoseMakerPage implements OnInit {
       );
 
       this.renderer = new THREE.WebGLRenderer();
-      this.renderer.setSize(window.innerWidth, window.innerHeight-60);
+
+      const headerHeight = document.getElementById("header").offsetHeight;
+
+      this.renderer.setSize(window.innerWidth, window.innerHeight-headerHeight);
       this.element.appendChild(this.renderer.domElement);
 
       const loader = new GLTFLoader();
