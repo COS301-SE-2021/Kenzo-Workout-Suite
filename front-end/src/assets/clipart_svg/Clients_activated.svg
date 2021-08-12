@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 400 400" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1.02151,0,0,1.02151,-4.51084,-0.610668)">
+        <clipPath id="_clip1">
+            <rect x="5.088" y="6.829" width="390.235" height="379.116"/>
+        </clipPath>
+        <g clip-path="url(#_clip1)">
+            <g transform="matrix(0.847774,0,0,0.847774,149.481,34.2553)">
+                <g transform="matrix(1.74637,0,0,1.90317,-156.918,-125.281)">
+                    <ellipse cx="204.377" cy="127.499" rx="46.218" ry="42.41" style="fill:rgb(255,78,115);"/>
+                </g>
+                <g transform="matrix(1.26319,0,0,1.15889,-52.4491,88.5977)">
+                    <ellipse cx="199.85" cy="284.574" rx="112.851" ry="152.248" style="fill:rgb(255,78,115);"/>
+                </g>
+            </g>
+            <g transform="matrix(0.847774,0,0,0.847774,-79.9707,53.3125)">
+                <g transform="matrix(1.74637,0,0,1.90317,-156.918,-125.281)">
+                    <ellipse cx="204.377" cy="127.499" rx="46.218" ry="42.41" style="fill:rgb(255,160,126);"/>
+                </g>
+                <g transform="matrix(1.26319,0,0,1.15889,-52.4491,88.5977)">
+                    <ellipse cx="199.85" cy="284.574" rx="112.851" ry="152.248" style="fill:rgb(255,160,126);"/>
+                </g>
+            </g>
+            <g transform="matrix(1.03961,0,0,1.03961,-8.74878,-31.2811)">
+                <g transform="matrix(1.74637,0,0,1.90317,-156.918,-125.281)">
+                    <ellipse cx="204.377" cy="127.499" rx="46.218" ry="42.41" style="fill:rgb(255,105,92);"/>
+                </g>
+                <g transform="matrix(1.26319,0,0,1.15889,-52.4491,88.5977)">
+                    <ellipse cx="199.85" cy="284.574" rx="112.851" ry="152.248" style="fill:rgb(255,105,92);"/>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
