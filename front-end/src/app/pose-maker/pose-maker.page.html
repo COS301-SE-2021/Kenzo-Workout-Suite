@@ -12,6 +12,52 @@
 </ion-content>
 <ion-footer id="footer">
   <ion-toolbar>
+    <br>
     <ion-title class="title">Controls</ion-title>
+    <ion-item>
+      <ion-label>Body Parts</ion-label>
+      <ion-select [(ngModel)]="selection" #val (ionChange)="getCoordinates(val.value)" placeholder="Choose Body Part" mode="ios">
+        <ion-select-option value="0">Whole Body</ion-select-option>
+        <ion-select-option value="4">Neck</ion-select-option>
+        <ion-select-option value="3">Upper Torso</ion-select-option>
+        <ion-select-option value="2">Middle Torso</ion-select-option>
+        <ion-select-option value="1">Lower Torso</ion-select-option>
+        <ion-select-option value="7">Right Shoulder</ion-select-option>
+        <ion-select-option value="8">Right Upper Arm</ion-select-option>
+        <ion-select-option value="9">Right Elbow</ion-select-option>
+        <ion-select-option value="10">Right Hand</ion-select-option>
+        <ion-select-option value="11">Left Shoulder</ion-select-option>
+        <ion-select-option value="12">Left Upper Arm</ion-select-option>
+        <ion-select-option value="13">Left Elbow</ion-select-option>
+        <ion-select-option value="14">Left Hand</ion-select-option>
+        <ion-select-option value="17">Right Upper Leg</ion-select-option>
+        <ion-select-option value="18">Right Knee</ion-select-option>
+        <ion-select-option value="19">Right Foot</ion-select-option>
+        <ion-select-option value="20">Left Upper Leg</ion-select-option>
+        <ion-select-option value="21">Left Knee</ion-select-option>
+        <ion-select-option value="22">Left Foot</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-title id="x" class="coord">X</ion-title>
+      <ion-range [(ngModel)]="xCoordinate" min="-360" max="360" class="slider" mode="ios" color="tertiary" pin="true">
+        <ion-icon name="remove" slot="start"></ion-icon>
+        <ion-icon name="add" slot="end"></ion-icon>
+      </ion-range>
+    </ion-item>
+    <ion-item>
+      <ion-title id="y" class="coord">Y</ion-title>
+      <ion-range [(ngModel)]="yCoordinate" min="-360" max="360" class="slider" mode="ios" color="tertiary" pin="true">
+        <ion-icon name="remove" slot="start"></ion-icon>
+        <ion-icon name="add" slot="end"></ion-icon>
+      </ion-range>
+    </ion-item>
+    <ion-item>
+      <ion-title id="z" class="coord">X</ion-title>
+      <ion-range [(ngModel)]="zCoordinate" min="-360" max="360" class="slider" mode="ios" color="tertiary" pin="true">
+        <ion-icon name="remove" slot="start"></ion-icon>
+        <ion-icon name="add" slot="end"></ion-icon>
+      </ion-range>
+    </ion-item>
   </ion-toolbar>
 </ion-footer>

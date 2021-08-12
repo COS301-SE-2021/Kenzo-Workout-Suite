@@ -25,6 +25,21 @@
 .title {
   color: var(--ion-color-tertiary);
 }
+.coord{
+  color: var(--ion-color-tertiary);
+  padding-right: 0;
+  margin-right: 0;
+}
+
+#x{
+  color: red;
+}
+#y{
+  color: green;
+}
+#z{
+  color: blue;
+}
 
 .kenzo-input{
   font-family: "SF Pro Regular", serif;
@@ -83,3 +98,5 @@ ion-header{
   height: 10%;
   font-size: 30px;
 }
+
+

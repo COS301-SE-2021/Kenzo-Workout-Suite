@@ -1,5 +1,5 @@
 import {Component, ElementRef, HostListener, OnInit, ViewChild} from "@angular/core";
-import * as THREE from "three";
+import * as THREE from "./three.js-master/build/three.module.js";
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader.js";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
 import {NavController} from "@ionic/angular";
@@ -11,6 +11,7 @@ import {NavController} from "@ionic/angular";
 })
 export class PoseMakerPage implements OnInit {
 
+    // Canvas Elements
     @ViewChild("webgl")
     canvas: ElementRef;
     @ViewChild("start-button")
@@ -21,8 +22,48 @@ export class PoseMakerPage implements OnInit {
     public renderer: THREE.WebGLRenderer;
     public material;
     private controls;
+    private mesh;
+
+    // Body Parts
+    public body;
+    public lowerBody;
+    public middleBody;
+    public upperBody;
+    public lowerNeck;
+    public rightShoulder;
+    public rightUpperArm;
+    public rightElbow;
+    public rightHand;
+    public leftShoulder;
+    public leftUpperArm;
+    public leftElbow;
+    public leftHand;
+    public rightUpperLeg;
+    public rightKnee;
+    public rightFoot;
+    public leftUpperLeg;
+    public leftKnee;
+    public leftFoot;
+
+    // Potential Raycasting
+    public mouse: THREE.Vector2;
+    public rayCaster: THREE.Raycaster;
+
+    // Height used to get canvas size
+    public headerHeight;
+    public footerHeight;
+
+    // Coordinates as per the sliders in UI
+    public xCoordinate: number;
+    public yCoordinate: number;
+    public zCoordinate: number;
+    public selection: number;
 
     constructor(public navCtrl: NavController) {
+        this.xCoordinate = 0;
+        this.yCoordinate = 0;
+        this.zCoordinate = 0;
+        this.selection = -1;
     }
 
     ngOnInit() {
@@ -38,9 +79,7 @@ export class PoseMakerPage implements OnInit {
     onResize(event) {
         this.camera.aspect = event.target.innerWidth / event.target.innerHeight;
         this.camera.updateProjectionMatrix();
-        const headerHeight = document.getElementById("header").offsetHeight;
-        const footerHeight = document.getElementById("footer").offsetHeight;
-        this.renderer.setSize(event.target.innerWidth, event.target.innerHeight-headerHeight-footerHeight);
+        this.renderer.setSize(event.target.innerWidth, event.target.innerHeight-this.headerHeight-this.footerHeight);
     }
 
   /**
@@ -52,6 +91,8 @@ export class PoseMakerPage implements OnInit {
    */
   start(): void {
       document.getElementById("start-button").style.display = "none";
+      this.headerHeight = document.getElementById("header").offsetHeight;
+      this.footerHeight = document.getElementById("footer").offsetHeight;
       this.initScene();
       this.renderAnimation();
   }
@@ -66,7 +107,6 @@ export class PoseMakerPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   initScene(): void {
-
       this.element = this.canvas.nativeElement;
 
       // Define a new ThreeJS scene
@@ -79,31 +119,49 @@ export class PoseMakerPage implements OnInit {
           1000
       );
 
+      // Init Render and Size
       this.renderer = new THREE.WebGLRenderer();
-
-      const headerHeight = document.getElementById("header").offsetHeight;
-      const footerHeight = document.getElementById("footer").offsetHeight;
-      this.renderer.setSize(window.innerWidth, window.innerHeight-headerHeight-footerHeight);
+      this.renderer.setSize(window.innerWidth, window.innerHeight-this.headerHeight-this.footerHeight);
       this.element.appendChild(this.renderer.domElement);
 
-      const loader = new GLTFLoader();
+      this.mouse = new THREE.Vector2();
+      this.rayCaster = new THREE.Raycaster();
 
+      // Load GLBs
+      const loader = new GLTFLoader();
       loader.load("assets/avatar/ArmatureModel.glb", (glb)=>{
 
           const object = glb.scene;
-
-          // root.material.color.set(0,1,0);
 
           tempScene.add(object);
           object.scale.set(0.2, 0.2, 0.2);
           object.position.y-=0.2;
 
+          this.mesh = tempScene.getObjectByName("Human_BaseMesh");
+          this.body = this.mesh.skeleton.bones[0];
+          this.lowerBody = this.mesh.skeleton.bones[1];
+          this.middleBody = this.mesh.skeleton.bones[2];
+          this.upperBody = this.mesh.skeleton.bones[3];
+          this.lowerNeck = this.mesh.skeleton.bones[4];
+          this.rightShoulder = this.mesh.skeleton.bones[7];
+          this.rightUpperArm = this.mesh.skeleton.bones[8];
+          this.rightElbow = this.mesh.skeleton.bones[9];
+          this.rightHand = this.mesh.skeleton.bones[10];
+          this.leftShoulder = this.mesh.skeleton.bones[11];
+          this.leftUpperArm = this.mesh.skeleton.bones[12];
+          this.leftElbow = this.mesh.skeleton.bones[13];
+          this.leftHand = this.mesh.skeleton.bones[14];
+          this.rightUpperLeg = this.mesh.skeleton.bones[17];
+          this.rightKnee = this.mesh.skeleton.bones[18];
+          this.rightFoot = this.mesh.skeleton.bones[19];
+          this.leftUpperLeg = this.mesh.skeleton.bones[20];
+          this.leftKnee = this.mesh.skeleton.bones[21];
+          this.leftFoot = this.mesh.skeleton.bones[22];
 
           // Retrieve Textures to set Scene
           const texture= new THREE.TextureLoader().load("assets/avatar/texture.jpg");
           const brickTexture = new THREE.TextureLoader().load("assets/avatar/brick.jpg");
           const roofTexture= new THREE.TextureLoader().load("assets/avatar/roofTexture.jpg");
-
 
           // Set Scene
           const geometry = new THREE.BoxGeometry( 13, 0.5, 13 );
@@ -142,7 +200,6 @@ export class PoseMakerPage implements OnInit {
           tempScene.add( roof );
           roof.position.y-=-6;
 
-
       }, (xhr)=>{
           console.log((xhr. loaded/xhr.total * 100) + "% loaded");
       }, ()=>{
@@ -150,7 +207,6 @@ export class PoseMakerPage implements OnInit {
       });
 
       this.scene = tempScene;
-
 
       // Add light-source for visibility of object
       const light = new THREE.DirectionalLight(0xffffff, 1);
@@ -179,8 +235,13 @@ export class PoseMakerPage implements OnInit {
           this.animate();
       });
 
-      this.controls.update();
+      if(this.selection !== -1) {
+          this.mesh.skeleton.bones[this.selection].rotation.x = this.xCoordinate * 0.01;
+          this.mesh.skeleton.bones[this.selection].rotation.y = this.yCoordinate * 0.01;
+          this.mesh.skeleton.bones[this.selection].rotation.z = this.zCoordinate * 0.01;
+      }
 
+      this.controls.update();
       this.renderer.render(this.scene, this.camera);
   }
 
@@ -191,5 +252,37 @@ export class PoseMakerPage implements OnInit {
    */
   renderAnimation(): void {
       this.animate();
+  }
+
+  /**
+   * This function initialises the normalised mouse position with respect to the canvas
+   *
+   * @author Luca Azmanov, u19004185
+   * @param value
+   */
+  // @HostListener("click", ["$event"])
+  // onMouseClick(event){
+  //     if(this.mouse!=null) {
+  //         this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  //         this.mouse.y = (event.clientY / (window.innerHeight-this.headerHeight-this.footerHeight)) * 2 - 1;
+  //         console.log(this.mouse);
+  //         this.castRay();
+  //     }
+  // }
+  //
+  // castRay() {
+  //     this.rayCaster.setFromCamera(this.mouse, this.camera);
+  //     const intersects = this.rayCaster.intersectObjects(this.scene.children);
+  //     for (let i=0; i<intersects.length; i++){
+  //         console.log("ITEM "+i+"\t"+intersects[i].object.id);
+  //     }
+  // }
+
+  getCoordinates(value) {
+      this.selection = value;
+      this.xCoordinate = this.mesh.skeleton.bones[value].rotation.x;
+      this.yCoordinate = this.mesh.skeleton.bones[value].rotation.y;
+      this.zCoordinate = this.mesh.skeleton.bones[value].rotation.z;
+      console.log(this.xCoordinate, this.yCoordinate, this.zCoordinate);
   }
 }
