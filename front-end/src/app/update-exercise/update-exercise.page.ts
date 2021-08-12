@@ -269,13 +269,17 @@ export class UpdateExercisePage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   filterSelection(event) {
-      const text = event.srcElement.value;
+      const text = event.srcElement.value.trim();
+      if(text===""){
+          document.getElementById("no-tag-create").style.display="none";
+          return;
+      }
 
       let found = false;
       for (let i = 0; i < this.tags.length; i++) {
           const tag = this.tags[i];
 
-          if(tag.label.toLowerCase().includes(text.toLowerCase())) {
+          if(tag.label.toLowerCase()===(text.toLowerCase())) {
               found = true;
           }
 
@@ -285,7 +289,7 @@ export class UpdateExercisePage implements OnInit {
               const tagElement = document.getElementById(id);
 
               // if tag label does not contain the searched tag
-              if(!id.toLowerCase().includes(text.toLowerCase())){
+              if(!id.toLowerCase()===(text.toLowerCase())){
                   tagElement.style.display = "none";
               } else{ // if tag label contains the searched tag
                   tagElement.style.display = "inline-block";
