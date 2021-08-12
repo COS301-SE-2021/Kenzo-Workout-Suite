@@ -1171,4 +1171,13 @@ export class WorkoutService {
 
      */
   }
+
+  getExerciseBase64 (id: string) {
+    for (let i = 0; i < baseImages.length; i++) {
+      if (baseImages[i].ID === id) {
+        return baseImages[i].images
+      }
+    }
+    return -1
+  }
 }
