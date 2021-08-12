@@ -68,3 +68,9 @@
   --background: var(--ion-off-white);
   border: none;
 }
+
+ion-header{
+  ion-title{
+    height: 60px;
+  }
+}
