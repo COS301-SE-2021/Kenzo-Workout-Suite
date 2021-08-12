@@ -2,7 +2,6 @@ import {Component, ElementRef, HostListener, OnInit, ViewChild} from "@angular/c
 import * as THREE from "./three.js-master/build/three.module.js";
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader.js";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
-import {NavController} from "@ionic/angular";
 
 @Component({
     selector: "app-pose-maker",
@@ -59,7 +58,7 @@ export class PoseMakerPage implements OnInit {
     public zCoordinate: number;
     public selection: number;
 
-    constructor(public navCtrl: NavController) {
+    constructor() {
         this.xCoordinate = 0;
         this.yCoordinate = 0;
         this.zCoordinate = 0;
@@ -120,7 +119,7 @@ export class PoseMakerPage implements OnInit {
       );
 
       // Init Render and Size
-      this.renderer = new THREE.WebGLRenderer();
+      this.renderer = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
       this.renderer.setSize(window.innerWidth, window.innerHeight-this.headerHeight-this.footerHeight);
       this.element.appendChild(this.renderer.domElement);
 
