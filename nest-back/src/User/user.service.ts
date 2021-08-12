@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable, NotFoundException, PreconditionFailedException } from "@nestjs/common"
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  PreconditionFailedException,
+  UnauthorizedException
+} from "@nestjs/common"
 import { JwtService } from "@nestjs/jwt"
 import { User } from "@prisma/client"
 import * as bcrypt from "bcrypt"
@@ -35,6 +41,11 @@ export class UserService {
 
     if (user == null) {
       throw new NotFoundException("Invalid Email or Password")
+    }
+
+    if (user.password=="GOOGLE_PASSWORD")
+    {
+      throw new UnauthorizedException("This user has already been registered with google, please login via google.")
     }
 
     const isMatch = await bcrypt.compare(pass, user.password)
@@ -228,7 +239,7 @@ export class UserService {
     }
   }
 
-  async googleLogin (req) {
+  async googleLogin (req,ctx:Context) {
     if (!req) {
       throw new BadRequestException("No such google User")
     }
@@ -237,9 +248,63 @@ export class UserService {
       throw new BadRequestException("No such google User")
     }
 
-    return {
-      message: "User information from google",
-      user: req.user
+      try {
+        const myUser = await ctx.prisma.user.findUnique({
+          where: {
+            email: req.user.email
+          }
+        })
+
+        if (!myUser) {
+          const createdUser = await ctx.prisma.user.create({
+            data: {
+              firstName: req.user.firstName,
+              lastName: req.user.lastName,
+              userType: "PLANNER",
+              email: req.user.email,
+              password: "GOOGLE_PASSWORD"
+            }
+          })
+          const payload = { userID: createdUser.userID }
+
+          return {
+            access_token: this.jwtService.sign(payload),
+            first_time:"true"
+          }
+
+        }
+
+        else
+        {
+          if (myUser.password!="GOOGLE_PASSWORD")
+          {
+            throw new UnauthorizedException("USER WITH THIS EMAIL HAS ALREADY BEEN REGISTERED AS A NON-GOOGLE USER")
+          }
+
+          else
+          {
+            const payload = { userID: myUser.userID }
+
+            return {
+              access_token: this.jwtService.sign(payload)
+            }
+          }
+        }
+      }
+
+    catch (err)
+    {
+      if (err.message=="USER WITH THIS EMAIL HAS ALREADY BEEN REGISTERED AS A NON-GOOGLE USER")
+      {
+        throw err;
+      }
+
+      if (err.message=="No such google User")
+      {
+        throw err;
+      }
+
+      throw new BadRequestException("Could not perform google login");
     }
   }
 
