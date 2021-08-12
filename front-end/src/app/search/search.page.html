@@ -1,7 +1,7 @@
 <ion-content class="your-exercises-background">
   <div class="container">
     <div class="Spacing-div">
-      <ion-label id="exerciseHeading" >Browse page</ion-label>
+      <ion-label id="exerciseHeading">Exercises</ion-label>
       <div class="kenzo-fixed">
         <ion-fab slot="fixed" vertical="bottom" horizontal="end">
           <ion-fab-button>
@@ -31,28 +31,22 @@
   </div>
 
 </ion-content>
-<ion-footer>
-  <ion-toolbar mode="ios" class="footer">
-    <ion-thumbnail slot="start" class="navThumbnail" (click)="goToFYP()">
-      <ion-img src="../../assets/clipart/Clipboard.png" class="NavButtons" id="WorkoutsBtn" mode="ios" ></ion-img>
-      <ion-label class="NavLabel">Home</ion-label>
-    </ion-thumbnail>
+<ion-tab-bar mode="md" slot="bottom">
+  <ion-tab-button (click)="goToFYP()">
+    <ion-label>Workouts</ion-label>
+    <ion-icon src="assets/clipart_svg/Clipboard.svg"></ion-icon>
+  </ion-tab-button>
+  <ion-tab-button tab=".">
+    <ion-label>Exercises</ion-label>
+    <ion-icon src="assets/clipart_svg/Library_activated.svg"></ion-icon>
+  </ion-tab-button>
+  <ion-tab-button (click)="goToClients()">
+    <ion-label>Clients</ion-label>
+    <ion-icon src="assets/clipart_svg/Clients.svg"></ion-icon>
+  </ion-tab-button>
+  <ion-tab-button (click)="goToProfile()">
+    <ion-label>Settings</ion-label>
+    <ion-icon src="assets/clipart_svg/Setting.svg"></ion-icon>
+  </ion-tab-button>
+</ion-tab-bar>
 
-    <ion-thumbnail slot="start" class="navThumbnail" routerLink=".">
-      <ion-img src="../../assets/clipart/Library_activated.png" class="NavButtons" id="SearchBtn" ></ion-img>
-      <ion-label class="NavLabel browseLabel">Browse</ion-label>
-    </ion-thumbnail>
-
-    <ion-thumbnail slot="start" class="navThumbnail" (click)="goToClients()">
-      <ion-img src="../../assets/clipart/Clients.png" class="NavButtons" id="ContactsBtn" ></ion-img>
-      <ion-label class="NavLabel clientsLabel">Clients</ion-label>
-    </ion-thumbnail>
-
-    <ion-thumbnail slot="start" class="navThumbnail" (click)="goToProfile()">
-      <ion-img src="../../assets/clipart/Setting.png" class="NavButtons" id="SettingsBtn" ></ion-img>
-      <ion-label class="NavLabel profileLabel">Settings</ion-label>
-    </ion-thumbnail>
-
-  </ion-toolbar>
-  <br>
-</ion-footer>
