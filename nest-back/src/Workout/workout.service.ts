@@ -7,6 +7,7 @@ import {
 import { Context } from "../../context"
 
 import {
+  Workout,
   Exercise,
   Tag
 } from "@prisma/client"
@@ -15,10 +16,10 @@ import { PrismaService } from "../Prisma/prisma.service"
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib"
 import * as fs from "fs"
 import { UserService } from "../User/user.service"
-import { PythonShell } from "python-shell"
 
 const Filter = require("bad-words"); const filter = new Filter()
-const { exec } = require("child_process")
+const videoshow = require("videoshow")
+const baseImages = require("../Workout/createdWorkoutImages.json")
 
 @Injectable()
 export class WorkoutService {
@@ -1024,6 +1025,17 @@ export class WorkoutService {
     }
   }
 
+  /**
+   *Workout Service - textToSpeech
+   *
+   * @param text This parameter includes the string that needs to be converted to a .wav file (Audio file).
+   * @param fileName  This is the name of the file that will be stored on the server.
+   * @throws BadRequestException if:
+   *                               -Conversion from text to speech has failed.
+   * @return  Message indicating success (text file has been created).
+   * @author Zelealem Tesema
+   *
+   */
   async textToSpeech (text:String, fileName:String) {
     const gtts = require("node-gtts")("en")
     const path = require("path")
@@ -1041,6 +1053,8 @@ export class WorkoutService {
 
   /**
    *Workout Service - Convert to Video
+   * @brief Function that takes a workout object as a parameter and converts each exercises' images into a video
+   * @param workout  The workout object
    * @param ctx  This is the prisma context that is injected into the function.
    * @throws NotFoundException if:
    *                               -No images are found.
@@ -1048,8 +1062,59 @@ export class WorkoutService {
    * @author Tinashe Chamisa
    *
    */
-  async convertToVideo (ctx: Context): Promise<any> {
+  async createVideo (workout: Workout, ctx: Context): Promise<any> {
+    
+    const images = [
+      {
+        path: "./src/Workout/images/workoutImagere.jpg",
+        caption: "Shake that booty and get a good workout in",
+        loop: 15
+      },
+      {
+        path: "./src/Workout/images/workoutImagere.jpg",
+        caption: "Why was this so damn easy"
+      },
+      {
+        path: "./src/Workout/images/workoutImagere.jpg",
+        caption: "Shake that booty again and lets get it"
+      },
+      {
+        path: "./src/Workout/images/workoutImagere.jpg",
+        caption: "Keep shaking that booty"
+      },
+      {
+        path: "./src/Workout/images/extraImage.jpg",
+        caption: "Awe thats done, get ready for the next exercise you slut"
+      }
+    ]
 
+    const videoOptions = {
+      fps: 25,
+      loop: 5, // seconds
+      transition: true,
+      transitionDuration: 1, // seconds
+      videoBitrate: 1024,
+      videoCodec: "libx264",
+      size: "640x?",
+      audioBitrate: "128k",
+      audioChannels: 2,
+      format: "mp4",
+      pixelFormat: "yuv420p"
+    }
+
+    videoshow(images, videoOptions)
+      .audio("./src/Workout/audio/song1.mp3")
+      .save("./src/videoGeneration/videoAUDIO.mp4")
+      .on("start", function (command) {
+        console.log("ffmpeg process started:", command)
+      })
+      .on("error", function (err, stdout, stderr) {
+        console.error("Error:", err)
+        console.error("ffmpeg stderr:", stderr)
+      })
+      .on("end", function (output) {
+        console.error("Video created in:", output)
+      })
     /*
     const options = {
       pythonOptions: ["-u"],
