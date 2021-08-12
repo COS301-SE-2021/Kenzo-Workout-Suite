@@ -1,27 +1,26 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {AlertController, IonSearchbar} from "@ionic/angular";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
 import {Workout} from "../Models/workout";
-import {KenzoTag} from "../Models/kenzo-tag";
 
 @Component({
-  selector: 'app-create-workout',
-  templateUrl: './create-workout.page.html',
-  styleUrls: ['./create-workout.page.scss'],
+    selector: "app-create-workout",
+    templateUrl: "./create-workout.page.html",
+    styleUrls: ["./create-workout.page.scss"],
 })
 export class CreateWorkoutPage implements OnInit {
-  planner_ID: string="";
-  description: string="";
-  title: string="";
+  plannerID="";
+  description="";
+  title="";
 
-  @ViewChild('searchBar', {static: false}) searchbar: IonSearchbar;
+  @ViewChild("searchBar", {static: false}) searchbar: IonSearchbar;
 
-  constructor(private http:HttpClient,
-              private route:Router,
-              private workoutService:WorkoutService,
-              public alertController:AlertController,) {
+  constructor(private http: HttpClient,
+              private route: Router,
+              private workoutService: WorkoutService,
+              public alertController: AlertController,) {
   }
 
   ngOnInit() {
@@ -36,63 +35,64 @@ export class CreateWorkoutPage implements OnInit {
    * Thereafter,
    * Error states [400,500] will result in an alert
    * Success states [200] will result in a logged in a Planner being navigated to the logged in User's homescreen.
+   *
    * @author Luca Azmanov, u19004185
    */
   async submitCreateRequest() {
-    let new_workout = new Workout(this.title, this.description, []);
-    let status = await this.workoutService.attemptSubmitWorkout(new_workout);
+      const newWorkout = new Workout(this.title, this.description, []);
+      const status = await this.workoutService.attemptSubmitWorkout(newWorkout);
 
-    if (status < 400) {
+      if (status < 400) {
       // Success State
-      const alert = await this.alertController.create({
-        cssClass: 'kenzo-alert',
-        header: 'Workout Submitted',
-        buttons: ['Go Back']
-      });
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Workout Submitted",
+              buttons: ["Go Back"]
+          });
 
-      await this.presentAlert(alert);
-      this.route.navigate(['/your-workouts']).then(success=>{
-        this.reloadWindow();}
-      );
-      return 200;
-    }
-    else if(status>=400 && status<500){
+          await this.presentAlert(alert);
+          this.route.navigate(["/your-workouts"]).then(()=>{
+              this.reloadWindow();
+          }
+          );
+          return 200;
+      } else if(status>=400 && status<500){
       // Invalid Input
-      const alert = await this.alertController.create({
-        cssClass: 'kenzo-alert',
-        header: 'Could not create workout',
-        message: 'Please fill all of the fields.',
-        buttons: ['Dismiss']
-      });
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Could not create workout",
+              message: "Please fill all of the fields.",
+              buttons: ["Dismiss"]
+          });
 
-      await this.presentAlert(alert);
-      throw new Error("Data is invalid.");
-    }
-    else{
+          await this.presentAlert(alert);
+          throw new Error("Data is invalid.");
+      } else{
       // Server Error
-      const alert = await this.alertController.create({
-        cssClass: 'kenzo-alert',
-        header: "Server isn't responding",
-        message: 'Please try again later.',
-        buttons: ['Dismiss']
-      });
-      await this.presentAlert(alert);
-      throw new Error("Server is not responding.");
-    }
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Server isn't responding",
+              message: "Please try again later.",
+              buttons: ["Dismiss"]
+          });
+          await this.presentAlert(alert);
+          throw new Error("Server is not responding.");
+      }
   }
 
   /**
    * Helper Function to physically present alert to User independent of OS.
+   *
    * @param alert
    * @author Luca Azmanov, u19004185
    */
-  async presentAlert(alert:any) {
-    await alert.present();
-    await alert.onDidDismiss();
+  async presentAlert(alert: any) {
+      await alert.present();
+      await alert.onDidDismiss();
   }
 
   reloadWindow(){
-    window.location.reload();
+      window.location.reload();
   }
 
 }
