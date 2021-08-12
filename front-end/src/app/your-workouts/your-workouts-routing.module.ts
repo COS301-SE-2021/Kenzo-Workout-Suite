@@ -6,7 +6,6 @@ import { CreateWorkoutPage} from "../create-workout/create-workout.page";
 import { SearchPage } from "../search/search.page";
 import {ProfilePage} from "../profile/profile.page";
 import {UpdateWorkoutPage} from "../update-workout/update-workout.page";
-import {UpdateExercisePage} from "../update-exercise/update-exercise.page";
 import {ClientListPage} from "../client-list/client-list.page";
 
 const routes: Routes = [
@@ -29,10 +28,6 @@ const routes: Routes = [
     {
         path: "update-workout",
         component: UpdateWorkoutPage
-    },
-    {
-        path: "update-exercise",
-        component: UpdateExercisePage
     },
     {
         path: "client-list",

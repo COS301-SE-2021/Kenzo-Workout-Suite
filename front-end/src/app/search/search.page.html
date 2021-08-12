@@ -25,6 +25,7 @@
             <ion-card-title>{{ exercise.exerciseTitle }}</ion-card-title>
           </ion-card-header>
           <ion-card-content>{{ exercise.exerciseDescription}}</ion-card-content>
+          <ion-button mode="ios" class="editBtn" (click)="sendExerciseID(exercise.exerciseID)">Edit</ion-button>
         </ion-card>
       </ion-virtual-scroll>
     </div>
