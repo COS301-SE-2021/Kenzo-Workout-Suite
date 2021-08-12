@@ -1172,6 +1172,15 @@ export class WorkoutService {
      */
   }
 
+  /**
+   *Workout service - Get Exercises Base 64
+   *
+   * @brief Function that accepts an exercise ID as a parameter and returns the list of poses associated with the exercise. If exercise doesn't exist, return -1.
+   * @param id Exercise ID
+   * @return  Re-formatted Array of base64 images.
+   * @author Tinashe Chamisa
+   *
+   */
   getExerciseBase64 (id: string) {
     for (let i = 0; i < baseImages.length; i++) {
       if (baseImages[i].ID === id) {
