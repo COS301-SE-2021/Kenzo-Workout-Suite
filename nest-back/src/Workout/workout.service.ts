@@ -763,6 +763,7 @@ export class WorkoutService {
 
     const titleHeadingColour = rgb(0.13, 0.185, 0.24)
     const fieldsHeadingColour = rgb(0.071, 0.22, 0.4117)
+    console.log(workout)
 
     try {
       firstPage.drawText(workout.workoutTitle, {
@@ -818,9 +819,7 @@ export class WorkoutService {
             const pdfDoc2 = await PDFDocument.load(uint8ArrayOP)
             const [existingPage] = await pdfDoc.copyPages(pdfDoc2, [0])
             const currentPage = pdfDoc.addPage(existingPage)
-
-            const exercise = await this.getExerciseByID(workout.exercises[i].exerciseID, ctx)
-            currentPage.drawText(exercise.exerciseTitle, {
+            currentPage.drawText(workout.exercises[i].exerciseTitle, {
               x: 20,
               y: 740,
               size: 19,
@@ -835,7 +834,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(exercise.exerciseDescription, {
+            currentPage.drawText(workout.exercises[i].exerciseDescription, {
               x: 20,
               y: 700,
               size: 10,
@@ -849,7 +848,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(exercise.repRange, {
+            currentPage.drawText(workout.exercises[i].repRange, {
               x: 130,
               y: 620,
               size: 12,
@@ -863,7 +862,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(exercise.sets.toString(), {
+            currentPage.drawText(workout.exercises[i].sets.toString(), {
               x: 130,
               y: 600,
               size: 12,
@@ -877,7 +876,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(exercise.restPeriod.toString(), {
+            currentPage.drawText(workout.exercises[i].restPeriod.toString(), {
               x: 130,
               y: 570,
               size: 12,
@@ -891,7 +890,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText((exercise.duration / 60).toString() + " minutes", {
+            currentPage.drawText((workout.exercises[i].duration / 60).toString() + " minutes", {
               x: 130,
               y: 540,
               size: 12,
@@ -915,7 +914,7 @@ export class WorkoutService {
             fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
               if (err) throw err
               const json = JSON.parse(data.toString())
-              const exerciseImages = json.find(({ ID }) => ID === exercise.exerciseID)
+              const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
               if (exerciseImages !== "undefined") {
                 for (let c = 0; c < exerciseImages.images.length; c++) {
                   const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
@@ -931,8 +930,7 @@ export class WorkoutService {
             exercisePosCount += 1
           } else {
             const currentPage = pdfDoc.getPage(pdfDoc.getPageCount() - 1)
-            const exercise = await this.getExerciseByID(workout.exercises[i].exerciseID, ctx)
-            currentPage.drawText(exercise.exerciseTitle, {
+            currentPage.drawText(workout.exercises[i].exerciseTitle, {
               x: 20,
               y: 370,
               size: 19,
@@ -946,7 +944,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(exercise.exerciseDescription, {
+            currentPage.drawText(workout.exercises[i].exerciseDescription, {
               x: 20,
               y: 330,
               size: 10,
@@ -960,7 +958,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(exercise.repRange, {
+            currentPage.drawText(workout.exercises[i].repRange, {
               x: 130,
               y: 250,
               size: 12,
@@ -974,7 +972,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(exercise.sets.toString(), {
+            currentPage.drawText(workout.exercises[i].sets.toString(), {
               x: 130,
               y: 220,
               size: 12,
@@ -988,7 +986,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(exercise.restPeriod.toString(), {
+            currentPage.drawText(workout.exercises[i].restPeriod.toString(), {
               x: 130,
               y: 190,
               size: 12,
@@ -1002,7 +1000,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText((exercise.duration / 60).toString() + " minutes", {
+            currentPage.drawText((workout.exercises[i].duration / 60).toString() + " minutes", {
               x: 130,
               y: 160,
               size: 12,
@@ -1026,7 +1024,7 @@ export class WorkoutService {
             fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
               if (err) throw err
               const json = JSON.parse(data.toString())
-              const exerciseImages = json.find(({ ID }) => ID === exercise.exerciseID)
+              const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
               if (exerciseImages !== "undefined") {
                 for (let c = 0; c < exerciseImages.images.length; c++) {
                   const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
