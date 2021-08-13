@@ -14,7 +14,7 @@ import { PrismaService } from "../Prisma/prisma.service"
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib"
 import * as fs from "fs"
 import { UserService } from "../User/user.service"
-import baseImages from "../Workout/createdWorkoutImages.json"
+import * as baseImages from "../Workout/createdWorkoutImages.json"
 
 const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
@@ -1077,7 +1077,7 @@ export class WorkoutService {
           plannerID: true
         }
       })
-      if (!(Array.isArray(workout) && workout.length)) { // if JSON object is empty, send error code
+      if (workout === null) { // if JSON object is empty, send error code
         throw new NotFoundException("No workout was found in the database with the specified workout ID.")
       } else {
         plannerID = workout.plannerID
@@ -1114,6 +1114,7 @@ export class WorkoutService {
         for (let j = 0; j < base64Images.length; j++) {
           const fileName = "im" + exercisesID[i] + "-" + (j + 1) // filename format: im + exercise id + - + pose number
           const optionalObj = { fileName, type: "png" }
+          console.log(base64Images[j])
           base64ToImage(base64Images[j], path, optionalObj)
           images.push({
             path: "../videoCreation/Images/" + fileName,
@@ -1168,7 +1169,7 @@ export class WorkoutService {
    *
    */
   getExerciseBase64 (id: string) {
-    for (let i = 0; i < baseImages.length; i++) {
+    for (let i = 0; i < Object.keys(baseImages).length; i++) {
       if (baseImages[i].ID === id) {
         return baseImages[i].images
       }
