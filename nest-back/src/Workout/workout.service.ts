@@ -1114,7 +1114,7 @@ export class WorkoutService {
         for (let j = 0; j < base64Images.length; j++) {
           const fileName = "im" + exercisesID[i] + "-" + (j + 1) // filename format: im + exercise id + - + pose number
           const optionalObj = { fileName, type: "png" }
-          base64ToImage(base64Images, path, optionalObj)
+          base64ToImage(base64Images[j], path, optionalObj)
           images.push({
             path: "../videoCreation/Images/" + fileName,
             caption: this.getExerciseDescription(exercisesID[i], ctx),
