@@ -521,7 +521,6 @@ export class WorkoutController {
       return this.workoutService.getTags(ActualPrisma())
     }
 
-
     /**
      *Workout Controller - createTTS
      *
