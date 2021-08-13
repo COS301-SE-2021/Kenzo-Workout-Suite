@@ -28,6 +28,9 @@ export class CreateExerciseDTO {
 
     @ApiProperty({ type: Number, description: "Duration of exercise [Optional - 0 can be passed in. ]" })
     duration: number;
+
+    @ApiProperty({ type: String, description: "Base64 Image Array of poses" })
+    images: string[];
 }
 
 export class createTagDTO {
@@ -99,6 +102,9 @@ export class updateExerciseDTO {
 
     @ApiProperty({ type: Number, description: "duration of exercise" })
     duration: number;
+
+    @ApiProperty({ type: String, description: "Base64 Image Array of poses" })
+    images: string[];
 }
 
 export class deleteExerciseDTO {
