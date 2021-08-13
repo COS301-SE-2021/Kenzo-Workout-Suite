@@ -108,6 +108,6 @@ export class deleteExerciseDTO {
 }
 
 export class createVideoDTO {
-    @ApiProperty({ type: Object, description: "Workout object" })
-    workout: Workout;
+    @ApiProperty({ type: String, description: "Workout ID" })
+    workoutID: string;
 }
