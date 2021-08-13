@@ -715,12 +715,12 @@ export class WorkoutService {
       throw new NotFoundException("Parameters can not be left empty.")
     }
     try {
-      const retrievedWorkout = await this.getWorkoutById(workoutID, ctx)
-      fs.unlink("./src/GeneratedWorkouts/" + retrievedWorkout.workoutTitle + "Workout.pdf", (err) => {
-        if (err) {
-          throw err
-        }
-      })
+      // const retrievedWorkout = await this.getWorkoutById(workoutID, ctx)
+      // fs.unlink("./src/GeneratedWorkouts/" + retrievedWorkout.workoutTitle + "Workout.pdf", (err) => {
+      //   if (err) {
+      //     throw err
+      //   }
+      // })
       await ctx.prisma.workout.delete({
         where: {
           workoutID: workoutID
@@ -913,14 +913,16 @@ export class WorkoutService {
               if (err) throw err
               const json = JSON.parse(data.toString())
               const exerciseImages = json.find(({ ID }) => ID === exercise.exerciseID)
-              for (let c = 0; c < exerciseImages.images.length; c++) {
-                const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
-                currentPage.drawImage(currentImage, {
-                  x: 20 + (c * 150),
-                  y: 400,
-                  width: 120,
-                  height: 90
-                })
+              if (exerciseImages !== "undefined") {
+                for (let c = 0; c < exerciseImages.images.length; c++) {
+                  const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
+                  currentPage.drawImage(currentImage, {
+                    x: 20 + (c * 150),
+                    y: 400,
+                    width: 120,
+                    height: 90
+                  })
+                }
               }
             })
             exercisePosCount += 1
@@ -1018,18 +1020,20 @@ export class WorkoutService {
               font: SFRegular
             })
             // Images
-            await fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
+            fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
               if (err) throw err
               const json = JSON.parse(data.toString())
               const exerciseImages = json.find(({ ID }) => ID === exercise.exerciseID)
-              for (let c = 0; c < exerciseImages.images.length; c++) {
-                const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
-                currentPage.drawImage(currentImage, {
-                  x: 20 + (c * 150),
-                  y: 20,
-                  width: 120,
-                  height: 90
-                })
+              if (exerciseImages !== "undefined") {
+                for (let c = 0; c < exerciseImages.images.length; c++) {
+                  const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
+                  currentPage.drawImage(currentImage, {
+                    x: 20 + (c * 150),
+                    y: 400,
+                    width: 120,
+                    height: 90
+                  })
+                }
               }
             })
             exercisePosCount -= 1
@@ -1069,11 +1073,9 @@ export class WorkoutService {
 
       fs.readFile("./src/GeneratedWorkouts/" + workoutObject.workoutTitle + "Workout.pdf", function (err, data) {
         if (err) throw err
-        console.log(data)
       })
       const uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutTitle + "Workout.pdf")
       const pdfDoc = await PDFDocument.load(uint8ArrayFP)
-      console.log(await pdfDoc.saveAsBase64({ dataUri: true }))
       return await pdfDoc.saveAsBase64({ dataUri: true })
     } catch (E) {
       throw new BadRequestException("Cannot return workout pdf.")
