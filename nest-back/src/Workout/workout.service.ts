@@ -1176,7 +1176,28 @@ export class WorkoutService {
     return -1
   }
 
+  /**
+   *Workout service - Get Exercises Descriptions
+   *
+   * @brief Function that accepts an exercise ID and retrieves the description
+   * @param id Exercise ID
+   * @return  Re-formatted An exercise description.
+   * @author Tinashe Chamisa
+   *
+   */
   async getExerciseDescription (id: string, ctx: Context): Promise<any> {
-    
+    // eslint-disable-next-line no-useless-catch
+    try {
+      return await ctx.prisma.exercise.findUnique({ // search for exercises that meet the requirement
+        where: {
+          exerciseID: id
+        },
+        select: {
+          exerciseDescription: true
+        }
+      })
+    } catch (e) {
+      throw e
+    }
   }
 }
