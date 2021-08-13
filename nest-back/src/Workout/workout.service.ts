@@ -1,25 +1,24 @@
 import {
-  BadRequestException, ConflictException,
+  BadRequestException,
+  ConflictException,
   Injectable,
   NotAcceptableException,
-  NotFoundException, PreconditionFailedException
+  NotFoundException,
+  PreconditionFailedException
 } from "@nestjs/common"
 import { Context } from "../../context"
 
-import {
-  Workout,
-  Exercise,
-  Tag
-} from "@prisma/client"
+import { Exercise, Tag } from "@prisma/client"
 import { jsPDF } from "jspdf"
 import { PrismaService } from "../Prisma/prisma.service"
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib"
 import * as fs from "fs"
 import { UserService } from "../User/user.service"
+import baseImages from "../Workout/createdWorkoutImages.json"
 
 const Filter = require("bad-words"); const filter = new Filter()
-// const videoshow = require("videoshow")
-const baseImages = require("../Workout/createdWorkoutImages.json")
+const videoshow = require("videoshow")
+const base64ToImage = require("base64-to-image")
 
 @Injectable()
 export class WorkoutService {
@@ -1054,7 +1053,7 @@ export class WorkoutService {
   /**
    *Workout Service - Convert to Video
    * @brief Function that takes a workout object as a parameter and converts each exercises' images into a video
-   * @param workout  The workout object
+   * @param workoutID  The workout ID
    * @param ctx  This is the prisma context that is injected into the function.
    * @throws NotFoundException if:
    *                               -No images are found.
@@ -1062,70 +1061,73 @@ export class WorkoutService {
    * @author Tinashe Chamisa
    *
    */
-  async createVideo (workout: Workout, ctx: Context): Promise<any> {
-    /*
-      First, check for validity of workout object. Next, loop through exercises. While on each exercise, add poses to image array. Finally, create video.
-    */
-
-    if (workout == null) {
+  async createVideo (workoutID: string, ctx: Context): Promise<any> {
+    if (workoutID == null || workoutID === "") {
       throw new PreconditionFailedException("Invalid Workout object passed in.")
     }
-
-    const exercises: string[] = []
-
+    let plannerID
+    const exercisesID: string[] = []
     // eslint-disable-next-line no-useless-catch
     try {
-      const listOfExercises = await ctx.prisma.exercise.findMany({
+      const workout = await ctx.prisma.workout.findUnique({
         where: {
-          plannerID: workout.plannerID
+          workoutID: workoutID
         },
         select: {
-          exerciseID: true
+          plannerID: true
         }
       })
-      if (!(Array.isArray(listOfExercises) && listOfExercises.length)) { // if JSON object is empty, send error code
-        throw new NotFoundException("No Exercises were found in the database with the specified workout.")
+      if (!(Array.isArray(workout) && workout.length)) { // if JSON object is empty, send error code
+        throw new NotFoundException("No workout was found in the database with the specified workout ID.")
       } else {
-        listOfExercises.forEach(element => {
-          exercises.push(element.exerciseID)
+        plannerID = workout.plannerID
+        // Find exercises that belong to the workout
+        const listOfExercises = await ctx.prisma.exercise.findMany({
+          where: {
+            plannerID: plannerID
+          },
+          select: {
+            exerciseID: true
+          }
         })
+        if (!(Array.isArray(listOfExercises) && listOfExercises.length)) { // if JSON object is empty, send error code
+          throw new NotFoundException("No Exercises were found in the database with the specified workout.")
+        } else {
+          listOfExercises.forEach(element => {
+            exercisesID.push(element.exerciseID)
+          })
+        }
       }
     } catch (err) {
       throw err
     }
+    const images = [{}]
 
-    for (let i = 0; i < exercises.length; i++) {
-      if (this.getExerciseBase64(exercises[i]) === -1) {
-        console.log("error")
+    // retrieve all exercises poses one by one from the local storage
+    for (let i = 0; i < exercisesID.length; i++) {
+      let base64Images
+      if ((base64Images = this.getExerciseBase64(exercisesID[i])) === -1) {
+        console.log("erroRr")
       } else {
-        console.log("exists")
+        const path = "../videoCreation/Images"
+        // Loop through poses of an exercise
+        for (let j = 0; j < base64Images.length; j++) {
+          const fileName = "im" + exercisesID[i] + "-" + (j + 1) // filename format: im + exercise id + - + pose number
+          const optionalObj = { fileName, type: "png" }
+          base64ToImage(base64Images, path, optionalObj)
+          images.push({
+            path: "../videoCreation/Images/" + fileName,
+            caption: this.getExerciseDescription(exercisesID[i], ctx),
+            loop: 10
+          })
+        }
+        images.push({
+          path: "../videoCreation/Images/kenzoLogo",
+          caption: this.getExerciseDescription(exercisesID[i], ctx),
+          loop: 5
+        })
       }
     }
-
-    /*
-    const images = [
-      {
-        path: "./src/Workout/images/workoutImagere.jpg",
-        caption: "Shake that booty and get a good workout in",
-        loop: 15
-      },
-      {
-        path: "./src/Workout/images/workoutImagere.jpg",
-        caption: "Why was this so damn easy"
-      },
-      {
-        path: "./src/Workout/images/workoutImagere.jpg",
-        caption: "Shake that booty again and lets get it"
-      },
-      {
-        path: "./src/Workout/images/workoutImagere.jpg",
-        caption: "Keep shaking that booty"
-      },
-      {
-        path: "./src/Workout/images/extraImage.jpg",
-        caption: "Awe thats done, get ready for the next exercise you slut"
-      }
-    ]
 
     const videoOptions = {
       fps: 25,
@@ -1142,8 +1144,8 @@ export class WorkoutService {
     }
 
     videoshow(images, videoOptions)
-      .audio("./src/Workout/audio/song1.mp3")
-      .save("./src/videoGeneration/videoAUDIO.mp4")
+      .audio("./src/videoGeneration/Sounds/song1.mp3")
+      .save("./src/videoGeneration/Videos/videoAUDIO.mp4")
       .on("start", function (command) {
         console.log("ffmpeg process started:", command)
       })
@@ -1154,8 +1156,6 @@ export class WorkoutService {
       .on("end", function (output) {
         console.error("Video created in:", output)
       })
-
-     */
   }
 
   /**
@@ -1174,5 +1174,9 @@ export class WorkoutService {
       }
     }
     return -1
+  }
+
+  async getExerciseDescription (id: string, ctx: Context): Promise<any> {
+    
   }
 }
