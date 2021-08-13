@@ -31,6 +31,9 @@ export class CreateExercisePage implements OnInit {
               private workoutService: WorkoutService) {
       this.getTags();
       this.newTag = this.getRandomTag("");
+      if(this.route.getCurrentNavigation().extras.state!=null){
+          console.log(this.route.getCurrentNavigation().extras.state.frames);
+      }
   }
 
   ngOnInit() {
@@ -259,5 +262,16 @@ export class CreateExercisePage implements OnInit {
       await this.route.navigate(["/pose-maker"], {
 
       });
+  }
+
+  /**
+   * This function syncs the photos sent from the pose maker
+   *
+   * @author Luca Azmanov, u19004185
+   */
+  syncFrames(){
+      if(this.route.getCurrentNavigation().extras.state!=null){
+          console.log(this.route.getCurrentNavigation().extras.state.frames);
+      }
   }
 }

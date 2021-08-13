@@ -341,6 +341,19 @@ export class PoseMakerPage implements OnInit {
           state:{
               frames: this.frames
           }
+      }).then(()=> {
+          let count = 0;
+          for (let i = 0; i < this.frames.length; i++) {
+              if (this.frames[i] == null) {
+                  count = count+1;
+              }
+          }
+          if (count === 4) {
+              document.getElementById("frameCount").innerText = "Please set at least one pose.";
+          } else {
+              document.getElementById("pose-button").innerText = "Remake Poses";
+              document.getElementById("frameCount").innerText = "Poses Set";
+          }
       });
   }
 }
