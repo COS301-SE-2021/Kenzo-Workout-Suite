@@ -1033,6 +1033,7 @@ export class WorkoutService {
       })
       const uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutTitle + "Workout.pdf")
       const pdfDoc = await PDFDocument.load(uint8ArrayFP)
+      console.log(await pdfDoc.saveAsBase64({ dataUri: true }))
       return await pdfDoc.saveAsBase64({ dataUri: true })
     } catch (E) {
       throw new BadRequestException("Cannot return workout pdf.")
