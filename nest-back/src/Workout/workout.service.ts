@@ -534,6 +534,12 @@ export class WorkoutService {
      * @author Tinashe Chamisa
      *
      */
+  async arrayRemove (arr, value) {
+    return arr.filter(function (ele) {
+      return ele !== value
+    })
+  }
+
   async deleteExercise (exercise: string, ctx: Context): Promise<any> {
     if (exercise === "") {
       throw new PreconditionFailedException("Parameter can not be left empty.")
@@ -709,6 +715,12 @@ export class WorkoutService {
       throw new NotFoundException("Parameters can not be left empty.")
     }
     try {
+      const retrievedWorkout = await this.getWorkoutById(workoutID, ctx)
+      fs.unlink("./src/GeneratedWorkouts/" + retrievedWorkout.workoutTitle + "Workout.pdf", (err) => {
+        if (err) {
+          throw err
+        }
+      })
       await ctx.prisma.workout.delete({
         where: {
           workoutID: workoutID
@@ -724,6 +736,7 @@ export class WorkoutService {
    *Workout Service - Generate Pretty Workout PDF
    *
    * @param workout This is the workout Object to be generated as a pdf
+   * @param images
    * @param ctx  This is the prisma context that is injected into the function.
    * @throws PreconditionFailedException if:
    *                               -Parameters can not be left empty.
@@ -895,16 +908,21 @@ export class WorkoutService {
               size: 12,
               font: SFRegular
             })
-
-            const testImage = await pdfDoc.embedJpg(fs.readFileSync("./src/Assets/TestImages/idk.jpg"))
-            for (let c = 0; c < 4; c++) {
-              currentPage.drawImage(testImage, {
-                x: 20 + (c * 150),
-                y: 400,
-                width: 120,
-                height: 90
-              })
-            }
+            // Images
+            await fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
+              if (err) throw err
+              const json = JSON.parse(data.toString())
+              const exerciseImages = json.find(({ ID }) => ID === exercise.exerciseID)
+              for (let c = 0; c < exerciseImages.images.length; c++) {
+                const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
+                currentPage.drawImage(currentImage, {
+                  x: 20 + (c * 150),
+                  y: 400,
+                  width: 120,
+                  height: 90
+                })
+              }
+            })
             exercisePosCount += 1
           } else {
             const currentPage = pdfDoc.getPage(pdfDoc.getPageCount() - 1)
@@ -999,16 +1017,21 @@ export class WorkoutService {
               size: 12,
               font: SFRegular
             })
-
-            const testImage = await pdfDoc.embedJpg(fs.readFileSync("./src/Assets/TestImages/idk.jpg"))
-            for (let c = 0; c < 4; c++) {
-              currentPage.drawImage(testImage, {
-                x: 20 + (c * 150),
-                y: 20,
-                width: 120,
-                height: 90
-              })
-            }
+            // Images
+            await fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
+              if (err) throw err
+              const json = JSON.parse(data.toString())
+              const exerciseImages = json.find(({ ID }) => ID === exercise.exerciseID)
+              for (let c = 0; c < exerciseImages.images.length; c++) {
+                const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
+                currentPage.drawImage(currentImage, {
+                  x: 20 + (c * 150),
+                  y: 20,
+                  width: 120,
+                  height: 90
+                })
+              }
+            })
             exercisePosCount -= 1
           }
         }
