@@ -18,6 +18,7 @@
     "rules": {
         "no-useless-constructor": "off",
         "quotes": ["error","double"],
-        "no-undef": "off"
+        "no-undef": "off",
+        "dot-notation": "off"
     }
 }

@@ -10,6 +10,7 @@ let userService: UserService
 let prisma: PrismaClient
 
 describe("Unit tests of the updateExercise function in the Workout Service", () => {
+  const images:string[] = ["base64line"]
   beforeEach(() => {
     workoutService = new WorkoutService(prisma, userService)
     mockCtx = createMockContext()
@@ -19,18 +20,24 @@ describe("Unit tests of the updateExercise function in the Workout Service", () 
   test("Null exercise passed in, should throw PreconditionFailedException", async () => {
     let exercise
     mockCtx.prisma.tag.update.mockResolvedValue(exercise)
-    await expect(workoutService.updateExercise("", "", "", "", 0, "", 0, [], 0, "", ctx)).rejects.toThrow("Invalid exercise object passed in.")
+    spyOn(workoutService, "getExerciseByID").and.stub()
+    spyOn(workoutService, "saveImagesToJSON").and.stub()
+    await expect(workoutService.updateExercise("", "", "", "", 0, "", 0, [], 0, "", images, ctx)).rejects.toThrow("Invalid exercise object passed in.")
   })
 
   test("Incomplete exercise passed in, should throw PreconditionFailedException", async () => {
     let exercise
     mockCtx.prisma.tag.update.mockResolvedValue(exercise)
-    await expect(workoutService.updateExercise("test", "", "test", "", 0, "test", 0, [], 0, "", ctx)).rejects.toThrow("Invalid exercise object passed in.")
+    spyOn(workoutService, "getExerciseByID").and.stub()
+    spyOn(workoutService, "saveImagesToJSON").and.stub()
+    await expect(workoutService.updateExercise("test", "", "test", "", 0, "test", 0, [], 0, "", images, ctx)).rejects.toThrow("Invalid exercise object passed in.")
   })
 
   test("Nonexistent exercise, should throw NotFoundException", async () => {
     let exercise
     mockCtx.prisma.tag.update.mockResolvedValue(exercise)
-    await expect(workoutService.updateExercise("test", "test", "test", "test", 0, "test", 0, [], 0, "", ctx)).rejects.toThrow("Invalid exercise object passed in.")
+    spyOn(workoutService, "getExerciseByID").and.stub()
+    spyOn(workoutService, "saveImagesToJSON").and.stub()
+    await expect(workoutService.updateExercise("test", "test", "test", "test", 0, "test", 0, [], 0, "", images, ctx)).rejects.toThrow("Invalid exercise object passed in.")
   })
 })

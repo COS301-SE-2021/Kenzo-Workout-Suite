@@ -271,10 +271,11 @@ export class WorkoutController {
      * @param description This is the description of the exercise.
      * @param repRange This is the amount of reps.
      * @param sets This is the amount of sets.
-     * @param Posedescription This is the pose description.
+     * @param poseDescription
      * @param restPeriod This is the rest period of the exercise.
      * @param tags these are the tags related to an exercise
      * @param duration this is the duration of an exercise
+     * @param images
      * @param req This is the user request object
      * @throws PreconditionFailedException if:
      *                               -Not all parameters are given.
@@ -306,13 +307,14 @@ export class WorkoutController {
         @Body("exerciseDescription") description: string,
         @Body("repRange") repRange: string,
         @Body("sets") sets: number,
-        @Body("poseDescription") Posedescription: string,
+        @Body("poseDescription") poseDescription: string,
         @Body("restPeriod") restPeriod: number,
         @Body("tags") tags: Tag[],
         @Body("duration") duration: number,
+        @Body("images") images: string[],
         @Request() req
     ) {
-      return this.workoutService.updateExercise(exercise, title, description, repRange, sets, Posedescription, restPeriod, tags, duration, req.user.userID, ActualPrisma())
+      return this.workoutService.updateExercise(exercise, title, description, repRange, sets, poseDescription, restPeriod, tags, duration, req.user.userID, images, ActualPrisma())
     }
 
     /**
