@@ -2,6 +2,9 @@ import {Component, ElementRef, HostListener, OnInit, ViewChild} from "@angular/c
 import * as THREE from "./three.js-master/build/three.module.js";
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader.js";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
+import {AlertController} from "@ionic/angular";
+import {Router} from "@angular/router";
+import {stringify} from "querystring";
 
 @Component({
     selector: "app-pose-maker",
@@ -56,8 +59,9 @@ export class PoseMakerPage implements OnInit {
 
     // Stored Frames
     private frames: string[] = new Array(4);
+    private frameColor: string[] = new Array(4);
 
-    constructor() {
+    constructor(public alertController: AlertController, public route: Router) {
         this.xCoordinate = 0;
         this.yCoordinate = 0;
         this.zCoordinate = 0;
@@ -75,7 +79,7 @@ export class PoseMakerPage implements OnInit {
    */
   @HostListener("window:resize", ["$event"])
     onResize(event) {
-        this.camera.aspect = event.target.innerWidth / event.target.innerHeight;
+        this.camera.aspect = event.target.innerWidth / (event.target.innerHeight-this.headerHeight-this.footerHeight);
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(event.target.innerWidth, event.target.innerHeight-this.headerHeight-this.footerHeight);
     }
@@ -89,6 +93,8 @@ export class PoseMakerPage implements OnInit {
    */
   start(): void {
       document.getElementById("start-button").style.display = "none";
+      document.getElementById("instructions").style.display = "none";
+      document.getElementById("controls").style.display = "block";
       this.headerHeight = document.getElementById("header").offsetHeight;
       this.footerHeight = document.getElementById("footer").offsetHeight;
       this.initScene();
@@ -111,8 +117,8 @@ export class PoseMakerPage implements OnInit {
       this.scene = new THREE.Scene();
       const tempScene = this.scene;
       this.camera = new THREE.PerspectiveCamera(
-          75,
-          window.innerWidth / window.innerHeight,
+          60,
+          window.innerWidth / (window.innerHeight-this.headerHeight-this.footerHeight),
           0.1,
           1000
       );
@@ -249,20 +255,92 @@ export class PoseMakerPage implements OnInit {
       this.animate();
   }
 
-  getCoordinates(value) {
+  /**
+   * This function is called upon the selection of a body part. The purpose is to set the sliders
+   * to the selected boyd part's current state.
+   *
+   * Other feature include, the storage of the initial state of the body part, with the intention of resetting
+   *
+   * @param value
+   * @author Luca Azmanov, u19004185
+   */
+  async getCoordinates(value) {
+      console.log(value);
       this.selection = value;
-      this.xCoordinate = this.mesh.skeleton.bones[value].rotation.x;
-      this.yCoordinate = this.mesh.skeleton.bones[value].rotation.y;
-      this.zCoordinate = this.mesh.skeleton.bones[value].rotation.z;
+      this.xCoordinate = this.mesh.skeleton.bones[value].rotation.x * 100;
+      this.yCoordinate = this.mesh.skeleton.bones[value].rotation.y * 100;
+      this.zCoordinate = this.mesh.skeleton.bones[value].rotation.z * 100;
+      console.log(this.mesh.skeleton.bones[value].rotation.x,
+          this.mesh.skeleton.bones[value].rotation.y, this.mesh.skeleton.bones[value].rotation.z);
       console.log(this.xCoordinate, this.yCoordinate, this.zCoordinate);
   }
 
-  saveFrame(frame: number) {
-      const strMime = "image/jpeg";
-      const imgData = this.renderer.domElement.toDataURL(strMime);
+  /**
+   * This function is called upon the activation of one of the 4 frame buttons. Upon use,
+   * this function stores the current scene as seen by the camera in a Base64 image, to be parsed through
+   * the API.
+   *
+   * Other features include:
+   * The physical appearance of the button being altered.
+   * The ability to remove an image.
+   *
+   * @param frame
+   * @author Luca Azmanov, u19004185
+   */
+  async saveFrame(frame: number) {
+      if(this.frames[frame]!=null){
+          let confirmation = false;
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Are you sure you would like to delete this frame?",
+              buttons: [{text:"Delete",
+                  handler: ()=>{
+                      confirmation = true;
+                  }}, "Cancel"]
+          });
 
+          await this.presentAlert(alert);
+          if(!confirmation) {
+              return;
+          }
+
+          this.frames[frame] = null;
+          this.frameColor[frame] = "#FF6868";
+          // console.log(JSON.stringify(this.frames));
+          return;
+      }
+
+      const strMime = "image/jpeg";
+      let imgData = this.renderer.domElement.toDataURL(strMime);
+      imgData = imgData.replace("data:image/jpeg;base64,", "");
       this.frames[frame] = imgData;
+      this.frameColor[frame] = "#1D905B";
+
       // console.log(frame, imgData);
-      // console.log(this.frames);
+      // console.log(JSON.stringify(this.frames));
+  }
+
+  /**
+   * Helper Function to physically present alert to User independent of OS.
+   *
+   * @param alert
+   * @author Luca Azmanov, u19004185
+   */
+  async presentAlert(alert: any) {
+      await alert.present();
+      await alert.onDidDismiss();
+  }
+
+  /**
+   * This function returns back to the create-exercise screen with the new frames.
+   *
+   * @author Luca Azmanov, u19004185
+   */
+  returnToCreate() {
+      this.route.navigate(["/create-exercise"], {
+          state:{
+              frames: this.frames
+          }
+      });
   }
 }
