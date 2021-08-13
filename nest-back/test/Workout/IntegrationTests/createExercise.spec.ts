@@ -8,7 +8,6 @@ import {
 import { PrismaClient } from "@prisma/client/scripts/default-index"
 import { UserService } from "../../../src/User/user.service"
 
-
 let ctx: Context
 let workoutService: WorkoutService
 let userService: UserService
@@ -36,6 +35,7 @@ beforeEach(async () => {
   })
 })
 describe("Integration tests for createExercise in Workout Service", () => {
+  const images:string[] = ["base64line"]
   test("Should create exercise", async () => {
     const Exercise = {
       exercise: exerciseUUID,
@@ -50,7 +50,7 @@ describe("Integration tests for createExercise in Workout Service", () => {
     }
     const emptyTag: Tag[] = []
 
-    await expect(workoutService.createExercise(Exercise.exerciseTitle, Exercise.exerciseDescription, Exercise.repRange, Exercise.sets, Exercise.poseDescription, Exercise.restPeriod, emptyTag, Exercise.duration, userUUID, ctx)).resolves.toEqual(
+    await expect(workoutService.createExercise(Exercise.exerciseTitle, Exercise.exerciseDescription, Exercise.repRange, Exercise.sets, Exercise.poseDescription, Exercise.restPeriod, emptyTag, Exercise.duration, userUUID, images, ctx)).resolves.toEqual(
       "Exercise created."
     )
   })
@@ -69,7 +69,7 @@ describe("Integration tests for createExercise in Workout Service", () => {
     }
     const emptyTag: Tag[] = []
 
-    await expect(workoutService.createExercise(Exercise.exerciseTitle, Exercise.exerciseDescription, Exercise.repRange, Exercise.sets, Exercise.poseDescription, Exercise.restPeriod, emptyTag, Exercise.duration, userUUID, ctx)).rejects.toThrow(
+    await expect(workoutService.createExercise(Exercise.exerciseTitle, Exercise.exerciseDescription, Exercise.repRange, Exercise.sets, Exercise.poseDescription, Exercise.restPeriod, emptyTag, Exercise.duration, userUUID, images, ctx)).rejects.toThrow(
       "Parameters can not be left empty!"
     )
   })

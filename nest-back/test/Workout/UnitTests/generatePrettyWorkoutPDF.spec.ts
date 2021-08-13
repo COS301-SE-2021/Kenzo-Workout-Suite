@@ -1,0 +1,33 @@
+import { MockContext, Context, createMockContext } from "../../../context"
+import { WorkoutService } from "../../../src/Workout/workout.service"
+import { v4 as uuidv4 } from "uuid"
+
+import { PrismaClient } from "@prisma/client/scripts/default-index"
+import { UserService } from "../../../src/User/user.service"
+
+let mockCtx: MockContext
+let ctx: Context
+let workoutService: WorkoutService
+let userService: UserService
+let prisma: PrismaClient
+
+beforeEach(() => {
+  workoutService = new WorkoutService(prisma, userService)
+  mockCtx = createMockContext()
+  ctx = (mockCtx as unknown) as Context
+})
+describe("Unit tests for generatePrettyWorkoutPDF in workout subsystem", () => {
+  test("Should Generate WorkoutPDF", async () => {
+    const Workout = {
+      workoutID: uuidv4(),
+      workoutTitle: "Test",
+      workoutDescription: "Test",
+      planner_ID: uuidv4()
+    }
+    await expect(workoutService.generatePrettyWorkoutPDF(Workout, mockCtx)).resolves
+  })
+  test("Should not Generate WorkoutPDF [Precondition Exception]", async () => {
+    let workout
+    await expect(workoutService.generatePrettyWorkoutPDF(workout, mockCtx)).rejects.toThrow("Could not generate workout PDF.")
+  })
+})
