@@ -9,7 +9,6 @@ import {
 } from "@nestjs/common"
 import { WorkoutService } from "./workout.service"
 import {
-  Workout,
   Exercise,
   Tag
 } from "@prisma/client"
@@ -531,9 +530,9 @@ export class WorkoutController {
     }
 
     /**
-     *Workout Controller - Get Tags
+     *Workout Controller - Create Video
      *
-     * @param workout  The workout object
+     * @param workoutID  The workout ID
      * @param ActualPrisma()  This is the prisma context that is injected into the function.
      * @throws NotFoundException if:
      *                               -No tags were found in the database.
@@ -541,7 +540,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
-    @Get("convertToVideo")
+    @Post("convertToVideo")
     @ApiBody({ type: createVideoDTO })
     @ApiOkResponse({
       description: "Successfully created video."
@@ -553,8 +552,8 @@ export class WorkoutController {
       description: "Internal server error."
     })
     createVideo (
-        @Body("workout") workout: Workout
+        @Body("workoutID") workoutID: string
     ) {
-      return this.workoutService.createVideo(workout, ActualPrisma())
+      return this.workoutService.createVideo(workoutID, ActualPrisma())
     }
 }
