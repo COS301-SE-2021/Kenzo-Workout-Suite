@@ -20,6 +20,8 @@ beforeEach(() => {
 })
 
 describe("Unit tests for createExercise in workout subsystem", () => {
+  const empty: Tag[] = []
+  const images:string[] = ["base64line"]
   test("Should create new Exercise without Tags", async () => {
     const Exercise = {
       exerciseID: uuidv4(),
@@ -33,9 +35,10 @@ describe("Unit tests for createExercise in workout subsystem", () => {
       plannerID: uuidv4()
     }
     mockCtx.prisma.exercise.create.mockResolvedValue(Exercise)
-    const empty: Tag[] = []
+    spyOn(workoutService, "getExerciseByID").and.stub()
+    spyOn(workoutService, "saveImagesToJSON").and.stub()
 
-    await expect(workoutService.createExercise(Exercise.exerciseTitle, Exercise.exerciseDescription, Exercise.repRange, Exercise.sets, Exercise.poseDescription, Exercise.restPeriod, empty, Exercise.duration, Exercise.plannerID, ctx)).resolves.toEqual(
+    await expect(workoutService.createExercise(Exercise.exerciseTitle, Exercise.exerciseDescription, Exercise.repRange, Exercise.sets, Exercise.poseDescription, Exercise.restPeriod, empty, Exercise.duration, Exercise.plannerID, images, ctx)).resolves.toEqual(
       "Exercise created."
     )
   })
@@ -55,9 +58,11 @@ describe("Unit tests for createExercise in workout subsystem", () => {
     const tagArray: Tag[] = [{ label: "painful", textColour: "blue", backgroundColour: "white" }]
     spyOn(workoutService, "addNewTags")
     spyOn(workoutService, "createTag").and.returnValue(tagArray)
+    spyOn(workoutService, "getExerciseByID").and.stub()
+    spyOn(workoutService, "saveImagesToJSON").and.stub()
     mockCtx.prisma.exercise.create.mockResolvedValue(Exercise)
 
-    await expect(workoutService.createExercise(Exercise.exerciseTitle, Exercise.exerciseDescription, Exercise.repRange, Exercise.sets, Exercise.poseDescription, Exercise.restPeriod, tagArray, Exercise.duration, Exercise.plannerID, ctx)).resolves.toEqual(
+    await expect(workoutService.createExercise(Exercise.exerciseTitle, Exercise.exerciseDescription, Exercise.repRange, Exercise.sets, Exercise.poseDescription, Exercise.restPeriod, tagArray, Exercise.duration, Exercise.plannerID, images, ctx)).resolves.toEqual(
       "Exercise created."
     )
   })
@@ -77,7 +82,7 @@ describe("Unit tests for createExercise in workout subsystem", () => {
     mockCtx.prisma.exercise.create.mockResolvedValue(Exercise)
     const empty: Tag[] = []
 
-    await expect(workoutService.createExercise("", Exercise.exerciseDescription, Exercise.repRange, Exercise.sets, Exercise.poseDescription, Exercise.restPeriod, empty, Exercise.duration, Exercise.plannerID, ctx)).rejects.toThrow(
+    await expect(workoutService.createExercise("", Exercise.exerciseDescription, Exercise.repRange, Exercise.sets, Exercise.poseDescription, Exercise.restPeriod, empty, Exercise.duration, Exercise.plannerID, images, ctx)).rejects.toThrow(
       "Parameters can not be left empty!"
     )
   })
@@ -97,7 +102,7 @@ describe("Unit tests for createExercise in workout subsystem", () => {
     mockCtx.prisma.exercise.create.mockResolvedValue(Exercise)
     const empty: Tag[] = []
 
-    await expect(workoutService.createExercise(Exercise.exerciseTitle, "", Exercise.repRange, Exercise.sets, Exercise.poseDescription, Exercise.restPeriod, empty, Exercise.duration, Exercise.plannerID, ctx)).rejects.toThrow(
+    await expect(workoutService.createExercise(Exercise.exerciseTitle, "", Exercise.repRange, Exercise.sets, Exercise.poseDescription, Exercise.restPeriod, empty, Exercise.duration, Exercise.plannerID, images, ctx)).rejects.toThrow(
       "Parameters can not be left empty!"
     )
   })
@@ -117,10 +122,8 @@ describe("Unit tests for createExercise in workout subsystem", () => {
     mockCtx.prisma.exercise.create.mockResolvedValue(Exercise)
     const empty: Tag[] = []
 
-    await expect(workoutService.createExercise(Exercise.exerciseTitle, Exercise.exerciseDescription, Exercise.repRange, Exercise.sets, "", Exercise.restPeriod, empty, Exercise.duration, Exercise.plannerID, ctx)).rejects.toThrow(
+    await expect(workoutService.createExercise(Exercise.exerciseTitle, Exercise.exerciseDescription, Exercise.repRange, Exercise.sets, "", Exercise.restPeriod, empty, Exercise.duration, Exercise.plannerID, images, ctx)).rejects.toThrow(
       "Parameters can not be left empty!"
     )
   })
-
-
 })
