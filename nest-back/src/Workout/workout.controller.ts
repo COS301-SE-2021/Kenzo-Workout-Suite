@@ -525,6 +525,17 @@ export class WorkoutController {
       return this.workoutService.getTags(ActualPrisma())
     }
 
+    /**
+     *Workout Controller - createTTS
+     *
+     * @param text This parameter includes the string that needs to be converted to a .wav file (Audio file).
+     * @param fileName  This is the name of the file that will be stored on the server.
+     * @throws BadRequestException if:
+     *                               -Conversion from text to speech has failed.
+     * @return  Message indicating success (text file has been created).
+     * @author Zelealem Tesema
+     *
+     */
     @Get("createTTS")
     createTTS (
       @Body("text") text: string,
