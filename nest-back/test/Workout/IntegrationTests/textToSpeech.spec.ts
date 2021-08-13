@@ -10,7 +10,6 @@ describe("Unit tests textToSpeech functionality", () => {
   })
 
   test("text passed in", async () => {
-    // spyOn(gtts, "save").and.returnValue()
     const response = await workoutService.textToSpeech("This is the test string", "testFile")
 
     expect(response).toStrictEqual("text file has been created")
