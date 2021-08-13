@@ -1,12 +1,13 @@
 import { WorkoutService } from "../../../src/Workout/workout.service"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
-
+import { UserService } from "../../../src/User/user.service"
+let userService: UserService
 let workoutService: WorkoutService
 let prisma: PrismaClient
 
 describe("Unit tests textToSpeech functionality", () => {
   beforeEach(() => {
-    workoutService = new WorkoutService(prisma)
+    workoutService = new WorkoutService(prisma, userService)
   })
 
   test("text passed in", async () => {
