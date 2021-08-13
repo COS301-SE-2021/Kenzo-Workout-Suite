@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Workout} from "../../Models/workout";
 import {Exercise} from "../../Models/exercise";
 import {UserService} from "../UserService/user.service";
@@ -222,6 +222,23 @@ export class WorkoutService {
         const url = "http://localhost:3000/workout/getExercisesByPlanner";
 
         return this.http.get(url).toPromise().then(data=>{
+            data = {
+                status: 200,
+                data: data
+            };
+            return data;
+        }).catch(error=>{
+            if(error.status===0 || error.status === 500) {
+                return 500;
+            }
+            return 404;
+        });
+    }
+
+    async attemptGetPDF(id: string): Promise<any>{
+
+        const url = "http://localhost:3000/workout/getWorkoutPDF/";
+        return await this.http.get(url+id).toPromise().then(data=>{
             data = {
                 status: 200,
                 data: data

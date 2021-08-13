@@ -26,6 +26,7 @@
         </ion-card-header>
         <ion-card-content>{{ workout.workoutDescription}}</ion-card-content>
         <ion-button mode="ios" class="editBtn" (click)="sendWorkoutID(workout.workoutID)">Edit</ion-button>
+        <ion-button mode="ios" class="editBtn" (click)="sharePDF(workout.workoutID)">Download PDF</ion-button>
       </ion-card>
     </ion-virtual-scroll>
   </div>

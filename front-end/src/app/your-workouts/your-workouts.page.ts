@@ -50,6 +50,11 @@ export class YourWorkoutsPage implements OnInit {
       });
   }
 
+  async sharePDF(id: string){
+      const PDF = await this.workoutService.attemptGetPDF(id);
+      console.log(PDF);
+  }
+
   async goToSearch(){
       await this.router.navigate(["/search"])
           .then(() => {
