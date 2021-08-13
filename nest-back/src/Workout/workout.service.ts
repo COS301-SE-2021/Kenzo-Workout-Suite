@@ -909,7 +909,7 @@ export class WorkoutService {
               font: SFRegular
             })
             // Images
-            await fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
+            fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
               if (err) throw err
               const json = JSON.parse(data.toString())
               const exerciseImages = json.find(({ ID }) => ID === exercise.exerciseID)
