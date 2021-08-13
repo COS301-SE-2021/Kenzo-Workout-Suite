@@ -31,9 +31,6 @@ export class CreateExercisePage implements OnInit {
               private workoutService: WorkoutService) {
       this.getTags();
       this.newTag = this.getRandomTag("");
-      if(this.route.getCurrentNavigation().extras.state!=null){
-          console.log(this.route.getCurrentNavigation().extras.state.frames);
-      }
   }
 
   ngOnInit() {
