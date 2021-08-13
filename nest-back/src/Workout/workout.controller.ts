@@ -27,7 +27,7 @@ import {
   DeleteWorkoutDTO,
   UpdateWorkoutDTO,
   createTagDTO,
-  deleteExerciseDTO, updateExerciseDTO
+  deleteExerciseDTO, updateExerciseDTO, createVideoDTO
 } from "./workout.model"
 import { JwtAuthGuard } from "../User/AuthGuards/jwt-auth.guard"
 
@@ -544,6 +544,33 @@ export class WorkoutController {
       return this.workoutService.textToSpeech(text, fileName)
     }
 
+    /**
+     *Workout Controller - Create Video
+     *
+     * @param workoutID  The workout ID
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No tags were found in the database.
+     * @return  Promise array of tag object/s.
+     * @author Tinashe Chamisa
+     *
+     */
+    @Post("convertToVideo")
+    @ApiBody({ type: createVideoDTO })
+    @ApiOkResponse({
+      description: "Successfully created video."
+    })
+    @ApiNotFoundResponse({
+      description: "No images were found."
+    })
+    @ApiInternalServerErrorResponse({
+      description: "Internal server error."
+    })
+    createVideo (
+        @Body("workoutID") workoutID: string
+    ) {
+      return this.workoutService.createVideo(workoutID, ActualPrisma())
+    }
     /**
      *Workout Controller - Get Workout PDF
      *
