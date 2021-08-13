@@ -53,6 +53,7 @@ describe("End point testing of the Workout subsystem", () => {
     const response = await userServ.login(myUser)
     const accessToken = response.access_token
     const emptyTag: Tag[] = []
+    const imagesArray:string[] = ["base64line"]
 
     return request(app.getHttpServer())
       .post("/workout/createExercise")
@@ -65,12 +66,13 @@ describe("End point testing of the Workout subsystem", () => {
         poseDescription: "TestPDesc",
         restPeriod: 2,
         tags: emptyTag,
-        duration: 2
+        duration: 2,
+        images: imagesArray
       })
       .expect(201)
   })
 
-  it("CreateExercise endpoint with invalid data, should return 404", async () => {
+  it("CreateExercise endpoint with no image data, should return 500", async () => {
     const response = await userServ.login(myUser)
     const accessToken = response.access_token
 
@@ -86,6 +88,6 @@ describe("End point testing of the Workout subsystem", () => {
         restPeriod: 2,
         duration: 2
       })
-      .expect(404)
+      .expect(500)
   })
 })

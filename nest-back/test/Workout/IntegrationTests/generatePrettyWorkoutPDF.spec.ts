@@ -1,4 +1,4 @@
-import { Context, ActualPrisma } from "../../../context"
+﻿import { Context, ActualPrisma } from "../../../context"
 import { WorkoutService } from "../../../src/Workout/workout.service"
 import { v4 as uuidv4 } from "uuid"
 import {
@@ -43,7 +43,7 @@ beforeEach(async () => {
     lastName: "tester",
     password: "Test123*",
     userType: userType.PLANNER,
-    dateOfBirth: new Date("2000-05-30")
+    dateOfBirth: null
   }
 
   await ctx.prisma.user.create({
@@ -54,7 +54,8 @@ beforeEach(async () => {
     data: exercise
   })
 })
-describe("Integration tests of the updateWorkout function in the Workout Service", () => {
+
+describe("Integration tests of the generatePrettyWorkoutPDF function in the Workout Service", () => {
   test("Should update workout [no exercises]", async () => {
     const workoutUUID = uuidv4()
     const Workout = {
@@ -71,32 +72,8 @@ describe("Integration tests of the updateWorkout function in the Workout Service
       data: Workout
     })
 
-    const emptyExercise: Exercise[] = []
+    // const emptyExercise: Exercise[] = []
 
-    await expect(workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, emptyExercise, userUUID, ctx)).resolves.toEqual(
-      "Workout Updated."
-    )
-  })
-
-  test("Should update new workout [With exercises]", async () => {
-    const workoutUUID = uuidv4()
-    const Workout = {
-      workoutID: workoutUUID,
-      workoutTitle: "Test",
-      workoutDescription: "Test",
-      planner: {
-        connect: {
-          userID: userUUID
-        }
-      }
-    }
-    await ctx.prisma.workout.create({
-      data: Workout
-    })
-    const fullExercise = [exercise]
-
-    await expect(workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, fullExercise, userUUID, ctx)).resolves.toEqual(
-      "Workout Updated."
-    )
+    await expect(workoutService.generatePrettyWorkoutPDF(createdWorkout, ctx)).resolves
   })
 })
