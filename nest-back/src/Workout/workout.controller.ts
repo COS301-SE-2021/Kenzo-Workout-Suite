@@ -571,6 +571,7 @@ export class WorkoutController {
     ) {
       return this.workoutService.createVideo(workoutID, ActualPrisma())
     }
+
     /**
      *Workout Controller - Get Workout PDF
      *
