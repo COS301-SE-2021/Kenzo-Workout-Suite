@@ -1,22 +1,25 @@
 import {
-  BadRequestException, ConflictException,
+  BadRequestException,
+  ConflictException,
   Injectable,
   NotAcceptableException,
-  NotFoundException, PreconditionFailedException
+  NotFoundException,
+  PreconditionFailedException
 } from "@nestjs/common"
 import { Context } from "../../context"
 
-import {
-  Exercise,
-  Tag
-} from "@prisma/client"
+import { Exercise, Tag } from "@prisma/client"
+import { jsPDF } from "jspdf"
 import { PrismaService } from "../Prisma/prisma.service"
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib"
 import * as fs from "fs"
 import { UserService } from "../User/user.service"
+import * as baseImages from "../Workout/createdWorkoutImages.json"
 import fontkit from "@pdf-lib/fontkit"
 
 const Filter = require("bad-words"); const filter = new Filter()
+const videoshow = require("videoshow")
+const base64ToImage = require("base64-to-image")
 
 @Injectable()
 export class WorkoutService {
@@ -87,6 +90,7 @@ export class WorkoutService {
      *
      */
   async getWorkoutById (id: string, ctx: Context): Promise<any> {
+    // eslint-disable-next-line no-useless-catch
     try {
       const workout = await ctx.prisma.workout.findUnique({ // search for workouts that meet the requirement
         where: {
@@ -754,7 +758,6 @@ export class WorkoutService {
     pdfDoc.registerFontkit(fontkit)
     const frontPage = pdfDoc.getPages()
     const firstPage = frontPage[0]
-
     const SFBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
     const SFRegular = await pdfDoc.embedFont(StandardFonts.Helvetica)
 
@@ -1081,7 +1084,6 @@ export class WorkoutService {
       throw new BadRequestException("Cannot return workout pdf.")
     }
   }
-
   /**
      *Workout Service - Create Tag
      *
@@ -1233,6 +1235,158 @@ export class WorkoutService {
       return "text file has been created"
     } catch (err) {
       throw new BadRequestException("Could not generate text to speech")
+    }
+  }
+
+  /**
+   *Workout Service - Convert to Video
+   * @brief Function that takes a workout object as a parameter and converts each exercises' images into a video
+   * @param workoutID  The workout ID
+   * @param ctx  This is the prisma context that is injected into the function.
+   * @throws NotFoundException if:
+   *                               -No images are found.
+   * @return  Message indicating success.
+   * @author Tinashe Chamisa
+   *
+   */
+  async createVideo (workoutID: string, ctx: Context): Promise<any> {
+    if (workoutID == null || workoutID === "") {
+      throw new PreconditionFailedException("Invalid Workout object passed in.")
+    }
+    let plannerID
+    const exercisesID: string[] = []
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const workout = await ctx.prisma.workout.findUnique({
+        where: {
+          workoutID: workoutID
+        },
+        select: {
+          plannerID: true
+        }
+      })
+      if (workout === null) { // if JSON object is empty, send error code
+        throw new NotFoundException("No workout was found in the database with the specified workout ID.")
+      } else {
+        plannerID = workout.plannerID
+        // Find exercises that belong to the workout
+        const listOfExercises = await ctx.prisma.exercise.findMany({
+          where: {
+            plannerID: plannerID
+          },
+          select: {
+            exerciseID: true
+          }
+        })
+        if (!(Array.isArray(listOfExercises) && listOfExercises.length)) { // if JSON object is empty, send error code
+          throw new NotFoundException("No Exercises were found in the database with the specified workout.")
+        } else {
+          listOfExercises.forEach(element => {
+            exercisesID.push(element.exerciseID)
+          })
+        }
+      }
+    } catch (err) {
+      throw err
+    }
+    const images = [{}]
+
+    // retrieve all exercises poses one by one from the local storage
+    for (let i = 0; i < exercisesID.length; i++) {
+      let base64Images
+      if ((base64Images = this.getExerciseBase64(exercisesID[i])) === -1) {
+        console.log("erroRr")
+      } else {
+        const path = "../videoCreation/Images"
+        // Loop through poses of an exercise
+        for (let j = 0; j < base64Images.length; j++) {
+          const fileName = "im" + exercisesID[i] + "-" + (j + 1) // filename format: im + exercise id + - + pose number
+          const optionalObj = { fileName, type: "png" }
+          console.log(base64Images[j])
+          base64ToImage(base64Images[j], path, optionalObj)
+          images.push({
+            path: "../videoCreation/Images/" + fileName,
+            caption: this.getExerciseDescription(exercisesID[i], ctx),
+            loop: 10
+          })
+        }
+        images.push({
+          path: "../videoCreation/Images/kenzoLogo",
+          caption: this.getExerciseDescription(exercisesID[i], ctx),
+          loop: 5
+        })
+      }
+    }
+
+    const videoOptions = {
+      fps: 25,
+      loop: 5, // seconds
+      transition: true,
+      transitionDuration: 1, // seconds
+      videoBitrate: 1024,
+      videoCodec: "libx264",
+      size: "640x?",
+      audioBitrate: "128k",
+      audioChannels: 2,
+      format: "mp4",
+      pixelFormat: "yuv420p"
+    }
+
+    videoshow(images, videoOptions)
+      .audio("./src/videoGeneration/Sounds/song1.mp3")
+      .save("./src/videoGeneration/Videos/videoAUDIO.mp4")
+      .on("start", function (command) {
+        console.log("ffmpeg process started:", command)
+      })
+      .on("error", function (err, stdout, stderr) {
+        console.error("Error:", err)
+        console.error("ffmpeg stderr:", stderr)
+      })
+      .on("end", function (output) {
+        console.error("Video created in:", output)
+      })
+  }
+
+  /**
+   *Workout service - Get Exercises Base 64
+   *
+   * @brief Function that accepts an exercise ID as a parameter and returns the list of poses associated with the exercise. If exercise doesn't exist, return -1.
+   * @param id Exercise ID
+   * @return  Re-formatted Array of base64 images.
+   * @author Tinashe Chamisa
+   *
+   */
+  getExerciseBase64 (id: string) {
+    for (let i = 0; i < Object.keys(baseImages).length; i++) {
+      if (baseImages[i].ID === id) {
+        return baseImages[i].images
+      }
+    }
+    return -1
+  }
+
+  /**
+   *Workout service - Get Exercises Descriptions
+   *
+   * @brief Function that accepts an exercise ID and retrieves the description
+   * @param id Exercise ID
+   * @return  Re-formatted An exercise description.
+   * @author Tinashe Chamisa
+   *
+   */
+  async getExerciseDescription (id: string, ctx: Context): Promise<any> {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      return await ctx.prisma.exercise.findUnique({ // search for exercises that meet the requirement
+        where: {
+          exerciseID: id
+        },
+        select: {
+          exerciseDescription: true
+        }
+      })
+    } catch (e) {
+      throw e
     }
   }
 }
