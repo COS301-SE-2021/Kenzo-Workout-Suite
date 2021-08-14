@@ -39,6 +39,23 @@ export class ClientContactController {
   }
 
   /**
+   * client-contact Controller - sendEmailsToAllContacts
+   * @throws BadRequestException if the email could not be sent by the service provider (Twillio)
+   * @return "Email sent!" if the email successfully sent
+   * @author Zelealem Tesema
+   * @param contacts
+   */
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Get("sendEmailsToAllContacts")
+  async sendEmailsToAllContacts (
+      @Request() req
+  ) {
+    const contacts = await this.clientContactService.getAllPlannersContacts(req.user.userID, this.ctx)
+    return this.clientContactService.sendEmailToContact(contacts, req.user.userID)
+  }
+
+  /**
    *client-contact Controller - CreateClientContact
    *
    * @throws BadRequestException if:
