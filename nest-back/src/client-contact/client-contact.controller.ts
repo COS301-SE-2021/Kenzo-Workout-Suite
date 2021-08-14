@@ -13,20 +13,30 @@ export class ClientContactController {
     this.ctx = ActualPrisma()
   }
 
-    @Get("email")
-  testFunction (
+  /**
+   * client-contact Controller - sendEmailToContacts
+   * @param emails
+   * @throws BadRequestException if the email could not be sent by the service provider (Twillio)
+   * @return "Email sent!" if the email successfully sent
+   * @author Zelealem Tesema
+   */
+  @UseGuards(JwtAuthGuard)
+    @Get("sendEmailsToContacts")
+  sendEmailsToContacts (
+      @Body("emails") emails: string[]
   ) {
-    return this.clientContactService.sendEmailToContact(["zelutesema@gmail.com", "u19086688@tuks.co.za"])
+    return this.clientContactService.sendEmailToContact(emails)
   }
 
   /**
-   *Workout Controller - Create Client Contact
+   *client-contact Controller - CreateClientContact
    *
    * @throws BadRequestException if:
    * @return Object array of all contact objects
    * @author Msi Sibanyoni & Tinashe Chamisa
    *
    */
+  @UseGuards(JwtAuthGuard)
   @Post("createClientContact")
   @ApiOkResponse({
     description: "An array of client contact objects."
@@ -37,107 +47,91 @@ export class ClientContactController {
   @ApiInternalServerErrorResponse({
     description: "Internal server error."
   })
-    getAllClientContacts (
-        @Body("plannerID") plannerID:string,
+  createClientContact (
         @Body("contactEmail") contactEmail:string,
         @Body("name") name:string,
-        @Body("surname") surname:string
+        @Body("surname") surname:string,
+        @Request() req
 
-    ) {
-      return this.clientContactService.createClientContact(contactEmail, name, surname, plannerID, this.ctx)
-    }
+  ) {
+    return this.clientContactService.createClientContact(contactEmail, name, surname, req.user.userID, this.ctx)
+  }
 
-  // /**
-  //  *Workout Controller - Delete Client Contact
-  //  *
-  //  * @param contactEmail - Email to delete contact.
-  //  * @throws BadRequestException if:
-  //  * @return Message indicating success.
-  //  *
-  //  * @author Msi Sibanyoni & Tinashe Chamisa
-  //  *
-  //  */
-  // @Delete("deleteClientContact")
-  // @ApiOkResponse({
-  //   description: "Client deleted."
-  // })
-  // @ApiBadRequestResponse({
-  //   description: "Could not delete client."
-  // })
-  // @ApiInternalServerErrorResponse({
-  //   description: "Internal server error."
-  // })
-  // @ApiBody({ type: deleteContactDTO })
-  // deleteClientContact (
-  //     @Body("contactEmail") contactEmail: string
-  // ) {
-  //   return this.clientContactService.deleteClientContact(contactEmail, this.ctx)
-  // }
-  //
-  // /**
-  //  *Workout Controller - Create Client Contact
-  //  *
-  //  * @param contactEmail - Email to create contact.
-  //  * @param name - Name to create contact.
-  //  * @param surname - Surname to create contact.
-  //  * @param req - Details of user who made request
-  //  * @throws BadRequestException if:
-  //  * @return Message indicating success.
-  //  *
-  //  * @author Msi Sibanyoni & Tinashe Chamisa
-  //  *
-  //  */
-  // @UseGuards(JwtAuthGuard)
-  // @Post("createClientContact")
-  // @ApiOkResponse({
-  //   description: "Client Created."
-  // })
-  // @ApiBadRequestResponse({
-  //   description: "Could not create client."
-  // })
-  // @ApiInternalServerErrorResponse({
-  //   description: "Internal server error."
-  // })
-  // @ApiBody({ type: createContactDTO })
-  // createClientContact (
-  //     @Body("contactEmail") contactEmail: string,
-  //     @Body("name") name: string,
-  //     @Body("surname") surname: string,
-  //     @Request() req
-  // ) {
-  //   return this.clientContactService.createClientContact(contactEmail, name, surname, req.user.userID, this.ctx)
-  // }
-  //
-  // /**
-  //  *Workout Controller - Update Client Contact
-  //  *
-  //  * @param contactEmail - Email to update contact.
-  //  * @param name - Name to update contact.
-  //  * @param surname - Surname to update contact.
-  //  * @throws BadRequestException if:
-  //  * @return Message indicating success.
-  //  *
-  //  * @author Msi Sibanyoni & Tinashe Chamisa
-  //  *
-  //  */
-  // @UseGuards(JwtAuthGuard)
-  // @Put("updateClientContact")
-  // @ApiOkResponse({
-  //   description: "Client updated."
-  // })
-  // @ApiBadRequestResponse({
-  //   description: "Could not update client."
-  // })
-  // @ApiInternalServerErrorResponse({
-  //   description: "Internal server error."
-  // })
-  // @ApiBody({ type: updateContactDTO })
-  // updateClientContact (
-  //     @Body("contactEmail") contactEmail: string,
-  //     @Body("name") name: string,
-  //     @Body("surname") surname: string,
-  //     @Request() req
-  // ) {
-  //   return this.clientContactService.updateClientContact(contactEmail, name, surname, req.user.userID, this.ctx)
-  // }
+  /**
+   * client-contact Controller - getAllPlannersContacts
+   *
+   * @throws BadRequestException if:
+   * @return Object array of all contact objects
+   * @author Msi Sibanyoni & Tinashe Chamisa
+   *
+   */
+  @UseGuards(JwtAuthGuard)
+  @Post("getAllPlannersContacts")
+  getAllPlannersContacts (
+      @Request() req
+  ) {
+    return this.clientContactService.getAllPlannersContacts(req.user.userID, this.ctx)
+  }
+
+  /**
+   *Workout Controller - UpdateClientContact
+   *
+   * @param contactEmail - Email to update contact.
+   * @param name - Name to update contact.
+   * @param surname - Surname to update contact.
+   * @throws BadRequestException if:
+   * @return Message indicating success.
+   *
+   * @author Msi Sibanyoni & Tinashe Chamisa
+   *
+   */
+  @UseGuards(JwtAuthGuard)
+  @Put("updateClientContact")
+  @ApiOkResponse({
+    description: "Client updated."
+  })
+  @ApiBadRequestResponse({
+    description: "Could not update client."
+  })
+  @ApiInternalServerErrorResponse({
+    description: "Internal server error."
+  })
+  @ApiBody({ type: updateContactDTO })
+  updateClientContact (
+      @Body("contactID") contactID: string,
+      @Body("email") email: string,
+      @Body("name") name: string,
+      @Body("surname") surname: string,
+      @Request() req
+  ) {
+    return this.clientContactService.updateClientContact(contactID, email, name, surname, req.user.userID, this.ctx)
+  }
+
+  /**
+   *Workout Controller - Delete Client Contact
+   *
+   * @param contactEmail - Email to delete contact.
+   * @throws BadRequestException if:
+   * @return Message indicating success.
+   *
+   * @author Msi Sibanyoni & Tinashe Chamisa
+   *
+   */
+  @UseGuards(JwtAuthGuard)
+  @Delete("deleteClientContact")
+  @ApiOkResponse({
+    description: "Client deleted."
+  })
+  @ApiBadRequestResponse({
+    description: "Could not delete client."
+  })
+  @ApiInternalServerErrorResponse({
+    description: "Internal server error."
+  })
+  @ApiBody({ type: deleteContactDTO })
+  deleteClientContact (
+      @Body("contactID") contactID: string
+  ) {
+    return this.clientContactService.deleteClientContact(contactID, this.ctx)
+  }
 }

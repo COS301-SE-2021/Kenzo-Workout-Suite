@@ -30,14 +30,14 @@ export class ClientContactService {
     }
   }
 
-  async updateClientContact (contactEmail: string, newContactEmail: string, newName: string, newSurname: string, plannerID:string, ctx: Context) {
-    if (contactEmail === "" || newName === "" || newSurname === "" || contactEmail == null || newName === null || newSurname == null) {
+  async updateClientContact (contactID: string, newContactEmail: string, newName: string, newSurname: string, plannerID:string, ctx: Context) {
+    if (contactID === "" || newName === "" || newSurname === "" || contactID == null || newName === null || newSurname == null) {
       throw new NotFoundException("Parameters can not be left empty!")
     }
     try {
       await ctx.prisma.contacts.update({
         where: {
-          contactId: contactEmail
+          contactId: contactID
         },
         data: {
           contactEmail: newContactEmail,
@@ -51,7 +51,7 @@ export class ClientContactService {
     }
   }
 
-  async deleteClientContact (contactID: string, plannerID:String, ctx: Context) {
+  async deleteClientContact (contactID: string, ctx: Context) {
     if (contactID === "" || contactID == null) {
       throw new NotFoundException("Parameters can not be left empty!")
     }
@@ -67,38 +67,19 @@ export class ClientContactService {
     }
   }
 
-  // async getClientContactDetails (contactEmail: string, ctx: Context) {
-  //   const clientContacts = await ctx.prisma.contacts.findUnique({ // search for workouts that meet the requirement
-  //     where: {
-  //       contactEmail: contactEmail
-  //     },
-  //     select: {
-  //       contactEmail: true,
-  //       name: true,
-  //       surname: true
-  //     }
-  //   })
-  //   if (clientContacts == null) {
-  //     throw new BadRequestException("No client contact with that email found.")
-  //   } else {
-  //     return clientContacts
-  //   }
-  // }
-  //
-  // async getAllClientContacts (ctx: Context) {
-  //   const clientContacts = await ctx.prisma.contacts.findMany({ // search for workouts that meet the requirement
-  //     select: {
-  //       contactEmail: true,
-  //       name: true,
-  //       surname: true
-  //     }
-  //   })
-  //   if (clientContacts == null) {
-  //     throw new BadRequestException("No client contacts found.")
-  //   } else {
-  //     return clientContacts
-  //   }
-  // }
+  async getAllPlannersContacts (plannerID:string, ctx: Context) {
+    const clientContacts = await ctx.prisma.contacts.findMany({ // search for workouts that meet the requirement
+      where: {
+        plannerID: plannerID
+      }
+    })
+
+    if (clientContacts == null) {
+      throw new BadRequestException("No client contacts found.")
+    } else {
+      return clientContacts
+    }
+  }
 
   async sendEmailToContact (emails: String[]) {
     const sgMail = require("@sendgrid/mail")
@@ -134,8 +115,12 @@ export class ClientContactService {
         }
       ]
     }
-    sgMail.send(msg).catch(err => {
-      console.log(err)
-    })
+
+    try {
+      sgMail.send(msg)
+      return "Email sent!"
+    } catch (err) {
+      throw new BadRequestException("Could not send email")
+    }
   }
 }
