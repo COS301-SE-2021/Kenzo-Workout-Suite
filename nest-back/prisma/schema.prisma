@@ -78,6 +78,5 @@ model Contacts {
   name         String
   surname      String
 
-  planner   User?   @relation(fields: [plannerID], references: [userID])
-  plannerID String?
+  planners User[]
 }

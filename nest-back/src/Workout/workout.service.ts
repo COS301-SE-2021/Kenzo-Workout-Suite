@@ -783,7 +783,6 @@ export class WorkoutService {
         font: SFRegular
       })
 
-
       firstPage.drawText("Description ", {
         x: 300,
         y: 120,
@@ -1232,110 +1231,6 @@ export class WorkoutService {
       return "text file has been created"
     } catch (err) {
       throw new BadRequestException("Could not generate text to speech")
-    }
-  }
-
-  async createClientContact (contactEmail: string, name: string, surname: string, plannerID:string, ctx: Context) {
-    if (plannerID === "" || plannerID === null) {
-      throw new BadRequestException("Planner needs to be logged in.")
-    }
-    if (contactEmail === "" || name === "" || surname === "" || contactEmail == null || name === null || surname == null) {
-      throw new NotFoundException("Parameters can not be left empty!")
-    }
-    try {
-      await ctx.prisma.contacts.create({
-        data: {
-          contactEmail: contactEmail,
-          name: name,
-          surname: surname,
-          planner: {
-            connect: {
-              userID: plannerID
-            }
-          }
-        }
-      })
-      return "Client contact created."
-    } catch (e) {
-      throw new BadRequestException(e)
-    }
-  }
-
-  async updateClientContact (contactEmail: string, name: string, surname: string, plannerID:string, ctx: Context) {
-    if (plannerID === "" || plannerID === null) {
-      throw new BadRequestException("Planner needs to be logged in.")
-    }
-    if (contactEmail === "" || name === "" || surname === "" || contactEmail == null || name === null || surname == null) {
-      throw new NotFoundException("Parameters can not be left empty!")
-    }
-    try {
-      await ctx.prisma.contacts.update({
-        where: {
-          contactEmail: contactEmail
-        },
-        data: {
-          contactEmail: contactEmail,
-          name: name,
-          surname: surname,
-          planner: {
-            connect: {
-              userID: plannerID
-            }
-          }
-        }
-      })
-      return "Client contact updated."
-    } catch (e) {
-      throw new BadRequestException(e)
-    }
-  }
-
-  async deleteClientContact (contactEmail: string, ctx: Context) {
-    if (contactEmail === "" || contactEmail == null) {
-      throw new NotFoundException("Parameters can not be left empty!")
-    }
-    try {
-      await ctx.prisma.contacts.delete({
-        where: {
-          contactEmail: contactEmail
-        }
-      })
-      return "Client contact deleted."
-    } catch (e) {
-      throw new BadRequestException(e)
-    }
-  }
-
-  async getClientContactDetails (contactEmail: string, ctx: Context) {
-    const clientContacts = await ctx.prisma.contacts.findUnique({ // search for workouts that meet the requirement
-      where: {
-        contactEmail: contactEmail
-      },
-      select: {
-        contactEmail: true,
-        name: true,
-        surname: true
-      }
-    })
-    if (clientContacts == null) {
-      throw new BadRequestException("No client contact with that email found.")
-    } else {
-      return clientContacts
-    }
-  }
-
-  async getAllClientContacts (ctx: Context) {
-    const clientContacts = await ctx.prisma.contacts.findMany({ // search for workouts that meet the requirement
-      select: {
-        contactEmail: true,
-        name: true,
-        surname: true
-      }
-    })
-    if (clientContacts == null) {
-      throw new BadRequestException("No client contacts found.")
-    } else {
-      return clientContacts
     }
   }
 }

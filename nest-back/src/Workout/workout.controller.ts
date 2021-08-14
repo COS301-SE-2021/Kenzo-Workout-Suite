@@ -689,7 +689,8 @@ export class WorkoutController {
     ) {
       return this.workoutService.getAllClientContacts(this.ctx)
     }
-  /**
+
+    /**
      *Workout Controller - Get Workout PDF
      *
      * @param workoutID - id of workout pdf to be returned
