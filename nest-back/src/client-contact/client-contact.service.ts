@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common"
 import { Context } from "../../context"
 import { PrismaService } from "../Prisma/prisma.service"
+import { log } from "util"
 
 @Injectable()
 export class ClientContactService {
@@ -113,16 +114,42 @@ export class ClientContactService {
   //   }
   // }
 
-  async sendEmailToContact () {
+  async sendEmailToContact (emails: String[]) {
     const sgMail = require("@sendgrid/mail")
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-    const msg = {
-      to: "zelutesema@gmail.com",
-      from: "crackedstudios.up@gmail.com",
-      subject: "Sending with SendGrid is Fun",
-      text: "and easy to do anywhere, even with Node.js",
-      html: "<strong>and easy to do anywhere, even with Node.js</strong>"
+
+    const fs = require("fs")
+
+    const pathToAttachment = "./src/Workout/GeneratedWorkouts/TestWorkout.pdf"
+    const attachment = fs.readFileSync(pathToAttachment).toString("base64")
+
+    const personalizationsArray = [{
+      to: emails[0]
+    }]
+
+    for (let i = 1; i < emails.length; i++) {
+      const emailObject = {
+        to: emails[i]
+      }
+      personalizationsArray.push(emailObject)
     }
-    sgMail.send(msg)
+
+    const msg = {
+      personalizations: personalizationsArray,
+      from: "kenzo.workout.suite@gmail.com",
+      subject: "I miss Luca",
+      text: "Hey, here is a new workout program for you!",
+      attachments: [
+        {
+          content: attachment,
+          filename: "attachment.pdf",
+          type: "application/pdf",
+          disposition: "attachment"
+        }
+      ]
+    }
+    sgMail.send(msg).catch(err => {
+      console.log(err)
+    })
   }
 }
