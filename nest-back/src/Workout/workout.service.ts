@@ -4,7 +4,7 @@ import {
   Injectable,
   NotAcceptableException,
   NotFoundException,
-  PreconditionFailedException
+  PreconditionFailedException, ServiceUnavailableException
 } from "@nestjs/common"
 import { Context } from "../../context"
 import { Exercise, Tag } from "@prisma/client"
@@ -15,6 +15,7 @@ import { UserService } from "../User/user.service"
 import * as baseImages from "../createdWorkoutImages.json"
 import fontkit from "@pdf-lib/fontkit"
 import { delay } from "rxjs/operators"
+import {ApiCreatedResponse} from "@nestjs/swagger";
 
 const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
@@ -1253,7 +1254,7 @@ export class WorkoutService {
    */
   async createVideo (workoutID: string, ctx: Context): Promise<any> {
     if (workoutID == null || workoutID === "") {
-      throw new PreconditionFailedException("Invalid Workout object passed in.")
+      throw new PreconditionFailedException("Invalid Workout ID passed in.")
     }
     const exercisesID: string[] = []
     // eslint-disable-next-line no-useless-catch
@@ -1369,9 +1370,11 @@ export class WorkoutService {
       .on("error", function (err, stdout, stderr) {
         console.error("Error:", err)
         console.error("ffmpeg stderr:", stderr)
+        throw new ServiceUnavailableException("Unable to create video.")
       })
       .on("end", function (output) {
         console.error("Video created in:", output)
+        return "Successfully created video."
       })
     // finally remove images
     /*
@@ -1403,12 +1406,8 @@ export class WorkoutService {
    *
    */
   getExerciseBase64 (id: string) {
-    for (let i = 0; i < Object.keys(baseImages).length; i++) {
-      if (baseImages[i].ID === id) {
-        return baseImages[i].images
-      }
-    }
-    return -1
+    const found = baseImages.find(element => element.ID === id)
+    return (typeof found !== "undefined") ? found.images : -1
   }
 
   /**
@@ -1421,11 +1420,7 @@ export class WorkoutService {
    *
    */
   getExerciseDescription (id: string) {
-    for (let i = 0; i < Object.keys(baseImages).length; i++) {
-      if (baseImages[i].ID === id) {
-        return baseImages[i].poseDescription
-      }
-    }
-    return ""
+    const found = baseImages.find(element => element.ID === id)
+    return (typeof found !== "undefined") ? found.poseDescription : ""
   }
 }
