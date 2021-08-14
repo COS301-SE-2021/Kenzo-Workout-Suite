@@ -12,7 +12,7 @@ import { PrismaService } from "../Prisma/prisma.service"
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib"
 import * as fs from "fs"
 import { UserService } from "../User/user.service"
-import * as baseImages from "../Workout/createdWorkoutImages.json"
+import * as baseImages from "../createdWorkoutImages.json"
 import fontkit from "@pdf-lib/fontkit"
 import { delay } from "rxjs/operators"
 
