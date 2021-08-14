@@ -14,11 +14,11 @@ import {
 } from "@prisma/client"
 import { ActualPrisma, Context } from "../../context"
 import {
-  ApiBadRequestResponse, ApiBearerAuth,
-  ApiBody, ApiConflictResponse,
-  ApiInternalServerErrorResponse, ApiNotAcceptableResponse,
-  ApiNotFoundResponse,
-  ApiOkResponse, ApiPreconditionFailedResponse
+    ApiBadRequestResponse, ApiBearerAuth,
+    ApiBody, ApiConflictResponse, ApiCreatedResponse,
+    ApiInternalServerErrorResponse, ApiNotAcceptableResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse, ApiPreconditionFailedResponse, ApiServiceUnavailableResponse
 } from "@nestjs/swagger"
 
 import {
@@ -557,11 +557,17 @@ export class WorkoutController {
      */
     @Post("convertToVideo")
     @ApiBody({ type: createVideoDTO })
-    @ApiOkResponse({
+    @ApiCreatedResponse({
       description: "Successfully created video."
     })
+    @ApiPreconditionFailedResponse({
+      description: "Invalid Workout object passed in."
+    })
     @ApiNotFoundResponse({
-      description: "No images were found."
+      description: "No workout was found in the database with the specified workout ID."
+    })
+    @ApiServiceUnavailableResponse({
+      description: "Unable to create video."
     })
     @ApiInternalServerErrorResponse({
       description: "Internal server error."
