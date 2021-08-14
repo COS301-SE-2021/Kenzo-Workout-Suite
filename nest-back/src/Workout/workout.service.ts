@@ -7,9 +7,7 @@ import {
   PreconditionFailedException
 } from "@nestjs/common"
 import { Context } from "../../context"
-
 import { Exercise, Tag } from "@prisma/client"
-import { jsPDF } from "jspdf"
 import { PrismaService } from "../Prisma/prisma.service"
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib"
 import * as fs from "fs"
@@ -411,6 +409,7 @@ export class WorkoutService {
       const json = JSON.parse(data.toString())
       const final = {}
       final["ID"] = exercise.exerciseID
+      final["poseDescription"] = exercise.poseDescription
       final["images"] = arrayImages
       json.push(final)
       fs.writeFile("./src/createdWorkoutImages.json", JSON.stringify(json), function (err) {
@@ -911,7 +910,7 @@ export class WorkoutService {
               font: SFRegular
             })
             // Images
-            fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
+            await fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
               if (err) throw err
               const json = JSON.parse(data.toString())
               const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
@@ -1030,7 +1029,7 @@ export class WorkoutService {
                   const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
                   currentPage.drawImage(currentImage, {
                     x: 20 + (c * 150),
-                    y: 400,
+                    y: 20,
                     width: 120,
                     height: 90
                   })
@@ -1082,6 +1081,7 @@ export class WorkoutService {
       throw new BadRequestException("Cannot return workout pdf.")
     }
   }
+
   /**
      *Workout Service - Create Tag
      *
