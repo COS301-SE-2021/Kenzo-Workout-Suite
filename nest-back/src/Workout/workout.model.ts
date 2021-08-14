@@ -111,36 +111,3 @@ export class deleteExerciseDTO {
     @ApiProperty({ type: String, description: "ID of Exercise." })
     exerciseID: string;
 }
-
-export class createContactDTO {
-    @ApiProperty({ type: String, description: 'email of contact' })
-    contactEmail: string;
-
-    @ApiProperty({ type: String, description: 'name of contact' })
-    name: string;
-
-    @ApiProperty({ type: String, description: 'surname of contact' })
-    surname: string;
-}
-
-export class updateContactDTO {
-    @ApiProperty({ type: String, description: 'email of contact' })
-    contactEmail: string;
-
-    @ApiProperty({ type: String, description: 'name of contact' })
-    name: string;
-
-    @ApiProperty({ type: String, description: 'surname of contact' })
-    surname: string;
-}
-
-export class deleteContactDTO {
-    @ApiProperty({ type: String, description: 'email of contact' })
-    contactEmail: string;
-
-    @ApiProperty({ type: String, description: 'name of contact' })
-    name: string;
-
-    @ApiProperty({ type: String, description: 'surname of contact' })
-    surname: string;
-}

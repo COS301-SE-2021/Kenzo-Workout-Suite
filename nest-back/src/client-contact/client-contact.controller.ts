@@ -1,10 +1,12 @@
 import { Body, Controller, Delete, Get, Post, Put, Request, UseGuards } from "@nestjs/common"
 import { ClientContactService } from "./client-contact.service"
 import { ApiBadRequestResponse, ApiBody, ApiInternalServerErrorResponse, ApiOkResponse } from "@nestjs/swagger"
-import { createContactDTO, deleteContactDTO, updateContactDTO } from "../Workout/workout.model"
 import { JwtAuthGuard } from "../User/AuthGuards/jwt-auth.guard"
 import { ActualPrisma, Context } from "../../context"
-
+import { createContactDTO, deleteContactDTO, updateContactDTO } from "./client-contact.model"
+import {
+  Contacts
+} from "@prisma/client"
 @Controller("client-contact")
 export class ClientContactController {
   ctx: Context
@@ -23,9 +25,9 @@ export class ClientContactController {
   @UseGuards(JwtAuthGuard)
     @Get("sendEmailsToContacts")
   sendEmailsToContacts (
-      @Body("emails") emails: string[]
+      @Body("contacts") contacts: Contacts[]
   ) {
-    return this.clientContactService.sendEmailToContact(emails)
+    return this.clientContactService.sendEmailToContact(contacts)
   }
 
   /**
@@ -47,6 +49,7 @@ export class ClientContactController {
   @ApiInternalServerErrorResponse({
     description: "Internal server error."
   })
+  @ApiBody({ type: createContactDTO })
   createClientContact (
         @Body("contactEmail") contactEmail:string,
         @Body("name") name:string,
@@ -66,7 +69,7 @@ export class ClientContactController {
    *
    */
   @UseGuards(JwtAuthGuard)
-  @Post("getAllPlannersContacts")
+  @Get("getAllPlannersContacts")
   getAllPlannersContacts (
       @Request() req
   ) {
@@ -110,12 +113,12 @@ export class ClientContactController {
   /**
    *Workout Controller - Delete Client Contact
    *
-   * @param contactEmail - Email to delete contact.
    * @throws BadRequestException if:
    * @return Message indicating success.
    *
    * @author Msi Sibanyoni & Tinashe Chamisa
    *
+   * @param contactID
    */
   @UseGuards(JwtAuthGuard)
   @Delete("deleteClientContact")

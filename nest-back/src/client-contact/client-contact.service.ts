@@ -1,6 +1,9 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common"
 import { Context } from "../../context"
 import { PrismaService } from "../Prisma/prisma.service"
+import {
+  Contacts
+} from "@prisma/client"
 @Injectable()
 export class ClientContactService {
   constructor (private prisma: PrismaService) {
@@ -81,7 +84,7 @@ export class ClientContactService {
     }
   }
 
-  async sendEmailToContact (emails: String[]) {
+  async sendEmailToContact (contacts: Contacts[]) {
     const sgMail = require("@sendgrid/mail")
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
@@ -91,12 +94,12 @@ export class ClientContactService {
     const attachment = fs.readFileSync(pathToAttachment).toString("base64")
 
     const personalizationsArray = [{
-      to: emails[0]
+      to: contacts[0].contactEmail
     }]
 
-    for (let i = 1; i < emails.length; i++) {
+    for (let i = 1; i < contacts.length; i++) {
       const emailObject = {
-        to: emails[i]
+        to: contacts[i].contactEmail
       }
       personalizationsArray.push(emailObject)
     }
