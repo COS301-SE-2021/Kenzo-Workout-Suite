@@ -17,10 +17,10 @@ export class ClientContactController {
 
   /**
    * client-contact Controller - sendEmailToContacts
-   * @param emails
    * @throws BadRequestException if the email could not be sent by the service provider (Twillio)
    * @return "Email sent!" if the email successfully sent
    * @author Zelealem Tesema
+   * @param contacts
    */
   @UseGuards(JwtAuthGuard)
     @Get("sendEmailsToContacts")

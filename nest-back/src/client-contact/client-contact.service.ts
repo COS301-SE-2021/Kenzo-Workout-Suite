@@ -94,12 +94,14 @@ export class ClientContactService {
     const attachment = fs.readFileSync(pathToAttachment).toString("base64")
 
     const personalizationsArray = [{
-      to: contacts[0].contactEmail
+      to: contacts[0].contactEmail,
+      text: "Hey, " + contacts[0].name + "Your planner " + "has created a new workout and shared it with you. ENJOY!!"
     }]
 
     for (let i = 1; i < contacts.length; i++) {
       const emailObject = {
-        to: contacts[i].contactEmail
+        to: contacts[i].contactEmail,
+        text: "Hey, " + contacts[i].name + "Your planner " + "has created a new workout and shared it with you. ENJOY!!"
       }
       personalizationsArray.push(emailObject)
     }
@@ -120,7 +122,7 @@ export class ClientContactService {
     }
 
     try {
-      sgMail.send(msg)
+      await sgMail.send(msg)
       return "Email sent!"
     } catch (err) {
       throw new BadRequestException("Could not send email")
