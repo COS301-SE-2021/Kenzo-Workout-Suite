@@ -1,6 +1,12 @@
 import { Body, Controller, Delete, Get, Post, Put, Request, UseGuards } from "@nestjs/common"
 import { ClientContactService } from "./client-contact.service"
-import { ApiBadRequestResponse, ApiBody, ApiInternalServerErrorResponse, ApiOkResponse } from "@nestjs/swagger"
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiBody,
+  ApiInternalServerErrorResponse,
+  ApiOkResponse
+} from "@nestjs/swagger"
 import { JwtAuthGuard } from "../User/AuthGuards/jwt-auth.guard"
 import { ActualPrisma, Context } from "../../context"
 import { createContactDTO, deleteContactDTO, updateContactDTO } from "./client-contact.model"
@@ -23,11 +29,13 @@ export class ClientContactController {
    * @param contacts
    */
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
     @Get("sendEmailsToContacts")
   sendEmailsToContacts (
-      @Body("contacts") contacts: Contacts[]
+      @Body("contacts") contacts: Contacts[],
+      @Request() req
   ) {
-    return this.clientContactService.sendEmailToContact(contacts)
+    return this.clientContactService.sendEmailToContact(contacts, req.user.userID)
   }
 
   /**
@@ -39,6 +47,7 @@ export class ClientContactController {
    *
    */
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Post("createClientContact")
   @ApiOkResponse({
     description: "An array of client contact objects."
@@ -69,6 +78,7 @@ export class ClientContactController {
    *
    */
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Get("getAllPlannersContacts")
   getAllPlannersContacts (
       @Request() req
@@ -79,9 +89,11 @@ export class ClientContactController {
   /**
    *Workout Controller - UpdateClientContact
    *
-   * @param contactEmail - Email to update contact.
+   * @param contactID - ContactID that needs to be updated
+   * @param email - Email address that needs to be updated to.
    * @param name - Name to update contact.
    * @param surname - Surname to update contact.
+   * @param req
    * @throws BadRequestException if:
    * @return Message indicating success.
    *
@@ -89,6 +101,7 @@ export class ClientContactController {
    *
    */
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Put("updateClientContact")
   @ApiOkResponse({
     description: "Client updated."
@@ -121,6 +134,7 @@ export class ClientContactController {
    * @param contactID
    */
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Delete("deleteClientContact")
   @ApiOkResponse({
     description: "Client deleted."

@@ -1,12 +1,13 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common"
-import { Context } from "../../context"
+import { ActualPrisma, Context } from "../../context"
 import { PrismaService } from "../Prisma/prisma.service"
 import {
   Contacts
 } from "@prisma/client"
+import { UserService } from "../User/user.service"
 @Injectable()
 export class ClientContactService {
-  constructor (private prisma: PrismaService) {
+  constructor (private prisma: PrismaService, private userService: UserService) {
 
   }
 
@@ -84,7 +85,9 @@ export class ClientContactService {
     }
   }
 
-  async sendEmailToContact (contacts: Contacts[]) {
+  async sendEmailToContact (contacts: Contacts[], plannerID) {
+    const plannerName = this.userService.findUserByUUID(plannerID, ActualPrisma())
+
     const sgMail = require("@sendgrid/mail")
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
@@ -95,13 +98,13 @@ export class ClientContactService {
 
     const personalizationsArray = [{
       to: contacts[0].contactEmail,
-      text: "Hey, " + contacts[0].name + "Your planner " + "has created a new workout and shared it with you. ENJOY!!"
+      text: "Hey, " + contacts[0].name + "Your planner " + plannerName + "has created a new workout and shared it with you. ENJOY!!"
     }]
 
     for (let i = 1; i < contacts.length; i++) {
       const emailObject = {
         to: contacts[i].contactEmail,
-        text: "Hey, " + contacts[i].name + "Your planner " + "has created a new workout and shared it with you. ENJOY!!"
+        text: "Hey, " + contacts[i].name + "Your planner " + plannerName + "has created a new workout and shared it with you. ENJOY!!"
       }
       personalizationsArray.push(emailObject)
     }
@@ -109,8 +112,7 @@ export class ClientContactService {
     const msg = {
       personalizations: personalizationsArray,
       from: "kenzo.workout.suite@gmail.com",
-      subject: "I miss Luca",
-      text: "Hey, here is a new workout program for you!",
+      subject: "NEW WORKOUT FROM " + plannerName,
       attachments: [
         {
           content: attachment,
