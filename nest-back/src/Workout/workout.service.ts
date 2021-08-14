@@ -9,17 +9,20 @@ import {
 import { Context } from "../../context"
 
 import { Exercise, Tag } from "@prisma/client"
-import { jsPDF } from "jspdf"
 import { PrismaService } from "../Prisma/prisma.service"
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib"
 import * as fs from "fs"
 import { UserService } from "../User/user.service"
 import * as baseImages from "../Workout/createdWorkoutImages.json"
 import fontkit from "@pdf-lib/fontkit"
+import { delay } from "rxjs/operators"
 
 const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
 const base64ToImage = require("base64-to-image")
+const Jimp = require("jimp")
+// const sharp = require("sharp")
+// const resizeImg = require("resize-img")
 
 @Injectable()
 export class WorkoutService {
@@ -1082,6 +1085,7 @@ export class WorkoutService {
       throw new BadRequestException("Cannot return workout pdf.")
     }
   }
+
   /**
      *Workout Service - Create Tag
      *
@@ -1251,74 +1255,98 @@ export class WorkoutService {
     if (workoutID == null || workoutID === "") {
       throw new PreconditionFailedException("Invalid Workout object passed in.")
     }
-    let plannerID
     const exercisesID: string[] = []
     // eslint-disable-next-line no-useless-catch
     try {
-      const workout = await ctx.prisma.workout.findUnique({
-        where: {
-          workoutID: workoutID
-        },
-        select: {
-          plannerID: true
-        }
-      })
+      const workout = await this.getWorkoutById(workoutID, ctx)
       if (workout === null) { // if JSON object is empty, send error code
         throw new NotFoundException("No workout was found in the database with the specified workout ID.")
       } else {
-        plannerID = workout.plannerID
-        // Find exercises that belong to the workout
-        const listOfExercises = await ctx.prisma.exercise.findMany({
-          where: {
-            plannerID: plannerID
-          },
-          select: {
-            exerciseID: true
-          }
+        workout.exercises.forEach(element => {
+          exercisesID.push(element.exerciseID)
         })
-        if (!(Array.isArray(listOfExercises) && listOfExercises.length)) { // if JSON object is empty, send error code
-          throw new NotFoundException("No Exercises were found in the database with the specified workout.")
-        } else {
-          listOfExercises.forEach(element => {
-            exercisesID.push(element.exerciseID)
-          })
-        }
       }
     } catch (err) {
       throw err
     }
+
     const images = [{}]
+    const fileNames = [""]
+    let lengthOfVideo = 0
+
+    // resize kenzo logo image
+    await Jimp.read("./src/videoGeneration/Images/kenzoLogo.PNG")
+      .then(image => {
+        return image
+          .resize(500, 200) // resize
+          .quality(100) // set JPEG quality
+          .writeAsync("./src/videoGeneration/Images/kenzoLogo-fm.PNG")
+      })
+      .catch(err => {
+        console.error(err)
+      })
 
     // retrieve all exercises poses one by one from the local storage
     for (let i = 0; i < exercisesID.length; i++) {
       let base64Images
       if ((base64Images = this.getExerciseBase64(exercisesID[i])) === -1) {
-        console.log("erroRr")
+        console.log("error")
       } else {
-        const path = "../videoCreation/Images"
+        console.log("found")
+        const path = "./src/videoGeneration/Images/"
+
         // Loop through poses of an exercise
+        const exerciseDescription = this.getExerciseDescription(exercisesID[i])
+
         for (let j = 0; j < base64Images.length; j++) {
-          const fileName = "im" + exercisesID[i] + "-" + (j + 1) // filename format: im + exercise id + - + pose number
-          const optionalObj = { fileName, type: "png" }
-          console.log(base64Images[j])
+          const fileName = "image-" + exercisesID[i] + "-" + (j + 1) // filename format: image + exercise id + - + pose number
+          fileNames.push(fileName)
+
+          // convert base64 to image
+          const optionalObj = { fileName, type: "jpg" }
           base64ToImage(base64Images[j], path, optionalObj)
+          delay(20000)
+          // resize image
+          await Jimp.read("./src/videoGeneration/Images/" + fileName + ".jpg")
+            .then(image => {
+              return image
+                .resize(500, 200) // resize
+                .quality(100) // set JPEG quality
+                .writeAsync("./src/videoGeneration/Images/" + fileName + "-fm.jpg")
+            })
+            .catch(err => {
+              console.error(err)
+            })
+          // push image to array
           images.push({
-            path: "../videoCreation/Images/" + fileName,
-            caption: this.getExerciseDescription(exercisesID[i], ctx),
-            loop: 10
+            path: "./src/videoGeneration/Images/" + fileName + "-fm.jpg",
+            caption: exerciseDescription,
+            loop: 45
+          })
+          if (lengthOfVideo === 0) { images.shift() } // to remove first empty JSON object
+
+          lengthOfVideo += 45
+        }
+        if (i < base64Images.length - 1) {
+          images.push({
+            path: "./src/videoGeneration/Images/kenzoLogo-fm.PNG",
+            caption: "Exercise " + (i + 1) + " complete! On to the next...",
+            loop: 5
+          })
+        } else {
+          images.push({
+            path: "./src/videoGeneration/Images/kenzoLogo-fm.PNG",
+            caption: "Workout complete!",
+            loop: 5
           })
         }
-        images.push({
-          path: "../videoCreation/Images/kenzoLogo",
-          caption: this.getExerciseDescription(exercisesID[i], ctx),
-          loop: 5
-        })
+        lengthOfVideo += 5
       }
     }
 
     const videoOptions = {
       fps: 25,
-      loop: 5, // seconds
+      loop: lengthOfVideo, // length of video in seconds
       transition: true,
       transitionDuration: 1, // seconds
       videoBitrate: 1024,
@@ -1330,9 +1358,11 @@ export class WorkoutService {
       pixelFormat: "yuv420p"
     }
 
+    console.log(images)
+
     videoshow(images, videoOptions)
       .audio("./src/videoGeneration/Sounds/song1.mp3")
-      .save("./src/videoGeneration/Videos/videoAUDIO.mp4")
+      .save("./src/videoGeneration/Videos/video" + Date.now() + ".mp4")
       .on("start", function (command) {
         console.log("ffmpeg process started:", command)
       })
@@ -1343,6 +1373,24 @@ export class WorkoutService {
       .on("end", function (output) {
         console.error("Video created in:", output)
       })
+    // finally remove images
+    /*
+    for (let i = 0; i < fileNames.length; i++) {
+      if (fileNames[i] !== "") {
+        try {
+          fs.unlinkSync("./src/videoGeneration/Images/" + fileNames[i] + "-fm.jpg")
+          fs.unlinkSync("./src/videoGeneration/Images/" + fileNames[i] + ".jpg")
+        } catch (err) {
+          console.error(err)
+        }
+      }
+    }
+    try {
+      fs.unlinkSync("./src/videoGeneration/Images/kenzoLogo-fm.jpg")
+    } catch (err) {
+      console.error(err)
+    }
+     */
   }
 
   /**
@@ -1372,19 +1420,12 @@ export class WorkoutService {
    * @author Tinashe Chamisa
    *
    */
-  async getExerciseDescription (id: string, ctx: Context): Promise<any> {
-    // eslint-disable-next-line no-useless-catch
-    try {
-      return await ctx.prisma.exercise.findUnique({ // search for exercises that meet the requirement
-        where: {
-          exerciseID: id
-        },
-        select: {
-          exerciseDescription: true
-        }
-      })
-    } catch (e) {
-      throw e
+  getExerciseDescription (id: string) {
+    for (let i = 0; i < Object.keys(baseImages).length; i++) {
+      if (baseImages[i].ID === id) {
+        return baseImages[i].poseDescription
+      }
     }
+    return ""
   }
 }
