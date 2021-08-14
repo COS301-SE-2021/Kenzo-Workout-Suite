@@ -1224,7 +1224,7 @@ export class WorkoutService {
   async textToSpeech (text:String, fileName:String) {
     const gtts = require("node-gtts")("en")
     const path = require("path")
-    const filepath = path.join("./src/GeneratedTextSpeech/", fileName + ".wav")
+    const filepath = path.join("./src/Workout/GeneratedTextSpeech/", fileName + ".wav")
 
     try {
       gtts.save(filepath, text, function () {
