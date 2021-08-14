@@ -18,30 +18,35 @@ export class ClientContactController {
   ) {
     return this.clientContactService.sendEmailToContact(["zelutesema@gmail.com", "u19086688@tuks.co.za"])
   }
-  //
-  // /**
-  //  *Workout Controller - Create Client Contact
-  //  *
-  //  * @throws BadRequestException if:
-  //  * @return Object array of all contact objects
-  //  * @author Msi Sibanyoni & Tinashe Chamisa
-  //  *
-  //  */
-  // @Get("getAllClientContacts")
-  // @ApiOkResponse({
-  //   description: "An array of client contact objects."
-  // })
-  // @ApiBadRequestResponse({
-  //   description: "Could not retrieve client contact objects"
-  // })
-  // @ApiInternalServerErrorResponse({
-  //   description: "Internal server error."
-  // })
-  //   getAllClientContacts (
-  //   ) {
-  //     return this.clientContactService.getAllClientContacts(this.ctx)
-  //   }
-  //
+
+  /**
+   *Workout Controller - Create Client Contact
+   *
+   * @throws BadRequestException if:
+   * @return Object array of all contact objects
+   * @author Msi Sibanyoni & Tinashe Chamisa
+   *
+   */
+  @Post("createClientContact")
+  @ApiOkResponse({
+    description: "An array of client contact objects."
+  })
+  @ApiBadRequestResponse({
+    description: "Could not retrieve client contact objects"
+  })
+  @ApiInternalServerErrorResponse({
+    description: "Internal server error."
+  })
+    getAllClientContacts (
+        @Body("plannerID") plannerID:string,
+        @Body("contactEmail") contactEmail:string,
+        @Body("name") name:string,
+        @Body("surname") surname:string
+
+    ) {
+      return this.clientContactService.createClientContact(contactEmail, name, surname, plannerID, this.ctx)
+    }
+
   // /**
   //  *Workout Controller - Delete Client Contact
   //  *

@@ -9,6 +9,7 @@ import { JwtService } from "@nestjs/jwt"
 import { User } from "@prisma/client"
 import * as bcrypt from "bcrypt"
 import { Context } from "../../context"
+import { log } from "util"
 
 @Injectable()
 export class UserService {

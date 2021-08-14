@@ -74,9 +74,11 @@ model Tag {
 }
 
 model Contacts {
-  contactEmail  String @id
+  contactId String    @id @default(uuid())
+  contactEmail  String
   name         String
   surname      String
 
-  planners User[]
+  planner   User?   @relation(fields: [plannerID], references: [userID])
+  plannerID String?
 }
