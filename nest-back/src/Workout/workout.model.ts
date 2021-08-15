@@ -1,33 +1,37 @@
 import { ApiProperty } from "@nestjs/swagger"
 
 import {
+  Workout,
   Exercise,
   Tag
 } from "@prisma/client"
 export class CreateExerciseDTO {
-    @ApiProperty({ type: String, description: "title of exercises" })
+    @ApiProperty({ type: String, description: "Title of exercises" })
     exerciseTitle: string;
 
-    @ApiProperty({ type: String, description: "description of exercise" })
+    @ApiProperty({ type: String, description: "Description of exercise" })
     exerciseDescription: string;
 
-    @ApiProperty({ type: String, description: "rep range for exercise" })
+    @ApiProperty({ type: String, description: "Rep range for exercise [Optional - \"\" can be passed in. ]" })
     repRange: string;
 
-    @ApiProperty({ type: Number, description: "number of sets" })
+    @ApiProperty({ type: Number, description: "Number of Sets. [Optional - 0 can be passed in. ]" })
     sets: number;
 
-    @ApiProperty({ type: String, description: "description for pose" })
+    @ApiProperty({ type: String, description: "Description for Pose" })
     poseDescription: string;
 
-    @ApiProperty({ type: Number, description: "rest period" })
+    @ApiProperty({ type: Number, description: "Rest period [Optional - 0 can be passed in. ]" })
     restPeriod: number;
 
     @ApiProperty({ type: Array, description: "Tags for the workout." })
     tags: Tag[];
 
-    @ApiProperty({ type: Number, description: "duration of exercise" })
+    @ApiProperty({ type: Number, description: "Duration of exercise [Optional - 0 can be passed in. ]" })
     duration: number;
+
+    @ApiProperty({ type: Array, description: "Base64 Image Array of poses" })
+    images: string[];
 }
 
 export class createTagDTO {
@@ -73,13 +77,13 @@ export class DeleteWorkoutDTO {
 
 export class updateExerciseDTO {
     @ApiProperty({ type: String, description: "id of exercises" })
-    exercise: string;
+    exerciseID: string;
 
     @ApiProperty({ type: String, description: "title of exercises" })
-    title: string;
+    exerciseTitle: string;
 
     @ApiProperty({ type: String, description: "description of exercise" })
-    description: string;
+    exerciseDescription: string;
 
     @ApiProperty({ type: String, description: "rep range for exercise" })
     repRange: string;
@@ -89,19 +93,27 @@ export class updateExerciseDTO {
 
     @ApiProperty({ type: String, description: "description for pose" })
 
-    Posedescription: string;
+    poseDescription: string;
 
     @ApiProperty({ type: Number, description: "rest period" })
     restPeriod: number;
 
     @ApiProperty({ type: Array, description: "Tags for the exercise." })
-    tag: Tag[];
+    tags: Tag[];
 
     @ApiProperty({ type: Number, description: "duration of exercise" })
-    duratime: number;
+    duration: number;
+
+    @ApiProperty({ type: Array, description: "Base64 Image Array of poses" })
+    images: string[];
 }
 
 export class deleteExerciseDTO {
     @ApiProperty({ type: String, description: "ID of Exercise." })
-    exercise: string;
+    exerciseID: string;
+}
+
+export class createVideoDTO {
+    @ApiProperty({ type: String, description: "Workout ID" })
+    workoutID: string;
 }

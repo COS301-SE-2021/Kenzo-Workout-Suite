@@ -36,6 +36,7 @@ model User {
   userType    userType
   workouts    Workout[]
   exercises   Exercise[]
+  contacts    Contacts[]
 }
 
 model Workout {
@@ -53,12 +54,12 @@ model Exercise {
   exerciseID          String    @id @default(uuid())
   exerciseTitle       String
   exerciseDescription String
-  repRange            String
-  sets                Int
+  repRange            String?
+  sets                Int?
   poseDescription     String
-  restPeriod          Int
+  restPeriod          Int?
   tags                Tag[]
-  duration            Int
+  duration            Int?
   workouts            Workout[]
 
   planner   User?   @relation(fields: [plannerID], references: [userID])
@@ -70,4 +71,14 @@ model Tag {
   textColour       String
   backgroundColour String
   exercises        Exercise[]
+}
+
+model Contacts {
+  contactId String    @id @default(uuid())
+  contactEmail  String
+  name         String
+  surname      String
+
+  planner   User?   @relation(fields: [plannerID], references: [userID])
+  plannerID String?
 }
