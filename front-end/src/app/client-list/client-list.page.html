@@ -20,6 +20,7 @@
           <ion-card-content>
             {{client.email}}
           </ion-card-content>
+          <ion-button class="editBtn" (click)="editContact(client.contactID)">Edit</ion-button>
         </ion-card>
       </span>
     </ion-row>
@@ -40,8 +41,30 @@
     <ion-input class="kenzo-input" [(ngModel)]="email" placeholder="Email"></ion-input>
     <br>
     <span class="options" >
-      <ion-button (click)="cancel()" id="cancel-button">Cancel</ion-button>
-      <ion-button (click)="submitContact()" color="tertiary" id="create-button">Create</ion-button>
+      <ion-button (click)="cancel()" class="cancel-button">Cancel</ion-button>
+      <ion-button (click)="submitContact()" color="tertiary" class="create-button">Create</ion-button>
+    </span>
+  </ion-card>
+</ion-content>
+<ion-content id="edit" class="your-workout-background">
+  <ion-card class="create-card" mode="ios">
+    <ion-card-header>
+      <ion-card-subtitle>
+        Contact
+      </ion-card-subtitle>
+      <ion-card-title>
+        Add Client
+      </ion-card-title>
+    </ion-card-header>
+    <br>
+    <ion-input class="kenzo-input" [(ngModel)]="name" placeholder="First name"></ion-input>
+    <ion-input class="kenzo-input" [(ngModel)]="surname" placeholder="Last name"></ion-input>
+    <ion-input class="kenzo-input" [(ngModel)]="email" placeholder="Email"></ion-input>
+    <br>
+    <span class="options" >
+      <ion-button (click)="cancel()" class="cancel-button">Cancel</ion-button>
+      <ion-button (click)="update()" color="tertiary" class="create-button">Update</ion-button>
+      <ion-button (click)="remove()" color="danger" class="create-button">Delete</ion-button>
     </span>
   </ion-card>
 </ion-content>

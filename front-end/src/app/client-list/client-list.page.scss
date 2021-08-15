@@ -89,6 +89,10 @@
 }
 
 .editBtn{
+  --background: none;
+  --color: var(--ion-color-tertiary);
+  --background-hover: none;
+  --color-hover: var(--ion-color-primary);
   display: block;
 }
 
@@ -185,7 +189,7 @@ ion-card{
   width: 98%;
 }
 
-#create{
+#create, #edit{
   display: none;
 }
 

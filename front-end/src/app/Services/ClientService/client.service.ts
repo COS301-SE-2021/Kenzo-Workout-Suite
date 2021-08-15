@@ -28,6 +28,8 @@ export class ClientService {
     /**
      * This function accepts a client object in order to add the client to the planner's list.
      *
+     * @param client represents the details of the client being added
+     * @return status is the code of the response
      * @author Luca Azmanov, u19004185
      */
     async addClient(client: Client): Promise<number> {
@@ -37,7 +39,7 @@ export class ClientService {
             name: client.firstName,
             surname: client.lastName
         };
-        console.log(body);
+
         return this.http.post(url, body).toPromise().then(()=>200).catch(error=>{
             if(error.status===0) {
                 return 500;
@@ -49,18 +51,45 @@ export class ClientService {
     /**
      * Deletes a client contact given the client ID
      *
+     * @param id is the contactID
+     * @return status is the code of the response
      * @author Luca Azmanov, u19004185
      */
-    async removeClient(){
-
+    async removeClient(id: string){
+        const url = "http://localhost:3000/client-contact/deleteClientContact";
+        const body = {
+            contactID:id,
+        };
+        return this.http.request("delete", url, {body}).toPromise().then(()=>200).catch(error=>{
+            if(error.status===0) {
+                return 500;
+            }
+            return error.status;
+        });
     }
 
     /**
      * Updates client's credentials based on client object provided.
      *
+     * @param client is the client credentials used for updating
+     * @return status is the code of the response
      * @author Luca Azmanov, u19004185
      */
-    async updateClient(){
+    async updateClient(client: Client){
+        const url = "http://localhost:3000/client-contact/updateClientContact";
 
+        const body = {
+            contactID: client.contactID,
+            email: client.email,
+            name: client.firstName,
+            surname: client.lastName
+        };
+
+        return this.http.put(url, body).toPromise().then(()=>200).catch(error=>{
+            if(error.status===0) {
+                return 500;
+            }
+            return error.status;
+        });
     }
 }
