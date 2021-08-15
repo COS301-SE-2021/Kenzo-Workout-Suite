@@ -34,9 +34,10 @@ export class ClientContactController {
     @Get("sendEmailsToContacts")
   sendEmailsToContacts (
       @Body("contacts") contacts: Contacts[],
+      @Body("workoutID") workoutID:string,
       @Request() req
   ) {
-    return this.clientContactService.sendEmailToContact(contacts, req.user.userID)
+    return this.clientContactService.sendEmailToContact(contacts, req.user.userID, workoutID)
   }
 
   /**
@@ -50,10 +51,11 @@ export class ClientContactController {
   @ApiBearerAuth()
   @Get("sendEmailsToAllContacts")
   async sendEmailsToAllContacts (
-      @Request() req
+      @Request() req,
+      @Body("workoutID") workoutID:string
   ) {
     const contacts = await this.clientContactService.getAllPlannersContacts(req.user.userID, this.ctx)
-    return this.clientContactService.sendEmailToContact(contacts, req.user.userID)
+    return this.clientContactService.sendEmailToContact(contacts, req.user.userID, workoutID)
   }
 
   /**
