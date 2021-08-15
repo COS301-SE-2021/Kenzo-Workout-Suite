@@ -4,18 +4,18 @@ import {
   Injectable,
   NotAcceptableException,
   NotFoundException,
-  PreconditionFailedException, ServiceUnavailableException
+  PreconditionFailedException,
+  ServiceUnavailableException
 } from "@nestjs/common"
-import { Context } from "../../context"
-import { Exercise, Tag } from "@prisma/client"
-import { PrismaService } from "../Prisma/prisma.service"
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib"
+import {Context} from "../../context"
+import {Exercise, Tag} from "@prisma/client"
+import {PrismaService} from "../Prisma/prisma.service"
+import {PDFDocument, rgb, StandardFonts} from "pdf-lib"
 import * as fs from "fs"
-import { UserService } from "../User/user.service"
+import {UserService} from "../User/user.service"
 import * as baseImages from "../createdWorkoutImages.json"
 import fontkit from "@pdf-lib/fontkit"
-import { delay } from "rxjs/operators"
-import { ApiCreatedResponse } from "@nestjs/swagger"
+import {delay} from "rxjs/operators"
 
 const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
@@ -1258,12 +1258,18 @@ export class WorkoutService {
   }
 
   /**
-   *Workout Service - Convert to Video
-   * @brief Function that takes a workout object as a parameter and converts each exercises' images into a video
+   *Workout Controller - Create Video
+   *
    * @param workoutID  The workout ID
    * @param ctx  This is the prisma context that is injected into the function.
    * @throws NotFoundException if:
-   *                               -No images are found.
+   *                               -No workout was found in the database with the specified workout ID.
+   * @throws ApiPreconditionFailedResponse if:
+   *                               -Invalid Workout object passed in.
+   * @throws ApiServiceUnavailableResponse if:
+   *                               -Unable to create video.
+   * @throws ApiInternalServerErrorResponse if:
+   *                               -Internal server error.
    * @return  Message indicating success.
    * @author Tinashe Chamisa
    *
@@ -1379,7 +1385,7 @@ export class WorkoutService {
 
     videoshow(images, videoOptions)
       .audio("./src/videoGeneration/Sounds/song1.mp3")
-      .save("./src/videoGeneration/Videos/video" + Date.now() + ".mp4")
+      .save("./src/videoGeneration/Videos/video" + workoutID + ".mp4")
       .on("start", function (command) {
         console.log("ffmpeg process started:", command)
       })
@@ -1438,5 +1444,38 @@ export class WorkoutService {
   getExerciseDescription (id: string) {
     const found = baseImages.find(element => element.ID === id)
     return (typeof found !== "undefined") ? found.poseDescription : ""
+  }
+
+  /**
+   *Workout Controller - Get Workout Video
+   *
+   * @param workoutID  The workout ID
+   * @param ctx  This is the prisma context that is injected into the function.
+   * @throws ApiPreconditionFailedResponse if: -Invalid Workout ID passed in.
+   * @throws NotFoundException if: -Workout video does not exist.
+   * @throws BadRequestException if: - Cannot return workout video
+   * @return  Base64 string of workout video.
+   * @author Tinashe Chamisa
+   *
+   */
+  async getWorkoutVideo (workoutID: string, ctx: Context): Promise<any> {
+    if (workoutID == null || workoutID === "") {
+      throw new PreconditionFailedException("Invalid Workout ID passed in.")
+    }
+    try {
+      fs.readFile("./src/videoGeneration/Videos/video" + workoutID + ".mp4", function (err, data) {
+        if (err) throw err
+      })
+      /*
+      const result = [""]
+      for (let i = 0; i < fileData.length; i += 2) {
+        if (i === 0) { result.shift() }
+        result.push("0x" + fileData[i] + "" + fileData[i + 1])
+      }
+       */
+      return fs.readFileSync("./src/videoGeneration/Videos/video" + workoutID + ".mp4").toString("base64")
+    } catch (E) {
+      throw new BadRequestException("Cannot return video.")
+    }
   }
 }
