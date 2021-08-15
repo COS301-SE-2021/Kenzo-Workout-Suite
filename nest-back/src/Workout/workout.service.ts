@@ -1392,6 +1392,10 @@ export class WorkoutService {
       throw err
     }
 
+    if (exercisesID.length === 0) {
+      throw new BadRequestException("Cant create video without exercises")
+    }
+
     const images = [{}]
     const fileNames = [""]
     let lengthOfVideo = 0
