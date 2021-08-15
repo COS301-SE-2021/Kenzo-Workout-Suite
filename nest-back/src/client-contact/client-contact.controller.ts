@@ -27,6 +27,7 @@ export class ClientContactController {
    * @return "Email sent!" if the email successfully sent
    * @author Zelealem Tesema
    * @param contacts
+   * @param req
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
