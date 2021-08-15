@@ -35,9 +35,9 @@
       </ion-card-title>
     </ion-card-header>
     <br>
-    <ion-input class="kenzo-input" placeholder="First name"></ion-input>
-    <ion-input class="kenzo-input" placeholder="Last name"></ion-input>
-    <ion-input class="kenzo-input" placeholder="Email"></ion-input>
+    <ion-input class="kenzo-input" [(ngModel)]="name" placeholder="First name"></ion-input>
+    <ion-input class="kenzo-input" [(ngModel)]="surname" placeholder="Last name"></ion-input>
+    <ion-input class="kenzo-input" [(ngModel)]="email" placeholder="Email"></ion-input>
     <br>
     <span class="options" >
       <ion-button (click)="cancel()" id="cancel-button">Cancel</ion-button>

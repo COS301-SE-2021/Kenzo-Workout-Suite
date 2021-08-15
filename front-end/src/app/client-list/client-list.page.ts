@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import {Client} from "../Models/client";
+import {ClientService} from "../Services/ClientService/client.service";
 
 @Component({
     selector: "app-client-list",
@@ -11,7 +12,11 @@ export class ClientListPage implements OnInit {
 
     public contacts: Client[];
 
-    constructor(private router: Router) {
+    name = "";
+    surname = "";
+    email = "";
+
+    constructor(private router: Router, private clientService: ClientService) {
         this.getClients();
     }
 
@@ -24,9 +29,12 @@ export class ClientListPage implements OnInit {
      * @author Luca Azmanov, u19004185
      */
     async getClients(){
+        const resp = await this.clientService.getClientList();
+        const data = resp.data;
+        console.log(data);
         this.contacts = new Array();
-        for (let i = 0; i <15; i++) {
-            this.contacts[i] = new Client("Luca", "IsABeast", "lucaisabeast@gmail.com");
+        for (let i = 0; i <data.length; i++) {
+            this.contacts[i] = new Client(data[i].name, data[i].surname, data[i].contactEmail);
         }
     }
 
@@ -55,7 +63,12 @@ export class ClientListPage implements OnInit {
      *
      * @author Luca Azmanov, u19004185
      */
-    submitContact() {
+    async submitContact() {
+        const client = new Client(this.name, this.surname, this.email);
+
+        const resp = await this.clientService.addClient(client);
+        console.log(resp);
+
 
     }
 
