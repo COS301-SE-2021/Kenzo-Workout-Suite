@@ -5,6 +5,7 @@ import { ClientContactService } from "./client-contact.service"
 import { UserModule } from "../User/user.module"
 import { PassportModule } from "@nestjs/passport"
 import { JwtModule } from "@nestjs/jwt"
+import { UserService } from "../User/user.service"
 
 @Module(
   {
@@ -13,7 +14,7 @@ import { JwtModule } from "@nestjs/jwt"
       signOptions: { expiresIn: process.env.EXPIRY_TIME }
     })],
     controllers: [ClientContactController],
-    providers: [PrismaService, ClientContactService],
+    providers: [PrismaService, ClientContactService, UserService],
     exports: [ClientContactService]
   })
 
