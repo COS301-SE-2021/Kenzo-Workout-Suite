@@ -15,7 +15,7 @@ import { UserService } from "../User/user.service"
 import * as baseImages from "../createdWorkoutImages.json"
 import fontkit from "@pdf-lib/fontkit"
 import { delay } from "rxjs/operators"
-import {ApiCreatedResponse} from "@nestjs/swagger";
+import { ApiCreatedResponse } from "@nestjs/swagger"
 
 const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
@@ -417,7 +417,17 @@ export class WorkoutService {
       final["ID"] = exercise.exerciseID
       final["poseDescription"] = exercise.poseDescription
       final["images"] = arrayImages
-      json.push(final)
+      const index = json.findIndex(element => {
+        if (element["ID"] === exercise.exerciseID) {
+          return true
+        }
+      })
+      if (index !== -1) {
+        json[index] = final
+      } else {
+        json.push(final)
+      }
+
       fs.writeFile("./src/createdWorkoutImages.json", JSON.stringify(json), function (err) {
         if (err) throw err
       })
@@ -497,8 +507,10 @@ export class WorkoutService {
             }
           }
         })
-        const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
-        await this.saveImagesToJSON(exerciseDetails, images)
+        if (images !== null && images.length) {
+          const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
+          await this.saveImagesToJSON(exerciseDetails, images)
+        }
         return "Exercise updated."
       } else {
         const updatedExercise = await ctx.prisma.exercise.update({
@@ -521,8 +533,10 @@ export class WorkoutService {
             }
           }
         })
-        const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
-        await this.saveImagesToJSON(exerciseDetails, images)
+        if (images !== null && images.length) {
+          const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
+          await this.saveImagesToJSON(exerciseDetails, images)
+        }
         return "Exercise updated."
       }
     } catch (err) {
@@ -543,17 +557,18 @@ export class WorkoutService {
      * @author Tinashe Chamisa
      *
      */
-  async arrayRemove (arr, value) {
-    return arr.filter(function (ele) {
-      return ele !== value
-    })
-  }
+  // async arrayRemove (arr, value) {
+  //   return arr.filter(function (ele) {
+  //     return ele !== value
+  //   })
+  // }
 
   async deleteExercise (exercise: string, ctx: Context): Promise<any> {
     if (exercise === "") {
       throw new PreconditionFailedException("Parameter can not be left empty.")
     }
     try {
+      console.log(exercise)
       await ctx.prisma.exercise.delete({
         where: {
           exerciseID: exercise
@@ -561,7 +576,7 @@ export class WorkoutService {
       })
       return ("Exercise Deleted.")
     } catch (e) {
-      throw new NotFoundException("Workout with provided ID does not exist")
+      throw new NotFoundException("Exercise with provided ID does not exist")
     }
   }
 

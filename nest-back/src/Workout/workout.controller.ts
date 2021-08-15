@@ -345,7 +345,7 @@ export class WorkoutController {
       description: "Internal server error."
     })
     async deleteExercise (
-        @Body("exercise") exercise: string
+        @Body("exerciseID") exercise: string
     ) {
       return this.workoutService.deleteExercise(exercise, ActualPrisma())
     }
