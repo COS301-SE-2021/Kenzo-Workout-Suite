@@ -14,20 +14,20 @@ import {
 } from "@prisma/client"
 import { ActualPrisma, Context } from "../../context"
 import {
-    ApiBadRequestResponse, ApiBearerAuth,
-    ApiBody, ApiConflictResponse, ApiCreatedResponse,
-    ApiInternalServerErrorResponse, ApiNotAcceptableResponse,
-    ApiNotFoundResponse,
-    ApiOkResponse, ApiPreconditionFailedResponse, ApiServiceUnavailableResponse
+  ApiBadRequestResponse, ApiBearerAuth,
+  ApiBody, ApiConflictResponse, ApiCreatedResponse,
+  ApiInternalServerErrorResponse, ApiNotAcceptableResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse, ApiPreconditionFailedResponse, ApiServiceUnavailableResponse
 } from "@nestjs/swagger"
 
 import {
-  CreateExerciseDTO,
-  CreateWorkoutDTO,
-  DeleteWorkoutDTO,
-  UpdateWorkoutDTO,
-  createTagDTO,
-  deleteExerciseDTO, updateExerciseDTO, createVideoDTO
+    CreateExerciseDTO,
+    CreateWorkoutDTO,
+    DeleteWorkoutDTO,
+    UpdateWorkoutDTO,
+    createTagDTO,
+    deleteExerciseDTO, updateExerciseDTO, createVideoDTO, getWorkoutVideoDTO
 } from "./workout.model"
 import { JwtAuthGuard } from "../User/AuthGuards/jwt-auth.guard"
 
@@ -550,12 +550,18 @@ export class WorkoutController {
      * @param workoutID  The workout ID
      * @param ActualPrisma()  This is the prisma context that is injected into the function.
      * @throws NotFoundException if:
-     *                               -No tags were found in the database.
-     * @return  Promise array of tag object/s.
+     *                               -No workout was found in the database with the specified workout ID.
+     * @throws ApiPreconditionFailedResponse if:
+     *                               -Invalid Workout ID passed in.
+     * @throws ApiServiceUnavailableResponse if:
+     *                               -Unable to create video.
+     * @throws ApiInternalServerErrorResponse if:
+     *                               -Internal server error.
+     * @return  Message indicating success.
      * @author Tinashe Chamisa
      *
      */
-    @Post("convertToVideo")
+    @Post("createVideo")
     @ApiBody({ type: createVideoDTO })
     @ApiCreatedResponse({
       description: "Successfully created video."
@@ -597,5 +603,40 @@ export class WorkoutController {
       @Param("workoutID") workoutID: string
     ) {
       return this.workoutService.getWorkoutPDF(workoutID, this.ctx)
+    }
+
+    /**
+     *Workout Controller - Get Workout Video
+     *
+     * @param workoutID  The workout ID
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws ApiPreconditionFailedResponse if: -Invalid Workout ID passed in.
+     * @throws NotFoundException if: -Workout video does not exist.
+     * @throws BadRequestException if: - Cannot return workout video
+     * @return  Promise array of tag object/s.
+     * @author Tinashe Chamisa
+     *
+     */
+    @Post("getWorkoutVideo")
+    @ApiBody({ type: getWorkoutVideoDTO })
+    @ApiCreatedResponse({
+      description: "Successfully created video."
+    })
+    @ApiPreconditionFailedResponse({
+      description: "Invalid Workout object passed in."
+    })
+    @ApiNotFoundResponse({
+      description: "Workout video does not exist."
+    })
+    @ApiBadRequestResponse({
+      description: "Cannot return video."
+    })
+    @ApiInternalServerErrorResponse({
+      description: "Internal server error."
+    })
+    getWorkoutVideo (
+        @Body("workoutID") workoutID: string
+    ) {
+      return this.workoutService.getWorkoutVideo(workoutID, ActualPrisma())
     }
 }
