@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger"
 
 import {
+  Workout,
   Exercise,
   Tag
 } from "@prisma/client"
@@ -29,7 +30,7 @@ export class CreateExerciseDTO {
     @ApiProperty({ type: Number, description: "Duration of exercise [Optional - 0 can be passed in. ]" })
     duration: number;
 
-    @ApiProperty({ type: String, description: "Base64 Image Array of poses" })
+    @ApiProperty({ type: Array, description: "Base64 Image Array of poses" })
     images: string[];
 }
 
@@ -103,11 +104,16 @@ export class updateExerciseDTO {
     @ApiProperty({ type: Number, description: "duration of exercise" })
     duration: number;
 
-    @ApiProperty({ type: String, description: "Base64 Image Array of poses" })
+    @ApiProperty({ type: Array, description: "Base64 Image Array of poses" })
     images: string[];
 }
 
 export class deleteExerciseDTO {
     @ApiProperty({ type: String, description: "ID of Exercise." })
     exerciseID: string;
+}
+
+export class createVideoDTO {
+    @ApiProperty({ type: String, description: "Workout ID" })
+    workoutID: string;
 }

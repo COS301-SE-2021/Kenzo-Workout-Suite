@@ -1,22 +1,28 @@
 import {
-  BadRequestException, ConflictException,
+  BadRequestException,
+  ConflictException,
   Injectable,
   NotAcceptableException,
-  NotFoundException, PreconditionFailedException
+  NotFoundException,
+  PreconditionFailedException, ServiceUnavailableException
 } from "@nestjs/common"
 import { Context } from "../../context"
-
-import {
-  Exercise,
-  Tag
-} from "@prisma/client"
+import { Exercise, Tag } from "@prisma/client"
 import { PrismaService } from "../Prisma/prisma.service"
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib"
 import * as fs from "fs"
 import { UserService } from "../User/user.service"
+import * as baseImages from "../createdWorkoutImages.json"
 import fontkit from "@pdf-lib/fontkit"
+import { delay } from "rxjs/operators"
+import {ApiCreatedResponse} from "@nestjs/swagger";
 
 const Filter = require("bad-words"); const filter = new Filter()
+const videoshow = require("videoshow")
+const base64ToImage = require("base64-to-image")
+const Jimp = require("jimp")
+// const sharp = require("sharp")
+// const resizeImg = require("resize-img")
 
 @Injectable()
 export class WorkoutService {
@@ -87,6 +93,7 @@ export class WorkoutService {
      *
      */
   async getWorkoutById (id: string, ctx: Context): Promise<any> {
+    // eslint-disable-next-line no-useless-catch
     try {
       const workout = await ctx.prisma.workout.findUnique({ // search for workouts that meet the requirement
         where: {
@@ -408,6 +415,7 @@ export class WorkoutService {
       const json = JSON.parse(data.toString())
       const final = {}
       final["ID"] = exercise.exerciseID
+      final["poseDescription"] = exercise.poseDescription
       final["images"] = arrayImages
       json.push(final)
       fs.writeFile("./src/createdWorkoutImages.json", JSON.stringify(json), function (err) {
@@ -716,12 +724,12 @@ export class WorkoutService {
       throw new NotFoundException("Parameters can not be left empty.")
     }
     try {
-      const retrievedWorkout = await this.getWorkoutById(workoutID, ctx)
-      fs.unlink("./src/GeneratedWorkouts/" + retrievedWorkout.workoutTitle + "Workout.pdf", (err) => {
-        if (err) {
-          throw err
-        }
-      })
+      // const retrievedWorkout = await this.getWorkoutById(workoutID, ctx)
+      // fs.unlink("./src/GeneratedWorkouts/" + retrievedWorkout.workoutTitle + "Workout.pdf", (err) => {
+      //   if (err) {
+      //     throw err
+      //   }
+      // })
       await ctx.prisma.workout.delete({
         where: {
           workoutID: workoutID
@@ -760,6 +768,7 @@ export class WorkoutService {
 
     const titleHeadingColour = rgb(0.13, 0.185, 0.24)
     const fieldsHeadingColour = rgb(0.071, 0.22, 0.4117)
+    console.log(workout)
 
     try {
       firstPage.drawText(workout.workoutTitle, {
@@ -815,9 +824,7 @@ export class WorkoutService {
             const pdfDoc2 = await PDFDocument.load(uint8ArrayOP)
             const [existingPage] = await pdfDoc.copyPages(pdfDoc2, [0])
             const currentPage = pdfDoc.addPage(existingPage)
-
-            const exercise = await this.getExerciseByID(workout.exercises[i].exerciseID, ctx)
-            currentPage.drawText(exercise.exerciseTitle, {
+            currentPage.drawText(workout.exercises[i].exerciseTitle, {
               x: 20,
               y: 740,
               size: 19,
@@ -832,7 +839,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(exercise.exerciseDescription, {
+            currentPage.drawText(workout.exercises[i].exerciseDescription, {
               x: 20,
               y: 700,
               size: 10,
@@ -846,7 +853,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(exercise.repRange, {
+            currentPage.drawText(workout.exercises[i].repRange, {
               x: 130,
               y: 620,
               size: 12,
@@ -860,7 +867,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(exercise.sets.toString(), {
+            currentPage.drawText(workout.exercises[i].sets.toString(), {
               x: 130,
               y: 600,
               size: 12,
@@ -874,7 +881,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(exercise.restPeriod.toString(), {
+            currentPage.drawText(workout.exercises[i].restPeriod.toString(), {
               x: 130,
               y: 570,
               size: 12,
@@ -888,7 +895,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText((exercise.duration / 60).toString() + " minutes", {
+            currentPage.drawText((workout.exercises[i].duration / 60).toString() + " minutes", {
               x: 130,
               y: 540,
               size: 12,
@@ -909,25 +916,26 @@ export class WorkoutService {
               font: SFRegular
             })
             // Images
-            fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
+            await fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
               if (err) throw err
               const json = JSON.parse(data.toString())
-              const exerciseImages = json.find(({ ID }) => ID === exercise.exerciseID)
-              for (let c = 0; c < exerciseImages.images.length; c++) {
-                const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
-                currentPage.drawImage(currentImage, {
-                  x: 20 + (c * 150),
-                  y: 400,
-                  width: 120,
-                  height: 90
-                })
+              const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
+              if (exerciseImages !== "undefined") {
+                for (let c = 0; c < exerciseImages.images.length; c++) {
+                  const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
+                  currentPage.drawImage(currentImage, {
+                    x: 20 + (c * 150),
+                    y: 400,
+                    width: 120,
+                    height: 90
+                  })
+                }
               }
             })
             exercisePosCount += 1
           } else {
             const currentPage = pdfDoc.getPage(pdfDoc.getPageCount() - 1)
-            const exercise = await this.getExerciseByID(workout.exercises[i].exerciseID, ctx)
-            currentPage.drawText(exercise.exerciseTitle, {
+            currentPage.drawText(workout.exercises[i].exerciseTitle, {
               x: 20,
               y: 370,
               size: 19,
@@ -941,7 +949,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(exercise.exerciseDescription, {
+            currentPage.drawText(workout.exercises[i].exerciseDescription, {
               x: 20,
               y: 330,
               size: 10,
@@ -955,7 +963,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(exercise.repRange, {
+            currentPage.drawText(workout.exercises[i].repRange, {
               x: 130,
               y: 250,
               size: 12,
@@ -969,7 +977,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(exercise.sets.toString(), {
+            currentPage.drawText(workout.exercises[i].sets.toString(), {
               x: 130,
               y: 220,
               size: 12,
@@ -983,7 +991,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(exercise.restPeriod.toString(), {
+            currentPage.drawText(workout.exercises[i].restPeriod.toString(), {
               x: 130,
               y: 190,
               size: 12,
@@ -997,7 +1005,7 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText((exercise.duration / 60).toString() + " minutes", {
+            currentPage.drawText((workout.exercises[i].duration / 60).toString() + " minutes", {
               x: 130,
               y: 160,
               size: 12,
@@ -1018,18 +1026,20 @@ export class WorkoutService {
               font: SFRegular
             })
             // Images
-            await fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
+            fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
               if (err) throw err
               const json = JSON.parse(data.toString())
-              const exerciseImages = json.find(({ ID }) => ID === exercise.exerciseID)
-              for (let c = 0; c < exerciseImages.images.length; c++) {
-                const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
-                currentPage.drawImage(currentImage, {
-                  x: 20 + (c * 150),
-                  y: 20,
-                  width: 120,
-                  height: 90
-                })
+              const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
+              if (exerciseImages !== "undefined") {
+                for (let c = 0; c < exerciseImages.images.length; c++) {
+                  const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
+                  currentPage.drawImage(currentImage, {
+                    x: 20 + (c * 150),
+                    y: 20,
+                    width: 120,
+                    height: 90
+                  })
+                }
               }
             })
             exercisePosCount -= 1
@@ -1069,11 +1079,9 @@ export class WorkoutService {
 
       fs.readFile("./src/GeneratedWorkouts/" + workoutObject.workoutTitle + "Workout.pdf", function (err, data) {
         if (err) throw err
-        console.log(data)
       })
       const uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutTitle + "Workout.pdf")
       const pdfDoc = await PDFDocument.load(uint8ArrayFP)
-      console.log(await pdfDoc.saveAsBase64({ dataUri: true }))
       return await pdfDoc.saveAsBase64({ dataUri: true })
     } catch (E) {
       throw new BadRequestException("Cannot return workout pdf.")
@@ -1222,7 +1230,7 @@ export class WorkoutService {
   async textToSpeech (text:String, fileName:String) {
     const gtts = require("node-gtts")("en")
     const path = require("path")
-    const filepath = path.join("./src/GeneratedTextSpeech/", fileName + ".wav")
+    const filepath = path.join("./src/Workout/GeneratedTextSpeech/", fileName + ".wav")
 
     try {
       gtts.save(filepath, text, function () {
@@ -1232,5 +1240,188 @@ export class WorkoutService {
     } catch (err) {
       throw new BadRequestException("Could not generate text to speech")
     }
+  }
+
+  /**
+   *Workout Service - Convert to Video
+   * @brief Function that takes a workout object as a parameter and converts each exercises' images into a video
+   * @param workoutID  The workout ID
+   * @param ctx  This is the prisma context that is injected into the function.
+   * @throws NotFoundException if:
+   *                               -No images are found.
+   * @return  Message indicating success.
+   * @author Tinashe Chamisa
+   *
+   */
+  async createVideo (workoutID: string, ctx: Context): Promise<any> {
+    if (workoutID == null || workoutID === "") {
+      throw new PreconditionFailedException("Invalid Workout ID passed in.")
+    }
+    const exercisesID: string[] = []
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const workout = await this.getWorkoutById(workoutID, ctx)
+      if (workout === null) { // if JSON object is empty, send error code
+        throw new NotFoundException("No workout was found in the database with the specified workout ID.")
+      } else {
+        workout.exercises.forEach(element => {
+          exercisesID.push(element.exerciseID)
+        })
+      }
+    } catch (err) {
+      throw err
+    }
+
+    const images = [{}]
+    const fileNames = [""]
+    let lengthOfVideo = 0
+
+    // resize kenzo logo image
+    await Jimp.read("./src/videoGeneration/Images/kenzoLogo.PNG")
+      .then(image => {
+        return image
+          .resize(500, 200) // resize
+          .quality(100) // set JPEG quality
+          .writeAsync("./src/videoGeneration/Images/kenzoLogo-fm.PNG")
+      })
+      .catch(err => {
+        console.error(err)
+      })
+
+    // retrieve all exercises poses one by one from the local storage
+    for (let i = 0; i < exercisesID.length; i++) {
+      let base64Images
+      if ((base64Images = this.getExerciseBase64(exercisesID[i])) === -1) {
+        console.log("error")
+      } else {
+        console.log("found")
+        const path = "./src/videoGeneration/Images/"
+
+        // Loop through poses of an exercise
+        const exerciseDescription = this.getExerciseDescription(exercisesID[i])
+
+        for (let j = 0; j < base64Images.length; j++) {
+          const fileName = "image-" + exercisesID[i] + "-" + (j + 1) // filename format: image + exercise id + - + pose number
+          fileNames.push(fileName)
+
+          // convert base64 to image
+          const optionalObj = { fileName, type: "jpg" }
+          base64ToImage(base64Images[j], path, optionalObj)
+          delay(20000)
+          // resize image
+          await Jimp.read("./src/videoGeneration/Images/" + fileName + ".jpg")
+            .then(image => {
+              return image
+                .resize(500, 200) // resize
+                .quality(100) // set JPEG quality
+                .writeAsync("./src/videoGeneration/Images/" + fileName + "-fm.jpg")
+            })
+            .catch(err => {
+              console.error(err)
+            })
+          // push image to array
+          images.push({
+            path: "./src/videoGeneration/Images/" + fileName + "-fm.jpg",
+            caption: exerciseDescription,
+            loop: 45
+          })
+          if (lengthOfVideo === 0) { images.shift() } // to remove first empty JSON object
+
+          lengthOfVideo += 45
+        }
+        if (i < base64Images.length - 1) {
+          images.push({
+            path: "./src/videoGeneration/Images/kenzoLogo-fm.PNG",
+            caption: "Exercise " + (i + 1) + " complete! On to the next...",
+            loop: 5
+          })
+        } else {
+          images.push({
+            path: "./src/videoGeneration/Images/kenzoLogo-fm.PNG",
+            caption: "Workout complete!",
+            loop: 5
+          })
+        }
+        lengthOfVideo += 5
+      }
+    }
+
+    const videoOptions = {
+      fps: 25,
+      loop: lengthOfVideo, // length of video in seconds
+      transition: true,
+      transitionDuration: 1, // seconds
+      videoBitrate: 1024,
+      videoCodec: "libx264",
+      size: "640x?",
+      audioBitrate: "128k",
+      audioChannels: 2,
+      format: "mp4",
+      pixelFormat: "yuv420p"
+    }
+
+    console.log(images)
+
+    videoshow(images, videoOptions)
+      .audio("./src/videoGeneration/Sounds/song1.mp3")
+      .save("./src/videoGeneration/Videos/video" + Date.now() + ".mp4")
+      .on("start", function (command) {
+        console.log("ffmpeg process started:", command)
+      })
+      .on("error", function (err, stdout, stderr) {
+        console.error("Error:", err)
+        console.error("ffmpeg stderr:", stderr)
+        throw new ServiceUnavailableException("Unable to create video.")
+      })
+      .on("end", function (output) {
+        console.error("Video created in:", output)
+        return "Successfully created video."
+      })
+    // finally remove images
+    /*
+    for (let i = 0; i < fileNames.length; i++) {
+      if (fileNames[i] !== "") {
+        try {
+          fs.unlinkSync("./src/videoGeneration/Images/" + fileNames[i] + "-fm.jpg")
+          fs.unlinkSync("./src/videoGeneration/Images/" + fileNames[i] + ".jpg")
+        } catch (err) {
+          console.error(err)
+        }
+      }
+    }
+    try {
+      fs.unlinkSync("./src/videoGeneration/Images/kenzoLogo-fm.jpg")
+    } catch (err) {
+      console.error(err)
+    }
+     */
+  }
+
+  /**
+   *Workout service - Get Exercises Base 64
+   *
+   * @brief Function that accepts an exercise ID as a parameter and returns the list of poses associated with the exercise. If exercise doesn't exist, return -1.
+   * @param id Exercise ID
+   * @return  Re-formatted Array of base64 images.
+   * @author Tinashe Chamisa
+   *
+   */
+  getExerciseBase64 (id: string) {
+    const found = baseImages.find(element => element.ID === id)
+    return (typeof found !== "undefined") ? found.images : -1
+  }
+
+  /**
+   *Workout service - Get Exercises Descriptions
+   *
+   * @brief Function that accepts an exercise ID and retrieves the description
+   * @param id Exercise ID
+   * @return  Re-formatted An exercise description.
+   * @author Tinashe Chamisa
+   *
+   */
+  getExerciseDescription (id: string) {
+    const found = baseImages.find(element => element.ID === id)
+    return (typeof found !== "undefined") ? found.poseDescription : ""
   }
 }

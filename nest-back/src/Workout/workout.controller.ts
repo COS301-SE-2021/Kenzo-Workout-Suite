@@ -14,11 +14,11 @@ import {
 } from "@prisma/client"
 import { ActualPrisma, Context } from "../../context"
 import {
-  ApiBadRequestResponse, ApiBearerAuth,
-  ApiBody, ApiConflictResponse,
-  ApiInternalServerErrorResponse, ApiNotAcceptableResponse,
-  ApiNotFoundResponse,
-  ApiOkResponse, ApiPreconditionFailedResponse
+    ApiBadRequestResponse, ApiBearerAuth,
+    ApiBody, ApiConflictResponse, ApiCreatedResponse,
+    ApiInternalServerErrorResponse, ApiNotAcceptableResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse, ApiPreconditionFailedResponse, ApiServiceUnavailableResponse
 } from "@nestjs/swagger"
 
 import {
@@ -27,8 +27,7 @@ import {
   DeleteWorkoutDTO,
   UpdateWorkoutDTO,
   createTagDTO,
-  deleteExerciseDTO,
-  updateExerciseDTO
+  deleteExerciseDTO, updateExerciseDTO, createVideoDTO
 } from "./workout.model"
 import { JwtAuthGuard } from "../User/AuthGuards/jwt-auth.guard"
 
@@ -543,6 +542,40 @@ export class WorkoutController {
       @Body("fileName") fileName: string
     ) {
       return this.workoutService.textToSpeech(text, fileName)
+    }
+
+    /**
+     *Workout Controller - Create Video
+     *
+     * @param workoutID  The workout ID
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No tags were found in the database.
+     * @return  Promise array of tag object/s.
+     * @author Tinashe Chamisa
+     *
+     */
+    @Post("convertToVideo")
+    @ApiBody({ type: createVideoDTO })
+    @ApiCreatedResponse({
+      description: "Successfully created video."
+    })
+    @ApiPreconditionFailedResponse({
+      description: "Invalid Workout object passed in."
+    })
+    @ApiNotFoundResponse({
+      description: "No workout was found in the database with the specified workout ID."
+    })
+    @ApiServiceUnavailableResponse({
+      description: "Unable to create video."
+    })
+    @ApiInternalServerErrorResponse({
+      description: "Internal server error."
+    })
+    createVideo (
+        @Body("workoutID") workoutID: string
+    ) {
+      return this.workoutService.createVideo(workoutID, ActualPrisma())
     }
 
     /**
