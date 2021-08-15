@@ -33,7 +33,7 @@ export class UpdateExercisePage implements OnInit {
               public alertController: AlertController,
               private workoutService: WorkoutService) {
       this.newTag = this.getRandomTag("");
-      this.id = route.getCurrentNavigation().extras.state.exercise;
+      this.id = route.getCurrentNavigation().extras.state.id;
   }
 
   ngOnInit() {
@@ -47,7 +47,7 @@ export class UpdateExercisePage implements OnInit {
       let unit;
       for (let i = 0; i < data.length; i++) {
           unit = data[i];
-          if(unit["exercise"]===this.id){
+          if(unit["exerciseID"]===this.id){
               break;
           }
       }
@@ -58,6 +58,7 @@ export class UpdateExercisePage implements OnInit {
       this.poseDescription = unit["poseDescription"];
       this.rest = unit["restPeriod"];
       this.duration = unit["duration"];
+      this.images = unit["images"];
 
       const tags = unit["tags"];
       for (let i=0; i<tags.length; i++) {
