@@ -91,7 +91,6 @@ export class YourWorkoutsPage implements OnInit {
 
 
   async sendWorkoutID(id: string){
-      console.log(id);
       await this.router.navigate(["/update-workout"], {
           state:{
               id: id

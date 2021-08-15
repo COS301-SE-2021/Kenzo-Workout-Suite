@@ -19,8 +19,16 @@
   </div>
   <br>
   <br>
-
-<!--  Implement way to select exercises-->
+  <div class="input-div">
+    <ion-item mode="ios">
+      <ion-label class="input-description">Exercises</ion-label>
+      <ion-select [(ngModel)]="exerciseSelection" multiple="true" okText="Done">
+        <span *ngFor="let exercise of exercises">
+          <ion-select-option value="{{exercise.id}}">{{exercise.title}}</ion-select-option>
+        </span>
+      </ion-select>
+    </ion-item>
+  </div>
 
 </ion-content>
 <ion-footer class="ion-no-border">

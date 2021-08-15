@@ -52,6 +52,14 @@ export class SearchPage implements OnInit {
       });
   }
 
+  async sendExerciseID(id: string){
+      await this.router.navigate(["/update-exercise"], {
+          state:{
+              id: id
+          }
+      });
+  }
+
   async goToFYP(){
       await this.router.navigate(["/your-workouts"])
           .then(() => {

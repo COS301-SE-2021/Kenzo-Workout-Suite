@@ -145,8 +145,40 @@ export class WorkoutService {
       if (!(Array.isArray(exercises) && exercises.length)) { // if JSON object is empty, send error code
         throw new NotFoundException("No exercises were found in the database.")
       }
+      // add images for each exercise
 
-      return exercises
+      interface exercise {
+        exerciseID: string,
+        exerciseTitle: string,
+        exerciseDescription: string,
+        repRange: any,
+        sets: any,
+        poseDescription: string,
+        restPeriod: any,
+        tags: any,
+        duration: any,
+        images: any
+      }
+
+      const exercisesWithImages: exercise[] = []
+
+      for (let i = 0; i < exercises.length; i++) {
+        const image = this.getExerciseBase64(exercises[i].exerciseID)
+        exercisesWithImages.push({
+          exerciseID: exercises[i].exerciseID,
+          exerciseTitle: exercises[i].exerciseTitle,
+          exerciseDescription: exercises[i].exerciseDescription,
+          repRange: exercises[i].repRange,
+          sets: exercises[i].sets,
+          poseDescription: exercises[i].poseDescription,
+          restPeriod: exercises[i].restPeriod,
+          tags: exercises[i].tags,
+          duration: exercises[i].duration,
+          images: image
+        })
+      }
+
+      return exercisesWithImages
     } catch (err) {
       throw new BadRequestException(err, "Could not fulfill request.")
     }
@@ -182,11 +214,43 @@ export class WorkoutService {
         }
       })
 
-      if (!(Array.isArray(exercise) && exercise.length)) { // if JSON object is empty, send error code
+      if (typeof exercise === "undefined" || exercise === null) { // if JSON object is empty, send error code
         throw new NotFoundException("No exercises were found in the database with the specified title.")
-      } else {
-        return exercise
       }
+      // add images for each exercise
+
+      interface Exercise {
+        exerciseID: string,
+        exerciseTitle: string,
+        exerciseDescription: string,
+        repRange: any,
+        sets: any,
+        poseDescription: string,
+        restPeriod: any,
+        tags: any,
+        duration: any,
+        images: any
+      }
+
+      const exercisesWithImages: Exercise[] = []
+
+      for (let i = 0; i < exercise.length; i++) {
+        const image = this.getExerciseBase64(exercise[i].exerciseID)
+        exercisesWithImages.push({
+          exerciseID: exercise[i].exerciseID,
+          exerciseTitle: exercise[i].exerciseTitle,
+          exerciseDescription: exercise[i].exerciseDescription,
+          repRange: exercise[i].repRange,
+          sets: exercise[i].sets,
+          poseDescription: exercise[i].poseDescription,
+          restPeriod: exercise[i].restPeriod,
+          tags: exercise[i].tags,
+          duration: exercise[i].duration,
+          images: image
+        })
+      }
+
+      return exercisesWithImages
     } catch (err) {
       throw new BadRequestException(err, "Could not fulfill request.")
     }
@@ -299,7 +363,40 @@ export class WorkoutService {
       if (!(Array.isArray(exercise) && exercise.length)) { // if JSON object is empty, send error code
         throw new NotFoundException("No Exercises were found in the database with the specified planner.")
       } else {
-        return exercise
+        // add images for each exercise
+
+        interface Exercise {
+          exerciseID: string,
+          exerciseTitle: string,
+          exerciseDescription: string,
+          repRange: any,
+          sets: any,
+          poseDescription: string,
+          restPeriod: any,
+          tags: any,
+          duration: any,
+          images: any
+        }
+
+        const exercisesWithImages: Exercise[] = []
+
+        for (let i = 0; i < exercise.length; i++) {
+          const image = this.getExerciseBase64(exercise[i].exerciseID)
+          exercisesWithImages.push({
+            exerciseID: exercise[i].exerciseID,
+            exerciseTitle: exercise[i].exerciseTitle,
+            exerciseDescription: exercise[i].exerciseDescription,
+            repRange: exercise[i].repRange,
+            sets: exercise[i].sets,
+            poseDescription: exercise[i].poseDescription,
+            restPeriod: exercise[i].restPeriod,
+            tags: exercise[i].tags,
+            duration: exercise[i].duration,
+            images: image
+          })
+        }
+
+        return exercisesWithImages
       }
     } catch (err) {
       throw new BadRequestException(err, "Could not fulfill request.")
@@ -639,6 +736,7 @@ export class WorkoutService {
       })
       const fullWorkout = await this.getWorkoutById(createdWorkout.workoutID, ctx)
       await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
+      await this.createVideo(fullWorkout.workoutID, ctx)
       return ("Workout Created.")
     }
   }
@@ -1313,7 +1411,7 @@ export class WorkoutService {
     // retrieve all exercises poses one by one from the local storage
     for (let i = 0; i < exercisesID.length; i++) {
       let base64Images
-      if ((base64Images = this.getExerciseBase64(exercisesID[i])) === -1) {
+      if ((base64Images = this.getExerciseBase64(exercisesID[i])) === []) {
         console.log("error")
       } else {
         console.log("found")
@@ -1430,7 +1528,7 @@ export class WorkoutService {
    */
   getExerciseBase64 (id: string) {
     const found = baseImages.find(element => element.ID === id)
-    return (typeof found !== "undefined") ? found.images : -1
+    return (typeof found !== "undefined") ? found.images : []
   }
 
   /**

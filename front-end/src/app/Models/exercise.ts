@@ -10,9 +10,9 @@ export class Exercise {
   private _restPeriod: number; //seconds
   private _tags: KenzoTag[];
   private _duratime: number; //seconds
+  private _images: string[];
 
-
-  constructor(title: string, description: string, repRange: string, sets: number, poseDescription: string, restPeriod: number, tags: KenzoTag[], duratime: number) {
+  constructor(title: string, description: string, repRange: string, sets: number, poseDescription: string, restPeriod: number, tags: KenzoTag[], duratime: number, images: string[]) {
       this._title = title;
       this._description = description;
       this._repRange = repRange;
@@ -21,6 +21,7 @@ export class Exercise {
       this._restPeriod = restPeriod;
       this._tags = tags;
       this._duratime = duratime;
+      this._images = images;
   }
 
 
@@ -86,5 +87,13 @@ export class Exercise {
 
   set duratime(value: number) {
       this._duratime = value;
+  }
+
+  get images(): string[] {
+      return this._images;
+  }
+
+  set images(value: string[]) {
+      this._images = value;
   }
 }

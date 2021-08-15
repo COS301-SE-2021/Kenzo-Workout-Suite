@@ -1,17 +1,76 @@
 <ion-header id="header">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button class="back" mode="ios" defaultHref="/create-exercise"></ion-back-button>
+      <ion-button class="back" slot="start" mode="ios" (click)="returnToCreate()">Save</ion-button>
     </ion-buttons>
     <ion-title class="title">Pose Maker</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content class="background">
-  <ion-button mode="ios" id="start-button" (click)="start()">Start</ion-button>
+  <ion-card mode="ios" id="instructions">
+    <ion-card-header>
+      <ion-card-subtitle>If you are a first time user, please read the following before proceeding.</ion-card-subtitle>
+      <ion-card-title>Instructions</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>1.</ion-card-content>
+  </ion-card>
   <div class="canvas" #webgl></div>
 </ion-content>
 <ion-footer id="footer">
-  <ion-toolbar>
-    <ion-title class="title">Controls</ion-title>
+  <ion-button mode="ios" id="start-button" (click)="start()">Start</ion-button>
+  <ion-toolbar id="controls">
+    <ion-item>
+      <ion-label>Body Parts</ion-label>
+      <ion-select #val (ionChange)="getCoordinates(val.value)" placeholder="Choose" mode="ios">
+        <ion-select-option value="0">Whole Body</ion-select-option>
+        <ion-select-option value="4">Neck</ion-select-option>
+        <ion-select-option value="3">Upper Torso</ion-select-option>
+        <ion-select-option value="2">Middle Torso</ion-select-option>
+        <ion-select-option value="1">Lower Torso</ion-select-option>
+        <ion-select-option value="7">Right Shoulder</ion-select-option>
+        <ion-select-option value="8">Right Upper Arm</ion-select-option>
+        <ion-select-option value="9">Right Elbow</ion-select-option>
+        <ion-select-option value="10">Right Hand</ion-select-option>
+        <ion-select-option value="11">Left Shoulder</ion-select-option>
+        <ion-select-option value="12">Left Upper Arm</ion-select-option>
+        <ion-select-option value="13">Left Elbow</ion-select-option>
+        <ion-select-option value="14">Left Hand</ion-select-option>
+        <ion-select-option value="17">Right Upper Leg</ion-select-option>
+        <ion-select-option value="18">Right Knee</ion-select-option>
+        <ion-select-option value="19">Right Foot</ion-select-option>
+        <ion-select-option value="20">Left Upper Leg</ion-select-option>
+        <ion-select-option value="21">Left Knee</ion-select-option>
+        <ion-select-option value="22">Left Foot</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>Save Poses</ion-label>
+      <ion-button mode="ios" id="0" [style.--background]="frameColor[0]" (click)="saveFrame(0)">Frame 1</ion-button>
+      <ion-button mode="ios" id="1" [style.--background]="frameColor[1]" (click)="saveFrame(1)">Frame 2</ion-button>
+      <ion-button mode="ios" id="2" [style.--background]="frameColor[2]" (click)="saveFrame(2)">Frame 3</ion-button>
+      <ion-button mode="ios" id="3" [style.--background]="frameColor[3]" (click)="saveFrame(3)">Frame 4</ion-button>
+    </ion-item>
+    <ion-item>
+      <ion-label id="x" class="x coord">X</ion-label>
+      <ion-range [(ngModel)]="xCoordinate" min="-360" max="360" class="slider" mode="ios" color="tertiary" pin="true">
+        <ion-icon name="remove" slot="start"></ion-icon>
+        <ion-icon name="add" slot="end"></ion-icon>
+      </ion-range>
+    </ion-item>
+    <ion-item>
+      <ion-label id="y" class="y coord">Y</ion-label>
+      <ion-range [(ngModel)]="yCoordinate" min="-360" max="360" class="slider" mode="ios" color="tertiary" pin="true">
+        <ion-icon name="remove" slot="start"></ion-icon>
+        <ion-icon name="add" slot="end"></ion-icon>
+      </ion-range>
+    </ion-item>
+    <ion-item>
+      <ion-label id="z" class="z coord">Z</ion-label>
+      <ion-range [(ngModel)]="zCoordinate" min="-360" max="360" class="slider" mode="ios" color="tertiary" pin="true">
+        <ion-icon name="remove" slot="start"></ion-icon>
+        <ion-icon name="add" slot="end"></ion-icon>
+      </ion-range>
+    </ion-item>
+    <hr>
   </ion-toolbar>
 </ion-footer>

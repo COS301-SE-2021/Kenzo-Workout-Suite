@@ -20,6 +20,7 @@ export class UpdateExercisePage implements OnInit {
   poseDescription: string;
   rest: number;
   duration: number;
+  images: string[];
 
   tags: KenzoTag[] = new Array();
   newTag: KenzoTag;
@@ -32,7 +33,7 @@ export class UpdateExercisePage implements OnInit {
               public alertController: AlertController,
               private workoutService: WorkoutService) {
       this.newTag = this.getRandomTag("");
-      this.id = route.getCurrentNavigation().extras.state.exercise;
+      this.id = route.getCurrentNavigation().extras.state.id;
   }
 
   ngOnInit() {
@@ -46,7 +47,7 @@ export class UpdateExercisePage implements OnInit {
       let unit;
       for (let i = 0; i < data.length; i++) {
           unit = data[i];
-          if(unit["exercise"]===this.id){
+          if(unit["exerciseID"]===this.id){
               break;
           }
       }
@@ -57,6 +58,7 @@ export class UpdateExercisePage implements OnInit {
       this.poseDescription = unit["poseDescription"];
       this.rest = unit["restPeriod"];
       this.duration = unit["duration"];
+      this.images = unit["images"];
 
       const tags = unit["tags"];
       for (let i=0; i<tags.length; i++) {
@@ -90,7 +92,7 @@ export class UpdateExercisePage implements OnInit {
       }
 
       const exercise = new Exercise(this.title, this.description, this.range, this.sets, this.poseDescription,
-          this.rest, selected, this.duration*60);
+          this.rest, selected, this.duration*60, this.images);
       const status = await this.workoutService.attemptUpdateExercise(exercise, this.id);
 
       if (status < 400) {
@@ -102,7 +104,7 @@ export class UpdateExercisePage implements OnInit {
           });
 
           await this.presentAlert(alert);
-          this.route.navigate(["/your-workouts"]).then(()=>{
+          this.route.navigate(["/search"]).then(()=>{
               this.reloadWindow();
           }
           );
@@ -170,7 +172,7 @@ export class UpdateExercisePage implements OnInit {
           });
 
           await this.presentAlert(alert);
-          this.route.navigate(["/your-workouts"]).then(()=>{
+          this.route.navigate(["/search"]).then(()=>{
               this.reloadWindow();
           }
           );
@@ -269,13 +271,17 @@ export class UpdateExercisePage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   filterSelection(event) {
-      const text = event.srcElement.value;
+      const text = event.srcElement.value.trim();
+      if(text===""){
+          document.getElementById("no-tag-create").style.display="none";
+          return;
+      }
 
       let found = false;
       for (let i = 0; i < this.tags.length; i++) {
           const tag = this.tags[i];
 
-          if(tag.label.toLowerCase().includes(text.toLowerCase())) {
+          if(tag.label.toLowerCase()===(text.toLowerCase())) {
               found = true;
           }
 
@@ -285,7 +291,7 @@ export class UpdateExercisePage implements OnInit {
               const tagElement = document.getElementById(id);
 
               // if tag label does not contain the searched tag
-              if(!id.toLowerCase().includes(text.toLowerCase())){
+              if(!id.toLowerCase()===(text.toLowerCase())){
                   tagElement.style.display = "none";
               } else{ // if tag label contains the searched tag
                   tagElement.style.display = "inline-block";

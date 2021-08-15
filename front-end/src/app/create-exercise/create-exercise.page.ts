@@ -5,6 +5,7 @@ import {AlertController, IonSearchbar} from "@ionic/angular";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
 import {Exercise} from "../Models/exercise";
 import {KenzoTag} from "../Models/kenzo-tag";
+import {Storage} from "@ionic/storage";
 
 @Component({
     selector: "app-create-exercise",
@@ -19,6 +20,7 @@ export class CreateExercisePage implements OnInit {
   poseDescription ="";
   rest: number;
   duration: number;
+  images: string[];
 
   tags: KenzoTag[] = new Array();
   newTag: KenzoTag;
@@ -28,7 +30,9 @@ export class CreateExercisePage implements OnInit {
   constructor(private http: HttpClient,
               private route: Router,
               public alertController: AlertController,
-              private workoutService: WorkoutService) {
+              private workoutService: WorkoutService,
+              private storage: Storage) {
+      this.storage.create();
       this.getTags();
       this.newTag = this.getRandomTag("");
   }
@@ -49,6 +53,7 @@ export class CreateExercisePage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async createExercise() {
+      await this.syncFrames();
       const selected: KenzoTag[] = new Array();
       for (let i = 0; i < this.tags.length; i++) {
           if(this.tags[i].selected){
@@ -57,7 +62,7 @@ export class CreateExercisePage implements OnInit {
       }
 
       const exercise = new Exercise(this.title, this.description, this.range, this.sets, this.poseDescription,
-          this.rest, selected, this.duration*60);
+          this.rest, selected, this.duration*60, this.images);
       const status = await this.workoutService.attemptSubmitExercise(exercise);
 
       if (status < 400) {
@@ -69,7 +74,7 @@ export class CreateExercisePage implements OnInit {
           });
 
           await this.presentAlert(alert);
-          this.route.navigate(["/your-workouts"]).then(()=>{
+          this.route.navigate(["/search"]).then(()=>{
               this.reloadWindow();
           }
           );
@@ -168,13 +173,17 @@ export class CreateExercisePage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   filterSelection(event) {
-      const text = event.srcElement.value;
+      const text = event.srcElement.value.trim();
+      if(text===""){
+          document.getElementById("no-tag-create").style.display="none";
+          return;
+      }
 
       let found = false;
       for (let i = 0; i < this.tags.length; i++) {
           const tag = this.tags[i];
 
-          if(tag.label.toLowerCase().includes(text.toLowerCase())) {
+          if(tag.label.toLowerCase()===(text.toLowerCase())) {
               found = true;
           }
 
@@ -184,7 +193,7 @@ export class CreateExercisePage implements OnInit {
               const tagElement = document.getElementById(id);
 
               // if tag label does not contain the searched tag
-              if(!id.toLowerCase().includes(text.toLowerCase())){
+              if(!id.toLowerCase()===(text.toLowerCase())){
                   tagElement.style.display = "none";
               } else{ // if tag label contains the searched tag
                   tagElement.style.display = "inline-block";
@@ -255,5 +264,14 @@ export class CreateExercisePage implements OnInit {
       await this.route.navigate(["/pose-maker"], {
 
       });
+  }
+
+  /**
+   * This function syncs the photos sent from the pose maker
+   *
+   * @author Luca Azmanov, u19004185
+   */
+  async syncFrames(){
+      this.images = await this.storage.get("images");
   }
 }

@@ -22,15 +22,14 @@ export class WorkoutService {
      *
      * @returns 200,400,500 represent a success, User error and server error, respectively.
      */
-    async attemptSubmitWorkout(workout: Workout): Promise<number> {
+    async attemptSubmitWorkout(workout: Workout, exercises): Promise<number> {
         const url = "http://localhost:3000/workout/createWorkout";
 
         const body = {
             workoutTitle: workout.title,
             workoutDescription: workout.description,
-            exercises:workout.exercises
+            exercises:exercises
         };
-
         return this.http.post(url, body ).toPromise().then(()=>200).catch(error=>{
             if(error.status===0) {
                 return 500;
@@ -108,7 +107,8 @@ export class WorkoutService {
             poseDescription: exercise.poseDescription,
             restPeriod: exercise.restPeriod,
             tags: exercise.tags,
-            duration: exercise.duratime
+            duration: exercise.duratime,
+            images: exercise.images
         };
         return this.http.post(url, body).toPromise().then(()=>200).catch(error=>{
             if(error.status===0) {
@@ -139,7 +139,8 @@ export class WorkoutService {
             poseDescription: exercise.poseDescription,
             restPeriod: exercise.restPeriod,
             tags: exercise.tags,
-            duration: exercise.duratime
+            duration: exercise.duratime,
+            images: exercise.images
         };
 
         return this.http.put(url, body).toPromise().then(()=>200).catch(error=>{
