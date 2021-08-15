@@ -32,6 +32,7 @@ export class CreateExercisePage implements OnInit {
               public alertController: AlertController,
               private workoutService: WorkoutService,
               private storage: Storage) {
+      this.storage.create();
       this.getTags();
       this.newTag = this.getRandomTag("");
   }
@@ -73,7 +74,7 @@ export class CreateExercisePage implements OnInit {
           });
 
           await this.presentAlert(alert);
-          this.route.navigate(["/your-workouts"]).then(()=>{
+          this.route.navigate(["/search"]).then(()=>{
               this.reloadWindow();
           }
           );

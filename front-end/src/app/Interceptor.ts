@@ -19,7 +19,9 @@ const TOKEN_KEY = "Token";
 @Injectable()
 export class Interceptor implements HttpInterceptor {
 
-    constructor(private alertController: AlertController, private storage: Storage) {}
+    constructor(private alertController: AlertController, private storage: Storage) {
+        this.storage.create();
+    }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return from(this.storage.get(TOKEN_KEY))
