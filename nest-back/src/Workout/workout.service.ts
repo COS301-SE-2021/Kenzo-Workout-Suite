@@ -160,7 +160,7 @@ export class WorkoutService {
         images: any
       }
 
-      const exercisesWithImages: exercise[] = [];
+      const exercisesWithImages: exercise[] = []
 
       for (let i = 0; i < exercises.length; i++) {
         const image = this.getExerciseBase64(exercises[i].exerciseID)
@@ -214,11 +214,43 @@ export class WorkoutService {
         }
       })
 
-      if (!(Array.isArray(exercise) && exercise.length)) { // if JSON object is empty, send error code
+      if (typeof exercise === "undefined" || exercise === null) { // if JSON object is empty, send error code
         throw new NotFoundException("No exercises were found in the database with the specified title.")
-      } else {
-        return exercise
       }
+      // add images for each exercise
+
+      interface Exercise {
+        exerciseID: string,
+        exerciseTitle: string,
+        exerciseDescription: string,
+        repRange: any,
+        sets: any,
+        poseDescription: string,
+        restPeriod: any,
+        tags: any,
+        duration: any,
+        images: any
+      }
+
+      const exercisesWithImages: Exercise[] = []
+
+      for (let i = 0; i < exercise.length; i++) {
+        const image = this.getExerciseBase64(exercise[i].exerciseID)
+        exercisesWithImages.push({
+          exerciseID: exercise[i].exerciseID,
+          exerciseTitle: exercise[i].exerciseTitle,
+          exerciseDescription: exercise[i].exerciseDescription,
+          repRange: exercise[i].repRange,
+          sets: exercise[i].sets,
+          poseDescription: exercise[i].poseDescription,
+          restPeriod: exercise[i].restPeriod,
+          tags: exercise[i].tags,
+          duration: exercise[i].duration,
+          images: image
+        })
+      }
+
+      return exercisesWithImages
     } catch (err) {
       throw new BadRequestException(err, "Could not fulfill request.")
     }
