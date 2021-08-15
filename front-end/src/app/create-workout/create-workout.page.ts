@@ -15,15 +15,34 @@ export class CreateWorkoutPage implements OnInit {
   description="";
   title="";
 
+  exercises = [];
+
   @ViewChild("searchBar", {static: false}) searchbar: IonSearchbar;
+  exerciseSelection: any;
 
   constructor(private http: HttpClient,
               private route: Router,
               private workoutService: WorkoutService,
               public alertController: AlertController,) {
+      this.getExercises();
   }
 
   ngOnInit() {
+  }
+
+  /**
+   * This function retrieves the exercises for this planner
+   *
+   * @author Luca Azmanov, u19004185
+   */
+  async getExercises(){
+      const data = await this.workoutService.attemptGetExercisesByPlanner();
+      const exercises = data.data;
+      for (let i = 0; i <exercises.length; i++) {
+          const exerciseID = exercises[i].exerciseID;
+          const exerciseTitle = exercises[i].exerciseTitle;
+          this.exercises[i] = {id: exerciseID, title: exerciseTitle};
+      }
   }
 
   /** This function uses the workout service to submit a request to create a workout.
@@ -39,8 +58,10 @@ export class CreateWorkoutPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async submitCreateRequest() {
+
+
       const newWorkout = new Workout(this.title, this.description, []);
-      const status = await this.workoutService.attemptSubmitWorkout(newWorkout);
+      const status = await this.workoutService.attemptSubmitWorkout(newWorkout, this.format(this.exerciseSelection));
 
       if (status < 400) {
       // Success State
@@ -95,4 +116,13 @@ export class CreateWorkoutPage implements OnInit {
       window.location.reload();
   }
 
+  format(data){
+      const formattedExercises = [];
+
+      for (let i = 0; i <data.length; i++) {
+          formattedExercises.push({exerciseID: data[i]});
+      }
+
+      return formattedExercises;
+  }
 }

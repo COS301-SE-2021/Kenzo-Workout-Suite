@@ -136,7 +136,7 @@ describe("WorkoutService", () => {
     // Create Workout Unit Tests
     it("should create a workout successfully because server responds with status code 200", async () => {
         const workout: Workout = new Workout("Leg Killer", "A hard day for your legs", []);
-        const respStatus = service.attemptSubmitWorkout(workout);
+        const respStatus = service.attemptSubmitWorkout(workout, []);
 
         const req = httpMock.expectOne("http://localhost:3000/workout/createWorkout");
         expect(req.request.method).toEqual("POST");
@@ -156,7 +156,7 @@ describe("WorkoutService", () => {
     });
     it("should fail to create a workout because server responds with status code 400 (i.e. data is missing or invalid)", async () => {
         const workout: Workout = new Workout("Leg Killer", null, []);
-        const respStatus = service.attemptSubmitWorkout(workout);
+        const respStatus = service.attemptSubmitWorkout(workout, []);
 
         const req = httpMock.expectOne("http://localhost:3000/workout/createWorkout");
         expect(req.request.method).toEqual("POST");
@@ -176,7 +176,7 @@ describe("WorkoutService", () => {
     });
     it("should fail to create a workout because server does not respond and returns status 0 which should be translated to 500", async () => {
         const workout: Workout = new Workout("Leg Killer", null, []);
-        const respStatus = service.attemptSubmitWorkout(workout);
+        const respStatus = service.attemptSubmitWorkout(workout, []);
 
         const req = httpMock.expectOne("http://localhost:3000/workout/createWorkout");
         expect(req.request.method).toEqual("POST");
@@ -196,7 +196,7 @@ describe("WorkoutService", () => {
     });
     it("should fail to create a workout because server responds with unknown status which should be translated to 500", async () => {
         const workout: Workout = new Workout("Leg Killer", "A test for the legs", []);
-        const respStatus = service.attemptSubmitWorkout(workout);
+        const respStatus = service.attemptSubmitWorkout(workout, []);
 
         const req = httpMock.expectOne("http://localhost:3000/workout/createWorkout");
         expect(req.request.method).toEqual("POST");
