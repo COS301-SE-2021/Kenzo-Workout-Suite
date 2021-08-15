@@ -22,9 +22,11 @@
 }
 
 .workouts{
+  display: inline-grid;
   margin-bottom: 5.5%;
   transition: border 0.1s;
   transition-timing-function: linear;
+  min-height: 200px;
 }
 
 .workouts:hover{
@@ -32,6 +34,13 @@
   border: 3px;
   border-color: #FF6969;
   border-style: ridge;
+}
+
+.ion-justify-content-center{
+  display: block;
+  position: absolute;
+  left: 0;
+  width: 99%;
 }
 
 #AddWorkout{
@@ -77,7 +86,24 @@
 }
 
 .editBtn{
-    display: block;
+    --background: none;
+    --background-hover: none;
+    --color: var(--ion-color-tertiary);
+    --color-hover: var(--ion-color-primary);
+    --background-activated: none;
+}
+
+#shareBtn{
+  position: absolute;
+  bottom: 88%;
+  left: 90%;
+  width: 25px;
+  height: 30px;
+  z-index: 10000;
+}
+
+#shareBtn:hover{
+  color: #212F3D;
 }
 
 .navThumbnail{
@@ -104,10 +130,52 @@
     margin-right: auto;
   }
 
-@media only screen and (max-width: 400px){
-    .NavLabel{
-        margin-left: 25%;
+@media screen and (max-width: 646px) {
+  .ion-justify-content-center{
+    display: block;
+    position: absolute;
+    left: 170px;
+    width: 570px;
+  }
+}
+
+@media screen and (min-width: 700px) {
+  #shareBtn{
+    left: 92.5%;
+  }
+}
+
+@media screen and (max-width: 768px){
+    .workouts{
+      width: 600px;
+      height: 200px;
     }
+}
+
+@media screen and (max-width: 992px) {
+  .workouts{
+    width: 45%;
+    height: 100%;
+  }
+
+}
+
+@media screen and (min-width: 993px) {
+  .workouts{
+    width: 23%;
+  }
+
+  #shareBtn{
+     left: 90%;
+  }
+}
+
+@media screen and (min-width: 1600px) {
+
+  #shareBtn{
+    left: 92.5%;
+    bottom: 87%;
+  }
 }
 
 .text{
@@ -127,4 +195,21 @@
     color: var(--ion-color-tertiary);
     font-size: 16px;
     font-weight: bold;
+}
+
+ion-card{
+  ion-card-header{
+    --background: var(--ion-color-primary);
+
+    ion-card-title{
+      --color: var(--ion-off-white);
+    }
+
+  }
+  ion-card-content{
+    margin-top: 10px;
+    color: black;
+  }
+
+  cursor: default;
 }

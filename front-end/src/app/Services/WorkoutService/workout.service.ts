@@ -236,15 +236,21 @@ export class WorkoutService {
     }
 
     async attemptGetPDF(id: string): Promise<any>{
-
-        const url = "http://localhost:3000/workout/getWorkoutPDF/";
-        return await this.http.get(url+id).toPromise().then(data=>{
+        const url = "http://localhost:3000/workout/getWorkoutPDF/"+id;
+        return await this.http.get(url).toPromise().then(data=>{
             data = {
                 status: 200,
                 data: data
             };
             return data;
         }).catch(error=>{
+            if(error.status >=200 && error.status<300){
+                error = {
+                    status: 200,
+                    data: error.error.text
+                };
+                return error;
+            }
             if(error.status===0 || error.status === 500) {
                 return 500;
             }

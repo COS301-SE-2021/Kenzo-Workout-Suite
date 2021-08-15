@@ -1029,7 +1029,7 @@ export class WorkoutService {
 
       fs.readFile("./src/GeneratedWorkouts/" + workoutObject.workoutTitle + "Workout.pdf", function (err, data) {
         if (err) throw err
-        console.log(data)
+        return data
       })
       const uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutTitle + "Workout.pdf")
       const pdfDoc = await PDFDocument.load(uint8ArrayFP)
