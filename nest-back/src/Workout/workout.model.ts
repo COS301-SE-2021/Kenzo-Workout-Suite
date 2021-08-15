@@ -117,3 +117,8 @@ export class createVideoDTO {
     @ApiProperty({ type: String, description: "Workout ID" })
     workoutID: string;
 }
+
+export class getWorkoutVideoDTO {
+    @ApiProperty({ type: String, description: "Workout ID" })
+    workoutID: string;
+}

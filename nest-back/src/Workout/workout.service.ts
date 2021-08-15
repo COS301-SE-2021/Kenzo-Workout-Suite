@@ -4,7 +4,8 @@ import {
   Injectable,
   NotAcceptableException,
   NotFoundException,
-  PreconditionFailedException, ServiceUnavailableException
+  PreconditionFailedException,
+  ServiceUnavailableException
 } from "@nestjs/common"
 import { Context } from "../../context"
 import { Exercise, Tag } from "@prisma/client"
@@ -15,7 +16,6 @@ import { UserService } from "../User/user.service"
 import * as baseImages from "../createdWorkoutImages.json"
 import fontkit from "@pdf-lib/fontkit"
 import { delay } from "rxjs/operators"
-import {ApiCreatedResponse} from "@nestjs/swagger";
 
 const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
@@ -145,8 +145,40 @@ export class WorkoutService {
       if (!(Array.isArray(exercises) && exercises.length)) { // if JSON object is empty, send error code
         throw new NotFoundException("No exercises were found in the database.")
       }
+      // add images for each exercise
 
-      return exercises
+      interface exercise {
+        exerciseID: string,
+        exerciseTitle: string,
+        exerciseDescription: string,
+        repRange: any,
+        sets: any,
+        poseDescription: string,
+        restPeriod: any,
+        tags: any,
+        duration: any,
+        images: any
+      }
+
+      const exercisesWithImages: exercise[] = []
+
+      for (let i = 0; i < exercises.length; i++) {
+        const image = this.getExerciseBase64(exercises[i].exerciseID)
+        exercisesWithImages.push({
+          exerciseID: exercises[i].exerciseID,
+          exerciseTitle: exercises[i].exerciseTitle,
+          exerciseDescription: exercises[i].exerciseDescription,
+          repRange: exercises[i].repRange,
+          sets: exercises[i].sets,
+          poseDescription: exercises[i].poseDescription,
+          restPeriod: exercises[i].restPeriod,
+          tags: exercises[i].tags,
+          duration: exercises[i].duration,
+          images: image
+        })
+      }
+
+      return exercisesWithImages
     } catch (err) {
       throw new BadRequestException(err, "Could not fulfill request.")
     }
@@ -182,11 +214,43 @@ export class WorkoutService {
         }
       })
 
-      if (!(Array.isArray(exercise) && exercise.length)) { // if JSON object is empty, send error code
+      if (typeof exercise === "undefined" || exercise === null) { // if JSON object is empty, send error code
         throw new NotFoundException("No exercises were found in the database with the specified title.")
-      } else {
-        return exercise
       }
+      // add images for each exercise
+
+      interface Exercise {
+        exerciseID: string,
+        exerciseTitle: string,
+        exerciseDescription: string,
+        repRange: any,
+        sets: any,
+        poseDescription: string,
+        restPeriod: any,
+        tags: any,
+        duration: any,
+        images: any
+      }
+
+      const exercisesWithImages: Exercise[] = []
+
+      for (let i = 0; i < exercise.length; i++) {
+        const image = this.getExerciseBase64(exercise[i].exerciseID)
+        exercisesWithImages.push({
+          exerciseID: exercise[i].exerciseID,
+          exerciseTitle: exercise[i].exerciseTitle,
+          exerciseDescription: exercise[i].exerciseDescription,
+          repRange: exercise[i].repRange,
+          sets: exercise[i].sets,
+          poseDescription: exercise[i].poseDescription,
+          restPeriod: exercise[i].restPeriod,
+          tags: exercise[i].tags,
+          duration: exercise[i].duration,
+          images: image
+        })
+      }
+
+      return exercisesWithImages
     } catch (err) {
       throw new BadRequestException(err, "Could not fulfill request.")
     }
@@ -299,7 +363,40 @@ export class WorkoutService {
       if (!(Array.isArray(exercise) && exercise.length)) { // if JSON object is empty, send error code
         throw new NotFoundException("No Exercises were found in the database with the specified planner.")
       } else {
-        return exercise
+        // add images for each exercise
+
+        interface Exercise {
+          exerciseID: string,
+          exerciseTitle: string,
+          exerciseDescription: string,
+          repRange: any,
+          sets: any,
+          poseDescription: string,
+          restPeriod: any,
+          tags: any,
+          duration: any,
+          images: any
+        }
+
+        const exercisesWithImages: Exercise[] = []
+
+        for (let i = 0; i < exercise.length; i++) {
+          const image = this.getExerciseBase64(exercise[i].exerciseID)
+          exercisesWithImages.push({
+            exerciseID: exercise[i].exerciseID,
+            exerciseTitle: exercise[i].exerciseTitle,
+            exerciseDescription: exercise[i].exerciseDescription,
+            repRange: exercise[i].repRange,
+            sets: exercise[i].sets,
+            poseDescription: exercise[i].poseDescription,
+            restPeriod: exercise[i].restPeriod,
+            tags: exercise[i].tags,
+            duration: exercise[i].duration,
+            images: image
+          })
+        }
+
+        return exercisesWithImages
       }
     } catch (err) {
       throw new BadRequestException(err, "Could not fulfill request.")
@@ -417,7 +514,18 @@ export class WorkoutService {
       final["ID"] = exercise.exerciseID
       final["poseDescription"] = exercise.poseDescription
       final["images"] = arrayImages
-      json.push(final)
+      // eslint-disable-next-line array-callback-return
+      const index = json.findIndex(element => {
+        if (element["ID"] === exercise.exerciseID) {
+          return true
+        }
+      })
+      if (index !== -1) {
+        json[index] = final
+      } else {
+        json.push(final)
+      }
+
       fs.writeFile("./src/createdWorkoutImages.json", JSON.stringify(json), function (err) {
         if (err) throw err
       })
@@ -497,8 +605,10 @@ export class WorkoutService {
             }
           }
         })
-        const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
-        await this.saveImagesToJSON(exerciseDetails, images)
+        if (images !== null && images.length) {
+          const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
+          await this.saveImagesToJSON(exerciseDetails, images)
+        }
         return "Exercise updated."
       } else {
         const updatedExercise = await ctx.prisma.exercise.update({
@@ -521,8 +631,10 @@ export class WorkoutService {
             }
           }
         })
-        const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
-        await this.saveImagesToJSON(exerciseDetails, images)
+        if (images !== null && images.length) {
+          const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
+          await this.saveImagesToJSON(exerciseDetails, images)
+        }
         return "Exercise updated."
       }
     } catch (err) {
@@ -543,17 +655,18 @@ export class WorkoutService {
      * @author Tinashe Chamisa
      *
      */
-  async arrayRemove (arr, value) {
-    return arr.filter(function (ele) {
-      return ele !== value
-    })
-  }
+  // async arrayRemove (arr, value) {
+  //   return arr.filter(function (ele) {
+  //     return ele !== value
+  //   })
+  // }
 
   async deleteExercise (exercise: string, ctx: Context): Promise<any> {
     if (exercise === "") {
       throw new PreconditionFailedException("Parameter can not be left empty.")
     }
     try {
+      console.log(exercise)
       await ctx.prisma.exercise.delete({
         where: {
           exerciseID: exercise
@@ -561,7 +674,7 @@ export class WorkoutService {
       })
       return ("Exercise Deleted.")
     } catch (e) {
-      throw new NotFoundException("Workout with provided ID does not exist")
+      throw new NotFoundException("Exercise with provided ID does not exist")
     }
   }
 
@@ -623,6 +736,7 @@ export class WorkoutService {
       })
       const fullWorkout = await this.getWorkoutById(createdWorkout.workoutID, ctx)
       await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
+      await this.createVideo(fullWorkout.workoutID, ctx)
       return ("Workout Created.")
     }
   }
@@ -1243,12 +1357,18 @@ export class WorkoutService {
   }
 
   /**
-   *Workout Service - Convert to Video
-   * @brief Function that takes a workout object as a parameter and converts each exercises' images into a video
+   *Workout Controller - Create Video
+   *
    * @param workoutID  The workout ID
    * @param ctx  This is the prisma context that is injected into the function.
    * @throws NotFoundException if:
-   *                               -No images are found.
+   *                               -No workout was found in the database with the specified workout ID.
+   * @throws ApiPreconditionFailedResponse if:
+   *                               -Invalid Workout object passed in.
+   * @throws ApiServiceUnavailableResponse if:
+   *                               -Unable to create video.
+   * @throws ApiInternalServerErrorResponse if:
+   *                               -Internal server error.
    * @return  Message indicating success.
    * @author Tinashe Chamisa
    *
@@ -1291,7 +1411,7 @@ export class WorkoutService {
     // retrieve all exercises poses one by one from the local storage
     for (let i = 0; i < exercisesID.length; i++) {
       let base64Images
-      if ((base64Images = this.getExerciseBase64(exercisesID[i])) === -1) {
+      if ((base64Images = this.getExerciseBase64(exercisesID[i])) === []) {
         console.log("error")
       } else {
         console.log("found")
@@ -1364,7 +1484,7 @@ export class WorkoutService {
 
     videoshow(images, videoOptions)
       .audio("./src/videoGeneration/Sounds/song1.mp3")
-      .save("./src/videoGeneration/Videos/video" + Date.now() + ".mp4")
+      .save("./src/videoGeneration/Videos/video" + workoutID + ".mp4")
       .on("start", function (command) {
         console.log("ffmpeg process started:", command)
       })
@@ -1408,7 +1528,7 @@ export class WorkoutService {
    */
   getExerciseBase64 (id: string) {
     const found = baseImages.find(element => element.ID === id)
-    return (typeof found !== "undefined") ? found.images : -1
+    return (typeof found !== "undefined") ? found.images : []
   }
 
   /**
@@ -1423,5 +1543,38 @@ export class WorkoutService {
   getExerciseDescription (id: string) {
     const found = baseImages.find(element => element.ID === id)
     return (typeof found !== "undefined") ? found.poseDescription : ""
+  }
+
+  /**
+   *Workout Controller - Get Workout Video
+   *
+   * @param workoutID  The workout ID
+   * @param ctx  This is the prisma context that is injected into the function.
+   * @throws ApiPreconditionFailedResponse if: -Invalid Workout ID passed in.
+   * @throws NotFoundException if: -Workout video does not exist.
+   * @throws BadRequestException if: - Cannot return workout video
+   * @return  Base64 string of workout video.
+   * @author Tinashe Chamisa
+   *
+   */
+  async getWorkoutVideo (workoutID: string, ctx: Context): Promise<any> {
+    if (workoutID == null || workoutID === "") {
+      throw new PreconditionFailedException("Invalid Workout ID passed in.")
+    }
+    try {
+      fs.readFile("./src/videoGeneration/Videos/video" + workoutID + ".mp4", function (err, data) {
+        if (err) throw err
+      })
+      /*
+      const result = [""]
+      for (let i = 0; i < fileData.length; i += 2) {
+        if (i === 0) { result.shift() }
+        result.push("0x" + fileData[i] + "" + fileData[i + 1])
+      }
+       */
+      return fs.readFileSync("./src/videoGeneration/Videos/video" + workoutID + ".mp4").toString("base64")
+    } catch (E) {
+      throw new BadRequestException("Cannot return video.")
+    }
   }
 }
