@@ -1034,6 +1034,7 @@ export class WorkoutService {
               if (err) throw err
               const json = JSON.parse(data.toString())
               const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
+              console.log(exerciseImages)
               if (exerciseImages !== "undefined") {
                 for (let c = 0; c < exerciseImages.images.length; c++) {
                   const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
@@ -1144,6 +1145,7 @@ export class WorkoutService {
               if (err) throw err
               const json = JSON.parse(data.toString())
               const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
+              console.log(exerciseImages)
               if (exerciseImages !== "undefined") {
                 for (let c = 0; c < exerciseImages.images.length; c++) {
                   const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
