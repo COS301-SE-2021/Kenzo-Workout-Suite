@@ -104,7 +104,7 @@ export class UpdateExercisePage implements OnInit {
           });
 
           await this.presentAlert(alert);
-          this.route.navigate(["/your-workouts"]).then(()=>{
+          this.route.navigate(["/search"]).then(()=>{
               this.reloadWindow();
           }
           );
@@ -172,7 +172,7 @@ export class UpdateExercisePage implements OnInit {
           });
 
           await this.presentAlert(alert);
-          this.route.navigate(["/your-workouts"]).then(()=>{
+          this.route.navigate(["/search"]).then(()=>{
               this.reloadWindow();
           }
           );
