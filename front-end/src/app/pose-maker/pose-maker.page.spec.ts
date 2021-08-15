@@ -3,6 +3,7 @@ import {AlertController, IonicModule} from "@ionic/angular";
 
 import { PoseMakerPage } from "./pose-maker.page";
 import {RouterTestingModule} from "@angular/router/testing";
+import {IonicStorageModule} from "@ionic/storage-angular";
 
 describe("PoseMakerPage", () => {
     let component: PoseMakerPage;
@@ -12,7 +13,7 @@ describe("PoseMakerPage", () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [ PoseMakerPage ],
-            imports: [IonicModule.forRoot(), RouterTestingModule]
+            imports: [IonicModule.forRoot(), RouterTestingModule, IonicStorageModule.forRoot()]
         }).compileComponents();
 
         alertController = TestBed.inject(AlertController);
