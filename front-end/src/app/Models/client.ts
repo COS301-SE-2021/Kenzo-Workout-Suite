@@ -1,13 +1,13 @@
 export class Client {
   private _firstName: string;
   private _lastName: string;
-  private _phoneNumber: string;
+  private _email: string;
 
 
-  constructor(firstName: string, lastName: string, phoneNumber: string) {
+  constructor(firstName: string, lastName: string, email: string) {
       this._firstName = firstName;
       this._lastName = lastName;
-      this._phoneNumber = phoneNumber;
+      this._email = email;
   }
 
 
@@ -27,11 +27,11 @@ export class Client {
       this._lastName = value;
   }
 
-  get phoneNumber(): string {
-      return this._phoneNumber;
+  get email(): string {
+      return this._email;
   }
 
-  set phoneNumber(value: string) {
-      this._phoneNumber = value;
+  set email(value: string) {
+      this._email = value;
   }
 }

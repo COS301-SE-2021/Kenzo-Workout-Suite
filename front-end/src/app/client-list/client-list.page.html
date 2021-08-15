@@ -1,25 +1,28 @@
 <ion-content class="your-workout-background">
-  <div class="container">
-    <div class="Spacing-div">
-      <ion-label id="client-heading">Clients</ion-label>
-    </div>
-    <div class="Spacing-div" id="SearchBarDiv">
-      <ion-searchbar id="workout-searchbar" mode="ios" inputmode="search"></ion-searchbar>
-    </div>
-    <ion-row class="ion-justify-content-center">
-
-      <ion-card mode="ios">
-        <ion-card-header>
-          <ion-card-subtitle>Contact</ion-card-subtitle>
-          <ion-card-title>Luca Azmanov</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          lucaazmanov@gmail.com
-        </ion-card-content>
-      </ion-card>
-
-    </ion-row>
+  <div class="Spacing-div">
+    <ion-label id="client-heading">Clients</ion-label>
   </div>
+  <div class="Spacing-div" id="SearchBarDiv">
+    <ion-searchbar id="workout-searchbar" mode="ios" inputmode="search"></ion-searchbar>
+  </div>
+  <ion-fab vertical="top" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="createContact()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <ion-row class="ion-justify-content-center">
+      <span *ngFor="let client of contacts">
+        <ion-card mode="ios">
+          <ion-card-header>
+            <ion-card-subtitle>Contact</ion-card-subtitle>
+            <ion-card-title>{{client.firstName}} {{client.lastName}}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            {{client.email}}
+          </ion-card-content>
+        </ion-card>
+      </span>
+    </ion-row>
 </ion-content>
 <ion-tab-bar mode="md" slot="bottom">
   <ion-tab-button (click)="goToFYP()">
