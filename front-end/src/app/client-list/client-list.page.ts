@@ -36,6 +36,26 @@ export class ClientListPage implements OnInit {
      * @author Luca Azmanov, u19004185
      */
     createContact() {
+        document.getElementById("create").style.display = "block";
+        document.getElementById("list").style.display = "none";
+    }
+
+    /**
+     * Returns planner to list of contacts
+     *
+     * @author Luca Azmanov, u19004185
+     */
+    cancel() {
+        document.getElementById("create").style.display = "none";
+        document.getElementById("list").style.display = "block";
+    }
+
+    /**
+     * This function uses the user service to add a client to the planner's conact list
+     *
+     * @author Luca Azmanov, u19004185
+     */
+    submitContact() {
 
     }
 
