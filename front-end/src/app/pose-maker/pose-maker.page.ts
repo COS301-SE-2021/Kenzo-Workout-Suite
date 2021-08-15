@@ -5,6 +5,7 @@ import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
 import {AlertController} from "@ionic/angular";
 import {Router} from "@angular/router";
 import {stringify} from "querystring";
+import {Storage} from "@ionic/storage";
 
 @Component({
     selector: "app-pose-maker",
@@ -61,7 +62,7 @@ export class PoseMakerPage implements OnInit {
     private frames: string[] = new Array(4);
     private frameColor: string[] = new Array(4);
 
-    constructor(public alertController: AlertController, public route: Router) {
+    constructor(public alertController: AlertController, public route: Router, private storage: Storage) {
         this.xCoordinate = 0;
         this.yCoordinate = 0;
         this.zCoordinate = 0;
@@ -337,11 +338,7 @@ export class PoseMakerPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   returnToCreate() {
-      this.route.navigate(["/create-exercise"], {
-          state:{
-              frames: this.frames
-          }
-      }).then(()=> {
+      this.route.navigate(["/create-exercise"]).then(()=> {
           let count = 0;
           for (let i = 0; i < this.frames.length; i++) {
               if (this.frames[i] == null) {
@@ -354,6 +351,7 @@ export class PoseMakerPage implements OnInit {
               document.getElementById("pose-button").innerText = "Remake Poses";
               document.getElementById("frameCount").innerText = "Poses Set";
           }
+          this.storage.set("images", this.frames);
       });
   }
 }

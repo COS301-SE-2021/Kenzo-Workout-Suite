@@ -20,6 +20,7 @@ export class UpdateExercisePage implements OnInit {
   poseDescription: string;
   rest: number;
   duration: number;
+  images: string[];
 
   tags: KenzoTag[] = new Array();
   newTag: KenzoTag;
@@ -90,7 +91,7 @@ export class UpdateExercisePage implements OnInit {
       }
 
       const exercise = new Exercise(this.title, this.description, this.range, this.sets, this.poseDescription,
-          this.rest, selected, this.duration*60);
+          this.rest, selected, this.duration*60, this.images);
       const status = await this.workoutService.attemptUpdateExercise(exercise, this.id);
 
       if (status < 400) {

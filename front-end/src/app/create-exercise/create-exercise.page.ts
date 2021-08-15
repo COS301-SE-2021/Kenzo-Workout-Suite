@@ -5,6 +5,7 @@ import {AlertController, IonSearchbar} from "@ionic/angular";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
 import {Exercise} from "../Models/exercise";
 import {KenzoTag} from "../Models/kenzo-tag";
+import {Storage} from "@ionic/storage";
 
 @Component({
     selector: "app-create-exercise",
@@ -19,6 +20,7 @@ export class CreateExercisePage implements OnInit {
   poseDescription ="";
   rest: number;
   duration: number;
+  images: string[];
 
   tags: KenzoTag[] = new Array();
   newTag: KenzoTag;
@@ -28,7 +30,8 @@ export class CreateExercisePage implements OnInit {
   constructor(private http: HttpClient,
               private route: Router,
               public alertController: AlertController,
-              private workoutService: WorkoutService) {
+              private workoutService: WorkoutService,
+              private storage: Storage) {
       this.getTags();
       this.newTag = this.getRandomTag("");
   }
@@ -49,6 +52,7 @@ export class CreateExercisePage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async createExercise() {
+      await this.syncFrames();
       const selected: KenzoTag[] = new Array();
       for (let i = 0; i < this.tags.length; i++) {
           if(this.tags[i].selected){
@@ -57,7 +61,7 @@ export class CreateExercisePage implements OnInit {
       }
 
       const exercise = new Exercise(this.title, this.description, this.range, this.sets, this.poseDescription,
-          this.rest, selected, this.duration*60);
+          this.rest, selected, this.duration*60, this.images);
       const status = await this.workoutService.attemptSubmitExercise(exercise);
 
       if (status < 400) {
@@ -266,9 +270,7 @@ export class CreateExercisePage implements OnInit {
    *
    * @author Luca Azmanov, u19004185
    */
-  syncFrames(){
-      if(this.route.getCurrentNavigation().extras.state!=null){
-          console.log(this.route.getCurrentNavigation().extras.state.frames);
-      }
+  async syncFrames(){
+      this.images = await this.storage.get("images");
   }
 }

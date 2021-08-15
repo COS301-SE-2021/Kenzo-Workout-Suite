@@ -108,7 +108,8 @@ export class WorkoutService {
             poseDescription: exercise.poseDescription,
             restPeriod: exercise.restPeriod,
             tags: exercise.tags,
-            duration: exercise.duratime
+            duration: exercise.duratime,
+            images: exercise.images
         };
         return this.http.post(url, body).toPromise().then(()=>200).catch(error=>{
             if(error.status===0) {
@@ -139,7 +140,8 @@ export class WorkoutService {
             poseDescription: exercise.poseDescription,
             restPeriod: exercise.restPeriod,
             tags: exercise.tags,
-            duration: exercise.duratime
+            duration: exercise.duratime,
+            images: exercise.images
         };
 
         return this.http.put(url, body).toPromise().then(()=>200).catch(error=>{
