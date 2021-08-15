@@ -736,6 +736,7 @@ export class WorkoutService {
       })
       const fullWorkout = await this.getWorkoutById(createdWorkout.workoutID, ctx)
       await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
+      await this.createVideo(fullWorkout.workoutID, ctx)
       return ("Workout Created.")
     }
   }
