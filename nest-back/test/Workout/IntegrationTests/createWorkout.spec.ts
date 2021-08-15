@@ -86,36 +86,4 @@ describe("Integration test for createWorkout for the Workout Service", () => {
       "Workout Created."
     )
   })
-
-  test("Should not create workout [Missing Title - Throws Parameters can not be left empty. ]", async () => {
-    const workoutUUID = uuidv4()
-    const Workout = {
-      workoutID: workoutUUID,
-      workoutTitle: "",
-      workoutDescription: "Test",
-      planner_ID: userUUID
-    }
-
-    const emptyExercise: Exercise[] = []
-
-    await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, emptyExercise, Workout.planner_ID, ctx)).rejects.toThrow(
-      "Parameters can not be left empty."
-    )
-  })
-
-  test("Should not create workout [Missing Description - Throws Parameters can not be left empty.]", async () => {
-    const workoutUUID = uuidv4()
-    const Workout = {
-      workoutID: workoutUUID,
-      workoutTitle: "Test",
-      workoutDescription: "",
-      planner_ID: userUUID
-    }
-
-    const emptyExercise: Exercise[] = []
-
-    await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, emptyExercise, Workout.planner_ID, ctx)).rejects.toThrow(
-      "Parameters can not be left empty."
-    )
-  })
 })

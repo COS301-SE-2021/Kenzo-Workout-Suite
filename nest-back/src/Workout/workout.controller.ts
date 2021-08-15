@@ -15,10 +15,10 @@ import {
 import { ActualPrisma, Context } from "../../context"
 import {
   ApiBadRequestResponse, ApiBearerAuth,
-  ApiBody, ApiConflictResponse,
+  ApiBody, ApiConflictResponse, ApiCreatedResponse,
   ApiInternalServerErrorResponse, ApiNotAcceptableResponse,
   ApiNotFoundResponse,
-  ApiOkResponse, ApiPreconditionFailedResponse
+  ApiOkResponse, ApiPreconditionFailedResponse, ApiServiceUnavailableResponse
 } from "@nestjs/swagger"
 
 import {
@@ -27,7 +27,7 @@ import {
   DeleteWorkoutDTO,
   UpdateWorkoutDTO,
   createTagDTO,
-  deleteExerciseDTO, updateExerciseDTO
+  deleteExerciseDTO, updateExerciseDTO, createVideoDTO, getWorkoutVideoDTO
 } from "./workout.model"
 import { JwtAuthGuard } from "../User/AuthGuards/jwt-auth.guard"
 
@@ -271,10 +271,11 @@ export class WorkoutController {
      * @param description This is the description of the exercise.
      * @param repRange This is the amount of reps.
      * @param sets This is the amount of sets.
-     * @param Posedescription This is the pose description.
+     * @param poseDescription
      * @param restPeriod This is the rest period of the exercise.
      * @param tags these are the tags related to an exercise
      * @param duration this is the duration of an exercise
+     * @param images
      * @param req This is the user request object
      * @throws PreconditionFailedException if:
      *                               -Not all parameters are given.
@@ -306,13 +307,14 @@ export class WorkoutController {
         @Body("exerciseDescription") description: string,
         @Body("repRange") repRange: string,
         @Body("sets") sets: number,
-        @Body("poseDescription") Posedescription: string,
+        @Body("poseDescription") poseDescription: string,
         @Body("restPeriod") restPeriod: number,
         @Body("tags") tags: Tag[],
         @Body("duration") duration: number,
+        @Body("images") images: string[],
         @Request() req
     ) {
-      return this.workoutService.updateExercise(exercise, title, description, repRange, sets, Posedescription, restPeriod, tags, duration, req.user.userID, ActualPrisma())
+      return this.workoutService.updateExercise(exercise, title, description, repRange, sets, poseDescription, restPeriod, tags, duration, req.user.userID, images, ActualPrisma())
     }
 
     /**
@@ -343,7 +345,7 @@ export class WorkoutController {
       description: "Internal server error."
     })
     async deleteExercise (
-        @Body("exercise") exercise: string
+        @Body("exerciseID") exercise: string
     ) {
       return this.workoutService.deleteExercise(exercise, ActualPrisma())
     }
@@ -523,12 +525,63 @@ export class WorkoutController {
       return this.workoutService.getTags(ActualPrisma())
     }
 
+    /**
+     *Workout Controller - createTTS
+     *
+     * @param text This parameter includes the string that needs to be converted to a .wav file (Audio file).
+     * @param fileName  This is the name of the file that will be stored on the server.
+     * @throws BadRequestException if:
+     *                               -Conversion from text to speech has failed.
+     * @return  Message indicating success (text file has been created).
+     * @author Zelealem Tesema
+     *
+     */
     @Get("createTTS")
     createTTS (
       @Body("text") text: string,
       @Body("fileName") fileName: string
     ) {
       return this.workoutService.textToSpeech(text, fileName)
+    }
+
+    /**
+     *Workout Controller - Create Video
+     *
+     * @param workoutID  The workout ID
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No workout was found in the database with the specified workout ID.
+     * @throws ApiPreconditionFailedResponse if:
+     *                               -Invalid Workout ID passed in.
+     * @throws ApiServiceUnavailableResponse if:
+     *                               -Unable to create video.
+     * @throws ApiInternalServerErrorResponse if:
+     *                               -Internal server error.
+     * @return  Message indicating success.
+     * @author Tinashe Chamisa
+     *
+     */
+    @Post("createVideo")
+    @ApiBody({ type: createVideoDTO })
+    @ApiCreatedResponse({
+      description: "Successfully created video."
+    })
+    @ApiPreconditionFailedResponse({
+      description: "Invalid Workout object passed in."
+    })
+    @ApiNotFoundResponse({
+      description: "No workout was found in the database with the specified workout ID."
+    })
+    @ApiServiceUnavailableResponse({
+      description: "Unable to create video."
+    })
+    @ApiInternalServerErrorResponse({
+      description: "Internal server error."
+    })
+    createVideo (
+        @Body("workoutID") workoutID: string
+    ) {
+      return this.workoutService.createVideo(workoutID, ActualPrisma())
     }
 
     /**
@@ -550,5 +603,40 @@ export class WorkoutController {
       @Param("workoutID") workoutID: string
     ) {
       return this.workoutService.getWorkoutPDF(workoutID, this.ctx)
+    }
+
+    /**
+     *Workout Controller - Get Workout Video
+     *
+     * @param workoutID  The workout ID
+     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @throws ApiPreconditionFailedResponse if: -Invalid Workout ID passed in.
+     * @throws NotFoundException if: -Workout video does not exist.
+     * @throws BadRequestException if: - Cannot return workout video
+     * @return  Promise array of tag object/s.
+     * @author Tinashe Chamisa
+     *
+     */
+    @Post("getWorkoutVideo")
+    @ApiBody({ type: getWorkoutVideoDTO })
+    @ApiCreatedResponse({
+      description: "Successfully created video."
+    })
+    @ApiPreconditionFailedResponse({
+      description: "Invalid Workout object passed in."
+    })
+    @ApiNotFoundResponse({
+      description: "Workout video does not exist."
+    })
+    @ApiBadRequestResponse({
+      description: "Cannot return video."
+    })
+    @ApiInternalServerErrorResponse({
+      description: "Internal server error."
+    })
+    getWorkoutVideo (
+        @Body("workoutID") workoutID: string
+    ) {
+      return this.workoutService.getWorkoutVideo(workoutID, ActualPrisma())
     }
 }
