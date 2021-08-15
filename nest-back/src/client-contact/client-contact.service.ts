@@ -5,6 +5,7 @@ import {
   Contacts
 } from "@prisma/client"
 import { UserService } from "../User/user.service"
+import { log } from "util"
 @Injectable()
 export class ClientContactService {
   constructor (private prisma: PrismaService, private userService: UserService) {
@@ -86,7 +87,7 @@ export class ClientContactService {
   }
 
   async sendEmailToContact (contacts: Contacts[], plannerID) {
-    const plannerName = this.userService.findUserByUUID(plannerID, ActualPrisma())
+    const planner = await this.userService.findUserByUUID(plannerID, ActualPrisma())
 
     const sgMail = require("@sendgrid/mail")
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
@@ -98,21 +99,21 @@ export class ClientContactService {
 
     const personalizationsArray = [{
       to: contacts[0].contactEmail,
-      text: "Hey, " + contacts[0].name + "Your planner " + plannerName + "has created a new workout and shared it with you. ENJOY!!"
+      subject: "Hey, " + contacts[0].name + " Your planner " + planner.firstName + " has created a new workout"
     }]
 
     for (let i = 1; i < contacts.length; i++) {
       const emailObject = {
         to: contacts[i].contactEmail,
-        text: "Hey, " + contacts[i].name + "Your planner " + plannerName + "has created a new workout and shared it with you. ENJOY!!"
+        subject: "Hey, " + contacts[i].name + " Your planner " + planner.firstName + " has created a new workout"
       }
       personalizationsArray.push(emailObject)
     }
 
     const msg = {
-      personalizations: personalizationsArray,
       from: "kenzo.workout.suite@gmail.com",
-      subject: "NEW WORKOUT FROM " + plannerName,
+      text: "Attatched is the PDF document as well as the video of the workout plan that " + planner.firstName + planner.lastName + "has decided to share with you",
+      personalizations: personalizationsArray,
       attachments: [
         {
           content: attachment,
