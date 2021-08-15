@@ -22,12 +22,12 @@ import {
 } from "@nestjs/swagger"
 
 import {
-    CreateExerciseDTO,
-    CreateWorkoutDTO,
-    DeleteWorkoutDTO,
-    UpdateWorkoutDTO,
-    createTagDTO,
-    deleteExerciseDTO, updateExerciseDTO, createVideoDTO, getWorkoutVideoDTO
+  CreateExerciseDTO,
+  CreateWorkoutDTO,
+  DeleteWorkoutDTO,
+  UpdateWorkoutDTO,
+  createTagDTO,
+  deleteExerciseDTO, updateExerciseDTO, createVideoDTO, getWorkoutVideoDTO
 } from "./workout.model"
 import { JwtAuthGuard } from "../User/AuthGuards/jwt-auth.guard"
 

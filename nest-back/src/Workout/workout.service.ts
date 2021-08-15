@@ -7,15 +7,15 @@ import {
   PreconditionFailedException,
   ServiceUnavailableException
 } from "@nestjs/common"
-import {Context} from "../../context"
-import {Exercise, Tag} from "@prisma/client"
-import {PrismaService} from "../Prisma/prisma.service"
-import {PDFDocument, rgb, StandardFonts} from "pdf-lib"
+import { Context } from "../../context"
+import { Exercise, Tag } from "@prisma/client"
+import { PrismaService } from "../Prisma/prisma.service"
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib"
 import * as fs from "fs"
-import {UserService} from "../User/user.service"
+import { UserService } from "../User/user.service"
 import * as baseImages from "../createdWorkoutImages.json"
 import fontkit from "@pdf-lib/fontkit"
-import {delay} from "rxjs/operators"
+import { delay } from "rxjs/operators"
 
 const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
@@ -417,6 +417,7 @@ export class WorkoutService {
       final["ID"] = exercise.exerciseID
       final["poseDescription"] = exercise.poseDescription
       final["images"] = arrayImages
+      // eslint-disable-next-line array-callback-return
       const index = json.findIndex(element => {
         if (element["ID"] === exercise.exerciseID) {
           return true
