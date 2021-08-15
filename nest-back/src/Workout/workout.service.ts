@@ -363,7 +363,40 @@ export class WorkoutService {
       if (!(Array.isArray(exercise) && exercise.length)) { // if JSON object is empty, send error code
         throw new NotFoundException("No Exercises were found in the database with the specified planner.")
       } else {
-        return exercise
+        // add images for each exercise
+
+        interface Exercise {
+          exerciseID: string,
+          exerciseTitle: string,
+          exerciseDescription: string,
+          repRange: any,
+          sets: any,
+          poseDescription: string,
+          restPeriod: any,
+          tags: any,
+          duration: any,
+          images: any
+        }
+
+        const exercisesWithImages: Exercise[] = []
+
+        for (let i = 0; i < exercise.length; i++) {
+          const image = this.getExerciseBase64(exercise[i].exerciseID)
+          exercisesWithImages.push({
+            exerciseID: exercise[i].exerciseID,
+            exerciseTitle: exercise[i].exerciseTitle,
+            exerciseDescription: exercise[i].exerciseDescription,
+            repRange: exercise[i].repRange,
+            sets: exercise[i].sets,
+            poseDescription: exercise[i].poseDescription,
+            restPeriod: exercise[i].restPeriod,
+            tags: exercise[i].tags,
+            duration: exercise[i].duration,
+            images: image
+          })
+        }
+
+        return exercisesWithImages
       }
     } catch (err) {
       throw new BadRequestException(err, "Could not fulfill request.")
