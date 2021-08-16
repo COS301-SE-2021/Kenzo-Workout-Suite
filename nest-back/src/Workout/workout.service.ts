@@ -444,7 +444,7 @@ export class WorkoutService {
     if (images.length === 0) {
       throw new PreconditionFailedException("Cannot create exercise with no images.")
     }
-    if (title === "" || description === "" || poseDescription === "" || tags == null || plannerID === "" || title == null || description == null || repRange == null || sets == null || poseDescription == null || restPeriod == null || duration == null) {
+    if (title === "" || description === "" || poseDescription === "" || tags == null || plannerID === "" || title == null || description == null || poseDescription == null) {
       throw new NotFoundException("Parameters can not be left empty!")
     }
 
@@ -570,7 +570,7 @@ export class WorkoutService {
    *
    */
   async updateExercise (exercise: string, title: string, description: string, repRange: string, sets: number, poseDescription: string, restPeriod: number, tags: Tag[], duration: number, plannerID:string, images:string[], ctx: Context): Promise<any> {
-    if (exercise === "" || title === "" || description === "" || poseDescription === "" || tags == null || plannerID === "" || title == null || description == null || repRange == null || sets == null || poseDescription == null || restPeriod == null || duration == null || plannerID === "") {
+    if (exercise === "" || title === "" || description === "" || poseDescription === "" || tags == null || plannerID === "" || title == null || description == null || poseDescription == null) {
       throw new PreconditionFailedException("Invalid exercise object passed in.")
     }
 
@@ -982,7 +982,11 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(workout.exercises[i].repRange, {
+            let repRange = "Consult Personal Trainer."
+            if (workout.exercises[i].repRange !== null) {
+              repRange = workout.exercises[i].repRange.toString()
+            }
+            currentPage.drawText(repRange, {
               x: 130,
               y: 620,
               size: 12,
@@ -996,7 +1000,11 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(workout.exercises[i].sets.toString(), {
+            let sets = "Consult Personal Trainer."
+            if (workout.exercises[i].sets !== null) {
+              sets = workout.exercises[i].sets.toString()
+            }
+            currentPage.drawText(sets, {
               x: 130,
               y: 600,
               size: 12,
@@ -1010,7 +1018,11 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(workout.exercises[i].restPeriod.toString(), {
+            let restPeriod = "Consult Personal Trainer."
+            if (workout.exercises[i].restPeriod !== null) {
+              restPeriod = workout.exercises[i].restPeriod.toString()
+            }
+            currentPage.drawText(restPeriod, {
               x: 130,
               y: 570,
               size: 12,
@@ -1024,7 +1036,11 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText((workout.exercises[i].duration / 60).toString() + " minutes", {
+            let duration = "Consult Personal Trainer."
+            if (workout.exercises[i].duration !== null) {
+              duration = (workout.exercises[i].duration / 60).toString()
+            }
+            currentPage.drawText(duration + " minutes", {
               x: 130,
               y: 540,
               size: 12,
@@ -1092,7 +1108,11 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(workout.exercises[i].repRange, {
+            let repRange = "Consult Personal Trainer."
+            if (workout.exercises[i].repRange !== null) {
+              repRange = workout.exercises[i].repRange.toString()
+            }
+            currentPage.drawText(repRange, {
               x: 130,
               y: 250,
               size: 12,
@@ -1106,7 +1126,11 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(workout.exercises[i].sets.toString(), {
+            let sets = "Consult Personal Trainer."
+            if (workout.exercises[i].sets !== null) {
+              sets = workout.exercises[i].sets.toString()
+            }
+            currentPage.drawText(sets, {
               x: 130,
               y: 220,
               size: 12,
@@ -1120,7 +1144,11 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(workout.exercises[i].restPeriod.toString(), {
+            let restPeriod = "Consult Personal Trainer."
+            if (workout.exercises[i].restPeriod !== null) {
+              restPeriod = workout.exercises[i].restPeriod.toString()
+            }
+            currentPage.drawText(restPeriod, {
               x: 130,
               y: 190,
               size: 12,
@@ -1134,7 +1162,11 @@ export class WorkoutService {
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText((workout.exercises[i].duration / 60).toString() + " minutes", {
+            let duration = "Consult Personal Trainer."
+            if (workout.exercises[i].duration !== null) {
+              duration = (workout.exercises[i].duration / 60).toString()
+            }
+            currentPage.drawText(duration + " minutes", {
               x: 130,
               y: 160,
               size: 12,
@@ -1435,17 +1467,18 @@ export class WorkoutService {
 
     // retrieve all exercises poses one by one from the local storage
     for (let i = 0; i < exercisesID.length; i++) {
-      let temp: string[] = []
+      let temp: any[] = []
       if ((temp = this.getExerciseBase64(exercisesID[i])) === []) {
         console.log("error")
       } else {
         console.log("found")
+
         const path = "./src/videoGeneration/Images/"
 
         // null checker for nulls in temp
         const base64Images: string[] = []
-        for (let j = 0; j < temp.length; j++) {
-          if (temp[i] !== null) { base64Images.push(temp[i]) }
+        for (let k = 0; k < temp.length; k++) {
+          if (temp[k] !== null) { base64Images.push(temp[k]) }
         }
 
         // Loop through poses of an exercise
@@ -1461,7 +1494,9 @@ export class WorkoutService {
             const optionalObj = { fileName, type: "jpg" }
             base64ToImage(base64Images[j], path, optionalObj)
           } catch (e) { throw e }
+
           delay(30000)
+
           // resize image
           await Jimp.read("./src/videoGeneration/Images/" + fileName + ".jpg")
             .then(image => {
@@ -1473,14 +1508,15 @@ export class WorkoutService {
             .catch(err => {
               console.error(err)
             })
+
           // push image to array
           images.push({
             path: "./src/videoGeneration/Images/" + fileName + "-fm.jpg",
             caption: exerciseDescription,
-            loop: 45
+            loop: 20
           })
 
-          lengthOfVideo += 45
+          lengthOfVideo += 20
         }
         if (i < base64Images.length - 1) {
           images.push({
