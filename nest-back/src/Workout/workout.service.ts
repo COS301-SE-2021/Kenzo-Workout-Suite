@@ -1173,7 +1173,7 @@ export class WorkoutService {
             exercisePosCount -= 1
           }
         }
-        fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save())
+        fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutID + "Workout.pdf", await pdfDoc.save())
       }
       return
     } catch (err) {
