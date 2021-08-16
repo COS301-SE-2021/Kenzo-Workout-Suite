@@ -32,12 +32,12 @@ export class ClientContactController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
     @Post("sendEmailsToContacts")
-  sendEmailsToContacts (
+  sendEmailsPDFToContacts (
       @Body("contacts") contacts: Contacts[],
       @Body("workoutID") workoutID:string,
       @Request() req
   ) {
-    return this.clientContactService.sendEmailToContact(contacts, req.user.userID, workoutID)
+    return this.clientContactService.sendPDFEmailToContact(contacts, req.user.userID, workoutID)
   }
 
   /**
@@ -50,12 +50,86 @@ export class ClientContactController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Post("sendEmailsToAllContacts")
-  async sendEmailsToAllContacts (
+  async sendEmailsPDFToAllContacts (
       @Request() req,
       @Body("workoutID") workoutID:string
   ) {
     const contacts = await this.clientContactService.getAllPlannersContacts(req.user.userID, this.ctx)
-    return this.clientContactService.sendEmailToContact(contacts, req.user.userID, workoutID)
+    return this.clientContactService.sendPDFEmailToContact(contacts, req.user.userID, workoutID)
+  }
+
+  /**
+   * client-contact Controller - sendEmailToContacts
+   * @throws BadRequestException if the email could not be sent by the service provider (Twillio)
+   * @return "Email sent!" if the email successfully sent
+   * @author Zelealem Tesema
+   * @param contacts
+   * @param req
+   */
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post("sendEmailsToContacts")
+  sendEmailsVideoToContacts (
+      @Body("contacts") contacts: Contacts[],
+      @Body("workoutID") workoutID:string,
+      @Request() req
+  ) {
+    return this.clientContactService.sendVideoEmailToContact(contacts, req.user.userID, workoutID)
+  }
+
+  /**
+   * client-contact Controller - sendEmailsToAllContacts
+   * @throws BadRequestException if the email could not be sent by the service provider (Twillio)
+   * @return "Email sent!" if the email successfully sent
+   * @author Zelealem Tesema
+   * @param contacts
+   */
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post("sendEmailsToAllContacts")
+  async sendEmailsVideoToAllContacts (
+      @Request() req,
+      @Body("workoutID") workoutID:string
+  ) {
+    const contacts = await this.clientContactService.getAllPlannersContacts(req.user.userID, this.ctx)
+    return this.clientContactService.sendVideoEmailToContact(contacts, req.user.userID, workoutID)
+  }
+
+  /**
+   * client-contact Controller - sendEmailToContacts
+   * @throws BadRequestException if the email could not be sent by the service provider (Twillio)
+   * @return "Email sent!" if the email successfully sent
+   * @author Zelealem Tesema
+   * @param contacts
+   * @param req
+   */
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post("sendEmailsToContacts")
+  sendEmailsMultimediaToContacts (
+      @Body("contacts") contacts: Contacts[],
+      @Body("workoutID") workoutID:string,
+      @Request() req
+  ) {
+    return this.clientContactService.sendMultimediaEmailToContact(contacts, req.user.userID, workoutID)
+  }
+
+  /**
+   * client-contact Controller - sendEmailsToAllContacts
+   * @throws BadRequestException if the email could not be sent by the service provider (Twillio)
+   * @return "Email sent!" if the email successfully sent
+   * @author Zelealem Tesema
+   * @param contacts
+   */
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post("sendEmailsToAllContacts")
+  async sendEmailsMultimediaToAllContacts (
+      @Request() req,
+      @Body("workoutID") workoutID:string
+  ) {
+    const contacts = await this.clientContactService.getAllPlannersContacts(req.user.userID, this.ctx)
+    return this.clientContactService.sendVideoEmailToContact(contacts, req.user.userID, workoutID)
   }
 
   /**
