@@ -84,7 +84,7 @@ export class CreateExercisePage implements OnInit {
           const alert = await this.alertController.create({
               cssClass: "kenzo-alert",
               header: "Could not create exercise",
-              message: "Please fill all of the fields.",
+              message: "Please fill all of the required fields.",
               buttons: ["Dismiss"]
           });
 
