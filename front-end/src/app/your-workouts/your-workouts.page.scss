@@ -158,6 +158,10 @@
     height: 100%;
   }
 
+  #shareBtn{
+    bottom: 86.5%;
+  }
+
 }
 
 @media screen and (min-width: 993px) {
@@ -166,7 +170,8 @@
   }
 
   #shareBtn{
-     left: 90%;
+    left: 90%;
+    bottom: 86.5%;
   }
 }
 
@@ -174,27 +179,13 @@
 
   #shareBtn{
     left: 92.5%;
-    bottom: 87%;
+    bottom: 86.5%;
   }
 }
 
 .text{
     display: inline-block;
     vertical-align: middle;
-}
-
-.fabButton[data-desc] {
-    position: relative;
-}
-.fabButton[data-desc]::after{
-    position: absolute;
-    content: attr(data-desc);
-    z-index: 1;
-    right: 50px;
-    bottom: 8px;
-    color: var(--ion-color-tertiary);
-    font-size: 16px;
-    font-weight: bold;
 }
 
 ion-card{
@@ -212,4 +203,18 @@ ion-card{
   }
 
   cursor: default;
+}
+
+.fabButton[data-desc] {
+  position: relative;
+}
+.fabButton[data-desc]::after{
+  position: absolute;
+  content: attr(data-desc);
+  z-index: 1;
+  right: 50px;
+  bottom: 8px;
+  color: var(--ion-color-tertiary);
+  font-size: 16px;
+  font-weight: bold;
 }

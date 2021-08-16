@@ -17,16 +17,17 @@
   font-weight: bold;
 }
 
+.ion-justify-content-center{
+  display: block;
+  position: absolute;
+  margin-left: 5%;
+  margin-right: 5%;
+  left: 0;
+  width: 99%;
+}
 
 #SearchBarDiv, #ItemsDiv{
   margin-top: 13px;
-}
-
-#WorkoutHeading{
-  font-family: "SF Pro Medium", serif;
-  font-size: 23px;
-  color: black;
-  font-weight: bold;
 }
 
 #exercise-searchbar{
@@ -45,10 +46,14 @@
   margin-right: auto;
 }
 
-.exercises{
+.exercises {
+  display: inline-grid;
   margin-bottom: 5.5%;
   transition: border 0.1s;
   transition-timing-function: linear;
+  min-height: 200px;
+  width: 300px;
+  height: 300px;
 }
 
 .exercises:hover{
@@ -64,8 +69,13 @@
 }
 
 .editBtn{
-  display: block;
+  --background: none;
+  --background-hover: none;
+  --color: var(--ion-color-tertiary);
+  --color-hover: var(--ion-color-primary);
+  --background-activated: none;
 }
+
 
 .kenzo-fixed{
   position: fixed;
@@ -108,17 +118,6 @@
   margin-right: auto;
 }
 
-@media only screen and (max-width: 400px){
-  .NavLabel{
-    margin-left: 25%;
-  }
-}
-
-.exerciseScroll{
-  display: block;
-  float: left;
-}
-
 .fabButton[data-desc] {
   position: relative;
 }
@@ -132,4 +131,28 @@
   color: var(--ion-color-tertiary);
   font-size: 16px;
   font-weight: bold;
+}
+
+
+
+.text{
+  display: inline-block;
+  vertical-align: middle;
+}
+
+ion-card{
+  ion-card-header{
+    --background: var(--ion-color-primary);
+
+    ion-card-title{
+      --color: var(--ion-off-white);
+    }
+
+  }
+  ion-card-content{
+    margin-top: 10px;
+    color: black;
+  }
+
+  cursor: default;
 }

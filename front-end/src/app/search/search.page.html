@@ -19,15 +19,17 @@
       <ion-searchbar #searchbar (ionInput)="eventHandler($event)" id="exercise-searchbar" mode="ios" inputmode="search"></ion-searchbar>
     </div>
     <div class="Spacing-div" id="ItemsDiv">
-      <ion-virtual-scroll [items]="searchExercises" approxItemHeight="320px" id="exerciseScroll">
-        <ion-card *virtualItem="let exercise; let itemBounds = bounds;" class="exercises" id="{{exercise.exerciseID}}">
-          <ion-card-header>
-            <ion-card-title>{{ exercise.exerciseTitle }}</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>{{ exercise.exerciseDescription}}</ion-card-content>
-          <ion-button mode="ios" class="editBtn" (click)="sendExerciseID(exercise.exerciseID)">Edit</ion-button>
-        </ion-card>
-      </ion-virtual-scroll>
+      <ion-row class="ion-justify-content-center">
+        <span *ngFor="let exercise of exercises">
+            <ion-card mode="ios" class="exercises" id="{{exercise.exerciseID}}">
+              <ion-card-header>
+                <ion-card-title>{{ exercise.title }}</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>{{ exercise.description}}</ion-card-content>
+              <ion-button mode="ios" class="editBtn" (click)="sendExerciseID(exercise.exerciseID)">Edit</ion-button>
+            </ion-card>
+        </span>
+      </ion-row>
     </div>
   </div>
 

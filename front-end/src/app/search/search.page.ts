@@ -1,8 +1,43 @@
 import { Component, OnInit } from "@angular/core";
-import {Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
 import { Router } from "@angular/router";
+
+class Exercises{
+  private _exerciseID: string;
+  private _title: string;
+  private _description: string;
+
+  get exerciseID(): string {
+      return this._exerciseID;
+  }
+
+  set exerciseID(value: string) {
+      this._exerciseID = value;
+  }
+
+  get title(): string {
+      return this._title;
+  }
+
+  set title(value: string) {
+      this._title = value;
+  }
+
+  get description(): string {
+      return this._description;
+  }
+
+  set description(value: string) {
+      this._description = value;
+  }
+
+  constructor(exerciseID: string, title: string, description: string) {
+      this._exerciseID = exerciseID;
+      this._title = title;
+      this._description = description;
+  }
+}
 
 @Component({
     selector: "app-search",
@@ -10,7 +45,7 @@ import { Router } from "@angular/router";
     styleUrls: ["./search.page.scss"],
 })
 export class SearchPage implements OnInit {
-  searchExercises: Observable<any>;
+  exercises: Exercises[] = new Array();
   constructor(private http: HttpClient,
               private workoutService: WorkoutService,
               private router: Router) { }
@@ -25,8 +60,9 @@ export class SearchPage implements OnInit {
   async loadExercises(){
       const tempExercises = await this.workoutService.attemptGetExercises();
       if (tempExercises.status===200){
-          this.searchExercises = tempExercises.data;
-          console.log(this.searchExercises);
+          for (let i = 0; i < tempExercises.data.length; i++) {
+              this.exercises[i] = new Exercises(tempExercises.data[i].exerciseID, tempExercises.data[i].exerciseTitle, tempExercises.data[i].exerciseDescription);
+          }
           return 200;
       }else if (tempExercises.status===404){
           return 404;
@@ -42,8 +78,8 @@ export class SearchPage implements OnInit {
    */
   eventHandler(event) {
       const text = event.srcElement.value.toLowerCase();
-      this.searchExercises.forEach(data => {
-          const currElement = document.getElementById(data.exercise);
+      this.exercises.forEach(data => {
+          const currElement = document.getElementById(data.exerciseID);
           if (!(data.title.toLowerCase().includes(text)) && !(data.description.toLowerCase().includes(text))) {
               currElement.style.display = "none";
           } else {
