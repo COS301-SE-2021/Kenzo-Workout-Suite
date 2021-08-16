@@ -107,4 +107,25 @@ ion-header{
   width: 50%;
 }
 
+ion-card{
+  ion-card-header{
+    --background: var(--ion-color-tertiary);
+
+    ion-card-title{
+      --color: var(--ion-off-white);
+    }
+
+    ion-card-subtitle{
+      --color: var(--ion-off-white);
+    }
+  }
+
+  ion-card-content{
+    margin-top: 10px;
+    color: black;
+  }
+
+  cursor: default;
+}
+
 
