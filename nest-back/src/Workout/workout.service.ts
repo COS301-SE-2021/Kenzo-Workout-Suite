@@ -943,7 +943,7 @@ export class WorkoutService {
 
       // Bring template in - [Amount of exercises]
       if (workout.exercises === undefined) {
-        fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save())
+        fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutID + ".pdf", await pdfDoc.save())
       } else {
         let exercisePosCount = 0
         for (let i = 0; i < workout.exercises.length; i++) {
