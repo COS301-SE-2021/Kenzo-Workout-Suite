@@ -51,7 +51,7 @@ describe("SearchPage", () => {
     });
 
     it("should successfully obtain all exercises.", async () => {
-        spyOn(service, "attemptGetExercises").and.resolveTo({status: 200});
+        spyOn(service, "attemptGetExercises").and.resolveTo({status: 200, data:[]});
         await component.loadExercises().then(data=>{
             expect(data).toEqual(200);
         });
