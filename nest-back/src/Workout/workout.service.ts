@@ -1435,12 +1435,18 @@ export class WorkoutService {
 
     // retrieve all exercises poses one by one from the local storage
     for (let i = 0; i < exercisesID.length; i++) {
-      let base64Images
-      if ((base64Images = this.getExerciseBase64(exercisesID[i])) === []) {
+      let temp: string[] = []
+      if ((temp = this.getExerciseBase64(exercisesID[i])) === []) {
         console.log("error")
       } else {
         console.log("found")
         const path = "./src/videoGeneration/Images/"
+
+        // null checker for nulls in temp
+        const base64Images: string[] = []
+        for (let j = 0; j < temp.length; j++) {
+          if (temp[i] !== null) { base64Images.push(temp[i]) }
+        }
 
         // Loop through poses of an exercise
         const exerciseDescription = this.getExerciseDescription(exercisesID[i])
@@ -1450,8 +1456,11 @@ export class WorkoutService {
           fileNames.push(fileName)
 
           // convert base64 to image
-          const optionalObj = { fileName, type: "jpg" }
-          base64ToImage(base64Images[j], path, optionalObj)
+          // eslint-disable-next-line no-useless-catch
+          try {
+            const optionalObj = { fileName, type: "jpg" }
+            base64ToImage(base64Images[j], path, optionalObj)
+          } catch (e) { throw e }
           delay(30000)
           // resize image
           await Jimp.read("./src/videoGeneration/Images/" + fileName + ".jpg")
