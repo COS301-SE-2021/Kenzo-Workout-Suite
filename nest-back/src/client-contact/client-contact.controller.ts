@@ -31,7 +31,7 @@ export class ClientContactController {
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Post("sendEmailsToContacts")
+  @Post("sendEmailsPDFToContacts")
   sendEmailsPDFToContacts (
       @Body("contacts") contacts: Contacts[],
       @Body("workoutID") workoutID:string,
@@ -49,7 +49,7 @@ export class ClientContactController {
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Post("sendEmailsToAllContacts")
+  @Post("sendEmailsPDFToAllContacts")
   async sendEmailsPDFToAllContacts (
       @Request() req,
       @Body("workoutID") workoutID:string
@@ -68,7 +68,7 @@ export class ClientContactController {
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Post("sendEmailsToContacts")
+  @Post("sendEmailsVideoToContacts")
   sendEmailsVideoToContacts (
       @Body("contacts") contacts: Contacts[],
       @Body("workoutID") workoutID:string,
@@ -86,7 +86,7 @@ export class ClientContactController {
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Post("sendEmailsToAllContacts")
+  @Post("sendEmailsVideoToAllContacts")
   async sendEmailsVideoToAllContacts (
       @Request() req,
       @Body("workoutID") workoutID:string
@@ -105,7 +105,7 @@ export class ClientContactController {
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Post("sendEmailsToContacts")
+  @Post("sendEmailsMultimediaToContacts")
   sendEmailsMultimediaToContacts (
       @Body("contacts") contacts: Contacts[],
       @Body("workoutID") workoutID:string,
@@ -123,7 +123,7 @@ export class ClientContactController {
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Post("sendEmailsToAllContacts")
+  @Post("sendEmailsMultimediaToAllContacts")
   async sendEmailsMultimediaToAllContacts (
       @Request() req,
       @Body("workoutID") workoutID:string
