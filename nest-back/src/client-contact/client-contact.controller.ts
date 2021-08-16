@@ -31,7 +31,7 @@ export class ClientContactController {
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-    @Post("sendEmailsToContacts")
+  @Post("sendEmailsToContacts")
   sendEmailsPDFToContacts (
       @Body("contacts") contacts: Contacts[],
       @Body("workoutID") workoutID:string,
@@ -154,10 +154,10 @@ export class ClientContactController {
   })
   @ApiBody({ type: createContactDTO })
   createClientContact (
-        @Body("contactEmail") contactEmail:string,
-        @Body("name") name:string,
-        @Body("surname") surname:string,
-        @Request() req
+      @Body("contactEmail") contactEmail:string,
+      @Body("name") name:string,
+      @Body("surname") surname:string,
+      @Request() req
 
   ) {
     return this.clientContactService.createClientContact(contactEmail, name, surname, req.user.userID, this.ctx)
