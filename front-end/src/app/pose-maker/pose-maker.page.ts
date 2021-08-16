@@ -96,6 +96,7 @@ export class PoseMakerPage implements OnInit {
       document.getElementById("start-button").style.display = "none";
       document.getElementById("instructions").style.display = "none";
       document.getElementById("controls").style.display = "block";
+      document.getElementById("save-back").innerText = "Save";
       this.headerHeight = document.getElementById("header").offsetHeight;
       this.footerHeight = document.getElementById("footer").offsetHeight;
       this.initScene();
@@ -312,8 +313,8 @@ export class PoseMakerPage implements OnInit {
       }
 
       const strMime = "image/jpeg";
-      let imgData = this.renderer.domElement.toDataURL(strMime);
-      imgData = imgData.replace("data:image/jpeg;base64,", "");
+      const imgData = this.renderer.domElement.toDataURL(strMime);
+      // imgData = imgData.replace("data:image/jpeg;base64,", "");
       this.frames[frame] = imgData;
       this.frameColor[frame] = "#1D905B";
 

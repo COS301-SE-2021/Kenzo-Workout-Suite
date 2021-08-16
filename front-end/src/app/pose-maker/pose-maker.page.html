@@ -1,7 +1,7 @@
 <ion-header id="header">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button class="back" slot="start" mode="ios" (click)="returnToCreate()">Save</ion-button>
+      <ion-button class="back" id="save-back" slot="start" mode="ios" (click)="returnToCreate()">Back</ion-button>
     </ion-buttons>
     <ion-title class="title">Pose Maker</ion-title>
   </ion-toolbar>
@@ -12,7 +12,13 @@
       <ion-card-subtitle>If you are a first time user, please read the following before proceeding.</ion-card-subtitle>
       <ion-card-title>Instructions</ion-card-title>
     </ion-card-header>
-    <ion-card-content>1.</ion-card-content>
+    <ion-card-content>
+      <ion-text>1. First choose a body part from the drop down menu</ion-text><br><br>
+      <ion-text>2. Now, use sliders to control the body part's rotation about the X, Y and Z axes</ion-text><br><br>
+      <ion-text>3. Once a desired pose is created, simply click/press on one of the red frame buttons to save to that frame</ion-text><br><br>
+      <ion-text>4. To clear a frame, simply press the green frame button and confirm the deletion of that frame</ion-text><br><br>
+      <ion-text>5. At least one pose must be framed in order to create a workout</ion-text><br><br>
+    </ion-card-content>
   </ion-card>
   <div class="canvas" #webgl></div>
 </ion-content>
