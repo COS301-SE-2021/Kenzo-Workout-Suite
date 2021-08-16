@@ -31,7 +31,7 @@ export class ClientContactController {
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-    @Get("sendEmailsToContacts")
+    @Post("sendEmailsToContacts")
   sendEmailsToContacts (
       @Body("contacts") contacts: Contacts[],
       @Body("workoutID") workoutID:string,
@@ -49,7 +49,7 @@ export class ClientContactController {
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Get("sendEmailsToAllContacts")
+  @Post("sendEmailsToAllContacts")
   async sendEmailsToAllContacts (
       @Request() req,
       @Body("workoutID") workoutID:string
