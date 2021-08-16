@@ -943,7 +943,7 @@ export class WorkoutService {
 
       // Bring template in - [Amount of exercises]
       if (workout.exercises === undefined) {
-        fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save())
+        fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutID + ".pdf", await pdfDoc.save())
       } else {
         let exercisePosCount = 0
         for (let i = 0; i < workout.exercises.length; i++) {
@@ -1205,10 +1205,10 @@ export class WorkoutService {
       const workoutObject = await this.getWorkoutById(workoutID, ctx)
       await this.generatePrettyWorkoutPDF(workoutObject, ctx)
 
-      fs.readFile("./src/GeneratedWorkouts/" + workoutObject.workoutTitle + "Workout.pdf", function (err, data) {
+      fs.readFile("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf", function (err, data) {
         if (err) throw err
       })
-      const uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutTitle + "Workout.pdf")
+      const uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf")
       const pdfDoc = await PDFDocument.load(uint8ArrayFP)
       return await pdfDoc.saveAsBase64({ dataUri: true })
     } catch (E) {
