@@ -15,7 +15,6 @@ import * as fs from "fs"
 import { UserService } from "../User/user.service"
 import * as baseImages from "../createdWorkoutImages.json"
 import fontkit from "@pdf-lib/fontkit"
-import { delay } from "rxjs/operators"
 
 const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
