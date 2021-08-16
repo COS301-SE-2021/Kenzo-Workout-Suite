@@ -1492,10 +1492,8 @@ export class WorkoutService {
           // eslint-disable-next-line no-useless-catch
           try {
             const optionalObj = { fileName, type: "jpg" }
-            base64ToImage(base64Images[j], path, optionalObj)
+            await base64ToImage(base64Images[j], path, optionalObj)
           } catch (e) { throw e }
-
-          delay(30000)
 
           // resize image
           await Jimp.read("./src/videoGeneration/Images/" + fileName + ".jpg")
