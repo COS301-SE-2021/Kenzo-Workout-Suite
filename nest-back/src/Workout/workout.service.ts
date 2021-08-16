@@ -1061,22 +1061,41 @@ export class WorkoutService {
               font: SFRegular
             })
             // Images
-            await fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
-              if (err) throw err
-              const json = JSON.parse(data.toString())
-              const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
-              if (exerciseImages !== "undefined") {
-                for (let c = 0; c < exerciseImages.images.length; c++) {
-                  const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
-                  currentPage.drawImage(currentImage, {
-                    x: 20 + (c * 150),
-                    y: 400,
-                    width: 120,
-                    height: 90
-                  })
-                }
+            const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
+            const json = JSON.parse(jsonTest)
+            const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
+            if (exerciseImages !== "undefined") {
+              for (let c = 0; c < exerciseImages.images.length; c++) {
+                console.log(exerciseImages.images[c])
+                const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
+                console.log(currentImage)
+                currentPage.drawImage(currentImage, {
+                  x: 20 + (c * 150),
+                  y: 400,
+                  width: 120,
+                  height: 90
+                })
               }
-            })
+            }
+            // fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
+            //   if (err) throw err
+            //   const json = JSON.parse(data.toString())
+            //   const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
+            //   console.log(exerciseImages)
+            //   if (exerciseImages !== "undefined") {
+            //     for (let c = 0; c < exerciseImages.images.length; c++) {
+            //       console.log(exerciseImages.images[c])
+            //       const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
+            //       console.log(currentImage)
+            //       currentPage.drawImage(currentImage, {
+            //         x: 20 + (c * 150),
+            //         y: 400,
+            //         width: 120,
+            //         height: 90
+            //       })
+            //     }
+            //   }
+            // })
             exercisePosCount += 1
           } else {
             const currentPage = pdfDoc.getPage(pdfDoc.getPageCount() - 1)
@@ -1187,22 +1206,22 @@ export class WorkoutService {
               font: SFRegular
             })
             // Images
-            fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
-              if (err) throw err
-              const json = JSON.parse(data.toString())
-              const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
-              if (exerciseImages !== "undefined") {
-                for (let c = 0; c < exerciseImages.images.length; c++) {
-                  const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
-                  currentPage.drawImage(currentImage, {
-                    x: 20 + (c * 150),
-                    y: 20,
-                    width: 120,
-                    height: 90
-                  })
-                }
+            const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
+            const json = JSON.parse(jsonTest)
+            const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
+            if (exerciseImages !== "undefined") {
+              for (let c = 0; c < exerciseImages.images.length; c++) {
+                console.log(exerciseImages.images[c])
+                const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
+                console.log(currentImage)
+                currentPage.drawImage(currentImage, {
+                  x: 20 + (c * 150),
+                  y: 20,
+                  width: 120,
+                  height: 90
+                })
               }
-            })
+            }
             exercisePosCount -= 1
           }
         }
