@@ -751,7 +751,6 @@ export class WorkoutService {
       })
       const fullWorkout = await this.getWorkoutById(createdWorkout.workoutID, ctx)
       await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
-      await this.createVideo(fullWorkout.workoutID, ctx)
       return ("Workout Created.")
     }
   }
@@ -804,6 +803,7 @@ export class WorkoutService {
         })
         const updatedWorkout = await this.getWorkoutById(workoutID, ctx)
         await this.generatePrettyWorkoutPDF(updatedWorkout, ctx)
+        await this.createVideo(updatedWorkout.workoutID, ctx)
         return ("Workout Updated.")
       } catch (e) {
         throw new NotFoundException("Workout with provided ID does not exist")
