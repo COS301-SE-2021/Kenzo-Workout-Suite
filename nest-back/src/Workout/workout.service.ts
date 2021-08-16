@@ -288,7 +288,21 @@ export class WorkoutService {
       if (exercise == null) { // if JSON object is empty, send error code
         throw new NotFoundException("No exercise was found in the database with the specified ID.")
       } else {
-        return exercise
+        // add images for each exercise
+
+        const image = this.getExerciseBase64(exercise.exerciseID)
+        return {
+          exerciseID: exercise.exerciseID,
+          exerciseTitle: exercise.exerciseTitle,
+          exerciseDescription: exercise.exerciseDescription,
+          repRange: exercise.repRange,
+          sets: exercise.sets,
+          poseDescription: exercise.poseDescription,
+          restPeriod: exercise.restPeriod,
+          tags: exercise.tags,
+          duration: exercise.duration,
+          images: image
+        }
       }
     } catch (err) {
       throw new BadRequestException(err, "Could not fulfill request.")
@@ -1394,6 +1408,10 @@ export class WorkoutService {
       throw err
     }
 
+    if (exercisesID.length === 0) {
+      throw new BadRequestException("Cant create video without exercises")
+    }
+
     const images = [{}]
     const fileNames = [""]
     let lengthOfVideo = 0
@@ -1486,7 +1504,7 @@ export class WorkoutService {
 
     videoshow(images, videoOptions)
       .audio("./src/videoGeneration/Sounds/song1.mp3")
-      .save("./src/videoGeneration/Videos/video" + workoutID + ".mp4")
+      .save("./src/videoGeneration/Videos/" + workoutID + ".mp4")
       .on("start", function (command) {
         console.log("ffmpeg process started:", command)
       })
@@ -1564,7 +1582,7 @@ export class WorkoutService {
       throw new PreconditionFailedException("Invalid Workout ID passed in.")
     }
     try {
-      fs.readFile("./src/videoGeneration/Videos/video" + workoutID + ".mp4", function (err, data) {
+      fs.readFile("./src/videoGeneration/Videos/" + workoutID + ".mp4", function (err, data) {
         if (err) throw err
       })
       /*
@@ -1574,7 +1592,7 @@ export class WorkoutService {
         result.push("0x" + fileData[i] + "" + fileData[i + 1])
       }
        */
-      return fs.readFileSync("./src/videoGeneration/Videos/video" + workoutID + ".mp4").toString("base64")
+      return fs.readFileSync("./src/videoGeneration/Videos/" + workoutID + ".mp4").toString("base64")
     } catch (E) {
       throw new BadRequestException("Cannot return video.")
     }
