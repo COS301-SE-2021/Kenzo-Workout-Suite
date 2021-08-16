@@ -92,4 +92,24 @@ export class ClientService {
             return error.status;
         });
     }
+
+    /**
+     * Updates client's credentials based on client object provided.
+     *
+     * @param workoutID is the id of the workout to get the pdf from
+     * @return status is the code of the response
+     * @author Jia Hui Wang, u18080449
+     */
+    async attemptEmailPDF(workoutID: string): Promise<any>{
+        const url = "http://localhost:3000/client-contact/sendEmailsToAllContacts";
+        const body = {
+            workoutID: workoutID
+        };
+        return this.http.post(url, body).toPromise().then(()=>200).catch(error=>{
+            if(error.status===0) {
+                return 500;
+            }
+            return error.status;
+        });
+    }
 }

@@ -18,7 +18,6 @@
   <div class="Spacing-div" id="SearchBarDiv">
     <ion-searchbar  #searchbar (ionInput)="eventHandler($event)" id="workout-searchbar" mode="ios" inputmode="search"></ion-searchbar>
   </div>
-    <div class="Spacing-div" id="ItemsDiv">
       <ion-row class="ion-justify-content-center">
         <span *ngFor="let workout of workouts">
             <ion-card mode="ios" class="workouts" id="{{workout.workoutID}}">
@@ -31,7 +30,6 @@
             </ion-card>
         </span>
       </ion-row>
-    </div>
 </div>
 </ion-content>
 <ion-tab-bar mode="md" slot="bottom">

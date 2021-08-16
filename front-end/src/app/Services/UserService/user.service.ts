@@ -119,7 +119,7 @@ export class UserService {
      * @param lastName
      * @param birthDate
      */
-    async attemptUpdateUserDetails(firstName: string, lastName: string, birthDate: Date): Promise<any>{
+    async attemptUpdateUserDetails(firstName: string, lastName: string, birthDate: string): Promise<any>{
         const user = {
             firstName: firstName,
             lastName: lastName,

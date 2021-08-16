@@ -22,11 +22,10 @@
 }
 
 .workouts{
-  display: inline-grid;
-  margin-bottom: 5.5%;
   transition: border 0.1s;
   transition-timing-function: linear;
-  min-height: 200px;
+  width: 310px;
+  height: 250px;
 }
 
 .workouts:hover{
@@ -36,12 +35,6 @@
   border-style: ridge;
 }
 
-.ion-justify-content-center{
-  display: block;
-  position: absolute;
-  left: 0;
-  width: 99%;
-}
 
 #AddWorkout{
     width: var(--icon-size);
@@ -91,12 +84,14 @@
     --color: var(--ion-color-tertiary);
     --color-hover: var(--ion-color-primary);
     --background-activated: none;
+    display: block;
+    margin-top: 25%;
 }
 
 #shareBtn{
   position: absolute;
-  bottom: 88%;
-  left: 90%;
+  bottom: 89%;
+  left: 92%;
   width: 25px;
   height: 30px;
   z-index: 10000;
@@ -130,71 +125,9 @@
     margin-right: auto;
   }
 
-@media screen and (max-width: 646px) {
-  .ion-justify-content-center{
-    display: block;
-    position: absolute;
-    left: 170px;
-    width: 570px;
-  }
-}
-
-@media screen and (min-width: 700px) {
-  #shareBtn{
-    left: 92.5%;
-  }
-}
-
-@media screen and (max-width: 768px){
-    .workouts{
-      width: 600px;
-      height: 200px;
-    }
-}
-
-@media screen and (max-width: 992px) {
-  .workouts{
-    width: 45%;
-    height: 100%;
-  }
-
-}
-
-@media screen and (min-width: 993px) {
-  .workouts{
-    width: 23%;
-  }
-
-  #shareBtn{
-     left: 90%;
-  }
-}
-
-@media screen and (min-width: 1600px) {
-
-  #shareBtn{
-    left: 92.5%;
-    bottom: 87%;
-  }
-}
-
 .text{
     display: inline-block;
     vertical-align: middle;
-}
-
-.fabButton[data-desc] {
-    position: relative;
-}
-.fabButton[data-desc]::after{
-    position: absolute;
-    content: attr(data-desc);
-    z-index: 1;
-    right: 50px;
-    bottom: 8px;
-    color: var(--ion-color-tertiary);
-    font-size: 16px;
-    font-weight: bold;
 }
 
 ion-card{
@@ -212,4 +145,18 @@ ion-card{
   }
 
   cursor: default;
+}
+
+.fabButton[data-desc] {
+  position: relative;
+}
+.fabButton[data-desc]::after{
+  position: absolute;
+  content: attr(data-desc);
+  z-index: 1;
+  right: 50px;
+  bottom: 8px;
+  color: var(--ion-color-tertiary);
+  font-size: 16px;
+  font-weight: bold;
 }

@@ -4,6 +4,7 @@ import {WorkoutService} from "../Services/WorkoutService/workout.service";
 import {ActionSheetController, AlertController} from "@ionic/angular";
 import { Router } from "@angular/router";
 import {Exercise} from "../Models/exercise";
+import {ClientService} from "../Services/ClientService/client.service";
 
 class Workouts{
   private _workoutID: string;
@@ -61,6 +62,7 @@ export class YourWorkoutsPage implements OnInit {
   pdf: any;
   constructor(private http: HttpClient,
               private workoutService: WorkoutService,
+              private clientService: ClientService,
               public alertController: AlertController,
               private router: Router,
               public actionSheetController: ActionSheetController) { }
@@ -78,7 +80,6 @@ export class YourWorkoutsPage implements OnInit {
           for (let i = 0; i < tempWorkouts.data.length; i++) {
               this.workouts[i] = new Workouts(tempWorkouts.data[i].workoutID, tempWorkouts.data[i].workoutTitle, tempWorkouts.data[i].workoutDescription, tempWorkouts.data[i].exercises);
           }
-          console.log(this.workouts);
           return 200;
       }else if (tempWorkouts.status===404){
           return 404;
@@ -101,7 +102,7 @@ export class YourWorkoutsPage implements OnInit {
   async sharePDF(id: string){
       this.pdf = await this.workoutService.attemptGetPDF(id);
       if (this.pdf.status===200){
-          this.presentActionSheet(this.pdf.data);
+          this.presentActionSheet(this.pdf.data, id);
           return 200;
       }else if (this.pdf.status===404){
           return 404;
@@ -134,8 +135,8 @@ export class YourWorkoutsPage implements OnInit {
   eventHandler(event) {
       const text = event.srcElement.value.toLowerCase();
       this.workouts.forEach(data => {
-          const currElement = document.getElementById(data["workoutID"]);
-          if (!(data["workoutTitle"].toLowerCase().includes(text)) && !(data["workoutDescription"].toLowerCase().includes(text))) {
+          const currElement = document.getElementById(data.workoutID);
+          if (!(data.title.toLowerCase().includes(text)) && !(data.description.toLowerCase().includes(text))) {
               currElement.style.display = "none";
           } else {
               currElement.style.display = "block";
@@ -148,7 +149,7 @@ export class YourWorkoutsPage implements OnInit {
       await alert.onDidDismiss();
   }
 
-  async presentActionSheet(pdf: string) {
+  async presentActionSheet(pdf: string, workoutID: string) {
       const actionSheet = await this.actionSheetController.create({
           header: "Share PDF",
           cssClass: "my-custom-class",
@@ -157,7 +158,8 @@ export class YourWorkoutsPage implements OnInit {
               role: "selected",
               icon: "mail-outline",
               handler: () => {
-                  console.log("Email clicked");
+                  this.clientService.attemptEmailPDF(workoutID);
+                  console.log("Emails sent");
               }
           }, {
               text: "Download PDF",
