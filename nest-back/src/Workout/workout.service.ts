@@ -735,6 +735,7 @@ export class WorkoutService {
       })
       const fullWorkout = await this.getWorkoutById(createdWorkout.workoutID, ctx)
       await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
+      await this.createVideo(fullWorkout.workoutID, ctx)
       return ("Workout Created.")
     } else {
       const createdWorkout = await ctx.prisma.workout.create({
@@ -1410,7 +1411,13 @@ export class WorkoutService {
       throw new BadRequestException("Cant create video without exercises")
     }
 
-    const images = [{}]
+    interface IMAGE {
+      path: string,
+      caption: string,
+      loop: number
+    }
+
+    const images: IMAGE[] = []
     const fileNames = [""]
     let lengthOfVideo = 0
 
@@ -1445,7 +1452,7 @@ export class WorkoutService {
           // convert base64 to image
           const optionalObj = { fileName, type: "jpg" }
           base64ToImage(base64Images[j], path, optionalObj)
-          delay(20000)
+          delay(30000)
           // resize image
           await Jimp.read("./src/videoGeneration/Images/" + fileName + ".jpg")
             .then(image => {
@@ -1463,7 +1470,6 @@ export class WorkoutService {
             caption: exerciseDescription,
             loop: 45
           })
-          if (lengthOfVideo === 0) { images.shift() } // to remove first empty JSON object
 
           lengthOfVideo += 45
         }
