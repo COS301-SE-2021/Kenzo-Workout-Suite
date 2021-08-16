@@ -288,7 +288,21 @@ export class WorkoutService {
       if (exercise == null) { // if JSON object is empty, send error code
         throw new NotFoundException("No exercise was found in the database with the specified ID.")
       } else {
-        return exercise
+        // add images for each exercise
+
+        const image = this.getExerciseBase64(exercise.exerciseID)
+        return {
+          exerciseID: exercise.exerciseID,
+          exerciseTitle: exercise.exerciseTitle,
+          exerciseDescription: exercise.exerciseDescription,
+          repRange: exercise.repRange,
+          sets: exercise.sets,
+          poseDescription: exercise.poseDescription,
+          restPeriod: exercise.restPeriod,
+          tags: exercise.tags,
+          duration: exercise.duration,
+          images: image
+        }
       }
     } catch (err) {
       throw new BadRequestException(err, "Could not fulfill request.")
@@ -929,7 +943,7 @@ export class WorkoutService {
 
       // Bring template in - [Amount of exercises]
       if (workout.exercises === undefined) {
-        fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save())
+        fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutID + ".pdf", await pdfDoc.save())
       } else {
         let exercisePosCount = 0
         for (let i = 0; i < workout.exercises.length; i++) {
@@ -1159,7 +1173,7 @@ export class WorkoutService {
             exercisePosCount -= 1
           }
         }
-        fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutTitle + "Workout.pdf", await pdfDoc.save())
+        fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutID + ".pdf", await pdfDoc.save())
       }
       return
     } catch (err) {
@@ -1191,10 +1205,10 @@ export class WorkoutService {
       const workoutObject = await this.getWorkoutById(workoutID, ctx)
       await this.generatePrettyWorkoutPDF(workoutObject, ctx)
 
-      fs.readFile("./src/GeneratedWorkouts/" + workoutObject.workoutTitle + "Workout.pdf", function (err, data) {
+      fs.readFile("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf", function (err, data) {
         if (err) throw err
       })
-      const uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutTitle + "Workout.pdf")
+      const uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf")
       const pdfDoc = await PDFDocument.load(uint8ArrayFP)
       return await pdfDoc.saveAsBase64({ dataUri: true })
     } catch (E) {
@@ -1392,6 +1406,10 @@ export class WorkoutService {
       throw err
     }
 
+    if (exercisesID.length === 0) {
+      throw new BadRequestException("Cant create video without exercises")
+    }
+
     const images = [{}]
     const fileNames = [""]
     let lengthOfVideo = 0
@@ -1484,7 +1502,7 @@ export class WorkoutService {
 
     videoshow(images, videoOptions)
       .audio("./src/videoGeneration/Sounds/song1.mp3")
-      .save("./src/videoGeneration/Videos/video" + workoutID + ".mp4")
+      .save("./src/videoGeneration/Videos/" + workoutID + ".mp4")
       .on("start", function (command) {
         console.log("ffmpeg process started:", command)
       })
@@ -1562,7 +1580,7 @@ export class WorkoutService {
       throw new PreconditionFailedException("Invalid Workout ID passed in.")
     }
     try {
-      fs.readFile("./src/videoGeneration/Videos/video" + workoutID + ".mp4", function (err, data) {
+      fs.readFile("./src/videoGeneration/Videos/" + workoutID + ".mp4", function (err, data) {
         if (err) throw err
       })
       /*
@@ -1572,7 +1590,7 @@ export class WorkoutService {
         result.push("0x" + fileData[i] + "" + fileData[i + 1])
       }
        */
-      return fs.readFileSync("./src/videoGeneration/Videos/video" + workoutID + ".mp4").toString("base64")
+      return fs.readFileSync("./src/videoGeneration/Videos/" + workoutID + ".mp4").toString("base64")
     } catch (E) {
       throw new BadRequestException("Cannot return video.")
     }
