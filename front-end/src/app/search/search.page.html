@@ -22,7 +22,7 @@
   <ion-row class="ion-justify-content-center">
         <span *ngFor="let exercise of exercises">
             <ion-card mode="ios" class="exercises" id="{{exercise.exerciseID}}">
-              <ion-slides scrollbar="true" pager="true" options={slideOpts}>
+              <ion-slides scrollbar="true" pager="true" options="slideOpts">
                 <ion-slide *ngFor="let img of exercise.images;">
                    <img class="imagePose" [src]="img" alt="Exercise Pose Image Missing">
                 </ion-slide>

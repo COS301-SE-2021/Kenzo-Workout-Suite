@@ -71,7 +71,10 @@
     <br>
     <div class="input-div">
       <ion-label class="input-description">Poses *</ion-label>
-      <ion-label id="frameCount"></ion-label><br>
+      <ion-card>
+        <ion-slides id="slideshow" scrollbar="true" pager="true" options="slideOpts">
+        </ion-slides>
+      </ion-card>
       <ion-button mode="ios" id="pose-button" (click)="poseMaker()">Add Poses</ion-button>
     </div>
     <br>
