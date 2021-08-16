@@ -1205,10 +1205,10 @@ export class WorkoutService {
       const workoutObject = await this.getWorkoutById(workoutID, ctx)
       await this.generatePrettyWorkoutPDF(workoutObject, ctx)
 
-      fs.readFile("./src/GeneratedWorkouts/" + workoutObject.workoutTitle + "Workout.pdf", function (err, data) {
+      fs.readFile("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf", function (err, data) {
         if (err) throw err
       })
-      const uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutTitle + "Workout.pdf")
+      const uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf")
       const pdfDoc = await PDFDocument.load(uint8ArrayFP)
       return await pdfDoc.saveAsBase64({ dataUri: true })
     } catch (E) {
