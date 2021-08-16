@@ -17,13 +17,18 @@
   font-weight: bold;
 }
 
-.ion-justify-content-center{
-  display: block;
-  position: absolute;
-  margin-left: 5%;
-  margin-right: 5%;
-  left: 0;
-  width: 99%;
+.exercises {
+  transition: border 0.1s;
+  transition-timing-function: linear;
+  width: 310px;
+  height: 250px;
+}
+
+.exercises:hover{
+  cursor: pointer;
+  border: 3px;
+  border-color: #FF6969;
+  border-style: ridge;
 }
 
 #SearchBarDiv, #ItemsDiv{
@@ -46,23 +51,6 @@
   margin-right: auto;
 }
 
-.exercises {
-  display: inline-grid;
-  margin-bottom: 5.5%;
-  transition: border 0.1s;
-  transition-timing-function: linear;
-  min-height: 200px;
-  width: 300px;
-  height: 300px;
-}
-
-.exercises:hover{
-  cursor: pointer;
-  border: 3px;
-  border-color: #FF6969;
-  border-style: ridge;
-}
-
 .container{
   align-content: center;
   align-items: center;
@@ -74,6 +62,8 @@
   --color: var(--ion-color-tertiary);
   --color-hover: var(--ion-color-primary);
   --background-activated: none;
+  display: block;
+  margin-top: 25%;
 }
 
 

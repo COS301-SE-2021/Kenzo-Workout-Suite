@@ -135,8 +135,8 @@ export class YourWorkoutsPage implements OnInit {
   eventHandler(event) {
       const text = event.srcElement.value.toLowerCase();
       this.workouts.forEach(data => {
-          const currElement = document.getElementById(data["workoutID"]);
-          if (!(data["workoutTitle"].toLowerCase().includes(text)) && !(data["workoutDescription"].toLowerCase().includes(text))) {
+          const currElement = document.getElementById(data.workoutID);
+          if (!(data.title.toLowerCase().includes(text)) && !(data.description.toLowerCase().includes(text))) {
               currElement.style.display = "none";
           } else {
               currElement.style.display = "block";

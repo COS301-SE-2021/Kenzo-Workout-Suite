@@ -12,7 +12,7 @@ import {Router} from "@angular/router";
 export class ProfilePage implements OnInit {
   firstName: string;
   lastName: string;
-  birthDate: any;
+  birthDate: string;
   email: any;
   accountType: string;
 
@@ -29,12 +29,15 @@ export class ProfilePage implements OnInit {
    * Get the details of the User through an API call
    */
   async getDetails(){
-      const UserDetails = await this.userService.obtainUserDetails();
-      this.firstName = UserDetails["firstName"];
-      this.lastName = UserDetails["lastName"];
-      this.birthDate = UserDetails["birthDate"];
-      this.email = UserDetails["email"];
-      this.accountType = UserDetails["userType"];
+      const userDetails = await this.userService.obtainUserDetails();
+      this.firstName = userDetails["firstName"];
+      this.lastName = userDetails["lastName"];
+      this.birthDate = userDetails["dateOfBirth"];
+      if (this.birthDate != null){
+          this.birthDate = this.birthDate.substring(0, 10);
+      }
+      this.email = userDetails["email"];
+      this.accountType = userDetails["userType"];
   }
 
   /**
@@ -71,7 +74,7 @@ export class ProfilePage implements OnInit {
       updateBtn.setAttribute("disabled", "true");
 
       const status = await this.userService.attemptUpdateUserDetails(this.firstName, this.lastName, this.birthDate);
-      if (status == 200) {
+      if (status === 200) {
       // Success State
           const alert = await this.alertController.create({
               cssClass: "kenzo-alert",
@@ -80,7 +83,7 @@ export class ProfilePage implements OnInit {
               buttons: ["OK"]
           });
           await this.presentAlert(alert);
-      } else if (status == 401) {
+      } else if (status === 401) {
       // Invalid Sign In
           const alert = await this.alertController.create({
               cssClass: "kenzo-alert",
