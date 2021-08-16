@@ -751,7 +751,6 @@ export class WorkoutService {
       })
       const fullWorkout = await this.getWorkoutById(createdWorkout.workoutID, ctx)
       await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
-      await this.createVideo(fullWorkout.workoutID, ctx)
       return ("Workout Created.")
     }
   }
@@ -804,6 +803,7 @@ export class WorkoutService {
         })
         const updatedWorkout = await this.getWorkoutById(workoutID, ctx)
         await this.generatePrettyWorkoutPDF(updatedWorkout, ctx)
+        await this.createVideo(updatedWorkout.workoutID, ctx)
         return ("Workout Updated.")
       } catch (e) {
         throw new NotFoundException("Workout with provided ID does not exist")
@@ -1494,10 +1494,8 @@ export class WorkoutService {
           // eslint-disable-next-line no-useless-catch
           try {
             const optionalObj = { fileName, type: "jpg" }
-            base64ToImage(base64Images[j], path, optionalObj)
+            await base64ToImage(base64Images[j], path, optionalObj)
           } catch (e) { throw e }
-
-          delay(30000)
 
           // resize image
           await Jimp.read("./src/videoGeneration/Images/" + fileName + ".jpg")
