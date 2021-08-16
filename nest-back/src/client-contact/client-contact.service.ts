@@ -94,7 +94,7 @@ export class ClientContactService {
 
     const fs = require("fs")
 
-    const workoutPDF = await this.workoutService.getWorkoutPDF(workoutID, ActualPrisma())
+    const workoutPDF = fs.readFileSync("./src/GeneratedWorkouts/" + workoutID + ".pdf").toString("base64")
 
     const kenzoImage = fs.readFileSync("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG").toString("base64")
 
