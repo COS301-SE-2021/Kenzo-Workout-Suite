@@ -4,7 +4,6 @@ import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader.js";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
 import {AlertController} from "@ionic/angular";
 import {Router} from "@angular/router";
-import {stringify} from "querystring";
 import {Storage} from "@ionic/storage";
 
 @Component({
