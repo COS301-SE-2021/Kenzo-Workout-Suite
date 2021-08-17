@@ -36,7 +36,7 @@ export class ClientContactService {
   }
 
   async updateClientContact (contactID: string, newContactEmail: string, newName: string, newSurname: string, plannerID:string, ctx: Context) {
-    if (contactID === "" || newName === "" || newSurname === "" || contactID == null || newName === null || newSurname == null) {
+    if (contactID === "" || newName === "" || newSurname === "" || plannerID === "" || contactID == null || newName === null || newSurname == null || plannerID == null) {
       throw new NotFoundException("Parameters can not be left empty!")
     }
     try {
@@ -52,7 +52,7 @@ export class ClientContactService {
       })
       return "Client contact updated."
     } catch (e) {
-      throw new BadRequestException(e)
+      throw new BadRequestException("Could not update contact")
     }
   }
 
