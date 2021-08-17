@@ -1,6 +1,5 @@
 import { Context, ActualPrisma } from "../../../context"
 import { ClientContactService } from "../../../src/client-contact/client-contact.service"
-import { v4 } from "uuid"
 import { UserService } from "../../../src/User/user.service"
 
 let ctx: Context

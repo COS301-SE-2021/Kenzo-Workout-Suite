@@ -73,6 +73,9 @@ export class ClientContactService {
   }
 
   async getAllPlannersContacts (plannerID:string, ctx: Context) {
+    if (plannerID == null || plannerID === "") {
+      throw new BadRequestException("PlannerID field can not be left empty")
+    }
     const clientContacts = await ctx.prisma.contacts.findMany({ // search for workouts that meet the requirement
       where: {
         plannerID: plannerID
