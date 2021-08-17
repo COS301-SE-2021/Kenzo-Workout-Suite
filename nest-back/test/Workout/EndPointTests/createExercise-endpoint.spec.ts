@@ -72,7 +72,7 @@ describe("End point testing of the Workout subsystem", () => {
       .expect(201)
   })
 
-  it("CreateExercise endpoint with invalid data, should return 404", async () => {
+  it("CreateExercise endpoint with no image data, should return 500", async () => {
     const response = await userServ.login(myUser)
     const accessToken = response.access_token
 
@@ -88,6 +88,6 @@ describe("End point testing of the Workout subsystem", () => {
         restPeriod: 2,
         duration: 2
       })
-      .expect(404)
+      .expect(500)
   })
 })

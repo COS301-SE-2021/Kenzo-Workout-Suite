@@ -2,6 +2,13 @@
     --background: var(--ion-off-white);
 }
 
+#WorkoutHeading{
+  font-family: "SF Pro Medium", serif;
+  font-size: 25px;
+  color: black;
+  font-weight: bold;
+}
+
 .Spacing-div{
     display: block;
     width: var(--input-width);
@@ -14,12 +21,12 @@
     margin-top: 13px;
 }
 
-#WorkoutHeading{
-    font-family: "SF Pro Medium", serif;
-    font-size: 25px;
-    color: black;
-    font-weight: bold;
+.workouts{
+  transition: border 0.1s;
+  transition-timing-function: linear;
+  width: 300px;
 }
+
 
 #AddWorkout{
     width: var(--icon-size);
@@ -49,19 +56,9 @@
 
 .kenzo-fixed{
   position: fixed;
-  top: 150px;
+  top: 100px;
   right: 5px;
   z-index: 100;
-}
-
-.filterBtns{
-  display: block;
-  width: 187.5px;
-  margin-left: auto;
-  margin-right: auto;
-  font-family: "SF Pro Regular", serif;
-  --border-radius: var(--border-radius);
-
 }
 
 .footer{
@@ -74,44 +71,81 @@
 }
 
 .editBtn{
-  display: block;
+    --background: none;
+    --background-hover: none;
+    --color: var(--ion-color-tertiary);
+    --color-hover: var(--ion-color-primary);
+    --background-activated: none;
+    display: block;
 }
 
+//#shareBtn{
+//  //position: absolute;
+//  //bottom: 88%;
+//  //left: 91%;
+//  //width: 25px;
+//  //height: 30px;
+//  //z-index: 10000;
+//  //color:#212F3D;
+//}
+
 .navThumbnail{
-  display: block;
-  float: left;
-  margin-left: auto;
-  margin-right: auto;
-  width: 25%;
+    display: block;
+    float: left;
+    margin-left: auto;
+    margin-right: auto;
+    width: 25%;
 }
 
 .NavButtons{
-  width: var(--icon-size);
-  height: var(--icon-size);
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-
+    width: var(--icon-size);
+    height: var(--icon-size);
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .NavLabel{
-  display: block;
-  float: left;
-  font-size: 15px;
-  margin-left: 45%;
-  margin-right: auto;
-}
-
-@media only screen and (max-width: 400px){
-  .NavLabel{
-    margin-left: 25%;
+    display: block;
+    float: left;
+    font-size: 15px;
+    margin-left: 45%;
+    margin-right: auto;
   }
-}
 
 .text{
-  display: inline-block;
-  vertical-align: middle;
+    display: inline-block;
+    vertical-align: middle;
 }
+
+ion-card{
+  ion-card-header{
+    ion-card-title{
+      --color: var(--ion-color-tertiary);
+      overflow-x: hidden;
+    }
+  }
+  ion-card-content{
+    margin-top: 10px;
+    color: black;
+  }
+
+  cursor: default;
+}
+
+ion-slides{
+  --progress-bar-background: none;
+  --progress-bar-background-activated: none;
+  --bullet-background-active: var(--ion-color-tertiary);
+  --bullet-background: var(--ion-color-KT_BLACK);
+}
+
+.imagePose{
+  height: 150px;
+  width: 300px;
+  object-fit: cover;
+}
+
 
 .fabButton[data-desc] {
   position: relative;

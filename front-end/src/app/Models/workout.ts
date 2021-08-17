@@ -1,14 +1,15 @@
 import {KenzoTag} from "./kenzo-tag";
+import {Exercise} from "./exercise";
 
 export class Workout {
   private _title:string;
   private _description:string;
-  private _tags:KenzoTag[];
+  private _exercises:Exercise[];
 
-  constructor(title: string, description: string, tags: KenzoTag[]) {
+  constructor(title: string, description: string, exercises: Exercise[]) {
     this._title = title;
     this._description = description;
-    this._tags = tags;
+    this._exercises = exercises;
   }
 
   get title(): string {
@@ -27,11 +28,11 @@ export class Workout {
     this._description = value;
   }
 
-  get tags(): KenzoTag[] {
-    return this._tags;
+  get exercises(): Exercise[] {
+    return this._exercises;
   }
 
-  set tags(value: KenzoTag[]) {
-    this._tags = value;
+  set exercises(value: Exercise[]) {
+    this._exercises = value;
   }
 }

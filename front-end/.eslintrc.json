@@ -57,7 +57,9 @@
         "indent": "error",
         "@typescript-eslint/member-ordering": "off",
         "object-shorthand": [0],
-        "@typescript-eslint/dot-notation": "off"
+        "@typescript-eslint/dot-notation": "off",
+        "max-len": "off",
+        "no-underscore-dangle": "off"
       }
     },
     {

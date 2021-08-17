@@ -1,0 +1,212 @@
+.your-workout-background{
+  --background: var(--ion-off-white);
+}
+
+.NavLabel{
+  display: block;
+  float: left;
+  font-size: 15px;
+  margin-left: 45%;
+  margin-right: auto;
+}
+
+.your-workout-background{
+  --background: var(--ion-off-white);
+}
+
+#client-heading{
+  font-family: "SF Pro Medium", serif;
+  font-size: 25px;
+  color: black;
+  font-weight: bold;
+}
+
+.Spacing-div{
+  display: block;
+  width: var(--input-width);
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+}
+
+#SearchBarDiv, #ItemsDiv{
+  margin-top: 13px;
+}
+
+.workouts{
+  margin-bottom: 5.5%;
+  transition: border 0.1s;
+  transition-timing-function: linear;
+}
+
+.workouts:hover{
+  cursor: pointer;
+  border: 3px;
+  border-color: #FF6969;
+  border-style: ridge;
+}
+
+#AddWorkout{
+  width: var(--icon-size);
+  height: var(--icon-size);
+  float: right;
+}
+
+#searchbar{
+  font-family: "SF Pro Medium", serif;
+  height: 40px;
+  --placeholder-font-weight: 590;
+  color: #707074;
+  --background: #e7e7e8;
+}
+
+#nav-div{
+  font-family: "SF Pro Regular", serif;
+  display: block;
+  width: var(--input-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+.container{
+  align-content: center;
+  align-items: center;
+}
+
+.kenzo-fixed{
+  position: fixed;
+  top: 100px;
+  right: 5px;
+  z-index: 100;
+}
+
+.footer{
+  --background: var(--ion-off-white);
+  padding-top: 10px;
+  //border-style: solid;
+  //border-radius: var(--secondary-radius);
+  //margin-top: 20px;
+  //margin-bottom: 20px;
+}
+
+.editBtn{
+  --background: none;
+  --color: var(--ion-color-tertiary);
+  --background-hover: none;
+  --color-hover: var(--ion-color-primary);
+  --background-activated: none;
+  display: block;
+}
+
+.navThumbnail{
+  display: block;
+  float: left;
+  margin-left: auto;
+  margin-right: auto;
+  width: 25%;
+}
+
+.NavButtons{
+  width: var(--icon-size);
+  height: var(--icon-size);
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.NavLabel{
+  display: block;
+  float: left;
+  font-size: 15px;
+  margin-left: 45%;
+  margin-right: auto;
+}
+
+@media only screen and (max-width: 400px){
+  .NavLabel{
+    margin-left: 25%;
+  }
+}
+
+.text{
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.fabButton[data-desc] {
+  position: relative;
+}
+.fabButton[data-desc]::after{
+  position: absolute;
+  content: attr(data-desc);
+  z-index: 1;
+  right: 50px;
+  bottom: 8px;
+  color: var(--ion-color-tertiary);
+  font-size: 16px;
+  font-weight: bold;
+}
+
+ion-card{
+  width: 300px;
+ ion-card-header{
+   --background: var(--ion-color-tertiary);
+
+   ion-card-title{
+     --color: var(--ion-off-white);
+   }
+
+   ion-card-subtitle{
+     --color: var(--ion-off-white);
+   }
+ }
+
+  ion-card-content{
+    margin-top: 10px;
+    color: black;
+  }
+
+  cursor: default;
+}
+
+.options{
+  display: block;
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.kenzo-input{
+  font-family: "SF Pro Regular", serif;
+  display: block;
+  height: 50px;
+  border-radius: 9px;
+  background-color: white;
+  color: var(--ion-color-tertiary);
+  --padding-start: 10px;
+  --padding-top: 15px;
+  border: solid 0.5px var(--ion-color-tertiary);
+  margin-bottom: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 98%;
+}
+
+#create, #edit{
+  display: none;
+}
+
+.create-card{
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.no-results{
+  color: var(--ion-color-medium-shade);
+  width: 100%;
+  display: none;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+}

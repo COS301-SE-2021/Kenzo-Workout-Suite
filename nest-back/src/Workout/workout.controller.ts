@@ -15,10 +15,10 @@ import {
 import { ActualPrisma, Context } from "../../context"
 import {
   ApiBadRequestResponse, ApiBearerAuth,
-  ApiBody, ApiConflictResponse,
+  ApiBody, ApiConflictResponse, ApiCreatedResponse,
   ApiInternalServerErrorResponse, ApiNotAcceptableResponse,
   ApiNotFoundResponse,
-  ApiOkResponse, ApiPreconditionFailedResponse
+  ApiOkResponse, ApiPreconditionFailedResponse, ApiServiceUnavailableResponse
 } from "@nestjs/swagger"
 
 import {
@@ -27,7 +27,7 @@ import {
   DeleteWorkoutDTO,
   UpdateWorkoutDTO,
   createTagDTO,
-  deleteExerciseDTO, updateExerciseDTO
+  deleteExerciseDTO, updateExerciseDTO, createVideoDTO, getWorkoutVideoDTO
 } from "./workout.model"
 import { JwtAuthGuard } from "../User/AuthGuards/jwt-auth.guard"
 
@@ -41,7 +41,7 @@ export class WorkoutController {
 
     /**
      *Workout Controller - Get Workouts
-     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @param this.ctx  This is the prisma context that is injected into the function.
      * @throws NotFoundException if:
      *                               -No workouts were found in the database.
      * @return  Promise array of workout object/s.
@@ -60,14 +60,14 @@ export class WorkoutController {
     })
     getWorkouts (
     ) {
-      return this.workoutService.getWorkouts(ActualPrisma())
+      return this.workoutService.getWorkouts(this.ctx)
     }
 
     /**
      *Workout Controller - Get Workouts by ID
      *
      * @param id This is the ID of the workout to be found in the database.
-     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @param this.ctx  This is the prisma context that is injected into the function.
      * @throws NotFoundException if:
      *                               -No workouts were found in the database with the specified ID.
      * @return  Promise array of workout object/s.
@@ -92,7 +92,7 @@ export class WorkoutController {
 
     /**
      *Workout Controller - Get Exercises
-     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @param this.ctx  This is the prisma context that is injected into the function.
      * @throws NotFoundException if:
      *                               -No exercises were found in the database.
      * @return  Promise array of exercise object/s.
@@ -111,14 +111,14 @@ export class WorkoutController {
     })
     getExercises (
     ) {
-      return this.workoutService.getExercises(ActualPrisma())
+      return this.workoutService.getExercises(this.ctx)
     }
 
     /**
      *Workout Controller - Get Exercises by Title
      *
      * @param title This is the title of the exercise/s to be found in the database.
-     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @param this.ctx  This is the prisma context that is injected into the function.
      * @throws NotFoundException if:
      *                               -No exercises were found in the database with the specified title.
      * @return  Promise array of exercises object/s.
@@ -138,7 +138,7 @@ export class WorkoutController {
     getExerciseByTitle (
         @Param("title") title: string
     ) {
-      return this.workoutService.getExerciseByTitle(title, ActualPrisma())
+      return this.workoutService.getExerciseByTitle(title, this.ctx)
     }
 
     /**
@@ -171,7 +171,7 @@ export class WorkoutController {
      *Workout Controller - Get Workouts by Planner
      *
      * @param id This is the ID of the planner of the workout/s to be found in the database.
-     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @param this.ctx  This is the prisma context that is injected into the function.
      * @throws NotFoundException if:
      *                               -No workouts were found in the database with the specified planner ID.
      * @return  Promise array of workout object/s.
@@ -193,7 +193,7 @@ export class WorkoutController {
     getWorkoutByPlanner (
         @Request() req
     ) {
-      return this.workoutService.getWorkoutByPlanner(req.user.userID, ActualPrisma())
+      return this.workoutService.getWorkoutByPlanner(req.user.userID, this.ctx)
     }
 
     @UseGuards(JwtAuthGuard)
@@ -211,7 +211,7 @@ export class WorkoutController {
     getExercisesPlanner (
         @Request() req
     ) {
-      return this.workoutService.getExercisesByPlanner(req.user.userID, ActualPrisma())
+      return this.workoutService.getExercisesByPlanner(req.user.userID, this.ctx)
     }
 
     /**
@@ -314,14 +314,14 @@ export class WorkoutController {
         @Body("images") images: string[],
         @Request() req
     ) {
-      return this.workoutService.updateExercise(exercise, title, description, repRange, sets, poseDescription, restPeriod, tags, duration, req.user.userID, images, ActualPrisma())
+      return this.workoutService.updateExercise(exercise, title, description, repRange, sets, poseDescription, restPeriod, tags, duration, req.user.userID, images, this.ctx)
     }
 
     /**
      *Workout Controller - Delete Exercise
      *
      * @param exercise This is the ID of the exercise.
-     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @param this.ctx  This is the prisma context that is injected into the function.
      * @throws PreconditionFailedException if:
      *                               -Parameter can not be left empty.
      * @throws NotFoundException if:
@@ -345,9 +345,9 @@ export class WorkoutController {
       description: "Internal server error."
     })
     async deleteExercise (
-        @Body("exercise") exercise: string
+        @Body("exerciseID") exercise: string
     ) {
-      return this.workoutService.deleteExercise(exercise, ActualPrisma())
+      return this.workoutService.deleteExercise(exercise, this.ctx)
     }
 
     /**
@@ -461,7 +461,7 @@ export class WorkoutController {
      * @param label This is the title of the tag.
      * @param textColour This is the text colour of the tag.
      * @param backgroundColour  This is the background colour of the tag.
-     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @param this.ctx  This is the prisma context that is injected into the function.
      * @throws NotAcceptableException if:
      *                               -There is any type of profanity found in the label, using npm 'bad-words'.
      * @throws ConflictException if:
@@ -497,13 +497,13 @@ export class WorkoutController {
         @Body("textColour") textColour: string,
         @Body("backgroundColour") backgroundColour: string
     ) {
-      return this.workoutService.createTag(label, textColour, backgroundColour, ActualPrisma())
+      return this.workoutService.createTag(label, textColour, backgroundColour, this.ctx)
     }
 
     /**
      *Workout Controller - Get Tags
      *
-     * @param ActualPrisma()  This is the prisma context that is injected into the function.
+     * @param this.ctx  This is the prisma context that is injected into the function.
      * @throws NotFoundException if:
      *                               -No tags were found in the database.
      * @return  Promise array of tag object/s.
@@ -522,15 +522,66 @@ export class WorkoutController {
     })
     getTags (
     ) {
-      return this.workoutService.getTags(ActualPrisma())
+      return this.workoutService.getTags(this.ctx)
     }
 
+    /**
+     *Workout Controller - createTTS
+     *
+     * @param text This parameter includes the string that needs to be converted to a .wav file (Audio file).
+     * @param fileName  This is the name of the file that will be stored on the server.
+     * @throws BadRequestException if:
+     *                               -Conversion from text to speech has failed.
+     * @return  Message indicating success (text file has been created).
+     * @author Zelealem Tesema
+     *
+     */
     @Get("createTTS")
     createTTS (
       @Body("text") text: string,
       @Body("fileName") fileName: string
     ) {
       return this.workoutService.textToSpeech(text, fileName)
+    }
+
+    /**
+     *Workout Controller - Create Video
+     *
+     * @param workoutID  The workout ID
+     * @param this.ctx  This is the prisma context that is injected into the function.
+     * @throws NotFoundException if:
+     *                               -No workout was found in the database with the specified workout ID.
+     * @throws ApiPreconditionFailedResponse if:
+     *                               -Invalid Workout ID passed in.
+     * @throws ApiServiceUnavailableResponse if:
+     *                               -Unable to create video.
+     * @throws ApiInternalServerErrorResponse if:
+     *                               -Internal server error.
+     * @return  Message indicating success.
+     * @author Tinashe Chamisa
+     *
+     */
+    @Post("createVideo")
+    @ApiBody({ type: createVideoDTO })
+    @ApiCreatedResponse({
+      description: "Successfully created video."
+    })
+    @ApiPreconditionFailedResponse({
+      description: "Invalid Workout object passed in."
+    })
+    @ApiNotFoundResponse({
+      description: "No workout was found in the database with the specified workout ID."
+    })
+    @ApiServiceUnavailableResponse({
+      description: "Unable to create video."
+    })
+    @ApiInternalServerErrorResponse({
+      description: "Internal server error."
+    })
+    createVideo (
+        @Body("workoutID") workoutID: string
+    ) {
+      return this.workoutService.createVideo(workoutID, this.ctx)
     }
 
     /**
@@ -552,5 +603,40 @@ export class WorkoutController {
       @Param("workoutID") workoutID: string
     ) {
       return this.workoutService.getWorkoutPDF(workoutID, this.ctx)
+    }
+
+    /**
+     *Workout Controller - Get Workout Video
+     *
+     * @param workoutID  The workout ID
+     * @param this.ctx  This is the prisma context that is injected into the function.
+     * @throws ApiPreconditionFailedResponse if: -Invalid Workout ID passed in.
+     * @throws NotFoundException if: -Workout video does not exist.
+     * @throws BadRequestException if: - Cannot return workout video
+     * @return  Promise array of tag object/s.
+     * @author Tinashe Chamisa
+     *
+     */
+    @Post("getWorkoutVideo")
+    @ApiBody({ type: getWorkoutVideoDTO })
+    @ApiCreatedResponse({
+      description: "Successfully created video."
+    })
+    @ApiPreconditionFailedResponse({
+      description: "Invalid Workout object passed in."
+    })
+    @ApiNotFoundResponse({
+      description: "Workout video does not exist."
+    })
+    @ApiBadRequestResponse({
+      description: "Cannot return video."
+    })
+    @ApiInternalServerErrorResponse({
+      description: "Internal server error."
+    })
+    getWorkoutVideo (
+        @Body("workoutID") workoutID: string
+    ) {
+      return this.workoutService.getWorkoutVideo(workoutID, this.ctx)
     }
 }

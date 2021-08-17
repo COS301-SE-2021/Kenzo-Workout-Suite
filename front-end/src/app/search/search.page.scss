@@ -1,4 +1,4 @@
-.your-workout-background{
+.your-exercises-background{
   --background: var(--ion-off-white);
 }
 
@@ -10,24 +10,24 @@
   margin-top: 50px;
 }
 
-#SearchBarDiv, #ItemsDiv{
-  margin-top: 13px;
-}
-
-#WorkoutHeading{
+#exerciseHeading{
   font-family: "SF Pro Medium", serif;
-  font-size: 23px;
+  font-size: 25px;
   color: black;
   font-weight: bold;
 }
 
-#AddWorkout{
-  width: var(--icon-size);
-  height: var(--icon-size);
-  float: right;
+.exercises {
+  transition: border 0.1s;
+  transition-timing-function: linear;
+  width: 300px;
 }
 
-#workout-searchbar{
+#SearchBarDiv, #ItemsDiv{
+  margin-top: 13px;
+}
+
+#exercise-searchbar{
   font-family: "SF Pro Medium", serif;
   height: 40px;
   --placeholder-font-weight: 590;
@@ -43,14 +43,20 @@
   margin-right: auto;
 }
 
-.workouts, .exercises{
-  display: block;
-}
-
 .container{
   align-content: center;
   align-items: center;
 }
+
+.editBtn{
+  --background: none;
+  --background-hover: none;
+  --color: var(--ion-color-tertiary);
+  --color-hover: var(--ion-color-primary);
+  --background-activated: none;
+  display: block;
+}
+
 
 .kenzo-fixed{
   position: fixed;
@@ -58,16 +64,6 @@
   right: 5px;
   z-index: 100;
 }
-
-.filterBtns{
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 187.5px;
-  font-family: "SF Pro Regular", serif;
-  --border-radius: var(--border-radius);
-}
-
 
 .footer{
   --background: var(--ion-off-white);
@@ -103,25 +99,10 @@
   margin-right: auto;
 }
 
-@media only screen and (max-width: 400px){
-  .NavLabel{
-    margin-left: 25%;
-  }
-}
-
-.workoutScroll{
-  display: block;
-  float: left;
-}
-
-.exerciseScroll{
-  display: block;
-  float: left;
-}
-
 .fabButton[data-desc] {
   position: relative;
 }
+
 .fabButton[data-desc]::after{
   position: absolute;
   content: attr(data-desc);
@@ -131,4 +112,39 @@
   color: var(--ion-color-tertiary);
   font-size: 16px;
   font-weight: bold;
+}
+
+
+
+.text{
+  display: inline-block;
+  vertical-align: middle;
+}
+
+ion-card{
+  ion-card-header{
+    ion-card-title{
+      --color: var(--ion-color-tertiary);
+      overflow-x: hidden;
+    }
+  }
+  ion-card-content{
+    margin-top: 10px;
+    color: black;
+  }
+
+  cursor: default;
+}
+
+.imagePose{
+  height: 150px;
+  width: 300px;
+  object-fit: cover;
+}
+
+ion-slides{
+  --progress-bar-background: none;
+  --progress-bar-background-activated: none;
+  --bullet-background-active: var(--ion-color-tertiary);
+  --bullet-background: var(--ion-color-KT_BLACK);
 }
