@@ -94,14 +94,54 @@ export class ClientService {
     }
 
     /**
-     * Updates client's credentials based on client object provided.
+     * Send an email of the workout's PDF to all clients of the planner.
      *
      * @param workoutID is the id of the workout to get the pdf from
      * @return status is the code of the response
      * @author Jia Hui Wang, u18080449
      */
-    async attemptEmailPDF(workoutID: string): Promise<any>{
-        const url = "http://localhost:3000/client-contact/sendEmailsToAllContacts";
+    async attemptEmailAllClientsPDF(workoutID: string): Promise<any>{
+        const url = "http://localhost:3000/client-contact/sendEmailsPDFToAllContacts";
+        const body = {
+            workoutID: workoutID
+        };
+        return this.http.post(url, body).toPromise().then(()=>200).catch(error=>{
+            if(error.status===0) {
+                return 500;
+            }
+            return error.status;
+        });
+    }
+
+    /**
+     * Send an email of the workout's video to all clients of the planner.
+     *
+     * @param workoutID is the id of the workout to get the pdf from
+     * @return status is the code of the response
+     * @author Jia Hui Wang, u18080449
+     */
+    async attemptEmailAllClientsVideo(workoutID: string): Promise<any>{
+        const url = "http://localhost:3000/client-contact/sendEmailsVideoToAllContacts";
+        const body = {
+            workoutID: workoutID
+        };
+        return this.http.post(url, body).toPromise().then(()=>200).catch(error=>{
+            if(error.status===0) {
+                return 500;
+            }
+            return error.status;
+        });
+    }
+
+    /**
+     * Send an email of the workout's PDF and video to all clients of the planner.
+     *
+     * @param workoutID is the id of the workout to get the pdf from
+     * @return status is the code of the response
+     * @author Jia Hui Wang, u18080449
+     */
+    async attemptEmailAllClientsMedia(workoutID: string): Promise<any>{
+        const url = "http://localhost:3000/client-contact/sendEmailsMultimediaToAllContacts";
         const body = {
             workoutID: workoutID
         };

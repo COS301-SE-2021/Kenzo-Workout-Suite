@@ -154,12 +154,28 @@ export class YourWorkoutsPage implements OnInit {
           header: "Share PDF",
           cssClass: "my-custom-class",
           buttons: [{
-              text: "Email PDF",
+              text: "Email PDF to all clients",
               role: "selected",
               icon: "mail-outline",
               handler: () => {
-                  this.clientService.attemptEmailPDF(workoutID);
-                  console.log("Emails sent");
+                  this.clientService.attemptEmailAllClientsPDF(workoutID);
+                  console.log("PDFs sent");
+              }
+          }, {
+              text: "Email video to all clients",
+              role: "selected",
+              icon: "videocam-outline",
+              handler: () => {
+                  this.clientService.attemptEmailAllClientsVideo(workoutID);
+                  console.log("Videos sent");
+              }
+          }, {
+              text: "Email PDF and video to all clients",
+              role: "selected",
+              icon: "documents-sharp",
+              handler: () => {
+                  this.clientService.attemptEmailAllClientsMedia(workoutID);
+                  console.log("Multimedia sent");
               }
           }, {
               text: "Download PDF",
