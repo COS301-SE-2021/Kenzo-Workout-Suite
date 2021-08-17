@@ -70,7 +70,7 @@ export class ClientContactService {
       })
       return "Client contact deleted."
     } catch (e) {
-      throw new BadRequestException(e)
+      throw new BadRequestException("Could not delete contact")
     }
   }
 
