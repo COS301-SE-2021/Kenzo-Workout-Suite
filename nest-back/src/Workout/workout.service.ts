@@ -1451,18 +1451,6 @@ export class WorkoutService {
     const fileNames = [""]
     let lengthOfVideo = 0
 
-    // resize kenzo logo image
-    await Jimp.read("./src/videoGeneration/Images/kenzoLogo.PNG")
-      .then(image => {
-        return image
-          .resize(500, 200) // resize
-          .quality(100) // set JPEG quality
-          .writeAsync("./src/videoGeneration/Images/kenzoLogo-fm.PNG")
-      })
-      .catch(err => {
-        console.error(err)
-      })
-
     // retrieve all exercises poses one by one from the local storage
     for (let i = 0; i < exercisesID.length; i++) {
       let temp: any[] = []
@@ -1499,21 +1487,9 @@ export class WorkoutService {
             }
           }
 
-          // resize image
-          await Jimp.read("./src/videoGeneration/Images/" + fileName + ".jpg")
-            .then(image => {
-              return image
-                .resize(500, 200) // resize
-                .quality(100) // set JPEG quality
-                .writeAsync("./src/videoGeneration/Images/" + fileName + "-fm.jpg")
-            })
-            .catch(err => {
-              console.error(err)
-            })
-
           // push image to array
           images.push({
-            path: "./src/videoGeneration/Images/" + fileName + "-fm.jpg",
+            path: "./src/videoGeneration/Images/" + fileName + ".jpg",
             caption: exerciseDescription,
             loop: 20
           })
@@ -1522,13 +1498,13 @@ export class WorkoutService {
         }
         if (i < base64Images.length - 1) {
           images.push({
-            path: "./src/videoGeneration/Images/kenzoLogo-fm.PNG",
+            path: "./src/videoGeneration/Images/kenzoLogo.jpg",
             caption: "Exercise " + (i + 1) + " complete! On to the next...",
             loop: 5
           })
         } else {
           images.push({
-            path: "./src/videoGeneration/Images/kenzoLogo-fm.PNG",
+            path: "./src/videoGeneration/Images/kenzoLogo.jpg",
             caption: "Workout complete!",
             loop: 5
           })
@@ -1544,7 +1520,7 @@ export class WorkoutService {
       transitionDuration: 1, // seconds
       videoBitrate: 1024,
       videoCodec: "libx264",
-      size: "640x?",
+      size: "1920x1080",
       audioBitrate: "128k",
       audioChannels: 2,
       format: "mp4",
