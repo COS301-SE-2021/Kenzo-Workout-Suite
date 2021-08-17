@@ -1,8 +1,7 @@
-import { MockContext, createMockContext, Context, ActualPrisma } from "../../../context"
+import { Context, ActualPrisma } from "../../../context"
 import { ClientContactService } from "../../../src/client-contact/client-contact.service"
 import { UserService } from "../../../src/User/user.service"
 import { v4 } from "uuid"
-import { BadRequestException } from "@nestjs/common"
 
 let ctx: Context
 let clientContactService: ClientContactService
