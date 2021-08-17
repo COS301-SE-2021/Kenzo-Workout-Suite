@@ -12,6 +12,7 @@ import {AlertController} from "@ionic/angular";
 export class ClientListPage implements OnInit {
 
     public contacts: Client[];
+    public contactsOriginal: Client[];
 
     name = "";
     surname = "";
@@ -35,8 +36,10 @@ export class ClientListPage implements OnInit {
         const data = resp.data;
         // console.log(data);
         this.contacts = new Array();
+        this.contactsOriginal = new Array();
         for (let i = 0; i <data.length; i++) {
             this.contacts[i] = new Client(data[i].name, data[i].surname, data[i].contactEmail, data[i].contactId);
+            this.contactsOriginal[i] = new Client(data[i].name, data[i].surname, data[i].contactEmail, data[i].contactId);
         }
     }
 
@@ -235,5 +238,42 @@ export class ClientListPage implements OnInit {
     async presentAlert(alert: any) {
         await alert.present();
         await alert.onDidDismiss();
+    }
+
+    /**
+     * This function is activated on a key press in the search bar.
+     * The purpose is to present contacts that match the search requirements
+     *
+     * @author Luca Azmanov, u19004185
+     */
+    search(event) {
+        this.contacts = this.contactsOriginal;
+        const result = event.srcElement.value.trim().toLowerCase();
+        const resultArray = new Array();
+        if(result===""){
+            return;
+        }
+
+        for (let i = 0; i < this.contacts.length; i++) {
+            if(this.contacts[i].firstName.toLowerCase().includes(result)){
+                resultArray.push(this.contacts[i]);
+                continue;
+            }
+            if(this.contacts[i].lastName.toLowerCase().includes(result)){
+                resultArray.push(this.contacts[i]);
+                continue;
+            }
+            if(this.contacts[i].email.toLowerCase().includes(result)){
+                resultArray.push(this.contacts[i]);
+            }
+        }
+
+        this.contacts = resultArray;
+
+        if(this.contacts.length===0){ //no results
+            document.getElementById("no-results").style.display = "block";
+        }else {
+            document.getElementById("no-results").style.display = "none";
+        }
     }
 }

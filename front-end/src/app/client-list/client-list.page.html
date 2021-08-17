@@ -3,7 +3,8 @@
     <ion-label id="client-heading">Clients</ion-label>
   </div>
   <div class="Spacing-div" id="SearchBarDiv">
-    <ion-searchbar id="workout-searchbar" mode="ios" inputmode="search"></ion-searchbar>
+    <ion-searchbar (ionInput)="search($event)" id="searchbar" mode="ios" inputmode="search"></ion-searchbar>
+    <ion-label class="no-results" id="no-results">No contacts found!</ion-label>
   </div>
   <ion-fab vertical="top" horizontal="end" slot="fixed">
     <ion-fab-button (click)="createContact()">
