@@ -44,4 +44,30 @@ describe("Integration tests of the function deleteClientContact in client-contac
 
     expect(await clientContactService.deleteClientContact(testContactID, ctx)).toBe("Client contact deleted.")
   })
+
+  test("Testing empty parameters passed into the getAllPlannersContacts", async () => {
+    const testContactID = v4()
+
+    const createdUser = await ctx.prisma.user.create({
+      data: {
+        firstName: "testPlanner",
+        lastName: "testSurname",
+        userType: "PLANNER",
+        email: "testemail@gmail.com",
+        password: "Zelu2000Test"
+      }
+    })
+
+    await ctx.prisma.contacts.create({
+      data: {
+        contactId: testContactID,
+        contactEmail: "test@gmail.com",
+        name: "test",
+        surname: "tester",
+        plannerID: createdUser.userID
+      }
+    })
+
+    await expect(clientContactService.deleteClientContact(v4(), ctx)).rejects.toThrow("Could not delete contact")
+  })
 })

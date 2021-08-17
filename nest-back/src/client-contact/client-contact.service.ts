@@ -69,7 +69,6 @@ export class ClientContactService {
           contactId: contactID
         }
       })
-      console.log("hello")
       return "Client contact deleted."
     } catch (e) {
       throw new BadRequestException("Could not delete contact")
