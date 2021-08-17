@@ -18,18 +18,22 @@
     <div class="Spacing-div" id="SearchBarDiv">
       <ion-searchbar #searchbar (ionInput)="eventHandler($event)" id="exercise-searchbar" mode="ios" inputmode="search"></ion-searchbar>
     </div>
-      <ion-row class="ion-justify-content-center">
+  </div>
+  <ion-row class="ion-justify-content-center">
         <span *ngFor="let exercise of exercises">
             <ion-card mode="ios" class="exercises" id="{{exercise.exerciseID}}">
+              <ion-slides scrollbar="true" pager="true" options="slideOpts">
+                <ion-slide *ngFor="let img of exercise.images;">
+                   <img class="imagePose" [src]="img" alt="Exercise Pose Image Missing">
+                </ion-slide>
+              </ion-slides>
               <ion-card-header>
                 <ion-card-title>{{ exercise.title }}</ion-card-title>
+                <ion-button mode="ios" class="editBtn" (click)="sendExerciseID(exercise.exerciseID)">Edit</ion-button>
               </ion-card-header>
-              <ion-card-content>{{ exercise.description}}</ion-card-content>
-              <ion-button mode="ios" class="editBtn" (click)="sendExerciseID(exercise.exerciseID)">Edit</ion-button>
             </ion-card>
         </span>
-      </ion-row>
-  </div>
+  </ion-row>
 
 </ion-content>
 <ion-tab-bar mode="md" slot="bottom">

@@ -23,6 +23,7 @@ export class CreateExercisePage implements OnInit {
   images: string[];
 
   tags: KenzoTag[] = new Array();
+  tagBackup: KenzoTag[] = new Array();
   newTag: KenzoTag;
 
   @ViewChild("searchBar", {static: false}) searchbar: IonSearchbar;
@@ -33,6 +34,7 @@ export class CreateExercisePage implements OnInit {
               private workoutService: WorkoutService,
               private storage: Storage) {
       this.storage.create();
+      this.storage.set("images", []);
       this.getTags();
       this.newTag = this.getRandomTag("");
   }
@@ -131,6 +133,7 @@ export class CreateExercisePage implements OnInit {
           const tagsKey = data[i];
           const tg = new KenzoTag(tagsKey.textColour, tagsKey.backgroundColour, tagsKey.label, false);
           this.tags.push(tg);
+          this.tagBackup.push(tg);
       }
   }
 
@@ -174,34 +177,35 @@ export class CreateExercisePage implements OnInit {
    */
   filterSelection(event) {
       const text = event.srcElement.value.trim();
-      if(text===""){
+      this.tags = this.tagBackup;
+      const resultArray = new Array();
+      if(text==="" || text===null){
           document.getElementById("no-tag-create").style.display="none";
           return;
       }
 
-      let found = false;
+      let exactMatch = false;
       for (let i = 0; i < this.tags.length; i++) {
           const tag = this.tags[i];
-
-          if(tag.label.toLowerCase()===(text.toLowerCase())) {
-              found = true;
-          }
 
           // if not selected
           if(!tag.selected){
               const id = tag.label;
-              const tagElement = document.getElementById(id);
 
-              // if tag label does not contain the searched tag
-              if(!id.toLowerCase()===(text.toLowerCase())){
-                  tagElement.style.display = "none";
-              } else{ // if tag label contains the searched tag
-                  tagElement.style.display = "inline-block";
+              // if tag label does contain the searched tag
+              if(id.toLowerCase().trim().includes(text.toLowerCase())){
+                  resultArray.push(tag);
+              }
+
+              if(id.toLowerCase().trim()===(text.toLowerCase())){
+                  exactMatch = true;
               }
           }
       }
 
-      if(!found){
+      this.tags = resultArray;
+
+      if(!exactMatch){
           document.getElementById("no-tag-create").style.display="block";
           this.newTag.label = text;
       } else{

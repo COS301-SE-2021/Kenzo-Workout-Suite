@@ -3,7 +3,7 @@
 /node_modules
 prisma/migrations
 .env
-src/createdWorkoutImages.json
+./src/createdWorkoutImages.json
 
 # Logs
 logs

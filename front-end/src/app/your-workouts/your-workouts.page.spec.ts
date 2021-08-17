@@ -55,7 +55,7 @@ describe("YourWorkoutsPage", () => {
     });
 
     it("should successfully obtain all workouts for a planner with a specific ID.", async () => {
-        spyOn(service, "attemptGetWorkoutsByPlanner").and.resolveTo({status: 200});
+        spyOn(service, "attemptGetWorkoutsByPlanner").and.resolveTo({status: 200, data:[]});
         await component.loadWorkouts().then(data=>{
             expect(data).toEqual(200);
         });

@@ -67,9 +67,23 @@ export class PoseMakerPage implements OnInit {
         this.yCoordinate = 0;
         this.zCoordinate = 0;
         this.selection = -1;
+        this.storage.create();
+        this.getFrames();
     }
 
     ngOnInit() {
+    }
+
+    async getFrames(){
+        const frames = await this.storage.get("images");
+        if(frames!=null){
+            for (let i = 0; i < frames.length; i++) {
+                if(frames[i]!=null){
+                    this.frames[i] = frames[i];
+                    this.frameColor[i] = "#1D905B";
+                }
+            }
+        }
     }
 
   /**
@@ -340,17 +354,21 @@ export class PoseMakerPage implements OnInit {
    */
   returnToCreate() {
       this.route.navigate(["/create-exercise"]).then(()=> {
+          const slideshow = document.getElementById("slideshow");
+          slideshow.innerHTML = "";
+
           let count = 0;
           for (let i = 0; i < this.frames.length; i++) {
               if (this.frames[i] == null) {
                   count = count+1;
+              }else{
+                  slideshow.innerHTML = slideshow.innerHTML+ "<ion-slide>" +
+                  "                   <img class=\"imagePose\" src='"+this.frames[i]+"' alt=\"Exercise Pose Image Missing\">" +
+                  "                </ion-slide>";
               }
           }
-          if (count === 4) {
-              document.getElementById("frameCount").innerText = "Please set at least one pose.";
-          } else {
+          if (count !== 4) {
               document.getElementById("pose-button").innerText = "Remake Poses";
-              document.getElementById("frameCount").innerText = "Poses Set";
           }
           this.storage.set("images", this.frames);
       });

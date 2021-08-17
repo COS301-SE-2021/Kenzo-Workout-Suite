@@ -77,3 +77,16 @@
   --background: var(--ion-off-white);
   border: none;
 }
+
+.imagePose{
+  height: 50px;
+  width: 100%;
+  object-fit: cover;
+}
+
+ion-slides{
+  --progress-bar-background: none;
+  --progress-bar-background-activated: none;
+  --bullet-background-active: var(--ion-color-tertiary);
+  --bullet-background: var(--ion-color-KT_BLACK);
+}

@@ -151,7 +151,7 @@ export class ClientContactService {
 
     const fs = require("fs")
 
-    const workoutVideo = fs.readFileSync("./src/videoGeneration/Videos" + workoutID + ".mp4").toString("base64")
+    const workoutVideo = fs.readFileSync("./src/videoGeneration/Videos/" + workoutID + ".mp4").toString("base64")
 
     const kenzoImage = fs.readFileSync("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG").toString("base64")
 
@@ -208,7 +208,7 @@ export class ClientContactService {
 
     const fs = require("fs")
 
-    const workoutVideo = fs.readFileSync("./src/videoGeneration/Videos" + workoutID + ".mp4").toString("base64")
+    const workoutVideo = fs.readFileSync("./src/videoGeneration/Videos/" + workoutID + ".mp4").toString("base64")
     const workoutPDF = fs.readFileSync("./src/GeneratedWorkouts/" + workoutID + ".pdf").toString("base64")
 
     const kenzoImage = fs.readFileSync("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG").toString("base64")

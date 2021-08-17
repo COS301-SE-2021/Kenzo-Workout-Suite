@@ -30,7 +30,6 @@
         </ion-chip>
     </span>
       <span style="display: none" id="no-tag-create">
-      <span style="padding-left: 10px; color: var(--ion-color-tertiary); font-size: 15px">No tags found!</span><br>
       <span style="padding-left: 10px; color: var(--ion-color-tertiary); font-size: 15px">Create: </span>
       <ion-chip name="newChip" ngDefaultControl [(ngModel)]="newTag" id="{{newTag.label}}" (click)="select(newTag.label)"
                 [style]="{'--background': 'var(--ion-color-KTB_'+newTag.backgroundColour+')', '--color': 'var(--ion-color-KT_'+newTag.textColour+')'}" >
@@ -71,7 +70,10 @@
     <br>
     <div class="input-div">
       <ion-label class="input-description">Poses *</ion-label>
-      <ion-label id="frameCount"></ion-label><br>
+      <ion-card>
+        <ion-slides id="slideshow" scrollbar="true" pager="true" options="slideOpts">
+        </ion-slides>
+      </ion-card>
       <ion-button mode="ios" id="pose-button" (click)="poseMaker()">Add Poses</ion-button>
     </div>
     <br>

@@ -52,7 +52,7 @@
   float: right;
 }
 
-#workout-searchbar{
+#searchbar{
   font-family: "SF Pro Medium", serif;
   height: 40px;
   --placeholder-font-weight: 590;
@@ -199,4 +199,14 @@ ion-card{
   width: 80%;
   margin-left: auto;
   margin-right: auto;
+}
+
+.no-results{
+  color: var(--ion-color-medium-shade);
+  width: 100%;
+  display: none;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
 }
