@@ -24,7 +24,7 @@
       <ion-searchbar #searchBar (ionInput)="filterSelection($event)" placeholder="Search tags" mode="ios"></ion-searchbar>
 
       <span id="tags">
-        <ion-chip *ngFor="let tag of tags" id="{{tag.label}}" (click)="select(tag.label)"
+        <ion-chip *ngFor="let tag of tags" (click)="select(tag.label)"
                   [style]="{'--background': 'var(--ion-color-KTB_'+tag.backgroundColour+')', '--color': 'var(--ion-color-KT_'+tag.textColour+')'}" >
           <ion-label>{{tag.label}}</ion-label>
         </ion-chip>
@@ -39,11 +39,12 @@
 
       <br>
       <br>
-
-      <ion-label class="input-description">Selected</ion-label>
       <div id="selected">
-
-
+        <ion-label class="input-description">Selected</ion-label>
+        <ion-chip *ngFor="let tag of selected" (click)="select(tag.label)"
+                  [style]="{'--background': 'var(--ion-color-KTB_'+tag.backgroundColour+')', '--color': 'var(--ion-color-KT_'+tag.textColour+')'}" >
+          <ion-label>{{tag.label}}</ion-label>
+        </ion-chip>
       </div>
     </div>
 

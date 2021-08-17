@@ -23,6 +23,8 @@ export class UpdateExercisePage implements OnInit {
   images: string[];
 
   tags: KenzoTag[] = new Array();
+  tagBackup: KenzoTag[] = new Array();
+  selected: KenzoTag[] = new Array();
   newTag: KenzoTag;
 
   @ViewChild("searchBar", {static: false}) searchbar: IonSearchbar;
@@ -61,12 +63,19 @@ export class UpdateExercisePage implements OnInit {
       this.images = unit["images"];
 
       const tags = unit["tags"];
-      for (let i=0; i<tags.length; i++) {
-          const currTag = tags[i];
-          for (let j = 0; j < this.tags.length; j++) {
-              if(this.tags[j].label===currTag["label"]){
-                  document.getElementById(this.tags[j].label).click();
+      for (let j=0; j<tags.length; j++) {
+          const currTag = tags[j];
+          for (let i = 0; i < this.tagBackup.length; i++) {
+              if(this.tagBackup[i].label===currTag["label"]){
+                  document.getElementById("selected").style.display = "block";
+                  this.selected.push(this.tagBackup[i]);
+                  this.tagBackup[i].selected = true;
               }
+          }
+      }
+      for (let i = 0; i <this.tagBackup.length; i++) {
+          if(this.tagBackup[i].selected === false){
+              this.tags.push(this.tagBackup[i]);
           }
       }
   }
@@ -84,17 +93,10 @@ export class UpdateExercisePage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async submitUpdateRequest() {
-      const selected: KenzoTag[] = new Array();
-      for (let i = 0; i < this.tags.length; i++) {
-          if(this.tags[i].selected){
-              selected.push(this.tags[i]);
-          }
-      }
-
       const exercise = new Exercise(this.title, this.description, this.range, this.sets, this.poseDescription,
-          this.rest, selected, this.duration*60, this.images);
+          this.rest, this.selected, this.duration*60, this.images);
       const status = await this.workoutService.attemptUpdateExercise(exercise, this.id);
-
+      console.log(exercise);
       if (status < 400) {
       // Success State
           const alert = await this.alertController.create({
@@ -228,7 +230,7 @@ export class UpdateExercisePage implements OnInit {
       for (let i = 0; i < data.length; i++) {
           const tagsKey = data[i];
           const tg = new KenzoTag(tagsKey["textColour"], tagsKey["backgroundColour"], tagsKey["label"], false);
-          this.tags.push(tg);
+          this.tagBackup.push(tg);
       }
   }
 
@@ -241,23 +243,65 @@ export class UpdateExercisePage implements OnInit {
    */
   select(id) {
       if(id===this.newTag.label && !this.newTag.selected){
-          this.tags.push(this.newTag);
-          this.reset(id);
+          this.tagBackup.push(this.newTag);
+          this.newTag.selected = true;
+          this.selected.push(this.newTag);
+          this.searchbar.value = "";
+          const resultArray = new Array();
+          for (let i = 0; i < this.tagBackup.length; i++) {
+              const tag = this.tagBackup[i];
+
+              // if not selected
+              if(!tag.selected){
+                  resultArray.push(tag);
+              }
+          }
+
+          this.tags = resultArray;
+          document.getElementById("no-tag-create").style.display="none";
           this.newTag = this.getRandomTag("");
+
+          if(this.selected.length===0){
+              document.getElementById("selected").style.display = "none";
+          }else {
+              document.getElementById("selected").style.display = "block";
+          }
           return;
       }
+
+      const unselected = new Array();
+      const selected = new Array();
 
       for (let i = 0; i < this.tags.length; i++) {
           const tag = this.tags[i];
           if (tag.label === id) {
-              if(tag.selected){
-                  tag.selected = false;
-                  document.getElementById("tags").appendChild(document.getElementById(id));
-              } else {
-                  tag.selected = true;
-                  document.getElementById("selected").appendChild(document.getElementById(id));
-              }
+              tag.selected = true;
           }
+      }
+
+      for (let i = 0; i < this.selected.length; i++) {
+          const tag = this.selected[i];
+          if (tag.label === id) {
+              tag.selected = false;
+          }
+      }
+
+      for (let i = 0; i < this.tagBackup.length; i++) {
+          const tag = this.tagBackup[i];
+          if(tag.selected){
+              selected.push(tag);
+          } else {
+              unselected.push(tag);
+          }
+      }
+
+      this.selected = selected;
+      this.tags = unselected;
+
+      if(this.selected.length===0){
+          document.getElementById("selected").style.display = "none";
+      }else {
+          document.getElementById("selected").style.display = "block";
       }
   }
 
@@ -272,34 +316,35 @@ export class UpdateExercisePage implements OnInit {
    */
   filterSelection(event) {
       const text = event.srcElement.value.trim();
-      if(text===""){
+      this.tags = this.tagBackup;
+      const resultArray = new Array();
+      if(text==="" || text===null){
           document.getElementById("no-tag-create").style.display="none";
           return;
       }
 
-      let found = false;
+      let exactMatch = false;
       for (let i = 0; i < this.tags.length; i++) {
           const tag = this.tags[i];
-
-          if(tag.label.toLowerCase()===(text.toLowerCase())) {
-              found = true;
-          }
 
           // if not selected
           if(!tag.selected){
               const id = tag.label;
-              const tagElement = document.getElementById(id);
 
-              // if tag label does not contain the searched tag
-              if(!id.toLowerCase()===(text.toLowerCase())){
-                  tagElement.style.display = "none";
-              } else{ // if tag label contains the searched tag
-                  tagElement.style.display = "inline-block";
+              // if tag label does contain the searched tag
+              if(id.toLowerCase().trim().includes(text.toLowerCase())){
+                  resultArray.push(tag);
+              }
+
+              if(id.toLowerCase().trim()===(text.toLowerCase())){
+                  exactMatch = true;
               }
           }
       }
 
-      if(!found){
+      this.tags = resultArray;
+
+      if(!exactMatch){
           document.getElementById("no-tag-create").style.display="block";
           this.newTag.label = text;
       } else{

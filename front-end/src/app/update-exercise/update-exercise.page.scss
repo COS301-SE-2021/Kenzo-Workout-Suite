@@ -15,6 +15,11 @@
   --background: var(--ion-color-secondary);
 }
 
+
+#selected{
+  display: none;
+}
+
 .input-div{
   display: block;
   width: 300px;

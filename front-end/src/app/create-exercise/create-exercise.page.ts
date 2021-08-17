@@ -24,6 +24,7 @@ export class CreateExercisePage implements OnInit {
 
   tags: KenzoTag[] = new Array();
   tagBackup: KenzoTag[] = new Array();
+  selected: KenzoTag[] = new Array();
   newTag: KenzoTag;
 
   @ViewChild("searchBar", {static: false}) searchbar: IonSearchbar;
@@ -56,15 +57,9 @@ export class CreateExercisePage implements OnInit {
    */
   async createExercise() {
       await this.syncFrames();
-      const selected: KenzoTag[] = new Array();
-      for (let i = 0; i < this.tags.length; i++) {
-          if(this.tags[i].selected){
-              selected.push(this.tags[i]);
-          }
-      }
 
       const exercise = new Exercise(this.title, this.description, this.range, this.sets, this.poseDescription,
-          this.rest, selected, this.duration*60, this.images);
+          this.rest, this.selected, this.duration*60, this.images);
       const status = await this.workoutService.attemptSubmitExercise(exercise);
 
       if (status < 400) {
@@ -146,23 +141,65 @@ export class CreateExercisePage implements OnInit {
    */
   select(id) {
       if(id===this.newTag.label && !this.newTag.selected){
-          this.tags.push(this.newTag);
-          this.reset(id);
+          this.tagBackup.push(this.newTag);
+          this.newTag.selected = true;
+          this.selected.push(this.newTag);
+          this.searchbar.value = "";
+          const resultArray = new Array();
+          for (let i = 0; i < this.tagBackup.length; i++) {
+              const tag = this.tagBackup[i];
+
+              // if not selected
+              if(!tag.selected){
+                  resultArray.push(tag);
+              }
+          }
+
+          this.tags = resultArray;
+          document.getElementById("no-tag-create").style.display="none";
           this.newTag = this.getRandomTag("");
+
+          if(this.selected.length===0){
+              document.getElementById("selected").style.display = "none";
+          }else {
+              document.getElementById("selected").style.display = "block";
+          }
           return;
       }
+
+      const unselected = new Array();
+      const selected = new Array();
 
       for (let i = 0; i < this.tags.length; i++) {
           const tag = this.tags[i];
           if (tag.label === id) {
-              if(tag.selected){
-                  tag.selected = false;
-                  document.getElementById("tags").appendChild(document.getElementById(id));
-              } else {
-                  tag.selected = true;
-                  document.getElementById("selected").appendChild(document.getElementById(id));
-              }
+              tag.selected = true;
           }
+      }
+
+      for (let i = 0; i < this.selected.length; i++) {
+          const tag = this.selected[i];
+          if (tag.label === id) {
+              tag.selected = false;
+          }
+      }
+
+      for (let i = 0; i < this.tagBackup.length; i++) {
+          const tag = this.tagBackup[i];
+          if(tag.selected){
+              selected.push(tag);
+          } else {
+              unselected.push(tag);
+          }
+      }
+
+      this.selected = selected;
+      this.tags = unselected;
+
+      if(this.selected.length===0){
+          document.getElementById("selected").style.display = "none";
+      }else {
+          document.getElementById("selected").style.display = "block";
       }
   }
 
@@ -222,7 +259,6 @@ export class CreateExercisePage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   reset(label) {
-      this.searchbar.value = label;
       const text = label;
 
       for (let i = 0; i < this.tags.length; i++) {
