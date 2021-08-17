@@ -1,14 +1,12 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common"
 import { ActualPrisma, Context } from "../../context"
-import { PrismaService } from "../Prisma/prisma.service"
 import {
   Contacts
 } from "@prisma/client"
 import { UserService } from "../User/user.service"
-import { WorkoutService } from "../Workout/workout.service"
 @Injectable()
 export class ClientContactService {
-  constructor (private prisma: PrismaService, private userService: UserService, private workoutService:WorkoutService) {
+  constructor (private userService: UserService) {
 
   }
 
