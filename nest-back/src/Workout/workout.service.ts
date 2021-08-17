@@ -15,7 +15,6 @@ import * as fs from "fs"
 import { UserService } from "../User/user.service"
 import * as baseImages from "../createdWorkoutImages.json"
 import fontkit from "@pdf-lib/fontkit"
-import { delay } from "rxjs/operators"
 
 const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
@@ -680,7 +679,7 @@ export class WorkoutService {
       throw new PreconditionFailedException("Parameter can not be left empty.")
     }
     try {
-      // console.log(exercise)
+      console.log(exercise)
       await ctx.prisma.exercise.delete({
         where: {
           exerciseID: exercise
@@ -897,7 +896,7 @@ export class WorkoutService {
 
     const titleHeadingColour = rgb(0.13, 0.185, 0.24)
     const fieldsHeadingColour = rgb(0.071, 0.22, 0.4117)
-    // console.log(workout)
+    console.log(workout)
 
     try {
       firstPage.drawText(workout.workoutTitle, {
@@ -1061,23 +1060,22 @@ export class WorkoutService {
               font: SFRegular
             })
             // Images
-            await fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
-              if (err) throw err
-              const json = JSON.parse(data.toString())
-              const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
-              // console.log(exerciseImages)
-              if (exerciseImages !== "undefined") {
-                for (let c = 0; c < exerciseImages.images.length; c++) {
-                  const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
-                  currentPage.drawImage(currentImage, {
-                    x: 20 + (c * 150),
-                    y: 400,
-                    width: 120,
-                    height: 90
-                  })
-                }
+            const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
+            const json = JSON.parse(jsonTest)
+            const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
+            if (exerciseImages !== "undefined") {
+              for (let c = 0; c < exerciseImages.images.length; c++) {
+                console.log(exerciseImages.images[c])
+                const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
+                console.log(currentImage)
+                currentPage.drawImage(currentImage, {
+                  x: 20 + (c * 150),
+                  y: 400,
+                  width: 120,
+                  height: 90
+                })
               }
-            })
+            }
             exercisePosCount += 1
           } else {
             const currentPage = pdfDoc.getPage(pdfDoc.getPageCount() - 1)
@@ -1188,23 +1186,22 @@ export class WorkoutService {
               font: SFRegular
             })
             // Images
-            fs.readFile("./src/createdWorkoutImages.json", async function (err, data) {
-              if (err) throw err
-              const json = JSON.parse(data.toString())
-              const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
-              // console.log(exerciseImages)
-              if (exerciseImages !== "undefined") {
-                for (let c = 0; c < exerciseImages.images.length; c++) {
-                  const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
-                  currentPage.drawImage(currentImage, {
-                    x: 20 + (c * 150),
-                    y: 20,
-                    width: 120,
-                    height: 90
-                  })
-                }
+            const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
+            const json = JSON.parse(jsonTest)
+            const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
+            if (exerciseImages !== "undefined") {
+              for (let c = 0; c < exerciseImages.images.length; c++) {
+                console.log(exerciseImages.images[c])
+                const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
+                console.log(currentImage)
+                currentPage.drawImage(currentImage, {
+                  x: 20 + (c * 150),
+                  y: 20,
+                  width: 120,
+                  height: 90
+                })
               }
-            })
+            }
             exercisePosCount -= 1
           }
         }
@@ -1471,9 +1468,9 @@ export class WorkoutService {
     for (let i = 0; i < exercisesID.length; i++) {
       let temp: any[] = []
       if ((temp = this.getExerciseBase64(exercisesID[i])) === []) {
-        // console.log("error")
+        console.log("error")
       } else {
-        // console.log("found")
+        console.log("found")
 
         const path = "./src/videoGeneration/Images/"
 
@@ -1494,8 +1491,10 @@ export class WorkoutService {
           // eslint-disable-next-line no-useless-catch
           try {
             const optionalObj = { fileName, type: "jpg" }
-            await base64ToImage(base64Images[j], path, optionalObj)
+            base64ToImage(base64Images[j], path, optionalObj)
           } catch (e) { throw e }
+
+          delay(30000)
 
           // resize image
           await Jimp.read("./src/videoGeneration/Images/" + fileName + ".jpg")
@@ -1549,7 +1548,7 @@ export class WorkoutService {
       pixelFormat: "yuv420p"
     }
 
-    // console.log(images)
+    console.log(images)
 
     videoshow(images, videoOptions)
       .audio("./src/videoGeneration/Sounds/song1.mp3")
