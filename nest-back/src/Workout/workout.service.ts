@@ -162,7 +162,7 @@ export class WorkoutService {
       const exercisesWithImages: exercise[] = []
 
       for (let i = 0; i < exercises.length; i++) {
-        const image = this.getExerciseBase64(exercises[i].exerciseID)
+        const image = await this.getExerciseBase64(exercises[i].exerciseID)
         exercisesWithImages.push({
           exerciseID: exercises[i].exerciseID,
           exerciseTitle: exercises[i].exerciseTitle,
@@ -234,7 +234,7 @@ export class WorkoutService {
       const exercisesWithImages: Exercise[] = []
 
       for (let i = 0; i < exercise.length; i++) {
-        const image = this.getExerciseBase64(exercise[i].exerciseID)
+        const image = await this.getExerciseBase64(exercise[i].exerciseID)
         exercisesWithImages.push({
           exerciseID: exercise[i].exerciseID,
           exerciseTitle: exercise[i].exerciseTitle,
@@ -289,7 +289,7 @@ export class WorkoutService {
       } else {
         // add images for each exercise
 
-        const image = this.getExerciseBase64(exercise.exerciseID)
+        const image = await this.getExerciseBase64(exercise.exerciseID)
         return {
           exerciseID: exercise.exerciseID,
           exerciseTitle: exercise.exerciseTitle,
@@ -394,7 +394,7 @@ export class WorkoutService {
         const exercisesWithImages: Exercise[] = []
 
         for (let i = 0; i < exercise.length; i++) {
-          const image = this.getExerciseBase64(exercise[i].exerciseID)
+          const image = await this.getExerciseBase64(exercise[i].exerciseID)
           exercisesWithImages.push({
             exerciseID: exercise[i].exerciseID,
             exerciseTitle: exercise[i].exerciseTitle,
@@ -1467,7 +1467,7 @@ export class WorkoutService {
     // retrieve all exercises poses one by one from the local storage
     for (let i = 0; i < exercisesID.length; i++) {
       let temp: any[] = []
-      if ((temp = this.getExerciseBase64(exercisesID[i])) === []) {
+      if ((temp = await this.getExerciseBase64(exercisesID[i])) === []) {
         console.log("error")
       } else {
         console.log("found")
@@ -1491,10 +1491,8 @@ export class WorkoutService {
           // eslint-disable-next-line no-useless-catch
           try {
             const optionalObj = { fileName, type: "jpg" }
-            base64ToImage(base64Images[j], path, optionalObj)
+            await base64ToImage(base64Images[j], path, optionalObj)
           } catch (e) { throw e }
-
-          delay(30000)
 
           // resize image
           await Jimp.read("./src/videoGeneration/Images/" + fileName + ".jpg")
@@ -1594,7 +1592,7 @@ export class WorkoutService {
    * @author Tinashe Chamisa
    *
    */
-  getExerciseBase64 (id: string) {
+  async getExerciseBase64 (id: string) {
     const found = baseImages.find(element => element.ID === id)
     return (typeof found !== "undefined") ? found.images : []
   }
