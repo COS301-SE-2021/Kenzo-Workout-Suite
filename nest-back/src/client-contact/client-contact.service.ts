@@ -4,6 +4,7 @@ import {
   Contacts
 } from "@prisma/client"
 import { UserService } from "../User/user.service"
+import {log} from "util";
 @Injectable()
 export class ClientContactService {
   constructor (private userService: UserService) {
@@ -11,7 +12,7 @@ export class ClientContactService {
   }
 
   async createClientContact (contactEmail: string, name: string, surname: string, plannerID:string, ctx: Context) {
-    if (contactEmail === "" || name === "" || surname === "" || contactEmail == null || name === null || surname == null) {
+    if (contactEmail === "" || name === "" || surname === "" || plannerID === "" || contactEmail === null || name === null || surname === null || plannerID === null) {
       throw new NotFoundException("Parameters can not be left empty")
     }
     try {
@@ -27,9 +28,10 @@ export class ClientContactService {
           }
         }
       })
+
       return "Client contact created."
     } catch (e) {
-      throw new BadRequestException(e)
+      throw new BadRequestException("Could not create client contact")
     }
   }
 
