@@ -129,7 +129,7 @@ export class ClientContactController {
       @Body("workoutID") workoutID:string
   ) {
     const contacts = await this.clientContactService.getAllPlannersContacts(req.user.userID, this.ctx)
-    return this.clientContactService.sendVideoEmailToContact(contacts, req.user.userID, workoutID)
+    return this.clientContactService.sendMultimediaEmailToContact(contacts, req.user.userID, workoutID)
   }
 
   /**

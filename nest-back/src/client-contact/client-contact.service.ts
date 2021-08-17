@@ -111,11 +111,11 @@ export class ClientContactService {
       personalizationsArray.push(emailObject)
     }
 
-    const text = "Attatched is the PDF document as well as the video of the workout plan that " + planner.firstName + " " + planner.lastName + " has decided to share with you"
+    const text = "Attached is the PDF document as well as the video of the workout plan that " + planner.firstName + " " + planner.lastName + " has decided to share with you"
 
     const msg = {
       from: "kenzo.workout.suite@gmail.com",
-      text: "Attatched is the PDF document as well as the video of the workout plan that " + planner.firstName + planner.lastName + " has decided to share with you",
+      text: "Attached is the PDF document as well as the video of the workout plan that " + planner.firstName + planner.lastName + " has decided to share with you",
       personalizations: personalizationsArray,
       attachments: [
         {
@@ -168,11 +168,11 @@ export class ClientContactService {
       personalizationsArray.push(emailObject)
     }
 
-    const text = "Attatched is the PDF document as well as the video of the workout plan that " + planner.firstName + " " + planner.lastName + " has decided to share with you"
+    const text = "Attached is the PDF document as well as the video of the workout plan that " + planner.firstName + " " + planner.lastName + " has decided to share with you"
 
     const msg = {
       from: "kenzo.workout.suite@gmail.com",
-      text: "Attatched is the PDF document as well as the video of the workout plan that " + planner.firstName + planner.lastName + " has decided to share with you",
+      text: "Attached is the PDF document as well as the video of the workout plan that " + planner.firstName + planner.lastName + " has decided to share with you",
       personalizations: personalizationsArray,
       attachments: [
         {
@@ -226,11 +226,11 @@ export class ClientContactService {
       personalizationsArray.push(emailObject)
     }
 
-    const text = "Attatched is the PDF document as well as the video of the workout plan that " + planner.firstName + " " + planner.lastName + " has decided to share with you"
+    const text = "Attached is the PDF document as well as the video of the workout plan that " + planner.firstName + " " + planner.lastName + " has decided to share with you"
 
     const msg = {
       from: "kenzo.workout.suite@gmail.com",
-      text: "Attatched is the PDF document as well as the video of the workout plan that " + planner.firstName + planner.lastName + " has decided to share with you",
+      text: "Attached is the PDF document as well as the video of the workout plan that " + planner.firstName + planner.lastName + " has decided to share with you",
       personalizations: personalizationsArray,
       attachments: [
         {
