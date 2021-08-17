@@ -255,15 +255,15 @@ export class ClientListPage implements OnInit {
         }
 
         for (let i = 0; i < this.contacts.length; i++) {
-            if(this.contacts[i].firstName.toLowerCase().includes(result)){
+            if(this.contacts[i].firstName.toLowerCase().trim().includes(result)){
                 resultArray.push(this.contacts[i]);
                 continue;
             }
-            if(this.contacts[i].lastName.toLowerCase().includes(result)){
+            if(this.contacts[i].lastName.toLowerCase().trim().includes(result)){
                 resultArray.push(this.contacts[i]);
                 continue;
             }
-            if(this.contacts[i].email.toLowerCase().includes(result)){
+            if(this.contacts[i].email.toLowerCase().trim().includes(result)){
                 resultArray.push(this.contacts[i]);
             }
         }
