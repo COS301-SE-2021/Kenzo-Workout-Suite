@@ -13,7 +13,6 @@ import { PrismaService } from "../Prisma/prisma.service"
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib"
 import * as fs from "fs"
 import { UserService } from "../User/user.service"
-import * as baseImages from "../createdWorkoutImages.json"
 import fontkit from "@pdf-lib/fontkit"
 
 const Filter = require("bad-words"); const filter = new Filter()
@@ -1609,7 +1608,9 @@ export class WorkoutService {
    *
    */
   getExerciseDescription (id: string) {
-    const found = baseImages.find(element => element.ID === id)
+    const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
+    const json = JSON.parse(jsonTest)
+    const found = json.find(element => element.ID === id)
     return (typeof found !== "undefined") ? found.poseDescription : ""
   }
 
