@@ -62,6 +62,6 @@ describe("Unit tests of the function createClientContact in client-contact", () 
     const testUUID = v4()
     mockCtx.prisma.contacts.create.mockRejectedValue(new BadRequestException("test"))
 
-    await expect(clientContactService.createClientContact("test@gmail.com", "test", "tester", testUUID, ctx)).rejects.toThrow("Could not create client contact")
+    await expect(clientContactService.createClientContact("test@gmail.com", "test", "tester", testUUID, mockCtx)).rejects.toThrow("Could not create client contact")
   })
 })
