@@ -1,11 +1,10 @@
-import { MockContext, Context, createMockContext } from "../../../context"
+import { MockContext, createMockContext } from "../../../context"
 import { ClientContactService } from "../../../src/client-contact/client-contact.service"
 import { UserService } from "../../../src/User/user.service"
 import { v4 } from "uuid"
 import { BadRequestException } from "@nestjs/common"
 
 let mockCtx: MockContext
-let ctx: Context
 let clientContactService: ClientContactService
 let userService: UserService
 
@@ -13,7 +12,6 @@ describe("Unit tests of the function createClientContact in client-contact", () 
   beforeEach(() => {
     clientContactService = new ClientContactService(userService)
     mockCtx = createMockContext()
-    ctx = (mockCtx as unknown) as Context
   })
 
   test("Testing empty parameters passed into the createClientContact function", async () => {
@@ -55,7 +53,7 @@ describe("Unit tests of the function createClientContact in client-contact", () 
       plannerID: testUUID
     }
     mockCtx.prisma.contacts.create.mockResolvedValue(clientContact)
-    expect(await clientContactService.createClientContact("test@gmail.com", "test", "tester", testUUID, ctx)).toBe("Client contact created.")
+    expect(await clientContactService.createClientContact("test@gmail.com", "test", "tester", testUUID, mockCtx)).toBe("Client contact created.")
   })
 
   test("Testing valid parameters passed into the createClientContact function however prisma throws error", async () => {
