@@ -1,7 +1,7 @@
-import { Workout } from './workout';
+import { Workout } from "./workout";
 
-describe('Workout', () => {
-  it('should create an instance', () => {
-    expect(new Workout("","",[])).toBeTruthy();
-  });
+describe("Workout", () => {
+    it("should create an instance", () => {
+        expect(new Workout("", "", [])).toBeTruthy();
+    });
 });

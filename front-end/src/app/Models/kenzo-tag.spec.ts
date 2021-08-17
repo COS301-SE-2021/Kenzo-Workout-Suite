@@ -1,7 +1,7 @@
-import { KenzoTag } from './kenzo-tag';
+import { KenzoTag } from "./kenzo-tag";
 
-describe('KenzoTag', () => {
-  it('should create an instance', () => {
-    expect(new KenzoTag("","","",false)).toBeTruthy();
-  });
+describe("KenzoTag", () => {
+    it("should create an instance", () => {
+        expect(new KenzoTag("", "", "", false)).toBeTruthy();
+    });
 });
