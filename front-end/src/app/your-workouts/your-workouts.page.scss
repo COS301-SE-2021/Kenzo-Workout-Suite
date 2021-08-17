@@ -25,14 +25,6 @@
   transition: border 0.1s;
   transition-timing-function: linear;
   width: 310px;
-  height: 250px;
-}
-
-.workouts:hover{
-  cursor: pointer;
-  border: 3px;
-  border-color: #FF6969;
-  border-style: ridge;
 }
 
 
@@ -85,18 +77,17 @@
     --color-hover: var(--ion-color-primary);
     --background-activated: none;
     display: block;
-    margin-top: 25%;
 }
 
-#shareBtn{
-  position: absolute;
-  bottom: 88%;
-  left: 91%;
-  width: 25px;
-  height: 30px;
-  z-index: 10000;
-  color:#212F3D;
-}
+//#shareBtn{
+//  //position: absolute;
+//  //bottom: 88%;
+//  //left: 91%;
+//  //width: 25px;
+//  //height: 30px;
+//  //z-index: 10000;
+//  //color:#212F3D;
+//}
 
 .navThumbnail{
     display: block;
@@ -129,12 +120,10 @@
 
 ion-card{
   ion-card-header{
-    --background: var(--ion-color-primary);
-
     ion-card-title{
-      --color: var(--ion-off-white);
+      --color: var(--ion-color-tertiary);
+      overflow-x: hidden;
     }
-
   }
   ion-card-content{
     margin-top: 10px;
@@ -142,6 +131,13 @@ ion-card{
   }
 
   cursor: default;
+}
+
+ion-slides{
+  --progress-bar-background: none;
+  --progress-bar-background-activated: none;
+  --bullet-background-active: var(--ion-color-tertiary);
+  --bullet-background: var(--ion-color-KT_BLACK);
 }
 
 .fabButton[data-desc] {

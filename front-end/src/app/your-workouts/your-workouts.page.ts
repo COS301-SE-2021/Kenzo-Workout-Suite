@@ -11,6 +11,15 @@ class Workouts{
   private _title: string;
   private _description: string;
   private _exercises: Exercise[];
+  private _images: string[];
+
+  get images(): string[] {
+      return this._images;
+  }
+
+  set images(value: string[]) {
+      this._images = value;
+  }
 
   get workoutID(): string {
       return this._workoutID;
@@ -44,11 +53,58 @@ class Workouts{
       this._exercises = value;
   }
 
-  constructor(workoutID: string, title: string, description: string, exercises: Exercise[]) {
+  constructor(workoutID: string, title: string, description: string, exercises: Exercise[], images: string[]) {
       this._workoutID = workoutID;
       this._title = title;
       this._description = description;
       this._exercises = exercises;
+      this._images = images;
+  }
+}
+class Exercises{
+  private _exerciseID: string;
+  private _title: string;
+  private _description: string;
+  private _images: string[];
+
+
+  get images(): string[] {
+      return this._images;
+  }
+
+  set images(value: string[]) {
+      this._images = value;
+  }
+
+  get exerciseID(): string {
+      return this._exerciseID;
+  }
+
+  set exerciseID(value: string) {
+      this._exerciseID = value;
+  }
+
+  get title(): string {
+      return this._title;
+  }
+
+  set title(value: string) {
+      this._title = value;
+  }
+
+  get description(): string {
+      return this._description;
+  }
+
+  set description(value: string) {
+      this._description = value;
+  }
+
+  constructor(exerciseID: string, title: string, description: string, images: string[]) {
+      this._exerciseID = exerciseID;
+      this._title = title;
+      this._description = description;
+      this._images = images;
   }
 }
 
@@ -59,6 +115,8 @@ class Workouts{
 })
 export class YourWorkoutsPage implements OnInit {
   workouts: Workouts[] = new Array();
+  exercises: Exercises[] = new Array();
+
   pdf: any;
   constructor(private http: HttpClient,
               private workoutService: WorkoutService,
@@ -68,7 +126,7 @@ export class YourWorkoutsPage implements OnInit {
               public actionSheetController: ActionSheetController) { }
 
   ngOnInit() {
-      this.loadWorkouts();
+      this.loadExercises();
   }
 
   /**
@@ -77,9 +135,22 @@ export class YourWorkoutsPage implements OnInit {
   async loadWorkouts(){
       const tempWorkouts = await this.workoutService.attemptGetWorkoutsByPlanner();
       if (tempWorkouts.status===200){
+          let images = new Array();
           for (let i = 0; i < tempWorkouts.data.length; i++) {
-              this.workouts[i] = new Workouts(tempWorkouts.data[i].workoutID, tempWorkouts.data[i].workoutTitle, tempWorkouts.data[i].workoutDescription, tempWorkouts.data[i].exercises);
+              for (let j = 0; j <this.exercises.length; j++) {
+                  if(this.exercises[j].exerciseID===tempWorkouts.data[i].exercises[0].exerciseID){
+                      for (let k = 0; k < this.exercises[j].images.length; k++) {
+                          if(this.exercises[j].images[k]!==null) {
+                              images.push(this.exercises[j].images[k]);
+                              continue;
+                          }
+                      }
+                  }
+              }
+              this.workouts[i] = new Workouts(tempWorkouts.data[i].workoutID, tempWorkouts.data[i].workoutTitle, tempWorkouts.data[i].workoutDescription, tempWorkouts.data[i].exercises, images);
+              images = [];
           }
+
           return 200;
       }else if (tempWorkouts.status===404){
           return 404;
@@ -89,6 +160,29 @@ export class YourWorkoutsPage implements OnInit {
   }
 
 
+  async loadExercises(){
+      const tempExercises = await this.workoutService.attemptGetExercises();
+      if (tempExercises.status===200){
+          for (let i = 0; i < tempExercises.data.length; i++) {
+              const images = new Array();
+              for (let j = 0; j < tempExercises.data[i].images.length; j++) {
+                  if(tempExercises.data[i].images[j]!=null){
+                      if(!(tempExercises.data[i].images[j]).includes("data:image/jpeg;base64,")){
+                          tempExercises.data[i].images[j] = "data:image/jpeg;base64,"+tempExercises.data[i].images[j];
+                      }
+                      images.push(tempExercises.data[i].images[j]);
+                  }
+              }
+              this.exercises[i] = new Exercises(tempExercises.data[i].exerciseID, tempExercises.data[i].exerciseTitle, tempExercises.data[i].exerciseDescription, images);
+          }
+          await this.loadWorkouts();
+          return 200;
+      }else if (tempExercises.status===404){
+          return 404;
+      }else{
+          return 500;
+      }
+  }
 
 
   async sendWorkoutID(id: string){
@@ -152,7 +246,7 @@ export class YourWorkoutsPage implements OnInit {
   async presentActionSheet(pdf: string, workoutID: string) {
       const actionSheet = await this.actionSheetController.create({
           header: "Share PDF",
-          cssClass: "my-custom-class",
+          cssClass: "actionOptions",
           buttons: [{
               text: "Email PDF to all clients",
               role: "selected",

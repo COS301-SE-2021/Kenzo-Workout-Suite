@@ -29,8 +29,10 @@
               </ion-slides>
               <ion-card-header>
                 <ion-card-title>{{ exercise.title }}</ion-card-title>
-                <ion-button mode="ios" class="editBtn" (click)="sendExerciseID(exercise.exerciseID)">Edit</ion-button>
               </ion-card-header>
+              <ion-item>
+                <ion-button mode="ios" size="medium" slot="start" class="editBtn" (click)="sendExerciseID(exercise.exerciseID)">Edit</ion-button>
+              </ion-item>
             </ion-card>
         </span>
   </ion-row>
