@@ -50,8 +50,10 @@ export class ClientContactService {
           surname: newSurname
         }
       })
+
       return "Client contact updated."
     } catch (e) {
+      console.log(e)
       throw new BadRequestException("Could not update contact")
     }
   }
