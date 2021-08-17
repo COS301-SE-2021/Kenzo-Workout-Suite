@@ -1593,7 +1593,9 @@ export class WorkoutService {
    *
    */
   async getExerciseBase64 (id: string) {
-    const found = baseImages.find(element => element.ID === id)
+    const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
+    const json = JSON.parse(jsonTest)
+    const found = json.find(element => element.ID === id)
     return (typeof found !== "undefined") ? found.images : []
   }
 
