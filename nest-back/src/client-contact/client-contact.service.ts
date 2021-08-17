@@ -12,7 +12,7 @@ export class ClientContactService {
 
   async createClientContact (contactEmail: string, name: string, surname: string, plannerID:string, ctx: Context) {
     if (contactEmail === "" || name === "" || surname === "" || contactEmail == null || name === null || surname == null) {
-      throw new NotFoundException("Parameters can not be left empty!")
+      throw new NotFoundException("Parameters can not be left empty")
     }
     try {
       await ctx.prisma.contacts.create({

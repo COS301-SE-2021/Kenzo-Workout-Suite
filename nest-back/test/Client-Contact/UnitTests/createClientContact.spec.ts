@@ -1,18 +1,20 @@
 import { MockContext, Context, createMockContext } from "../../../context"
 import { ClientContactService } from "../../../src/client-contact/client-contact.service"
+import { UserService } from "../../../src/User/user.service"
 
 let mockCtx: MockContext
 let ctx: Context
-let clientContact: ClientContactService
+let clientContactService: ClientContactService
+let userService: UserService
 
-describe("Unit tests of the function findUserByUUID in the UserService", () => {
+describe("Unit tests of the function createClientContact in client-contact", () => {
   beforeEach(() => {
-    clientContact = new ClientContactService()
+    clientContactService = new ClientContactService(userService)
     mockCtx = createMockContext()
     ctx = (mockCtx as unknown) as Context
   })
 
-  test("Test, Null values passed into findUserByUUID should throw BadRequestException", async () => {
-    await expect(userService.findUserByUUID("", ctx)).rejects.toThrow("Null values cannot be passed in for userId")
+  test("", async () => {
+    await expect(clientContactService.createClientContact("", "", "", "", mockCtx)).rejects.toThrow("Parameters can not be left empty")
   })
 })
