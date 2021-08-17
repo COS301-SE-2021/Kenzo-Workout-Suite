@@ -1493,6 +1493,12 @@ export class WorkoutService {
             await base64ToImage(base64Images[j], path, optionalObj)
           } catch (e) { throw e }
 
+          while (true) {
+            if (fs.readFileSync("./src/videoGeneration/Images/" + fileName + ".jpg")) {
+              break
+            }
+          }
+
           // resize image
           await Jimp.read("./src/videoGeneration/Images/" + fileName + ".jpg")
             .then(image => {

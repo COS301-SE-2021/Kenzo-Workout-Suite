@@ -327,7 +327,19 @@ export class PoseMakerPage implements OnInit {
       }
 
       const strMime = "image/jpeg";
+
+      this.camera.aspect = 1920/1080;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(1920, 1080);
+      this.renderer.render(this.scene, this.camera);
+
       const imgData = this.renderer.domElement.toDataURL(strMime);
+
+      this.camera.aspect = window.innerWidth / (window.innerHeight-this.headerHeight-this.footerHeight);
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(window.innerWidth, window.innerHeight-this.headerHeight-this.footerHeight);
+      this.renderer.render(this.scene, this.camera);
+
       // imgData = imgData.replace("data:image/jpeg;base64,", "");
       this.frames[frame] = imgData;
       this.frameColor[frame] = "#1D905B";
