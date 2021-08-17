@@ -4,7 +4,6 @@ import {
   Contacts
 } from "@prisma/client"
 import { UserService } from "../User/user.service"
-import {log} from "util";
 @Injectable()
 export class ClientContactService {
   constructor (private userService: UserService) {
@@ -31,6 +30,7 @@ export class ClientContactService {
 
       return "Client contact created."
     } catch (e) {
+      console.log(e)
       throw new BadRequestException("Could not create client contact")
     }
   }
