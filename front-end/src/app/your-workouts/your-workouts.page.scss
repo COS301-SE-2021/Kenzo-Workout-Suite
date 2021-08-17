@@ -24,7 +24,7 @@
 .workouts{
   transition: border 0.1s;
   transition-timing-function: linear;
-  width: 310px;
+  width: 300px;
 }
 
 
@@ -139,6 +139,13 @@ ion-slides{
   --bullet-background-active: var(--ion-color-tertiary);
   --bullet-background: var(--ion-color-KT_BLACK);
 }
+
+.imagePose{
+  height: 150px;
+  width: 300px;
+  object-fit: cover;
+}
+
 
 .fabButton[data-desc] {
   position: relative;
