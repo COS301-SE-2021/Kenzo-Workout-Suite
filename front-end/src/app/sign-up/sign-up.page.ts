@@ -15,7 +15,7 @@ export class SignUpPage implements OnInit {
   email: string;
   password: string;
   confirmpassword: string;
-  accountType: string;
+  accountType = "PLANNER";
   url: string;
 
   constructor(private http: HttpClient,

@@ -9,17 +9,17 @@
 <ion-content class="background">
   <br>
   <div class="input-div">
-    <ion-label class="input-description">Title</ion-label>
+    <ion-label class="input-description">Title *</ion-label>
     <ion-input [(ngModel)]="title" placeholder="Shred Program" class="kenzo-input"></ion-input>
   </div>
   <br>
   <div class="input-div">
-    <ion-label class="input-description">Description</ion-label>
+    <ion-label class="input-description">Description *</ion-label>
     <ion-input [(ngModel)]="description" placeholder="3 week program to lose weight" class="kenzo-input"></ion-input>
   </div>
   <br>
   <div class="input-div">
-    <ion-label class="input-description">Describe your workout with Kenzo Tags</ion-label>
+    <ion-label class="input-description">Describe your workout with Kenzo Tags *</ion-label>
     <ion-searchbar #searchBar (ionInput)="filterSelection($event)" placeholder="Search tags" mode="ios"></ion-searchbar>
 
     <span id="tags">
@@ -58,7 +58,7 @@
   </div>
   <br>
   <div class="input-div">
-    <ion-label class="input-description">Pose Description</ion-label>
+    <ion-label class="input-description">Pose Description *</ion-label>
     <ion-input [(ngModel)]="poseDescription" placeholder="Ensure that your shoulders are straight" class="kenzo-input"></ion-input>
   </div>
   <br>
@@ -72,6 +72,9 @@
     <ion-input [(ngModel)]="duration"  type="number" placeholder="10" class="kenzo-input"></ion-input>
   </div>
   <br>
+  <div class="input-div">
+    <ion-label class="required">* Required</ion-label>
+  </div>
 </ion-content>
 <ion-footer class="ion-no-border">
   <ion-toolbar mode="ios" class="footer">
