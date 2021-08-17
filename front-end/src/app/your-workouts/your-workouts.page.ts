@@ -159,7 +159,6 @@ export class YourWorkoutsPage implements OnInit {
       }
   }
 
-
   async loadExercises(){
       const tempExercises = await this.workoutService.attemptGetExercises();
       if (tempExercises.status===200){
@@ -196,7 +195,8 @@ export class YourWorkoutsPage implements OnInit {
   async sharePDF(id: string){
       this.pdf = await this.workoutService.attemptGetPDF(id);
       if (this.pdf.status===200){
-          this.presentActionSheet(this.pdf.data, id);
+          const potato = this.presentActionSheet(this.pdf.data, id);
+          console.log(potato);
           return 200;
       }else if (this.pdf.status===404){
           return 404;
@@ -292,7 +292,7 @@ export class YourWorkoutsPage implements OnInit {
           }]
       });
       await actionSheet.present();
-      const {role} = await actionSheet.onDidDismiss();
-      return role;
+      const {data} = await actionSheet.onDidDismiss();
+      return data;
   }
 }
