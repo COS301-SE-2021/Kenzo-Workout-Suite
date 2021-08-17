@@ -62,12 +62,14 @@ export class ClientContactService {
     if (contactID === "" || contactID == null) {
       throw new NotFoundException("Parameters can not be left empty!")
     }
+
     try {
       await ctx.prisma.contacts.delete({
         where: {
           contactId: contactID
         }
       })
+      console.log("hello")
       return "Client contact deleted."
     } catch (e) {
       throw new BadRequestException("Could not delete contact")
