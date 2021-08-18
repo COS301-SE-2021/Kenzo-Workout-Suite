@@ -90,6 +90,6 @@ describe("End point testing of the Workout subsystem", () => {
         duration: 2,
         images: imagesArray
       })
-      .expect(500)
+      .expect(404)
   })
 })
