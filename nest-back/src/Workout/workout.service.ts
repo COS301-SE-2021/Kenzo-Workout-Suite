@@ -677,7 +677,6 @@ export class WorkoutService {
       throw new PreconditionFailedException("Parameter can not be left empty.")
     }
     try {
-      console.log(exercise)
       await ctx.prisma.exercise.delete({
         where: {
           exerciseID: exercise
@@ -798,6 +797,7 @@ export class WorkoutService {
             }
           }
         })
+
         const updatedWorkout = await this.getWorkoutById(workoutID, ctx)
         await this.generatePrettyWorkoutPDF(updatedWorkout, ctx)
         await this.createVideo(updatedWorkout.workoutID, ctx)
@@ -894,8 +894,6 @@ export class WorkoutService {
 
     const titleHeadingColour = rgb(0.13, 0.185, 0.24)
     const fieldsHeadingColour = rgb(0.071, 0.22, 0.4117)
-    console.log(workout)
-
     try {
       firstPage.drawText(workout.workoutTitle, {
         x: 310,
@@ -1063,9 +1061,7 @@ export class WorkoutService {
             const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
             if (exerciseImages !== "undefined") {
               for (let c = 0; c < exerciseImages.images.length; c++) {
-                console.log(exerciseImages.images[c])
                 const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
-                console.log(currentImage)
                 currentPage.drawImage(currentImage, {
                   x: 20 + (c * 150),
                   y: 400,
@@ -1189,9 +1185,7 @@ export class WorkoutService {
             const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
             if (exerciseImages !== "undefined") {
               for (let c = 0; c < exerciseImages.images.length; c++) {
-                console.log(exerciseImages.images[c])
                 const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
-                console.log(currentImage)
                 currentPage.drawImage(currentImage, {
                   x: 20 + (c * 150),
                   y: 20,
@@ -1505,7 +1499,6 @@ export class WorkoutService {
         lengthOfVideo += 5
       }
     }
-
     const videoOptions = {
       fps: 25,
       loop: lengthOfVideo, // length of video in seconds
