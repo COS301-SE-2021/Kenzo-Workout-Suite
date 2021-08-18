@@ -30,6 +30,7 @@ describe("Unit tests for createWorkout in workout subsystem", () => {
     const emptyExercise: Exercise[] = []
     spyOn(workoutService, "getWorkoutById").and.stub()
     spyOn(workoutService, "generatePrettyWorkoutPDF").and.stub()
+    spyOn(workoutService, "createVideo").and.stub()
     mockCtx.prisma.workout.create.mockResolvedValue(Workout)
 
     await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, emptyExercise, Workout.plannerID, ctx)).resolves.toEqual(
@@ -57,9 +58,11 @@ describe("Unit tests for createWorkout in workout subsystem", () => {
     }
 
     const fullExercise: Exercise[] = [Exercise]
-    spyOn(workoutService, "getWorkoutById").and.stub()
-    spyOn(workoutService, "generatePrettyWorkoutPDF").and.stub()
+    mockCtx.prisma.exercise.create.mockResolvedValue(Exercise)
     mockCtx.prisma.workout.create.mockResolvedValue(Workout)
+    spyOn(workoutService, "getWorkoutById").and.returnValue(Workout)
+    spyOn(workoutService, "generatePrettyWorkoutPDF").and.stub()
+    spyOn(workoutService, "createVideo").and.stub()
 
     await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, fullExercise, Workout.plannerID, ctx)).resolves.toEqual(
       "Workout Created."
