@@ -100,6 +100,7 @@ export class ClientContactService {
     if (contacts == null || plannerID === "" || plannerID == null || workoutID === "" || workoutID == null) {
       throw new NotFoundException("Parameters can not be left empty")
     }
+
     const planner = await this.userService.findUserByUUID(plannerID, ActualPrisma())
 
     const sgMail = require("@sendgrid/mail")
