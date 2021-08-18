@@ -1481,12 +1481,6 @@ export class WorkoutService {
             await base64ToImage(base64Images[j], path, optionalObj)
           } catch (e) { throw e }
 
-          while (true) {
-            if (fs.readFileSync("./src/videoGeneration/Images/" + fileName + ".jpg")) {
-              break
-            }
-          }
-
           // push image to array
           images.push({
             path: "./src/videoGeneration/Images/" + fileName + ".jpg",
@@ -1496,7 +1490,8 @@ export class WorkoutService {
 
           lengthOfVideo += 20
         }
-        if (i < base64Images.length - 1) {
+
+        if (base64Images.length !== 1) {
           images.push({
             path: "./src/videoGeneration/Images/kenzoLogo.jpg",
             caption: "Exercise " + (i + 1) + " complete! On to the next...",
@@ -1527,7 +1522,7 @@ export class WorkoutService {
       pixelFormat: "yuv420p"
     }
 
-    console.log(images)
+    // console.log(images)
 
     videoshow(images, videoOptions)
       .audio("./src/videoGeneration/Sounds/song1.mp3")
@@ -1544,24 +1539,6 @@ export class WorkoutService {
         console.error("Video created in:", output)
         return "Successfully created video."
       })
-    // finally remove images
-    /*
-    for (let i = 0; i < fileNames.length; i++) {
-      if (fileNames[i] !== "") {
-        try {
-          fs.unlinkSync("./src/videoGeneration/Images/" + fileNames[i] + "-fm.jpg")
-          fs.unlinkSync("./src/videoGeneration/Images/" + fileNames[i] + ".jpg")
-        } catch (err) {
-          console.error(err)
-        }
-      }
-    }
-    try {
-      fs.unlinkSync("./src/videoGeneration/Images/kenzoLogo-fm.jpg")
-    } catch (err) {
-      console.error(err)
-    }
-     */
   }
 
   /**
