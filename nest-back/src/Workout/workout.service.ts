@@ -1484,10 +1484,10 @@ export class WorkoutService {
           images.push({
             path: "./src/videoGeneration/Images/" + fileName + ".jpg",
             caption: exerciseDescription,
-            loop: 20
+            loop: 15
           })
 
-          lengthOfVideo += 20
+          lengthOfVideo += 15
         }
         if (base64Images.length !== 1 && i < base64Images.length - 1) {
           images.push({
