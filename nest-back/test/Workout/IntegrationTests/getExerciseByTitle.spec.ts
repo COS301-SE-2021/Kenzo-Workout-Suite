@@ -45,33 +45,10 @@ describe("Integration tests of the getExerciseByTitle function in the Workout Se
 
     const response = await workoutService.getExerciseByTitle("TestExercise", ctx)
 
-    expect(response).toStrictEqual(Exercise)
-  })
-
-  test("Should receive valid information about exercise with corresponding title with images", async () => {
-    const Exercise = [{
-      exerciseID: uuidExercise,
-      exerciseTitle: "TestExercise",
-      exerciseDescription: "TestDescription",
-      repRange: "TestRange",
-      sets: 4,
-      poseDescription: "TestPDesc",
-      restPeriod: 2,
-      tags: [],
-      duration: 2,
-      images: []
-    }]
-
-    const images = ["1", "2", "3", "4"]
-
-    await workoutService.saveImagesToJSON(Exercise, images)
-
-    const response = await workoutService.getExerciseByTitle("TestExercise", ctx)
-
-    expect(response).toStrictEqual(Exercise)
+    await expect(response).toStrictEqual(Exercise)
   })
 
   test("Should not receive valid information about exercise with corresponding title as workout does not exist", async () => {
-    await expect(workoutService.getExerciseByTitle("", ctx)).rejects.toThrow("No exercises were found in the database with the specified title.")
+    expect(workoutService.getExerciseByTitle("", ctx)).rejects.toThrow("No exercises were found in the database with the specified title.")
   })
 })
