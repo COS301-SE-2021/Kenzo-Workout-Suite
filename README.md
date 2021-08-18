@@ -97,6 +97,16 @@ Zelealem's Contribution
 
 Tinashe's Contribution
 --------------------
+My responsibilities include:
+- Video generation
+- Getters, Management and Removal for the Exercise sub-system
+- Getters for the Workout sub-system
+- Implemented the Tag sub-system
+- Implemented the Swagger configuration of the Back-end sub-system
+- Testing (Unit, Integration and End-points)
+- Installation manual
+- Functional requirements and Sub-systems in SRS document
+- Architecture document: Overall system and Back-end sub-system
 
 Jackie's Contribution
 --------------------
