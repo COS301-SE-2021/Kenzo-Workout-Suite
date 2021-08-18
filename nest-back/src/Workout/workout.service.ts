@@ -797,6 +797,7 @@ export class WorkoutService {
             }
           }
         })
+
         const updatedWorkout = await this.getWorkoutById(workoutID, ctx)
         await this.generatePrettyWorkoutPDF(updatedWorkout, ctx)
         await this.createVideo(updatedWorkout.workoutID, ctx)
@@ -893,7 +894,6 @@ export class WorkoutService {
 
     const titleHeadingColour = rgb(0.13, 0.185, 0.24)
     const fieldsHeadingColour = rgb(0.071, 0.22, 0.4117)
-
     try {
       firstPage.drawText(workout.workoutTitle, {
         x: 310,
@@ -1505,7 +1505,6 @@ export class WorkoutService {
         lengthOfVideo += 5
       }
     }
-
     const videoOptions = {
       fps: 25,
       loop: lengthOfVideo, // length of video in seconds
