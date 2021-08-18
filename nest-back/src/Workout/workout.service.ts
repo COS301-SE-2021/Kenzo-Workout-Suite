@@ -515,7 +515,9 @@ export class WorkoutService {
   async saveImagesToJSON (exercise:any, images:string[]) {
     const arrayImages : Array<string> = []
     images.forEach(function (item, index) {
-      arrayImages.push(item)
+      if (item != null) {
+        arrayImages.push(item)
+      }
     })
     // TODO: Add create if file doesnt exist
     fs.readFile("./src/createdWorkoutImages.json", function (err, data) {
