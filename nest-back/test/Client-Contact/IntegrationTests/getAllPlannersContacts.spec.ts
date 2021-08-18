@@ -7,7 +7,7 @@ let ctx: Context
 let clientContactService: ClientContactService
 let userService: UserService
 
-describe("Unit tests of the function createClientContact in client-contact", () => {
+describe("Integration tests of the function getAllPlannersContacts in client-contact", () => {
   beforeEach(async () => {
     clientContactService = new ClientContactService(userService)
     ctx = ActualPrisma()

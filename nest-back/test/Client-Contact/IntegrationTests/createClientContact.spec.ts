@@ -15,7 +15,7 @@ describe("Integration tests of the function createClientContact in client-contac
     await ctx.prisma.user.deleteMany()
   })
 
-  test("Testing valid parameters passed into the createClientContact function", async () => {
+  test("Testing valid parameters passed into the createClientContact function, should return valid createdContact", async () => {
     const createdUser = await ctx.prisma.user.create({
       data: {
         firstName: "testPlanner",

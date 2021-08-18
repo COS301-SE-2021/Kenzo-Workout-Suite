@@ -8,7 +8,7 @@ let mockCtx: MockContext
 let clientContactService: ClientContactService
 let userService: UserService
 
-describe("Unit tests of the function createClientContact in client-contact", () => {
+describe("Unit tests of the function updateClientContact in client-contact", () => {
   beforeEach(() => {
     clientContactService = new ClientContactService(userService)
     mockCtx = createMockContext()
@@ -18,7 +18,7 @@ describe("Unit tests of the function createClientContact in client-contact", () 
     await expect(clientContactService.updateClientContact("", "", "", "", "", mockCtx)).rejects.toThrow("Parameters can not be left empty")
   })
 
-  test("Testing empty parameters passed into the updateClientContact function", async () => {
+  test("Testing empty contactID passed into the updateClientContact function", async () => {
     const plannerUUID = v4()
     await expect(clientContactService.updateClientContact("", "test@gmail.com", "test", "tester", plannerUUID, mockCtx)).rejects.toThrow("Parameters can not be left empty")
   })

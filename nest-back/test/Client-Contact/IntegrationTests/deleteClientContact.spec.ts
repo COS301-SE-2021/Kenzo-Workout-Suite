@@ -18,7 +18,7 @@ describe("Integration tests of the function deleteClientContact in client-contac
     await ctx.prisma.user.deleteMany()
   })
 
-  test("Testing empty parameters passed into the getAllPlannersContacts", async () => {
+  test("Testing valid parameters passed into the deleteClientContact, should return success message", async () => {
     const testContactID = v4()
 
     const createdUser = await ctx.prisma.user.create({
@@ -44,7 +44,7 @@ describe("Integration tests of the function deleteClientContact in client-contac
     expect(await clientContactService.deleteClientContact(testContactID, ctx)).toBe("Client contact deleted.")
   })
 
-  test("Testing empty parameters passed into the getAllPlannersContacts", async () => {
+  test("Testing invalid parameters passed into the deleteClientContact, should throw error with failure message", async () => {
     const testContactID = v4()
 
     const createdUser = await ctx.prisma.user.create({
