@@ -29,7 +29,7 @@ describe("Integration tests of the getExerciseByTitle function in the Workout Se
     })
   })
 
-  test("Should receive valid information about exercise with corresponding title", async () => {
+  test("Should receive valid information about exercise with corresponding title with no images", async () => {
     const Exercise = [{
       exerciseID: uuidExercise,
       exerciseTitle: "TestExercise",
@@ -39,8 +39,36 @@ describe("Integration tests of the getExerciseByTitle function in the Workout Se
       poseDescription: "TestPDesc",
       restPeriod: 2,
       tags: [],
-      duration: 2
+      duration: 2,
+      images: []
     }]
+
+    const response = await workoutService.getExerciseByTitle("TestExercise", ctx)
+
+    expect(response).toStrictEqual(Exercise)
+  })
+
+  test("Should receive valid information about exercise with corresponding title with images", async () => {
+    const Exercise = [{
+      exerciseID: uuidExercise,
+      exerciseTitle: "TestExercise",
+      exerciseDescription: "TestDescription",
+      repRange: "TestRange",
+      sets: 4,
+      poseDescription: "TestPDesc",
+      restPeriod: 2,
+      tags: [],
+      duration: 2,
+      images: [{
+        ID: uuidExercise,
+        poseDescription: "TestDescription",
+        images: ["1", "2", "3", "4"]
+      }]
+    }]
+
+    const images = ["1", "2", "3", "4"]
+
+    await workoutService.saveImagesToJSON(Exercise, images)
 
     const response = await workoutService.getExerciseByTitle("TestExercise", ctx)
 
