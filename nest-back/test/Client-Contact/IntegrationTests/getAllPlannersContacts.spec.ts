@@ -57,6 +57,8 @@ describe("Integration tests of the function getAllPlannersContacts in client-con
       createdContact2
     ]
 
-    expect(await clientContactService.getAllPlannersContacts(createdUser.userID, ctx)).toStrictEqual(contacts)
+    const contactArrayResponse = await clientContactService.getAllPlannersContacts(createdUser.userID, ctx)
+
+    expect(contactArrayResponse).toEqual(expect.arrayContaining(contacts))
   })
 })
