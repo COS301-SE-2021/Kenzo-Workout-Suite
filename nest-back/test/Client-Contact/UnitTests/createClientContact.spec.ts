@@ -23,11 +23,6 @@ describe("Unit tests of the function createClientContact in client-contact", () 
     await expect(clientContactService.createClientContact("", "test", "tester", testUUID, mockCtx)).rejects.toThrow("Parameters can not be left empty")
   })
 
-  test("Testing empty contactEmail passed into the createClientContact function", async () => {
-    const testUUID = v4()
-    await expect(clientContactService.createClientContact("", "test", "tester", testUUID, mockCtx)).rejects.toThrow("Parameters can not be left empty")
-  })
-
   test("Testing empty name passed into the createClientContact function", async () => {
     const testUUID = v4()
     await expect(clientContactService.createClientContact("test@gmail.com", "", "tester", testUUID, mockCtx)).rejects.toThrow("Parameters can not be left empty")
@@ -42,7 +37,7 @@ describe("Unit tests of the function createClientContact in client-contact", () 
     await expect(clientContactService.createClientContact("test@gmail.com", "test", "tester", "", mockCtx)).rejects.toThrow("Parameters can not be left empty")
   })
 
-  test("Testing valid parameters passed into the createClientContact function", async () => {
+  test("Testing valid parameters passed into the createClientContact function should return created response", async () => {
     const testUUID = v4()
     const testContactID = v4()
     const clientContact = {
@@ -56,7 +51,7 @@ describe("Unit tests of the function createClientContact in client-contact", () 
     expect(await clientContactService.createClientContact("test@gmail.com", "test", "tester", testUUID, mockCtx)).toBe("Client contact created.")
   })
 
-  test("Testing valid parameters passed into the createClientContact function however prisma throws error", async () => {
+  test("Testing valid parameters passed into the createClientContact function however prisma throws error, should return could not create client contact error", async () => {
     const testUUID = v4()
     mockCtx.prisma.contacts.create.mockRejectedValue(new BadRequestException("test"))
 

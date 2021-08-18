@@ -8,7 +8,7 @@ let mockCtx: MockContext
 let clientContactService: ClientContactService
 let userService: UserService
 
-describe("Unit tests of the function createClientContact in client-contact", () => {
+describe("Unit tests of the function deleteClientContact in client-contact", () => {
   beforeEach(() => {
     clientContactService = new ClientContactService(userService)
     mockCtx = createMockContext()

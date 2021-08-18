@@ -30,7 +30,6 @@ export class ClientContactService {
 
       return "Client contact created."
     } catch (e) {
-      console.log(e)
       throw new BadRequestException("Could not create client contact")
     }
   }
@@ -53,7 +52,6 @@ export class ClientContactService {
 
       return "Client contact updated."
     } catch (e) {
-      console.log(e)
       throw new BadRequestException("Could not update contact")
     }
   }
