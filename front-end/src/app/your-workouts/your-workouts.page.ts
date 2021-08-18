@@ -6,6 +6,11 @@ import { Router } from "@angular/router";
 import {Exercise} from "../Models/exercise";
 import {ClientService} from "../Services/ClientService/client.service";
 
+/**
+ * Workouts class to store the information obtained from requests in member array workouts to dynamically populate cards
+ *
+ * @author Jia Hui Wang, u18080449
+ */
 class Workouts{
   private _workoutID: string;
   private _title: string;
@@ -61,6 +66,12 @@ class Workouts{
       this._images = images;
   }
 }
+
+/**
+ * Exercise class to store the information obtained from requests in member array exercises to dynamically populate cards
+ *
+ * @author Jia Hui Wang, u18080449
+ */
 class Exercises{
   private _exerciseID: string;
   private _title: string;
@@ -116,8 +127,8 @@ class Exercises{
 export class YourWorkoutsPage implements OnInit {
   workouts: Workouts[] = new Array();
   exercises: Exercises[] = new Array();
-
   pdf: any;
+
   constructor(private http: HttpClient,
               private workoutService: WorkoutService,
               private clientService: ClientService,
@@ -131,7 +142,10 @@ export class YourWorkoutsPage implements OnInit {
 
   /**
    * Load all the workouts by calling the workoutService function and then return data accordingly based on status code
+   *
+   * @author Jia Hui Wang, u18080449
    */
+  creat;
   async loadWorkouts(){
       const tempWorkouts = await this.workoutService.attemptGetWorkoutsByPlanner();
       if (tempWorkouts.status===200){
@@ -150,7 +164,6 @@ export class YourWorkoutsPage implements OnInit {
               this.workouts[i] = new Workouts(tempWorkouts.data[i].workoutID, tempWorkouts.data[i].workoutTitle, tempWorkouts.data[i].workoutDescription, tempWorkouts.data[i].exercises, images);
               images = [];
           }
-
           return 200;
       }else if (tempWorkouts.status===404){
           return 404;
@@ -159,6 +172,11 @@ export class YourWorkoutsPage implements OnInit {
       }
   }
 
+  /**
+   * Load all the exercises and then filter to find the respective exercises for each workout to display the preview images
+   *
+   * @author Luca Azmanov, u19004185
+   */
   async loadExercises(){
       const tempExercises = await this.workoutService.attemptGetExercises();
       if (tempExercises.status===200){
@@ -183,26 +201,36 @@ export class YourWorkoutsPage implements OnInit {
       }
   }
 
-
-  async sendWorkoutID(id: string){
-      await this.router.navigate(["/update-workout"], {
-          state:{
-              id: id
-          }
-      });
-  }
-
+  /**
+   * Attempt to obtain the PDF of the workout and based on the status, either present an Action Sheet for the user to choose from multiple options then
+   * return a code or just return a code.
+   *
+   * @param id The id of the workout of which the pdf is to obtained for.
+   * @author Jia Hui Wang, u18080449
+   */
   async sharePDF(id: string){
       this.pdf = await this.workoutService.attemptGetPDF(id);
       if (this.pdf.status===200){
-          const potato = this.presentActionSheet(this.pdf.data, id);
-          console.log(potato);
+          this.presentActionSheet(this.pdf.data, id);
           return 200;
       }else if (this.pdf.status===404){
           return 404;
       }else{
           return 500;
       }
+  }
+
+  /**
+   * Navigate to the update-workout page with the respective ID of the selected workout in order to update the workout.
+   *
+   * @author Jia Hui Wang, u18080449
+   */
+  async sendWorkoutID(id: string){
+      await this.router.navigate(["/update-workout"], {
+          state:{
+              id: id
+          }
+      });
   }
 
   async goToSearch(){
@@ -226,6 +254,12 @@ export class YourWorkoutsPage implements OnInit {
           });
   }
 
+  /**
+   * eventHandler for the search functionality on the page to filter for specific cards based on the text
+   *
+   * @param event The onChange when user enters or removes characters to filter the cards
+   * @author Jia Hui Wang, u18080449
+   */
   eventHandler(event) {
       const text = event.srcElement.value.toLowerCase();
       this.workouts.forEach(data => {
@@ -243,6 +277,13 @@ export class YourWorkoutsPage implements OnInit {
       await alert.onDidDismiss();
   }
 
+  /**
+   * ActionSheet to display a list of options for the user to choose from, from emailing the pdf, video, or both, to downloading the pdf.
+   *
+   * @param pdf the base64 data of the image if the user wishes to download the file.
+   * @param workoutID the id of the chosen workout should the user wish to choose either email option, then the data can be passed back to back-end to find the file and send it.
+   * @author Jia Hui Wang, u18080449
+   */
   async presentActionSheet(pdf: string, workoutID: string) {
       const actionSheet = await this.actionSheetController.create({
           header: "Share PDF",
@@ -253,7 +294,7 @@ export class YourWorkoutsPage implements OnInit {
               icon: "mail-outline",
               handler: () => {
                   this.clientService.attemptEmailAllClientsPDF(workoutID);
-                  console.log("PDFs sent");
+                  return true;
               }
           }, {
               text: "Email video to all clients",
@@ -261,7 +302,7 @@ export class YourWorkoutsPage implements OnInit {
               icon: "videocam-outline",
               handler: () => {
                   this.clientService.attemptEmailAllClientsVideo(workoutID);
-                  console.log("Videos sent");
+                  return true;
               }
           }, {
               text: "Email PDF and video to all clients",
@@ -269,7 +310,7 @@ export class YourWorkoutsPage implements OnInit {
               icon: "documents-sharp",
               handler: () => {
                   this.clientService.attemptEmailAllClientsMedia(workoutID);
-                  console.log("Multimedia sent");
+                  return true;
               }
           }, {
               text: "Download PDF",
@@ -281,18 +322,17 @@ export class YourWorkoutsPage implements OnInit {
                   link.href = source;
                   link.download = "workout.pdf";
                   link.click();
+                  return true;
               }
           }, {
               text: "Cancel",
               icon: "close",
               role: "cancel",
-              handler: () => {
-                  console.log("Cancel clicked");
-              }
+              handler: () => false
           }]
       });
       await actionSheet.present();
-      const {data} = await actionSheet.onDidDismiss();
-      return data;
+      const {role} = await actionSheet.onDidDismiss();
+      return role;
   }
 }

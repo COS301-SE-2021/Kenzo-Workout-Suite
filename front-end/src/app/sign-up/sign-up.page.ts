@@ -26,25 +26,6 @@ export class SignUpPage implements OnInit {
   ngOnInit() {
   }
 
-
-  /**
-   * Function to be called upon button onClick to determine if the account is a Planner account
-   *
-   * @constructor
-   */
-  plannerAccount() {
-      this.accountType="PLANNER";
-  }
-
-  /**
-   * Function to be called upon button onClick to determine if the account is a Client account
-   *
-   * @constructor
-   */
-  clientAccount() {
-      this.accountType="CLIENT";
-  }
-
   async signUp() {
       if (this.password === this.confirmpassword) {
           const status = await this.userService.attemptSignUp(this.firstName, this.lastName, this.email, this.password, this.accountType);
@@ -79,14 +60,14 @@ export class SignUpPage implements OnInit {
               return new Error("Server is not responding.");
           }
       } else {
-          await this.invalidPasswords(); //If passwords do not match, notify User
-      } //through an alert.
+          await this.invalidPasswords(); //If passwords do not match, notify User through an alert.
+      }
   }
 
   /**
    * Helper function to be called if both passwords do not match.
    *
-   * @constructor
+   * @author Jia Hui Wang, u18080449
    */
   async invalidPasswords() {
       const alert = await this.alertController.create({
@@ -101,7 +82,7 @@ export class SignUpPage implements OnInit {
   /**
    * Helper function to physically present alert to User independent of OS.
    *
-   * @param alert
+   * @author Jia Hui Wang, u18080449
    */
   async presentAlert(alert: any){
       await alert.present();

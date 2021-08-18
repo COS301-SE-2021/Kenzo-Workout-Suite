@@ -1480,13 +1480,7 @@ export class WorkoutService {
             const optionalObj = { fileName, type: "jpg" }
             await base64ToImage(base64Images[j], path, optionalObj)
           } catch (e) { throw e }
-
-          while (true) {
-            if (fs.readFileSync("./src/videoGeneration/Images/" + fileName + ".jpg")) {
-              break
-            }
-          }
-
+          
           // push image to array
           images.push({
             path: "./src/videoGeneration/Images/" + fileName + ".jpg",

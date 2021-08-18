@@ -88,6 +88,8 @@ describe("YourWorkoutsPage", () => {
 
     it("should, given a data-store where the pdf of the workout doesn't exist, fail to obtain the PDF of the workout.", async () => {
         spyOn(service, "attemptGetPDF").and.resolveTo({status: 404});
+        spyOn(component, "presentAlert").and.stub();
+        spyOn(component, "presentActionSheet").and.stub();
         await component.sharePDF(" ").then(error=>{
             expect(error).toEqual(404);
         });
@@ -95,6 +97,8 @@ describe("YourWorkoutsPage", () => {
 
     it("should fail to obtain the PDF of the workout as the server is not responding.", async () => {
         spyOn(service, "attemptGetPDF").and.resolveTo({status: 500});
+        spyOn(component, "presentAlert").and.stub();
+        spyOn(component, "presentActionSheet").and.stub();
         await component.sharePDF(" ").then(error=>{
             expect(error).toEqual(500);
         });
@@ -103,6 +107,7 @@ describe("YourWorkoutsPage", () => {
     it("should, given a data-store where the pdf of the workout does exist, obtain the PDF of the workout.", async () => {
         spyOn(service, "attemptGetPDF").and.resolveTo({status: 200});
         spyOn(component, "presentAlert").and.stub();
+        spyOn(component, "presentActionSheet").and.stub();
         await component.sharePDF(" ").then(error=>{
             expect(error).toEqual(200);
         });
