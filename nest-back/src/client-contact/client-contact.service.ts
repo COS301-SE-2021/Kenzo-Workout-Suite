@@ -92,7 +92,7 @@ export class ClientContactService {
 
   async getFileInBase64 (path: String) {
     const fs = require("fs")
-    const file = fs.readFileSync(path).toString("base64")
+    const file = await fs.readFileSync(path).toString("base64")
     return file
   }
 
@@ -106,9 +106,9 @@ export class ClientContactService {
     const sgMail = require("@sendgrid/mail")
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
-    const workoutPDF = this.getFileInBase64("./src/GeneratedWorkouts/" + workoutID + ".pdf")
+    const workoutPDF = await this.getFileInBase64("./src/GeneratedWorkouts/" + workoutID + ".pdf")
 
-    const kenzoImage = this.getFileInBase64("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG")
+    const kenzoImage = await this.getFileInBase64("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG")
 
     const personalizationsArray = [{
       to: contacts[0].contactEmail,
@@ -165,9 +165,9 @@ export class ClientContactService {
     const sgMail = require("@sendgrid/mail")
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
-    const workoutVideo = this.getFileInBase64("./src/videoGeneration/Videos/" + workoutID + ".mp4")
+    const workoutVideo = await this.getFileInBase64("./src/videoGeneration/Videos/" + workoutID + ".mp4")
 
-    const kenzoImage = this.getFileInBase64("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG")
+    const kenzoImage = await this.getFileInBase64("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG")
 
     const personalizationsArray = [{
       to: contacts[0].contactEmail,
@@ -224,9 +224,9 @@ export class ClientContactService {
     const sgMail = require("@sendgrid/mail")
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
-    const workoutVideo = this.getFileInBase64("./src/videoGeneration/Videos/" + workoutID + ".mp4")
-    const workoutPDF = this.getFileInBase64("./src/GeneratedWorkouts/" + workoutID + ".pdf")
-    const kenzoImage = this.getFileInBase64("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG")
+    const workoutVideo = await this.getFileInBase64("./src/videoGeneration/Videos/" + workoutID + ".mp4")
+    const workoutPDF = await this.getFileInBase64("./src/GeneratedWorkouts/" + workoutID + ".pdf")
+    const kenzoImage = await this.getFileInBase64("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG")
 
     const personalizationsArray = [{
       to: contacts[0].contactEmail,
