@@ -90,6 +90,12 @@ export class ClientContactService {
     }
   }
 
+  async getFileInBase64 (path: String) {
+    const fs = require("fs")
+    const file = fs.readFileSync(path).toString("base64")
+    return file
+  }
+
   async sendPDFEmailToContact (contacts: Contacts[], plannerID:string, workoutID:string) {
     if (contacts == null || plannerID === "" || plannerID == null || workoutID === "" || workoutID == null) {
       throw new NotFoundException("Parameters can not be left empty")
@@ -99,11 +105,9 @@ export class ClientContactService {
     const sgMail = require("@sendgrid/mail")
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
-    const fs = require("fs")
+    const workoutPDF = this.getFileInBase64("./src/GeneratedWorkouts/" + workoutID + ".pdf")
 
-    const workoutPDF = fs.readFileSync("./src/GeneratedWorkouts/" + workoutID + ".pdf").toString("base64")
-
-    const kenzoImage = fs.readFileSync("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG").toString("base64")
+    const kenzoImage = this.getFileInBase64("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG")
 
     const personalizationsArray = [{
       to: contacts[0].contactEmail,
