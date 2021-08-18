@@ -1,4 +1,4 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+﻿# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 name: Nest.js CI
 on:
@@ -13,7 +13,7 @@ env:
   JWT_SECRET: 'THESECRET'
   EXPIRY_TIME: '10800s'
   DATABASE_URL: 'mysql://user:password@127.0.0.1:3306/test'
-  
+
 jobs:
   build:
     name: CI,Build,Test on node ${{ matrix.node_version }} and ${{ matrix.os }}
@@ -35,7 +35,7 @@ jobs:
           DATABASE_URL: 'mysql://user:password@127.0.0.1:3306/test'
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
 
-        
+
     steps:
       - uses: actions/checkout@v1
 
@@ -47,17 +47,20 @@ jobs:
           while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
             sleep 1
           done
-          
+
       - uses: actions/checkout@v2
         name: Use Node.js ${{ matrix.node-version }}
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-          
-          
+
+
       - name: npm CI(clean install)
         working-directory: ./nest-back
         run: npm ci
+      - name: Prisma Migrate
+        working-directory: ./nest-back
+        run: npx prisma migrate dev --name init
       - name: npm build
         working-directory: ./nest-back
         run: npm run build --if-present

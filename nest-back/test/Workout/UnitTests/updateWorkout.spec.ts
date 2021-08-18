@@ -6,7 +6,6 @@ import {
 } from "@prisma/client"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
 import { UserService } from "../../../src/User/user.service"
-
 let mockCtx: MockContext
 let ctx: Context
 let workoutService: WorkoutService
@@ -29,10 +28,10 @@ describe("Unit tests for updateWorkout in workout subsystem", () => {
       plannerID: plannerUUID
     }
     const emptyExercise: Exercise[] = []
-    mockCtx.prisma.workout.create.mockResolvedValue(Workout)
     mockCtx.prisma.workout.update.mockResolvedValue(Workout)
     spyOn(workoutService, "getWorkoutById").and.stub()
     spyOn(workoutService, "generatePrettyWorkoutPDF").and.stub()
+    spyOn(workoutService, "createVideo").and.stub()
     await expect(workoutService.updateWorkout(workoutUUID, "Test", "test", emptyExercise, plannerUUID, mockCtx)).resolves.toEqual(
       "Workout Updated."
     )
@@ -60,10 +59,11 @@ describe("Unit tests for updateWorkout in workout subsystem", () => {
     }
 
     const fullExercise: Exercise[] = [Exercise]
-    mockCtx.prisma.workout.create.mockResolvedValue(Workout)
+    mockCtx.prisma.exercise.create.mockResolvedValue(Exercise)
     mockCtx.prisma.workout.update.mockResolvedValue(Workout)
-    spyOn(workoutService, "getWorkoutById").and.stub()
+    spyOn(workoutService, "getWorkoutById").and.returnValue(Workout)
     spyOn(workoutService, "generatePrettyWorkoutPDF").and.stub()
+    spyOn(workoutService, "createVideo").and.stub()
 
     await expect(workoutService.updateWorkout(workoutUUID, "Test", "test", fullExercise, userUUID, mockCtx)).resolves.toEqual(
       "Workout Updated."
