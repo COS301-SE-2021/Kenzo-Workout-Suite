@@ -18,7 +18,6 @@ import fontkit from "@pdf-lib/fontkit"
 const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
 const base64ToImage = require("base64-to-image")
-const Jimp = require("jimp")
 // const sharp = require("sharp")
 // const resizeImg = require("resize-img")
 

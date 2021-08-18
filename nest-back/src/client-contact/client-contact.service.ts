@@ -112,13 +112,13 @@ export class ClientContactService {
 
     const personalizationsArray = [{
       to: contacts[0].contactEmail,
-      subject: "Hey, " + contacts[0].name + " Your planner " + planner.firstName + " has created a new workout"
+      subject: "Hey, " + contacts[0].name + " Your planner " + planner.firstName + " has created a new workout🏋️🏋️🏋️"
     }]
 
     for (let i = 1; i < contacts.length; i++) {
       const emailObject = {
         to: contacts[i].contactEmail,
-        subject: "Hey, " + contacts[i].name + " Your planner " + planner.firstName + " has created a new workout"
+        subject: "Hey, " + contacts[i].name + " Your planner " + planner.firstName + " has created a new workout🏋️🏋️🏋️"
       }
       personalizationsArray.push(emailObject)
     }
@@ -171,13 +171,13 @@ export class ClientContactService {
 
     const personalizationsArray = [{
       to: contacts[0].contactEmail,
-      subject: "Hey, " + contacts[0].name + " Your planner " + planner.firstName + " has created a new workout"
+      subject: "Hey, " + contacts[0].name + " Your planner " + planner.firstName + " has created a new workout🏋️🏋️🏋️"
     }]
 
     for (let i = 1; i < contacts.length; i++) {
       const emailObject = {
         to: contacts[i].contactEmail,
-        subject: "Hey, " + contacts[i].name + " Your planner " + planner.firstName + " has created a new workout"
+        subject: "Hey, " + contacts[i].name + " Your planner " + planner.firstName + " has created a new workout🏋️🏋️🏋️"
       }
       personalizationsArray.push(emailObject)
     }
@@ -230,13 +230,13 @@ export class ClientContactService {
 
     const personalizationsArray = [{
       to: contacts[0].contactEmail,
-      subject: "Hey, " + contacts[0].name + " Your planner " + planner.firstName + " has created a new workout"
+      subject: "Hey, " + contacts[0].name + " Your planner " + planner.firstName + " has created a new workout🏋️🏋️🏋️"
     }]
 
     for (let i = 1; i < contacts.length; i++) {
       const emailObject = {
         to: contacts[i].contactEmail,
-        subject: "Hey, " + contacts[i].name + " Your planner " + planner.firstName + " has created a new workout"
+        subject: "Hey, " + contacts[i].name + " Your planner " + planner.firstName + " has created a new workout🏋️🏋️🏋️"
       }
       personalizationsArray.push(emailObject)
     }
