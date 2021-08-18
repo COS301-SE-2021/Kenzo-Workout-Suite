@@ -59,11 +59,7 @@ describe("Integration tests of the getExerciseByTitle function in the Workout Se
       restPeriod: 2,
       tags: [],
       duration: 2,
-      images: [{
-        ID: uuidExercise,
-        poseDescription: "TestDescription",
-        images: ["1", "2", "3", "4"]
-      }]
+      images: []
     }]
 
     const images = ["1", "2", "3", "4"]
