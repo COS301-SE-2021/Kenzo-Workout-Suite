@@ -18,6 +18,7 @@ import fontkit from "@pdf-lib/fontkit"
 const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
 const base64ToImage = require("base64-to-image")
+const Jimp = require("jimp")
 // const sharp = require("sharp")
 // const resizeImg = require("resize-img")
 
@@ -1478,11 +1479,12 @@ export class WorkoutService {
           images.push({
             path: "./src/videoGeneration/Images/" + fileName + ".jpg",
             caption: exerciseDescription,
-            loop: 15
+            loop: 20
           })
 
-          lengthOfVideo += 15
+          lengthOfVideo += 20
         }
+
         if (base64Images.length !== 1 && i < base64Images.length - 1) {
           images.push({
             path: "./src/videoGeneration/Images/kenzoLogo.jpg",
@@ -1513,7 +1515,7 @@ export class WorkoutService {
       pixelFormat: "yuv420p"
     }
 
-    console.log(images)
+    // console.log(images)
 
     videoshow(images, videoOptions)
       .audio("./src/videoGeneration/Sounds/song1.mp3")
@@ -1530,24 +1532,6 @@ export class WorkoutService {
         console.error("Video created in:", output)
         return "Successfully created video."
       })
-    // finally remove images
-    /*
-    for (let i = 0; i < fileNames.length; i++) {
-      if (fileNames[i] !== "") {
-        try {
-          fs.unlinkSync("./src/videoGeneration/Images/" + fileNames[i] + "-fm.jpg")
-          fs.unlinkSync("./src/videoGeneration/Images/" + fileNames[i] + ".jpg")
-        } catch (err) {
-          console.error(err)
-        }
-      }
-    }
-    try {
-      fs.unlinkSync("./src/videoGeneration/Images/kenzoLogo-fm.jpg")
-    } catch (err) {
-      console.error(err)
-    }
-     */
   }
 
   /**

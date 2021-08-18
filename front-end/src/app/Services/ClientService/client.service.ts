@@ -136,7 +136,7 @@ export class ClientService {
     /**
      * Send an email of the workout's PDF and video to all clients of the planner.
      *
-     * @param workoutID is the id of the workout to get the pdf from
+     * @param workoutID is the id of the workout to get the pdf and video from
      * @return status is the code of the response
      * @author Jia Hui Wang, u18080449
      */

@@ -36,42 +36,12 @@
     height:18vh;
 }
 
-.SignUpSelectionBtn{
-    font-family: "SF Pro Regular", serif;
-    margin-right: auto;
-    margin-bottom: 15px;
-    --background: var(--ion-color-secondary);
-    --border-radius: var(--secondary-radius);
-    color: var(--ion-color-tertiary);
-    margin-top: 5px;
-    width: 100px;
-    height: 40px;
-    --background-activated: var(--ion-color-secondary);
-    --background-hover: var(--ion-color-secondary);
-}
-
-.SignUpSelectionBtn:hover{
-    font-family: "SF Pro Regular", serif;
-    border: 5px;
-    border-color: var(--ion-color-tertiary);
-    border-style: solid;
-    border-radius: var(--secondary-radius);;
-}
-
 .kenzo-logo{
   display: block;
   margin-left: auto;
   margin-right: auto;
   margin-top: 10vh;
   width: 300px;
-}
-
-#PlannerBtn{
-    margin-left: 35px;
-}
-
-#ClientBtn{
-    margin-left: 30px;
 }
 
 #SignUpButton{
