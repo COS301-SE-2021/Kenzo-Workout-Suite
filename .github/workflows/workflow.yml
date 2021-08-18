@@ -12,6 +12,7 @@ env:
   GOOGLE_SECRET: '2xP2IbH3SQVFg0qgFOG7Q198'
   JWT_SECRET: 'THESECRET'
   EXPIRY_TIME: '10800s'
+  DATABASE_URL: 'mysql://user:password@127.0.0.1:3306/test'
   
 jobs:
   build:
@@ -31,7 +32,7 @@ jobs:
           MYSQL_PASSWORD: password
           MYSQL_DATABASE: test
           MYSQL_ROOT_PASSWORD: password
-          DATABASE_URL: mysql://user:password@127.0.0.1:3306/test
+          DATABASE_URL: 'mysql://user:password@127.0.0.1:3306/test'
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
 
         
