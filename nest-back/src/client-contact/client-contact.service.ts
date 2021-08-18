@@ -155,16 +155,18 @@ export class ClientContactService {
   }
 
   async sendVideoEmailToContact (contacts: Contacts[], plannerID:string, workoutID:string) {
+    if (contacts == null || plannerID === "" || plannerID == null || workoutID === "" || workoutID == null) {
+      throw new NotFoundException("Parameters can not be left empty")
+    }
+
     const planner = await this.userService.findUserByUUID(plannerID, ActualPrisma())
 
     const sgMail = require("@sendgrid/mail")
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
-    const fs = require("fs")
+    const workoutVideo = this.getFileInBase64("./src/videoGeneration/Videos/" + workoutID + ".mp4")
 
-    const workoutVideo = fs.readFileSync("./src/videoGeneration/Videos/" + workoutID + ".mp4").toString("base64")
-
-    const kenzoImage = fs.readFileSync("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG").toString("base64")
+    const kenzoImage = this.getFileInBase64("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG")
 
     const personalizationsArray = [{
       to: contacts[0].contactEmail,
@@ -212,17 +214,18 @@ export class ClientContactService {
   }
 
   async sendMultimediaEmailToContact (contacts: Contacts[], plannerID:string, workoutID:string) {
+    if (contacts == null || plannerID === "" || plannerID == null || workoutID === "" || workoutID == null) {
+      throw new NotFoundException("Parameters can not be left empty")
+    }
+
     const planner = await this.userService.findUserByUUID(plannerID, ActualPrisma())
 
     const sgMail = require("@sendgrid/mail")
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
-    const fs = require("fs")
-
-    const workoutVideo = fs.readFileSync("./src/videoGeneration/Videos/" + workoutID + ".mp4").toString("base64")
-    const workoutPDF = fs.readFileSync("./src/GeneratedWorkouts/" + workoutID + ".pdf").toString("base64")
-
-    const kenzoImage = fs.readFileSync("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG").toString("base64")
+    const workoutVideo = this.getFileInBase64("./src/videoGeneration/Videos/" + workoutID + ".mp4")
+    const workoutPDF = this.getFileInBase64("./src/GeneratedWorkouts/" + workoutID + ".pdf")
+    const kenzoImage = this.getFileInBase64("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG")
 
     const personalizationsArray = [{
       to: contacts[0].contactEmail,
