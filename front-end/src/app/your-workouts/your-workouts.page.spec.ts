@@ -60,4 +60,58 @@ describe("YourWorkoutsPage", () => {
             expect(data).toEqual(200);
         });
     });
+
+    it("should, given an empty database, fail to obtain exercises.", async () => {
+        spyOn(service, "attemptGetExercises").and.resolveTo({status: 404});
+        spyOn(component, "loadWorkouts").and.resolveTo(404);
+        await component.loadExercises().then(error=>{
+            expect(error).toEqual(404);
+        });
+    });
+
+    it("should fail to get the exercises as server is not responding.", async () => {
+        //spyOn(userService, 'attemptSignIn').and.stub();
+        spyOn(service, "attemptGetExercises").and.resolveTo({status:500});
+        spyOn(component, "loadWorkouts").and.resolveTo(500);
+        await component.loadExercises().catch(error=>{
+            expect(error).toEqual(500);
+        });
+    });
+
+    it("should successfully obtain all exercises.", async () => {
+        spyOn(service, "attemptGetExercises").and.resolveTo({status: 200, data:[]});
+        spyOn(component, "loadWorkouts").and.resolveTo(200);
+        await component.loadExercises().then(data=>{
+            expect(data).toEqual(200);
+        });
+    });
+
+    it("should, given a data-store where the pdf of the workout doesn't exist, fail to obtain the PDF of the workout.", async () => {
+        spyOn(service, "attemptGetPDF").and.resolveTo({status: 404});
+        spyOn(component, "presentAlert").and.stub();
+        spyOn(component, "presentActionSheet").and.stub();
+        await component.sharePDF(" ").then(error=>{
+            expect(error).toEqual(404);
+        });
+    });
+
+    it("should fail to obtain the PDF of the workout as the server is not responding.", async () => {
+        spyOn(service, "attemptGetPDF").and.resolveTo({status: 500});
+        spyOn(component, "presentAlert").and.stub();
+        spyOn(component, "presentActionSheet").and.stub();
+        await component.sharePDF(" ").then(error=>{
+            expect(error).toEqual(500);
+        });
+    });
+
+    it("should, given a data-store where the pdf of the workout does exist, obtain the PDF of the workout.", async () => {
+        spyOn(service, "attemptGetPDF").and.resolveTo({status: 200});
+        spyOn(component, "presentAlert").and.stub();
+        spyOn(component, "presentActionSheet").and.stub();
+        await component.sharePDF(" ").then(error=>{
+            expect(error).toEqual(200);
+        });
+    });
+
+
 });
