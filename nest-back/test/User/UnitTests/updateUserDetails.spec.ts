@@ -30,7 +30,7 @@ describe("Unit tests of the function updateUserDetails in the UserService", () =
     }
     mockCtx.prisma.user.update.mockResolvedValue(myUser)
 
-    await expect(userService.updateUserDetails("", "updatedLastName", new Date("2000-05-30"), userUUID, ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
+    await expect(userService.updateUserDetails("", "updatedLastName", "2000-05-30", userUUID, ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
   })
 
   test("Test, Null last name passed into updateUserDetails, should throw BadRequestException", async () => {
@@ -46,7 +46,7 @@ describe("Unit tests of the function updateUserDetails in the UserService", () =
     }
     mockCtx.prisma.user.update.mockResolvedValue(myUser)
 
-    await expect(userService.updateUserDetails("updatedFirstName", "", new Date("2000-05-30"), userUUID, ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
+    await expect(userService.updateUserDetails("updatedFirstName", "", "2000-05-30", userUUID, ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
   })
 
   test("Test, Null first name passed into updateUserDetails, should throw bad request exception", async () => {
@@ -64,7 +64,7 @@ describe("Unit tests of the function updateUserDetails in the UserService", () =
 
     let nullFirstName
 
-    await expect(userService.updateUserDetails(nullFirstName, "updatedLastName", new Date("2000-05-30"), userUUID, ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
+    await expect(userService.updateUserDetails(nullFirstName, "updatedLastName", "2000-05-30", userUUID, ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
   })
 
   test("Test, Null last name passed into updateUserDetails, should throw bad request exception", async () => {
@@ -82,7 +82,7 @@ describe("Unit tests of the function updateUserDetails in the UserService", () =
 
     let nullLastName
 
-    await expect(userService.updateUserDetails("updatedFirstName", nullLastName, new Date("2000-05-30"), userUUID, ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
+    await expect(userService.updateUserDetails("updatedFirstName", nullLastName, "2000-05-30", userUUID, ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
   })
 
   test("Test, Null last name passed into updateUserDetails, should throw BadRequestException", async () => {
@@ -100,7 +100,7 @@ describe("Unit tests of the function updateUserDetails in the UserService", () =
 
     let nullLastName
 
-    await expect(userService.updateUserDetails("updatedFirstName", nullLastName, new Date("2000-05-30"), "", ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
+    await expect(userService.updateUserDetails("updatedFirstName", nullLastName, "2000-05-30", "", ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
   })
 
   test("Test, Null userID passed into updateUserDetails function, should throw BadRequestException", async () => {
@@ -118,7 +118,7 @@ describe("Unit tests of the function updateUserDetails in the UserService", () =
 
     let nullUserId
 
-    await expect(userService.updateUserDetails("updatedFirstName", "updatedLastName", new Date("2000-05-30"), nullUserId, ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
+    await expect(userService.updateUserDetails("updatedFirstName", "updatedLastName", "2000-05-30", nullUserId, ctx)).rejects.toThrow("Null values can not be passed in for firstName, lastName or userId")
   })
 
   test("Test, Valid values passed into updateUserDetails, should return confirmation message.", async () => {
@@ -138,6 +138,27 @@ describe("Unit tests of the function updateUserDetails in the UserService", () =
     const expectedMessage = {
       message: "User data updated"
     }
-    await expect(await userService.updateUserDetails("updatedFirstName", "updatedLastName", new Date("2000-05-30"), userUUID, ctx)).toStrictEqual(expectedMessage)
+    await expect(await userService.updateUserDetails("updatedFirstName", "updatedLastName", "2000-05-30", userUUID, ctx)).toStrictEqual(expectedMessage)
+  })
+
+  test("Test, Valid values passed into updateUserDetails, should return confirmation message.", async () => {
+    const testDate = new Date("2000-05-30")
+    const userUUID = uuidv4()
+    const myUser = {
+      userID: userUUID,
+      email: "test@gmail.com",
+      firstName: "test",
+      lastName: "tester",
+      password: "thePassword",
+      userType: userType.PLANNER,
+      dateOfBirth: testDate
+    }
+
+    mockCtx.prisma.user.update.mockResolvedValue(myUser)
+
+    const expectedMessage = {
+      message: "User data updated"
+    }
+    await expect(await userService.updateUserDetails("updatedFirstName", "updatedLastName", "2000-05-30", userUUID, ctx)).toStrictEqual(expectedMessage)
   })
 })

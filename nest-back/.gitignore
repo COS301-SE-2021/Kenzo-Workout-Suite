@@ -3,6 +3,7 @@
 /node_modules
 prisma/migrations
 .env
+./src/createdWorkoutImages.json
 
 # Logs
 logs
@@ -34,3 +35,4 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+

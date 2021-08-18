@@ -1,20 +1,22 @@
-import { MockContext, Context, createMockContext, ActualPrisma } from "../../../context"
+import { ActualPrisma } from "../../../context"
 import { WorkoutService } from "../../../src/Workout/workout.service"
 import { v4 as uuidv4 } from "uuid"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
 import { Tag } from "@prisma/client"
+import { UserService } from "../../../src/User/user.service"
 
-let ctx: Context
+const ctx = ActualPrisma()
 let workoutService: WorkoutService
+let userService: UserService
 let prisma: PrismaClient
 
 const uuidExercise = uuidv4()
 const uuidPlanner = uuidv4()
 
 describe("Integration tests of the updateExercise function in the Workout Service", () => {
+  const images:string[] = ["base64line"]
   beforeEach(async () => {
-    workoutService = new WorkoutService(prisma)
-    ctx = ActualPrisma()
+    workoutService = new WorkoutService(prisma, userService)
     await ctx.prisma.exercise.deleteMany()
     await ctx.prisma.user.deleteMany()
     await ctx.prisma.user.create({
@@ -47,19 +49,19 @@ describe("Integration tests of the updateExercise function in the Workout Servic
 
     const emptyTag: Tag[] = []
 
-    const response = await workoutService.updateExercise(uuidExercise, "test", "test", "test", 4, "test", 2, emptyTag, 2, uuidPlanner, ctx)
+    const response = await workoutService.updateExercise(uuidExercise, "test", "test", "test", 4, "test", 2, emptyTag, 2, uuidPlanner, images, ctx)
     expect(response).toStrictEqual("Exercise updated.")
   })
 
   test("Null exercise passed in, should throw PreconditionFailedException", async () => {
-    await expect(workoutService.updateExercise("", "", "", "", 0, "", 0, [], 0, "", ctx)).rejects.toThrow("Invalid exercise object passed in.")
+    await expect(workoutService.updateExercise("", "", "", "", 0, "", 0, [], 0, "", images, ctx)).rejects.toThrow("Invalid exercise object passed in.")
   })
 
   test("Incomplete exercise passed in, should throw PreconditionFailedException", async () => {
-    await expect(workoutService.updateExercise("test", "", "test", "", 0, "test", 0, [], 0, "", ctx)).rejects.toThrow("Invalid exercise object passed in.")
+    await expect(workoutService.updateExercise("test", "", "test", "", 0, "test", 0, [], 0, "", images, ctx)).rejects.toThrow("Invalid exercise object passed in.")
   })
 
   test("Nonexistent exercise, should throw NotFoundException", async () => {
-    await expect(workoutService.updateExercise("test", "test", "test", "test", 0, "test", 0, [], 0, "", ctx)).rejects.toThrow("Invalid exercise object passed in.")
+    await expect(workoutService.updateExercise("test", "test", "test", "test", 0, "test", 0, [], 0, "", images, ctx)).rejects.toThrow("Invalid exercise object passed in.")
   })
 })
