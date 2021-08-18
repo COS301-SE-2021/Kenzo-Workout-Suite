@@ -2,13 +2,15 @@ import { MockContext, Context, createMockContext } from "../../../context"
 import { WorkoutService } from "../../../src/Workout/workout.service"
 import { UserService } from "../../../src/User/user.service"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
-import { uuid } from "uuidv4"
+import { v4 as uuidv4 } from "uuid"
 
 let mockCtx: MockContext
 let ctx: Context
 let workoutService: WorkoutService
 let userService: UserService
 let prisma: PrismaClient
+
+const eUUID = uuidv4()
 
 describe("Unit tests of the getExercises function in the Workout Service", () => {
   beforeEach(() => {
@@ -17,9 +19,9 @@ describe("Unit tests of the getExercises function in the Workout Service", () =>
     ctx = (mockCtx as unknown) as Context
   })
 
-  test("Should receive valid information about all exercises", async () => {
+  test("Should receive valid information about all exercises with no images", async () => {
     const Exercise = [{
-      exerciseID: uuid(),
+      exerciseID: eUUID,
       exerciseTitle: "TestExercise",
       exerciseDescription: "TestDescription",
       repRange: "TestRange",
@@ -30,10 +32,68 @@ describe("Unit tests of the getExercises function in the Workout Service", () =>
       duration: 2,
       plannerID: ""
     }]
+
+    const expected = [{
+      exerciseID: eUUID,
+      exerciseTitle: "TestExercise",
+      exerciseDescription: "TestDescription",
+      repRange: "TestRange",
+      sets: 4,
+      poseDescription: "TestPDesc",
+      restPeriod: 2,
+      tags: [],
+      duration: 2,
+      images: []
+    }]
     mockCtx.prisma.exercise.findMany.mockResolvedValue(Exercise)
 
     const response = await workoutService.getExercises(ctx)
 
-    expect(response).toBe(Exercise)
+    await expect(response).toStrictEqual(expected)
+  })
+
+  test("Should receive valid information about all exercises with images", async () => {
+    const Exercise = [{
+      exerciseID: eUUID,
+      exerciseTitle: "TestExercise",
+      exerciseDescription: "TestDescription",
+      repRange: "TestRange",
+      sets: 4,
+      poseDescription: "TestPDesc",
+      restPeriod: 2,
+      tags: [],
+      duration: 2,
+      plannerID: ""
+    }]
+
+    const base64 = [{
+      ID: eUUID,
+      poseDescription: "TestDescription",
+      images: ["1", "2", "3", "4"]
+    }]
+
+    const expected = [{
+      exerciseID: eUUID,
+      exerciseTitle: "TestExercise",
+      exerciseDescription: "TestDescription",
+      repRange: "TestRange",
+      sets: 4,
+      poseDescription: "TestPDesc",
+      restPeriod: 2,
+      tags: [],
+      duration: 2,
+      images: [{
+        ID: eUUID,
+        poseDescription: "TestDescription",
+        images: ["1", "2", "3", "4"]
+      }]
+    }]
+    spyOn(workoutService, "getExerciseBase64").and.returnValue(base64)
+
+    mockCtx.prisma.exercise.findMany.mockResolvedValue(Exercise)
+
+    const response = await workoutService.getExercises(ctx)
+
+    expect(response).toStrictEqual(expected)
   })
 })
