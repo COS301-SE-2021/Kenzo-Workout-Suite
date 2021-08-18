@@ -18,7 +18,6 @@ import fontkit from "@pdf-lib/fontkit"
 const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
 const base64ToImage = require("base64-to-image")
-const Jimp = require("jimp")
 // const sharp = require("sharp")
 // const resizeImg = require("resize-img")
 
@@ -1485,12 +1484,12 @@ export class WorkoutService {
           images.push({
             path: "./src/videoGeneration/Images/" + fileName + ".jpg",
             caption: exerciseDescription,
-            loop: 20
+            loop: 15
           })
 
-          lengthOfVideo += 20
+          lengthOfVideo += 15
         }
-        if (i < base64Images.length - 1) {
+        if (base64Images.length !== 1 && i < base64Images.length - 1) {
           images.push({
             path: "./src/videoGeneration/Images/kenzoLogo.jpg",
             caption: "Exercise " + (i + 1) + " complete! On to the next...",

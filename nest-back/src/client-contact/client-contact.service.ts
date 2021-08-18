@@ -1,20 +1,18 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common"
 import { ActualPrisma, Context } from "../../context"
-import { PrismaService } from "../Prisma/prisma.service"
 import {
   Contacts
 } from "@prisma/client"
 import { UserService } from "../User/user.service"
-import { WorkoutService } from "../Workout/workout.service"
 @Injectable()
 export class ClientContactService {
-  constructor (private prisma: PrismaService, private userService: UserService, private workoutService:WorkoutService) {
+  constructor (private userService: UserService) {
 
   }
 
   async createClientContact (contactEmail: string, name: string, surname: string, plannerID:string, ctx: Context) {
-    if (contactEmail === "" || name === "" || surname === "" || contactEmail == null || name === null || surname == null) {
-      throw new NotFoundException("Parameters can not be left empty!")
+    if (contactEmail === "" || name === "" || surname === "" || plannerID === "" || contactEmail === null || name === null || surname === null || plannerID === null) {
+      throw new NotFoundException("Parameters can not be left empty")
     }
     try {
       await ctx.prisma.contacts.create({
@@ -29,14 +27,15 @@ export class ClientContactService {
           }
         }
       })
+
       return "Client contact created."
     } catch (e) {
-      throw new BadRequestException(e)
+      throw new BadRequestException("Could not create client contact")
     }
   }
 
   async updateClientContact (contactID: string, newContactEmail: string, newName: string, newSurname: string, plannerID:string, ctx: Context) {
-    if (contactID === "" || newName === "" || newSurname === "" || contactID == null || newName === null || newSurname == null) {
+    if (contactID === "" || newName === "" || newSurname === "" || plannerID === "" || contactID == null || newName === null || newSurname == null || plannerID == null) {
       throw new NotFoundException("Parameters can not be left empty!")
     }
     try {
@@ -50,9 +49,10 @@ export class ClientContactService {
           surname: newSurname
         }
       })
+
       return "Client contact updated."
     } catch (e) {
-      throw new BadRequestException(e)
+      throw new BadRequestException("Could not update contact")
     }
   }
 
@@ -60,6 +60,7 @@ export class ClientContactService {
     if (contactID === "" || contactID == null) {
       throw new NotFoundException("Parameters can not be left empty!")
     }
+
     try {
       await ctx.prisma.contacts.delete({
         where: {
@@ -68,11 +69,14 @@ export class ClientContactService {
       })
       return "Client contact deleted."
     } catch (e) {
-      throw new BadRequestException(e)
+      throw new BadRequestException("Could not delete contact")
     }
   }
 
   async getAllPlannersContacts (plannerID:string, ctx: Context) {
+    if (plannerID == null || plannerID === "") {
+      throw new BadRequestException("PlannerID field can not be left empty")
+    }
     const clientContacts = await ctx.prisma.contacts.findMany({ // search for workouts that meet the requirement
       where: {
         plannerID: plannerID
@@ -86,17 +90,24 @@ export class ClientContactService {
     }
   }
 
+  async getFileInBase64 (path: String) {
+    const fs = require("fs")
+    const file = fs.readFileSync(path).toString("base64")
+    return file
+  }
+
   async sendPDFEmailToContact (contacts: Contacts[], plannerID:string, workoutID:string) {
+    if (contacts == null || plannerID === "" || plannerID == null || workoutID === "" || workoutID == null) {
+      throw new NotFoundException("Parameters can not be left empty")
+    }
     const planner = await this.userService.findUserByUUID(plannerID, ActualPrisma())
 
     const sgMail = require("@sendgrid/mail")
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
-    const fs = require("fs")
+    const workoutPDF = this.getFileInBase64("./src/GeneratedWorkouts/" + workoutID + ".pdf")
 
-    const workoutPDF = fs.readFileSync("./src/GeneratedWorkouts/" + workoutID + ".pdf").toString("base64")
-
-    const kenzoImage = fs.readFileSync("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG").toString("base64")
+    const kenzoImage = this.getFileInBase64("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG")
 
     const personalizationsArray = [{
       to: contacts[0].contactEmail,
@@ -144,16 +155,18 @@ export class ClientContactService {
   }
 
   async sendVideoEmailToContact (contacts: Contacts[], plannerID:string, workoutID:string) {
+    if (contacts == null || plannerID === "" || plannerID == null || workoutID === "" || workoutID == null) {
+      throw new NotFoundException("Parameters can not be left empty")
+    }
+
     const planner = await this.userService.findUserByUUID(plannerID, ActualPrisma())
 
     const sgMail = require("@sendgrid/mail")
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
-    const fs = require("fs")
+    const workoutVideo = this.getFileInBase64("./src/videoGeneration/Videos/" + workoutID + ".mp4")
 
-    const workoutVideo = fs.readFileSync("./src/videoGeneration/Videos/" + workoutID + ".mp4").toString("base64")
-
-    const kenzoImage = fs.readFileSync("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG").toString("base64")
+    const kenzoImage = this.getFileInBase64("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG")
 
     const personalizationsArray = [{
       to: contacts[0].contactEmail,
@@ -201,17 +214,18 @@ export class ClientContactService {
   }
 
   async sendMultimediaEmailToContact (contacts: Contacts[], plannerID:string, workoutID:string) {
+    if (contacts == null || plannerID === "" || plannerID == null || workoutID === "" || workoutID == null) {
+      throw new NotFoundException("Parameters can not be left empty")
+    }
+
     const planner = await this.userService.findUserByUUID(plannerID, ActualPrisma())
 
     const sgMail = require("@sendgrid/mail")
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
-    const fs = require("fs")
-
-    const workoutVideo = fs.readFileSync("./src/videoGeneration/Videos/" + workoutID + ".mp4").toString("base64")
-    const workoutPDF = fs.readFileSync("./src/GeneratedWorkouts/" + workoutID + ".pdf").toString("base64")
-
-    const kenzoImage = fs.readFileSync("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG").toString("base64")
+    const workoutVideo = this.getFileInBase64("./src/videoGeneration/Videos/" + workoutID + ".mp4")
+    const workoutPDF = this.getFileInBase64("./src/GeneratedWorkouts/" + workoutID + ".pdf")
+    const kenzoImage = this.getFileInBase64("./src/Assets/KenzoLogoAndBanners/KenzoEmailBanner.PNG")
 
     const personalizationsArray = [{
       to: contacts[0].contactEmail,
