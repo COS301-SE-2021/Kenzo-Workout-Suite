@@ -9,7 +9,7 @@ on:
 env:
   CI: 1
   PRISMA_TELEMETRY_INFORMATION: 'prisma-examples test-sql-server.yaml'
-  DATABASE_URL: 'mysql://root:@localhost:3306/kenzoDB'
+  DATABASE_URL: 'mysql://root:@localhost:3306/test'
   GOOGLE_CLIENT_ID: '201037185690-g3gkgbfa2m13iepgee7qljkkh5iol1b9.apps.googleusercontent.com'
   GOOGLE_SECRET: '2xP2IbH3SQVFg0qgFOG7Q198'
   JWT_SECRET: 'THESECRET'
@@ -25,10 +25,8 @@ jobs:
         os: [ubuntu-latest]
         
     steps:
-          
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-          
+        name: Use Node.js ${{ matrix.node-version }}
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
