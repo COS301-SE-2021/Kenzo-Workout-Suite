@@ -7,7 +7,7 @@ let ctx: Context
 let clientContactService: ClientContactService
 let userService: UserService
 
-describe("Unit tests of the function createClientContact in client-contact", () => {
+describe("Integration tests of the function updateClientContact in client-contact", () => {
   beforeEach(async () => {
     clientContactService = new ClientContactService(userService)
     ctx = ActualPrisma()
@@ -15,7 +15,7 @@ describe("Unit tests of the function createClientContact in client-contact", () 
     await ctx.prisma.user.deleteMany()
   })
 
-  test("Testing empty parameters passed into the updateClientContact function", async () => {
+  test("Testing valid parameters passed into the updateClientContact function", async () => {
     const createdUser = await ctx.prisma.user.create({
       data: {
         firstName: "testPlanner",
@@ -41,7 +41,7 @@ describe("Unit tests of the function createClientContact in client-contact", () 
     expect(await clientContactService.updateClientContact(contactID, "test2@gmail.com", "test2", "tester2", createdUser.userID, ctx)).toBe("Client contact updated.")
   })
 
-  test("Testing empty parameters passed into the updateClientContact function", async () => {
+  test("Testing valid parameters passed into the updateClientContact function", async () => {
     const createdUser = await ctx.prisma.user.create({
       data: {
         firstName: "testPlanner",
