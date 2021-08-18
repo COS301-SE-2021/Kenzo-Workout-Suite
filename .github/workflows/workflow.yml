@@ -39,9 +39,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: docker://mcr.microsoft.com/mssql-tools
-        with:
-          entrypoint: /opt/mssql-tools/bin/sqlcmd
-          args: '-S sql-server -U SA -P Pr1sm4_Pr1sm4 -i ./databases/sql-server/schema.sql'
           
       - uses: actions/setup-node@v1
         with:
@@ -49,19 +46,16 @@ jobs:
       - name: npm CI(clean install)
         working-directory: ./nest-back
         run: npm ci
-      - name: Prisma Introspect
+      - name: Prisma Migrate
         working-directory: ./nest-back
-        run: npx prisma introspect
-      - name: Prisma CP
-        working-directory: ./nest-back
-        run: cp prisma/schema-introspected-renamed.prisma prisma/schema.prisma
+        run: npx prisma migrate dev --name init
       - name: npx Prisma generate
         working-directory: ./nest-back
         run: npx prisma generate
       - name: npm build
         working-directory: ./nest-back
         run: npm run build --if-present
-      - name: npm Workout Unit Tests
+      - name: npm Workout
         working-directory: ./nest-back
         run: npm test
 
