@@ -5,7 +5,6 @@ import {HttpClientTestingModule, HttpTestingController} from "@angular/common/ht
 import {IonicStorageModule} from "@ionic/storage-angular";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {Client} from "../../Models/client";
-import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 
 describe("ClientService", () => {
     let service: ClientService;
