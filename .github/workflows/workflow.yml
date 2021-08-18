@@ -8,8 +8,6 @@ on:
     branches: [ development ]
 env:
   CI: 1
-  PRISMA_TELEMETRY_INFORMATION: 'prisma-examples test-sql-server.yaml'
-  DATABASE_URL: 'mysql://root:root@localhost:3306/test'
   GOOGLE_CLIENT_ID: '201037185690-g3gkgbfa2m13iepgee7qljkkh5iol1b9.apps.googleusercontent.com'
   GOOGLE_SECRET: '2xP2IbH3SQVFg0qgFOG7Q198'
   JWT_SECRET: 'THESECRET'
@@ -21,29 +19,43 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [12.x, 14.x]
+        node-version: [14.x]
         os: [ubuntu-latest]
+    services:
+      mariadb:
+        image: mariadb:latest
+        ports:
+          - 3306
+        env:
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+          MYSQL_DATABASE: test
+          MYSQL_ROOT_PASSWORD: password
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+
         
     steps:
-      - name: Shutdown Ubuntu MySQL (SUDO)
-        run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
-      
-      - uses: mirromutth/mysql-action@v1.1
-        name: Set up MySQL
-        with:
-          mysql database: 'test' # Optional, default value is "test". The specified database which will be create
-          mysql user: 'root' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
-          mysql password: 'root' # Required if "mysql user" exists. The password for the "mysql user"
+      - uses: actions/checkout@v1
+
+      - name: Verify MariaDB connection
+        working-directory: ./nest-back
+        env:
+          PORT: ${{ job.services.mariadb.ports[3306] }}
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
+            sleep 1
+          done
           
       - uses: actions/checkout@v2
         name: Use Node.js ${{ matrix.node-version }}
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+          
+          
       - name: npm CI(clean install)
         working-directory: ./nest-back
         run: npm ci
-      
       - name: npm build
         working-directory: ./nest-back
         run: npm run build --if-present
