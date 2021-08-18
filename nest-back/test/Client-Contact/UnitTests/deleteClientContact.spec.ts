@@ -14,23 +14,23 @@ describe("Unit tests of the function deleteClientContact in client-contact", () 
     mockCtx = createMockContext()
   })
 
-  test("Testing empty parameters passed into the getAllPlannersContacts", async () => {
+  test("Testing empty parameters passed into the deleteClientContact", async () => {
     await expect(clientContactService.deleteClientContact("", mockCtx)).rejects.toThrow("Parameters can not be left empty!")
   })
 
-  test("Testing empty parameters passed into the getAllPlannersContacts", async () => {
+  test("Testing null parameters passed into the deleteClientContact", async () => {
     let empty
     await expect(clientContactService.deleteClientContact(empty, mockCtx)).rejects.toThrow("Parameters can not be left empty!")
   })
 
-  test("Testing empty parameters passed into the getAllPlannersContacts", async () => {
-    let empty
+  test("Testing valid parameters passed into the deleteClientContact where prisma returns without throwing", async () => {
+    let deletedContact
 
-    mockCtx.prisma.contacts.delete.mockResolvedValue(empty)
+    mockCtx.prisma.contacts.delete.mockResolvedValue(deletedContact)
     expect(await clientContactService.deleteClientContact(v4(), mockCtx)).toBe("Client contact deleted.")
   })
 
-  test("Testing empty parameters passed into the getAllPlannersContacts", async () => {
+  test("Testing prisma throwing an exception, in deleteClientContact, should throw an error with the message Could not delete contact", async () => {
     mockCtx.prisma.contacts.delete.mockRejectedValue(new BadRequestException())
     await expect(clientContactService.deleteClientContact(v4(), mockCtx)).rejects.toThrow("Could not delete contact")
   })
