@@ -1491,7 +1491,7 @@ export class WorkoutService {
           lengthOfVideo += 20
         }
 
-        if (base64Images.length !== 1) {
+        if (base64Images.length !== 1 && i < base64Images.length - 1) {
           images.push({
             path: "./src/videoGeneration/Images/kenzoLogo.jpg",
             caption: "Exercise " + (i + 1) + " complete! On to the next...",
