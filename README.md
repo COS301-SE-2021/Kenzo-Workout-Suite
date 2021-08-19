@@ -12,11 +12,21 @@ Workouts will be published in a public library where users will be able to pick 
 
 [SRS-Demo2](https://www.overleaf.com/read/mjcrqsxcddsx)
 
+[SRS-Demo3](https://www.overleaf.com/read/qyhbmgvqjtgm)
+
 [Architecture Design-Demo2](https://www.overleaf.com/read/vzbwdfzbvgmn)
+
+[Architecture Design-Demo3](https://www.overleaf.com/read/bkprvjhtqwhs)
+
+[User Manual](https://drive.google.com/file/d/19-NhH-VR2d7IUQ2wNDWXxFrrSJqs_tZ9/view?usp=sharing)
+
+[Installation guide](https://drive.google.com/file/d/16Hzt6JqKzENfOC6UVssM_PQRGKjOMU_r/view?usp=sharing)
 
 [CrackedStudios-Demo1](https://drive.google.com/drive/folders/1gj86A06fC_Pna694Nt6wo80G0pB5aQal?usp=sharing)
 
 [CrackedStudios-Demo2](https://drive.google.com/drive/folders/1gj86A06fC_Pna694Nt6wo80G0pB5aQal?usp=sharing)
+
+[CrackedStudios-Demo3](https://drive.google.com/file/d/1xxcIkKX9OET_LhCdY6_SL4Yg1Hd32QSs/view?usp=sharing)
 
 [Project Management](https://github.com/COS301-SE-2021/Kenzo-Workout-Suite/projects)
 
