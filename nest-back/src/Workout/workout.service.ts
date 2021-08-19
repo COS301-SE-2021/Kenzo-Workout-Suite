@@ -733,6 +733,7 @@ export class WorkoutService {
       })
       const fullWorkout = await this.getWorkoutById(createdWorkout.workoutID, ctx)
       await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
+
       await this.createVideo(fullWorkout.workoutID, ctx)
       return ("Workout Created.")
     } else {
@@ -1061,7 +1062,7 @@ export class WorkoutService {
             const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
             const json = JSON.parse(jsonTest)
             const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
-            if (exerciseImages !== "undefined") {
+            if (exerciseImages !== undefined) {
               for (let c = 0; c < exerciseImages.images.length; c++) {
                 const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
                 currentPage.drawImage(currentImage, {
@@ -1159,9 +1160,9 @@ export class WorkoutService {
             })
             let duration = "Consult Personal Trainer."
             if (workout.exercises[i].duration !== null) {
-              duration = (workout.exercises[i].duration / 60).toString()
+              duration = (workout.exercises[i].duration / 60).toString() + " minutes."
             }
-            currentPage.drawText(duration + " minutes", {
+            currentPage.drawText(duration, {
               x: 130,
               y: 160,
               size: 12,
@@ -1185,7 +1186,7 @@ export class WorkoutService {
             const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
             const json = JSON.parse(jsonTest)
             const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
-            if (exerciseImages !== "undefined") {
+            if (exerciseImages !== undefined) {
               for (let c = 0; c < exerciseImages.images.length; c++) {
                 const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
                 currentPage.drawImage(currentImage, {
