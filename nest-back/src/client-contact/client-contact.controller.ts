@@ -22,12 +22,13 @@ export class ClientContactController {
   }
 
   /**
-   * client-contact Controller - sendEmailToContacts
+   * client-contact Controller - sendEmailsPDFToContacts
    * @throws BadRequestException if the email could not be sent by the service provider (Twillio)
    * @return "Email sent!" if the email successfully sent
    * @author Zelealem Tesema
    * @param contacts
    * @param req
+   * @param workoutID - ID of the workout that is to be sent.
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -41,11 +42,12 @@ export class ClientContactController {
   }
 
   /**
-   * client-contact Controller - sendEmailsToAllContacts
+   * client-contact Controller - sendEmailsPDFToAllContacts
    * @throws BadRequestException if the email could not be sent by the service provider (Twillio)
    * @return "Email sent!" if the email successfully sent
    * @author Zelealem Tesema
    * @param contacts
+   * @param workoutID - ID of the workout that is to be sent.
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -59,12 +61,12 @@ export class ClientContactController {
   }
 
   /**
-   * client-contact Controller - sendEmailToContacts
+   * client-contact Controller - sendEmailsVideoToContacts
    * @throws BadRequestException if the email could not be sent by the service provider (Twillio)
    * @return "Email sent!" if the email successfully sent
    * @author Zelealem Tesema
    * @param contacts
-   * @param req
+   * @param workoutID - ID of the workout that is to be sent.
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -78,11 +80,11 @@ export class ClientContactController {
   }
 
   /**
-   * client-contact Controller - sendEmailsToAllContacts
+   * client-contact Controller - sendEmailsVideoToAllContacts
    * @throws BadRequestException if the email could not be sent by the service provider (Twillio)
    * @return "Email sent!" if the email successfully sent
    * @author Zelealem Tesema
-   * @param contacts
+   * @param workoutID - ID of the workout that is to be sent.
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -96,12 +98,12 @@ export class ClientContactController {
   }
 
   /**
-   * client-contact Controller - sendEmailToContacts
+   * client-contact Controller - sendEmailsMultimediaToContacts
    * @throws BadRequestException if the email could not be sent by the service provider (Twillio)
    * @return "Email sent!" if the email successfully sent
    * @author Zelealem Tesema
    * @param contacts
-   * @param req
+   * @param workoutID - ID of the workout that is to be sent.
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -115,11 +117,11 @@ export class ClientContactController {
   }
 
   /**
-   * client-contact Controller - sendEmailsToAllContacts
+   * client-contact Controller - sendEmailsMultimediaToAllContacts
    * @throws BadRequestException if the email could not be sent by the service provider (Twillio)
    * @return "Email sent!" if the email successfully sent
    * @author Zelealem Tesema
-   * @param contacts
+   * @param workoutID - ID of the workout that is to be sent.
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -137,7 +139,7 @@ export class ClientContactController {
    *
    * @throws BadRequestException if:
    * @return Object array of all contact objects
-   * @author Msi Sibanyoni & Tinashe Chamisa
+   * @author Zelealem Tesema
    *
    */
   @UseGuards(JwtAuthGuard)
@@ -167,8 +169,8 @@ export class ClientContactController {
    * client-contact Controller - getAllPlannersContacts
    *
    * @throws BadRequestException if:
-   * @return Object array of all contact objects
-   * @author Msi Sibanyoni & Tinashe Chamisa
+   * @return Object array of all contacts
+   * @author Zelealem Tesema
    *
    */
   @UseGuards(JwtAuthGuard)
@@ -191,7 +193,7 @@ export class ClientContactController {
    * @throws BadRequestException if:
    * @return Message indicating success.
    *
-   * @author Msi Sibanyoni & Tinashe Chamisa
+   * @author Zelealem Tesema
    *
    */
   @UseGuards(JwtAuthGuard)
@@ -223,7 +225,7 @@ export class ClientContactController {
    * @throws BadRequestException if:
    * @return Message indicating success.
    *
-   * @author Msi Sibanyoni & Tinashe Chamisa
+   * @author Zelealem Tesema
    *
    * @param contactID
    */
