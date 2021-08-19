@@ -110,3 +110,17 @@ My responsibilities include:
 
 Jackie's Contribution
 --------------------
+
+Msi's Contribution
+--------------------
+My responsibilities include:
+- Overall database Administrator (Ensuring database met needs of the application as a whole and ensuring that it followed proper database standards and explaining how connections in code to database using the ORM is made)
+- Creation and management operations of the exercise subsystem
+- Creation, management and removal operations in the Workout subsystem
+- Implementation of the dynamic PDF generation system
+- Assisted with Swagger config in backend (DTO's)
+- Testing (Unit, Integration and End-points of earlier mentioned systems)
+- CI/CD with Github actions 
+- Installation manual
+- SRS document: Responsible for User Characteristics and User Stories in the 
+- Architecture document: Heavily invested in architectural research, Architectural Diagram and Architectural Styles and Backend documentation
