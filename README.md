@@ -110,6 +110,16 @@ My responsibilities include:
 
 Jackie's Contribution
 --------------------
+My responsibilities include:
+- Sign-up functionality
+- UX and UI implementation
+- Retrieval and displaying of workouts and exercises
+- Profile page along with update functionality
+- Implemented the Swagger configuration of the Back-end sub-system
+- Testing (Unit and Integration)
+- Installation manual
+- Introduction and Tracibility Matrix in SRS document
+- Architecture document: Front-end requirements and technology choices
 
 Msi's Contribution
 --------------------
