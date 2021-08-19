@@ -58,13 +58,16 @@ jobs:
       - name: npm CI(clean install)
         working-directory: ./nest-back
         run: npm ci
-      - name: Prisma Migrate
-        working-directory: ./nest-back
-        run: npx prisma migrate dev --name init
       - name: npm build
         working-directory: ./nest-back
         run: npm run build --if-present
-      - name: npm Workout
+      - name: npm Workout Tests
         working-directory: ./nest-back
-        run: npm test
+        run: npm run test:workoutTest
+      - name: npm User Tests
+        working-directory: ./nest-back
+        run: npm run test:userTest
+      - name: npm Client tests
+        working-directory: ./nest-back
+        run: npm run test:clientTest
 
