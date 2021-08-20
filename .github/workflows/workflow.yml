@@ -3,9 +3,9 @@
 name: Nest.js CI
 on:
   push:
-    branches: [ development ]
+    branches: [ development, main ]
   pull_request:
-    branches: [ development ]
+    branches: [ development, main ]
 env:
   CI: 1
   GOOGLE_CLIENT_ID: '201037185690-g3gkgbfa2m13iepgee7qljkkh5iol1b9.apps.googleusercontent.com'
