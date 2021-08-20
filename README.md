@@ -21,6 +21,8 @@ Kenzo Workout Suite is the ultimate Fitness Trainer application. With custom pos
 
 [Installation Manual](https://drive.google.com/file/d/1bhReZAtTnbEFLeX08R5iXw02hZYLvglW/view?usp=sharing)
 
+[Coding Standards](https://drive.google.com/file/d/1u7-ijvgrohIEHsf3lMNy-TdPsvlBfijt/view?usp=sharing)
+
 [CrackedStudios-Demo1](https://drive.google.com/drive/folders/1gj86A06fC_Pna694Nt6wo80G0pB5aQal?usp=sharing)
 
 [CrackedStudios-Demo2](https://drive.google.com/drive/folders/1gj86A06fC_Pna694Nt6wo80G0pB5aQal?usp=sharing)
