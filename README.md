@@ -3,8 +3,7 @@
 COS301-SE-2021
 
 ## 📚Description:
-Kenzo Workout Suite is the workout customization tool that will allow users around the world to have full control in organizing their workouts. This app will allow users to follow workout plans, having the ability to tailor their own avatars, making workout sessions easy to follow and fun to participate in. Trainers/planners are able to fully customize models and will have the opportunity to be creative with the workouts they create.
-Workouts will be published in a public library where users will be able to pick their favourite ones. These workouts will have text-to-speech technology that will allow planners to explain exercises in workouts. Users will also have the option to export workouts in multiple formats: GIF, PNG, PDF.
+Kenzo Workout Suite is the ultimate Fitness Trainer application. With custom posing studios, built-in PDF + Video generation, client management, and sharing capabilities, getting your workouts to your clients has never been so easy. A Planner is a trainer who uses Kenzo Workout Suite to manage their cients, exercises and workouts. Planners can use our very own Posing Studio to manipulate a 3D human into any pose that suits the desired exercise, fill in descriptions, add tags and set exercise specifics, and ultimately have unlimited reuse of this exercise in any workouts they create. These workouts are exported as a video and/or a PDF, and sent via email using the client contact page designed to make your life easier. With a sleek design that responds to your device, Kenzo Workout Suite can be taken with you on the go on your phone, laptop, tablet, or even at home on your computer.
 
 ## 📄Links:
 ### Resources 
