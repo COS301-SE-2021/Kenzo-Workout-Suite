@@ -898,12 +898,27 @@ export class WorkoutService {
     const titleHeadingColour = rgb(0.13, 0.185, 0.24)
     const fieldsHeadingColour = rgb(0.071, 0.22, 0.4117)
     try {
-      firstPage.drawText(workout.workoutTitle, {
-        x: 310,
-        y: 210,
-        size: 38,
-        font: SFBold
+      const form = pdfDoc.getForm()
+      const titleField = form.createTextField("workout.Title")
+      titleField.enableMultiline()
+      titleField.enableReadOnly()
+      titleField.setText(workout.workoutTitle)
+
+      titleField.addToPage(firstPage, {
+        x: 300,
+        y: 190,
+        width: 280,
+        height: 90,
+        borderWidth: 0
       })
+
+      if (workout.workoutTitle.length <= 12) {
+        form.getTextField("workout.Title").setFontSize(38)
+      } else if (workout.workoutTitle.length > 12 && workout.workoutTitle.length <= 30) {
+        form.getTextField("workout.Title").setFontSize(28)
+      } else {
+        form.getTextField("workout.Title").setFontSize(24)
+      }
       const userObject = await this.userService.findUserByUUID(workout.plannerID, ctx)
       const userFirstLastName = userObject.firstName + " " + userObject.lastName
       firstPage.drawText("Author ", {
@@ -925,7 +940,6 @@ export class WorkoutService {
         size: 18,
         font: SFBold
       })
-      const form = pdfDoc.getForm()
       const textField = form.createTextField("workout.description")
       textField.enableMultiline()
       textField.enableReadOnly()
@@ -1227,22 +1241,26 @@ export class WorkoutService {
     if (workoutID === null || workoutID === "") {
       throw new NotAcceptableException("Workout ID cannot be empty.")
     }
-
     let workoutObject
     let uint8ArrayFP
     let pdfDoc
     try {
       workoutObject = await this.getWorkoutById(workoutID, ctx)
+      console.log(workoutObject)
     } catch (E) {
       throw new BadRequestException("Provided workout does not exist!")
     }
 
     try {
       uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf")
+      console.log("Created PDF Part.")
     } catch {
+      console.log("Created PDF doesnt exist.")
       await this.generatePrettyWorkoutPDF(workoutObject, ctx)
+      console.log("Created PDF doesnt exist 2.")
       uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf")
     } finally {
+      console.log("finally")
       pdfDoc = await PDFDocument.load(uint8ArrayFP)
     }
     return await pdfDoc.saveAsBase64({ dataUri: true })
