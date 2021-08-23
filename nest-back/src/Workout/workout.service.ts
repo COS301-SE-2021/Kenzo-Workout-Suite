@@ -1246,21 +1246,16 @@ export class WorkoutService {
     let pdfDoc
     try {
       workoutObject = await this.getWorkoutById(workoutID, ctx)
-      console.log(workoutObject)
     } catch (E) {
       throw new BadRequestException("Provided workout does not exist!")
     }
 
     try {
       uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf")
-      console.log("Created PDF Part.")
     } catch {
-      console.log("Created PDF doesnt exist.")
       await this.generatePrettyWorkoutPDF(workoutObject, ctx)
-      console.log("Created PDF doesnt exist 2.")
       uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf")
     } finally {
-      console.log("finally")
       pdfDoc = await PDFDocument.load(uint8ArrayFP)
     }
     return await pdfDoc.saveAsBase64({ dataUri: true })
