@@ -897,27 +897,34 @@ export class WorkoutService {
 
     const titleHeadingColour = rgb(0.13, 0.185, 0.24)
     const fieldsHeadingColour = rgb(0.071, 0.22, 0.4117)
+    const form = pdfDoc.getForm()
     try {
-      const form = pdfDoc.getForm()
       const titleField = form.createTextField("workout.Title")
       titleField.enableMultiline()
       titleField.enableReadOnly()
       titleField.setText(workout.workoutTitle)
-
-      titleField.addToPage(firstPage, {
-        x: 300,
-        y: 190,
-        width: 280,
-        height: 90,
-        borderWidth: 0
-      })
-
       if (workout.workoutTitle.length <= 12) {
-        form.getTextField("workout.Title").setFontSize(38)
-      } else if (workout.workoutTitle.length > 12 && workout.workoutTitle.length <= 30) {
-        form.getTextField("workout.Title").setFontSize(28)
+        titleField.addToPage(firstPage, {
+          x: 300,
+          y: 140,
+          width: 280,
+          height: 50,
+          borderWidth: 0
+        })
+        form.getTextField("workout.Title").setFontSize(36)
       } else {
-        form.getTextField("workout.Title").setFontSize(24)
+        titleField.addToPage(firstPage, {
+          x: 300,
+          y: 190,
+          width: 280,
+          height: 90,
+          borderWidth: 0
+        })
+        if (workout.workoutTitle.length > 13 && workout.workoutTitle.length <= 32) {
+          form.getTextField("workout.Title").setFontSize(26)
+        } else {
+          form.getTextField("workout.Title").setFontSize(24)
+        }
       }
       const userObject = await this.userService.findUserByUUID(workout.plannerID, ctx)
       const userFirstLastName = userObject.firstName + " " + userObject.lastName
