@@ -237,11 +237,10 @@ export class CreateExercisePage implements OnInit {
               if(id.toLowerCase().trim()===(text.toLowerCase())){
                   exactMatch = true;
               }
-          }
-          else {
+          } else {
               const id = tag.label;
               if(id.toLowerCase().trim()===(text.toLowerCase())){
-                exactMatch = true;
+                  exactMatch = true;
               }
           }
       }
