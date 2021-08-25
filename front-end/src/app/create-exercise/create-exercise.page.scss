@@ -22,6 +22,16 @@
   margin-right: auto;
 }
 
+#tags{
+  display: block;
+  height: 80px;
+  overflow-y: scroll;
+}
+
+#selected{
+  display: none;
+}
+
 .title {
   color: var(--ion-color-tertiary);
 }
@@ -47,6 +57,15 @@
   font-weight: 500;
 }
 
+.required{
+  font-family: "SF Pro Medium", serif;
+  display: block;
+  color: var(--ion-color-primary);
+  padding-left: 5px;
+  padding-bottom: 5px;
+  font-weight: 500;
+}
+
 .radios{
   --background: var(--ion-off-white);
   --color: var(--ion-color-tertiary);
@@ -67,4 +86,17 @@
 .footer{
   --background: var(--ion-off-white);
   border: none;
+}
+
+.imagePose{
+  height: 50px;
+  width: 100%;
+  object-fit: cover;
+}
+
+ion-slides{
+  --progress-bar-background: none;
+  --progress-bar-background-activated: none;
+  --bullet-background-active: var(--ion-color-tertiary);
+  --bullet-background: var(--ion-color-KT_BLACK);
 }

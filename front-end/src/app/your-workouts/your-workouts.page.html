@@ -1,18 +1,15 @@
 <ion-content class="your-workout-background">
 <div class="container">
   <div class="Spacing-div">
-    <ion-label id="WorkoutHeading" >For you page</ion-label>
+    <ion-label id="WorkoutHeading" >Workouts</ion-label>
     <div class="kenzo-fixed">
-      <ion-fab mode="ios" slot="fixed" size="small" vertical="bottom" horizontal="end">
+      <ion-fab slot="fixed" vertical="bottom" horizontal="end">
         <ion-fab-button>
           <ion-icon name="create"></ion-icon>
         </ion-fab-button>
         <ion-fab-list side="bottom">
             <ion-fab-button class="fabButton" data-desc="Workout">
               <ion-icon name="body-outline" class="icons" routerLink="/create-workout"></ion-icon>
-            </ion-fab-button>
-            <ion-fab-button class="fabButton" data-desc="Exercise">
-              <ion-icon name="barbell-outline" routerLink="/create-exercise"></ion-icon>
             </ion-fab-button>
         </ion-fab-list>
       </ion-fab>
@@ -21,50 +18,42 @@
   <div class="Spacing-div" id="SearchBarDiv">
     <ion-searchbar  #searchbar (ionInput)="eventHandler($event)" id="workout-searchbar" mode="ios" inputmode="search"></ion-searchbar>
   </div>
-  <div>
-    <ion-button class="filterBtns" id="workoutBtn" (click)="showWorkouts()">Workouts</ion-button>
-    <ion-button class="filterBtns" id="exerciseBtn" (click)="showExercises()">Exercises</ion-button>
-  </div>
-  <div class="Spacing-div" id="ItemsDiv">
-    <ion-virtual-scroll [items]="workouts" approxItemHeight="320px" id="workoutScroll">
-      <ion-card *virtualItem="let workout; let itemBounds = bounds;" class="workouts" id="{{workout.workoutID}}">
-        <ion-card-header>
-          <ion-card-title><u>Workout</u><br> {{ workout.workoutTitle }}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>{{ workout.workoutDescription}}</ion-card-content>
-        <ion-button mode="ios" class="editBtn" (click)="sendWorkoutID(workout.workoutID)">Edit</ion-button>
-      </ion-card>
-    </ion-virtual-scroll>
-    <ion-virtual-scroll [items]="exercises" approxItemHeight="320" id="exerciseScroll">
-      <ion-card *virtualItem="let exercise; let itemBounds = bounds;" class="exercises" id="{{exercise.exercise}}">
-        <ion-card-header>
-          <ion-card-title><u>Exercise</u><br> {{ exercise.title }}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>{{ exercise.description}}</ion-card-content>
-        <ion-button mode="ios" class="editBtn" (click)="sendExerciseID(exercise.exercise)">Edit</ion-button>
-      </ion-card>
-    </ion-virtual-scroll>
-  </div>
+      <ion-row class="ion-justify-content-center">
+        <span *ngFor="let workout of workouts">
+            <ion-card mode="ios" class="workouts" id="{{workout.workoutID}}">
+              <ion-slides scrollbar="true" pager="true" options="slideOpts">
+                <ion-slide *ngFor="let img of workout.images;">
+                   <img class="imagePose" [src]="img" alt="Exercise Pose Image Missing">
+                </ion-slide>
+              </ion-slides>
+              <ion-card-header>
+                <ion-card-title>{{ workout.title }}</ion-card-title>
+              </ion-card-header>
+<!--              <ion-card-content>{{ workout.description}}</ion-card-content>-->
+              <ion-item>
+                <ion-icon slot="end" size="medium" name="share-outline" id="shareBtn" (click)="sharePDF(workout.workoutID)"></ion-icon>
+                <ion-button slot="start" size="medium" mode="ios" class="editBtn" (click)="sendWorkoutID(workout.workoutID)">Edit</ion-button>
+              </ion-item>
+              </ion-card>
+        </span>
+      </ion-row>
 </div>
 </ion-content>
-<ion-footer>
-  <ion-toolbar mode="ios" class="footer">
-    <ion-thumbnail slot="start" class="navThumbnail" routerLink=".">
-      <ion-img src="../../assets/clipart/Clipboard_activated.png" class="NavButtons" id="WorkoutsBtn" mode="ios"></ion-img>
-      <ion-label class="NavLabel">Home</ion-label>
-    </ion-thumbnail>
-    <ion-thumbnail slot="start" class="navThumbnail" (click)="goToSearch()">
-      <ion-img src="../../assets/clipart/Library.png" class="NavButtons" id="SearchBtn" mode="ios" ></ion-img>
-      <ion-label class="NavLabel browseLabel">Browse</ion-label>
-    </ion-thumbnail>
-    <ion-thumbnail slot="start" class="navThumbnail">
-      <ion-img src="../../assets/clipart/Clients.png" class="NavButtons" id="ContactsBtn" mode="ios" routerLink="."></ion-img>
-      <ion-label class="NavLabel clientsLabel">Clients</ion-label>
-    </ion-thumbnail>
-    <ion-thumbnail slot="start" class="navThumbnail" (click)="goToProfile()">
-      <ion-img src="../../assets/clipart/Setting.png" class="NavButtons" id="SettingsBtn" mode="ios"></ion-img>
-      <ion-label class="NavLabel profileLabel">Settings</ion-label>
-    </ion-thumbnail>
-  </ion-toolbar>
-  <br>
-</ion-footer>
+<ion-tab-bar mode="md" slot="bottom">
+  <ion-tab-button>
+    <ion-label>Workouts</ion-label>
+    <ion-icon src="assets/clipart_svg/Clipboard_activated.svg"></ion-icon>
+  </ion-tab-button>
+  <ion-tab-button (click)="goToSearch()">
+    <ion-label>Exercises</ion-label>
+    <ion-icon src="assets/clipart_svg/Library.svg"></ion-icon>
+  </ion-tab-button>
+  <ion-tab-button (click)="goToClients()">
+    <ion-label>Clients</ion-label>
+    <ion-icon src="assets/clipart_svg/Clients.svg"></ion-icon>
+  </ion-tab-button>
+  <ion-tab-button (click)="goToProfile()">
+    <ion-label>Settings</ion-label>
+    <ion-icon src="assets/clipart_svg/Setting.svg"></ion-icon>
+  </ion-tab-button>
+</ion-tab-bar>

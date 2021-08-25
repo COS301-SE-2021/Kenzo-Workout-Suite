@@ -9,17 +9,17 @@
 <ion-content class="background">
   <br>
   <div class="input-div">
-    <ion-label class="input-description">Title</ion-label>
+    <ion-label class="input-description">Title *</ion-label>
     <ion-input [(ngModel)]="title" placeholder="Shred Program" class="kenzo-input"></ion-input>
   </div>
   <br>
   <div class="input-div">
-    <ion-label class="input-description">Description</ion-label>
+    <ion-label class="input-description">Description *</ion-label>
     <ion-input [(ngModel)]="description" placeholder="3 week program to lose weight" class="kenzo-input"></ion-input>
   </div>
   <br>
   <div class="input-div">
-    <ion-label class="input-description">Describe your workout with Kenzo Tags</ion-label>
+    <ion-label class="input-description">Describe your workout with Kenzo Tags *</ion-label>
     <ion-searchbar #searchBar (ionInput)="filterSelection($event)" placeholder="Search tags" mode="ios"></ion-searchbar>
 
     <span id="tags">
@@ -29,7 +29,6 @@
         </ion-chip>
     </span>
     <span style="display: none" id="no-tag-create">
-      <span style="padding-left: 10px; color: var(--ion-color-tertiary); font-size: 15px">No tags found!</span><br>
       <span style="padding-left: 10px; color: var(--ion-color-tertiary); font-size: 15px">Create: </span>
       <ion-chip name="newChip" ngDefaultControl [(ngModel)]="newTag" id="{{newTag.label}}" (click)="select(newTag.label)"
                 [style]="{'--background': 'var(--ion-color-KTB_'+newTag.backgroundColour+')', '--color': 'var(--ion-color-KT_'+newTag.textColour+')'}" >
@@ -39,11 +38,12 @@
 
     <br>
     <br>
-
-    <ion-label class="input-description">Selected</ion-label>
     <div id="selected">
-
-
+      <ion-label class="input-description">Selected</ion-label>
+      <ion-chip *ngFor="let tag of selected" (click)="select(tag.label)"
+                [style]="{'--background': 'var(--ion-color-KTB_'+tag.backgroundColour+')', '--color': 'var(--ion-color-KT_'+tag.textColour+')'}" >
+        <ion-label>{{tag.label}}</ion-label>
+      </ion-chip>
     </div>
   </div>
   <br>
@@ -58,8 +58,8 @@
   </div>
   <br>
   <div class="input-div">
-    <ion-label class="input-description">Pose Description</ion-label>
-    <ion-input [(ngModel)]="pose_description" placeholder="Ensure that your shoulders are straight" class="kenzo-input"></ion-input>
+    <ion-label class="input-description">Pose Description *</ion-label>
+    <ion-input [(ngModel)]="poseDescription" placeholder="Ensure that your shoulders are straight" class="kenzo-input"></ion-input>
   </div>
   <br>
   <div class="input-div">
@@ -72,6 +72,9 @@
     <ion-input [(ngModel)]="duration"  type="number" placeholder="10" class="kenzo-input"></ion-input>
   </div>
   <br>
+  <div class="input-div">
+    <ion-label class="required">* Required</ion-label>
+  </div>
 </ion-content>
 <ion-footer class="ion-no-border">
   <ion-toolbar mode="ios" class="footer">

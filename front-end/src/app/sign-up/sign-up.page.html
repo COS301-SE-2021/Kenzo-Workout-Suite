@@ -26,15 +26,6 @@
     <ion-input [(ngModel)]="confirmpassword" class="sign-up-input" placeholder="  ***********" type="password"></ion-input>
   </div>
   <br>
-  <div class="input-div">
-      <ion-button (click)="PlannerAccount()" mode="ios" id="PlannerBtn" class="SignUpSelectionBtn">
-      Planner
-      </ion-button>
-      <ion-button (click)="ClientAccount()" mode="ios" id="ClientBtn" class="SignUpSelectionBtn">
-      Client
-      </ion-button>
-  </div>
-
     <ion-button (click)="signUp()" mode="ios" id="SignUpButton" expand="block">Sign up</ion-button>
     <a routerLink="/sign-in">Already have an account? Sign in</a>
 </div>

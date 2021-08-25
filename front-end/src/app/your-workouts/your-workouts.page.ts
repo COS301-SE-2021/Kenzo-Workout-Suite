@@ -1,22 +1,140 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
-import {AlertController} from "@ionic/angular";
+import {ActionSheetController, AlertController} from "@ionic/angular";
 import { Router } from "@angular/router";
-import {Observable} from "rxjs";
+import {Exercise} from "../Models/exercise";
+import {ClientService} from "../Services/ClientService/client.service";
+
+/**
+ * Workouts class to store the information obtained from requests in member array workouts to dynamically populate cards
+ *
+ * @author Jia Hui Wang, u18080449
+ */
+class Workouts{
+  private _workoutID: string;
+  private _title: string;
+  private _description: string;
+  private _exercises: Exercise[];
+  private _images: string[];
+
+  get images(): string[] {
+      return this._images;
+  }
+
+  set images(value: string[]) {
+      this._images = value;
+  }
+
+  get workoutID(): string {
+      return this._workoutID;
+  }
+
+  set workoutID(value: string) {
+      this._workoutID = value;
+  }
+
+  get title(): string {
+      return this._title;
+  }
+
+  set title(value: string) {
+      this._title = value;
+  }
+
+  get description(): string {
+      return this._description;
+  }
+
+  set description(value: string) {
+      this._description = value;
+  }
+
+  get exercises(): Exercise[] {
+      return this._exercises;
+  }
+
+  set exercises(value: Exercise[]) {
+      this._exercises = value;
+  }
+
+  constructor(workoutID: string, title: string, description: string, exercises: Exercise[], images: string[]) {
+      this._workoutID = workoutID;
+      this._title = title;
+      this._description = description;
+      this._exercises = exercises;
+      this._images = images;
+  }
+}
+
+/**
+ * Exercise class to store the information obtained from requests in member array exercises to dynamically populate cards
+ *
+ * @author Jia Hui Wang, u18080449
+ */
+class Exercises{
+  private _exerciseID: string;
+  private _title: string;
+  private _description: string;
+  private _images: string[];
+
+
+  get images(): string[] {
+      return this._images;
+  }
+
+  set images(value: string[]) {
+      this._images = value;
+  }
+
+  get exerciseID(): string {
+      return this._exerciseID;
+  }
+
+  set exerciseID(value: string) {
+      this._exerciseID = value;
+  }
+
+  get title(): string {
+      return this._title;
+  }
+
+  set title(value: string) {
+      this._title = value;
+  }
+
+  get description(): string {
+      return this._description;
+  }
+
+  set description(value: string) {
+      this._description = value;
+  }
+
+  constructor(exerciseID: string, title: string, description: string, images: string[]) {
+      this._exerciseID = exerciseID;
+      this._title = title;
+      this._description = description;
+      this._images = images;
+  }
+}
 
 @Component({
-  selector: 'app-your-workouts',
-  templateUrl: './your-workouts.page.html',
-  styleUrls: ['./your-workouts.page.scss'],
+    selector: "app-your-workouts",
+    templateUrl: "./your-workouts.page.html",
+    styleUrls: ["./your-workouts.page.scss"],
 })
 export class YourWorkoutsPage implements OnInit {
-  workouts : Observable<any>;
-  exercises: Observable<any>;
-  constructor(private http:HttpClient,
-              private workoutService:WorkoutService,
-              public alertController:AlertController,
-              private router: Router) { }
+  workouts: Workouts[] = new Array();
+  exercises: Exercises[] = new Array();
+  pdf: any;
+
+  constructor(private http: HttpClient,
+              private workoutService: WorkoutService,
+              private clientService: ClientService,
+              public alertController: AlertController,
+              private router: Router,
+              public actionSheetController: ActionSheetController) { }
 
   /**
    * Upon loading of the current page, call functions to load all the workouts and exercises to be displayed.
@@ -24,100 +142,99 @@ export class YourWorkoutsPage implements OnInit {
    */
 
   ngOnInit() {
-    this.loadWorkouts();
-    this.loadExercises();
+      this.loadExercises();
   }
 
   /**
    * Load all the workouts by calling the workoutService function and then return data accordingly based on status code
+   *
    * @author Jia Hui Wang, u18080449
    */
   async loadWorkouts(){
-    let tempWorkouts = await this.workoutService.attemptGetWorkoutsByPlanner();
-      if (tempWorkouts.status==200){
-        this.workouts = tempWorkouts.data;
-        return 200;
-      }else if (tempWorkouts.status==404){
-        return 404;
+      const tempWorkouts = await this.workoutService.attemptGetWorkoutsByPlanner();
+      if (tempWorkouts.status===200){
+          let images = new Array();
+          for (let i = 0; i < tempWorkouts.data.length; i++) {
+              for (let j = 0; j <this.exercises.length; j++) {
+                  if(this.exercises[j].exerciseID===tempWorkouts.data[i].exercises[0].exerciseID){
+                      for (let k = 0; k < this.exercises[j].images.length; k++) {
+                          if(this.exercises[j].images[k]!==null) {
+                              images.push(this.exercises[j].images[k]);
+                              continue;
+                          }
+                      }
+                  }
+              }
+              this.workouts[i] = new Workouts(tempWorkouts.data[i].workoutID, tempWorkouts.data[i].workoutTitle, tempWorkouts.data[i].workoutDescription, tempWorkouts.data[i].exercises, images);
+              images = [];
+          }
+          return 200;
+      }else if (tempWorkouts.status===404){
+          return 404;
       }else{
-        return 500;
+          return 500;
       }
   }
 
   /**
-   * Load all the exercises
-   * @author Jia Hui Wang, u18080449
+   * Load all the exercises and then filter to find the respective exercises for each workout to display the preview images
+   *
+   * @author Luca Azmanov, u19004185
    */
   async loadExercises(){
-    let tempExercises = await this.workoutService.attemptGetExercisesByPlanner();
-    if (tempExercises.status==200){
-      this.exercises = tempExercises.data;
-      return 200;
-    }else if (tempExercises.status==404){
-      return 404;
-    }else{
-      return 500;
-    }
-  }
-
-  async presentAlert(alert:any) {
-    await alert.present();
-    await alert.onDidDismiss();
+      const tempExercises = await this.workoutService.attemptGetExercises();
+      if (tempExercises.status===200){
+          for (let i = 0; i < tempExercises.data.length; i++) {
+              const images = new Array();
+              for (let j = 0; j < tempExercises.data[i].images.length; j++) {
+                  if(tempExercises.data[i].images[j]!=null){
+                      if(!(tempExercises.data[i].images[j]).includes("data:image/jpeg;base64,")){
+                          tempExercises.data[i].images[j] = "data:image/jpeg;base64,"+tempExercises.data[i].images[j];
+                      }
+                      images.push(tempExercises.data[i].images[j]);
+                  }
+              }
+              this.exercises[i] = new Exercises(tempExercises.data[i].exerciseID, tempExercises.data[i].exerciseTitle, tempExercises.data[i].exerciseDescription, images);
+          }
+          await this.loadWorkouts();
+          return 200;
+      }else if (tempExercises.status===404){
+          return 404;
+      }else{
+          return 500;
+      }
   }
 
   /**
-   * Filter out the exercises and only show workouts
+   * Attempt to obtain the PDF of the workout and based on the status, either present an Action Sheet for the user to choose from multiple options then
+   * return a code or just return a code.
+   *
+   * @param id The id of the workout of which the pdf is to obtained for.
    * @author Jia Hui Wang, u18080449
    */
-  showWorkouts(){
-    let exerciseBtn = document.getElementById("exerciseBtn");
-    exerciseBtn.style.opacity = "0.5";
-    let workoutBtn = document.getElementById("workoutBtn");
-    workoutBtn.style.opacity = "1";
-    document.getElementById("workoutScroll").style.display = "block";
-    document.getElementById("exerciseScroll").style.display = "none";
+  async sharePDF(id: string){
+      this.pdf = await this.workoutService.attemptGetPDF(id);
+      if (this.pdf.status===200){
+          this.presentActionSheet(this.pdf.data, id);
+          return 200;
+      }else if (this.pdf.status===404){
+          return 404;
+      }else{
+          return 500;
+      }
   }
 
   /**
-   * Filter out the workouts and only show exercises
-   * @author Jia Hui Wang, u18080449
-   */
-  showExercises(){
-    let exerciseBtn = document.getElementById("exerciseBtn");
-    exerciseBtn.style.opacity = "1";
-    let workoutBtn = document.getElementById("workoutBtn");
-    workoutBtn.style.opacity = "0.5";
-    document.getElementById("workoutScroll").style.display = "none";
-    document.getElementById("exerciseScroll").style.display = "block";
-  }
-
-  /**
-   * Helper function to navigate to the update-workout page while passing through the ID
-   * of the workout that is to be updated.
-   * @param id
+   * Navigate to the update-workout page with the respective ID of the selected workout in order to update the workout.
+   *
    * @author Jia Hui Wang, u18080449
    */
   async sendWorkoutID(id: string){
-    console.log(id)
-    await this.router.navigate(['/update-workout'],{
-      state:{
-        id: id
-      }
-    })
-  }
-
-  /**
-   * Helper function to navigate to the update-exercise page while passing through the ID
-   * of the exercise that is to be updated.
-   * @param id
-   * @author Jia Hui Wang, u18080449
-   */
-  async sendExerciseID(id: string){
-    await this.router.navigate(['/update-exercise'],{
-      state:{
-        exercise: id
-      }
-    });
+      await this.router.navigate(["/update-workout"], {
+          state:{
+              id: id
+          }
+      });
   }
 
   /**
@@ -125,10 +242,10 @@ export class YourWorkoutsPage implements OnInit {
    * @author Jia Hui Wang, u18080449
    */
   async goToSearch(){
-    await this.router.navigate(['/search'])
-      .then(() => {
-        window.location.reload();
-      });
+      await this.router.navigate(["/search"])
+          .then(() => {
+              window.location.reload();
+          });
   }
 
   /**
@@ -136,35 +253,98 @@ export class YourWorkoutsPage implements OnInit {
    * @author Jia Hui Wang, u18080449
    */
   async goToProfile(){
-    await this.router.navigate(['/profile'])
-      .then(() => {
-        window.location.reload();
-      })
+      await this.router.navigate(["/profile"])
+          .then(() => {
+              window.location.reload();
+          });
+  }
+
+  async goToClients(){
+      await this.router.navigate(["/client-list"])
+          .then(() => {
+              window.location.reload();
+          });
   }
 
   /**
-   * Event Handler for on-key change search bar filtering by title or description
-   * @param event
+   * eventHandler for the search functionality on the page to filter for specific cards based on the text
+   *
+   * @param event The onChange when user enters or removes characters to filter the cards
    * @author Jia Hui Wang, u18080449
    */
   eventHandler(event) {
-    let text = event.srcElement.value.toLowerCase();
-    this.workouts.forEach(data => {
-      let currElement =  document.getElementById(data.workoutID);
-      if (!(data.workoutTitle.toLowerCase().includes(text)) && !(data.workoutDescription.toLowerCase().includes(text))) {
-        currElement.style.display = "none";
-      } else {
-        currElement.style.display = "block";
-      }
-    })
-    this.exercises.forEach(data => {
-      let currElement = document.getElementById(data.exercise)
-      if (!(data.title.toLowerCase().includes(text)) && !(data.description.toLowerCase().includes(text))) {
-        currElement.style.display = "none";
-      } else {
-        currElement.style.display = "block";
-      }
-    })
+      const text = event.srcElement.value.toLowerCase();
+      this.workouts.forEach(data => {
+          const currElement = document.getElementById(data.workoutID);
+          if (!(data.title.toLowerCase().includes(text)) && !(data.description.toLowerCase().includes(text))) {
+              currElement.style.display = "none";
+          } else {
+              currElement.style.display = "block";
+          }
+      });
   }
 
+  async presentAlert(alert: any) {
+      await alert.present();
+      await alert.onDidDismiss();
+  }
+
+  /**
+   * ActionSheet to display a list of options for the user to choose from, from emailing the pdf, video, or both, to downloading the pdf.
+   *
+   * @param pdf the base64 data of the image if the user wishes to download the file.
+   * @param workoutID the id of the chosen workout should the user wish to choose either email option, then the data can be passed back to back-end to find the file and send it.
+   * @author Jia Hui Wang, u18080449
+   */
+  async presentActionSheet(pdf: string, workoutID: string) {
+      const actionSheet = await this.actionSheetController.create({
+          header: "Share PDF",
+          cssClass: "actionOptions",
+          buttons: [{
+              text: "Email PDF to all clients",
+              role: "selected",
+              icon: "mail-outline",
+              handler: () => {
+                  this.clientService.attemptEmailAllClientsPDF(workoutID);
+                  return true;
+              }
+          }, {
+              text: "Email video to all clients",
+              role: "selected",
+              icon: "videocam-outline",
+              handler: () => {
+                  this.clientService.attemptEmailAllClientsVideo(workoutID);
+                  return true;
+              }
+          }, {
+              text: "Email PDF and video to all clients",
+              role: "selected",
+              icon: "documents-sharp",
+              handler: () => {
+                  this.clientService.attemptEmailAllClientsMedia(workoutID);
+                  return true;
+              }
+          }, {
+              text: "Download PDF",
+              role: "selected",
+              icon: "download-outline",
+              handler: () => {
+                  const source = pdf;
+                  const link = document.createElement("a");
+                  link.href = source;
+                  link.download = "workout.pdf";
+                  link.click();
+                  return true;
+              }
+          }, {
+              text: "Cancel",
+              icon: "close",
+              role: "cancel",
+              handler: () => false
+          }]
+      });
+      await actionSheet.present();
+      const {role} = await actionSheet.onDidDismiss();
+      return role;
+  }
 }

@@ -20,34 +20,15 @@
   <br>
   <br>
   <div class="input-div">
-    <ion-label class="input-description">Describe your workout with Kenzo Tags</ion-label>
-    <ion-searchbar #searchBar (ionInput)="filterSelection($event)" placeholder="Search tags" mode="ios"></ion-searchbar>
-
-    <span id="tags">
-        <ion-chip *ngFor="let tag of tags" id="{{tag.label}}" (click)="select(tag.label)"
-          [style]="{'--background': 'var(--ion-color-KTB_'+tag.backgroundColour+')', '--color': 'var(--ion-color-KT_'+tag.textColour+')'}" >
-          <ion-label>{{tag.label}}</ion-label>
-        </ion-chip>
-    </span>
-    <span style="display: none" id="no-tag-create">
-      <span style="padding-left: 10px; color: var(--ion-color-tertiary); font-size: 15px">No tags found!</span><br>
-      <span style="padding-left: 10px; color: var(--ion-color-tertiary); font-size: 15px">Create: </span>
-      <ion-chip name="newChip" ngDefaultControl [(ngModel)]="newTag" id="{{newTag.label}}" (click)="select(newTag.label)"
-                [style]="{'--background': 'var(--ion-color-KTB_'+newTag.backgroundColour+')', '--color': 'var(--ion-color-KT_'+newTag.textColour+')'}" >
-        <ion-label>{{newTag.label}}</ion-label>
-      </ion-chip>
-    </span><br>
-
-    <br>
-    <br>
-
-    <ion-label class="input-description">Selected</ion-label>
-    <div id="selected">
-
-
-    </div>
+    <ion-item mode="ios">
+      <ion-label class="input-description">Exercises</ion-label>
+      <ion-select [(ngModel)]="exerciseSelection" multiple="true" okText="Done">
+        <span *ngFor="let exercise of exercises">
+          <ion-select-option value="{{exercise.id}}">{{exercise.title}}</ion-select-option>
+        </span>
+      </ion-select>
+    </ion-item>
   </div>
-  <br>
 
 </ion-content>
 <ion-footer class="ion-no-border">
