@@ -238,6 +238,12 @@ export class CreateExercisePage implements OnInit {
                   exactMatch = true;
               }
           }
+          else {
+              const id = tag.label;
+              if(id.toLowerCase().trim()===(text.toLowerCase())){
+                exactMatch = true;
+              }
+          }
       }
 
       this.tags = resultArray;
