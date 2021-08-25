@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
 import { Router } from "@angular/router";
+import { Storage } from "@ionic/storage";
 
 /**
  * Exercise class to store the information obtained from requests in member array exercises to dynamically populate cards
@@ -68,7 +69,8 @@ export class SearchPage implements OnInit {
 
   constructor(private http: HttpClient,
               private workoutService: WorkoutService,
-              private router: Router) { }
+              private router: Router,
+              private storage: Storage) { }
 
   ngOnInit() {
       this.loadExercises();
@@ -147,6 +149,14 @@ export class SearchPage implements OnInit {
 
   async goToClients(){
       await this.router.navigate(["/client-list"])
+          .then(() => {
+              window.location.reload();
+          });
+  }
+
+  async signOut(){
+      await this.storage.remove("Token");
+      await this.router.navigate(["/sign-in"])
           .then(() => {
               window.location.reload();
           });

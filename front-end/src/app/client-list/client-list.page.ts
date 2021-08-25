@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import {Client} from "../Models/client";
 import {ClientService} from "../Services/ClientService/client.service";
 import {AlertController} from "@ionic/angular";
+import {Storage} from "@ionic/storage";
 
 @Component({
     selector: "app-client-list",
@@ -19,7 +20,10 @@ export class ClientListPage implements OnInit {
     private _email = "";
     private _contactID = "";
 
-    constructor(private router: Router, private clientService: ClientService, private alertController: AlertController) {
+    constructor(private router: Router,
+                private clientService: ClientService,
+                private alertController: AlertController,
+                private storage: Storage) {
         this.getClients();
     }
 
@@ -232,6 +236,14 @@ export class ClientListPage implements OnInit {
 
     async goToSearch(){
         await this.router.navigate(["/search"])
+            .then(() => {
+                window.location.reload();
+            });
+    }
+
+    async signOut(){
+        await this.storage.remove("Token");
+        await this.router.navigate(["/sign-in"])
             .then(() => {
                 window.location.reload();
             });

@@ -5,6 +5,7 @@ import {ActionSheetController, AlertController} from "@ionic/angular";
 import { Router } from "@angular/router";
 import {Exercise} from "../Models/exercise";
 import {ClientService} from "../Services/ClientService/client.service";
+import { Storage } from "@ionic/storage";
 
 /**
  * Workouts class to store the information obtained from requests in member array workouts to dynamically populate cards
@@ -134,7 +135,8 @@ export class YourWorkoutsPage implements OnInit {
               private clientService: ClientService,
               public alertController: AlertController,
               private router: Router,
-              public actionSheetController: ActionSheetController) { }
+              public actionSheetController: ActionSheetController,
+              private storage: Storage) { }
 
   ngOnInit() {
       this.loadExercises();
@@ -249,6 +251,14 @@ export class YourWorkoutsPage implements OnInit {
 
   async goToClients(){
       await this.router.navigate(["/client-list"])
+          .then(() => {
+              window.location.reload();
+          });
+  }
+
+  async signOut(){
+      await this.storage.remove("Token");
+      await this.router.navigate(["/sign-in"])
           .then(() => {
               window.location.reload();
           });
