@@ -239,6 +239,18 @@ export class UserService {
     }
   }
 
+  /**
+   * User Service - googleLogin
+   *
+   * @param email This is the email address of the google user that is trying to login
+   * @param firstName This is the first name of the google user that is trying to login
+   * @param lastName This is the last name of the google user that is trying to login
+   * @param accessToken This is the access token of the google user that is trying to login
+   * @param ctx
+   *
+   * @throws BadRequestException if parameters are left empty
+   * @throws UnauthorizedException if the user credentials are invalid
+   */
   async googleLogin (email:string, firstName:string, lastName: string, accessToken:string, ctx:Context) {
     if (!email) {
       throw new BadRequestException("No such google User")

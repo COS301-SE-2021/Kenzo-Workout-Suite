@@ -1,6 +1,5 @@
-import { Body, Controller, Get, Post, Put, UseGuards, Request, Req, HttpCode } from "@nestjs/common"
+import { Body, Controller, Get, Post, Put, UseGuards, Request, HttpCode } from "@nestjs/common"
 import { UserService } from "./user.service"
-import { AuthGuard } from "@nestjs/passport"
 import { LocalAuthGuard } from "./AuthGuards/local-auth.guard"
 import { JwtAuthGuard } from "./AuthGuards/jwt-auth.guard"
 import { User } from "@prisma/client"
@@ -92,9 +91,12 @@ export class UserController {
     /**
      * User Controller- googleRedirect
      *
-     * @param req
      *
      * @author Zelealem Tesema
+     * @param email
+     * @param accessToken
+     * @param firstName
+     * @param lastName
      */
     @Get("googleLogin")
     googleAuthRedirect (@Body("email") email: string,
