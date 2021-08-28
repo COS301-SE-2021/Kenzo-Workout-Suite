@@ -47,6 +47,7 @@
     "express": "^4.17.1",
     "ffmpeg": "^0.0.4",
     "fluent-ffmpeg": "^2.1.2",
+    "google-auth-library": "^7.6.2",
     "gtts": "^0.2.1",
     "gtts.js": "^1.0.1",
     "i": "^0.3.6",

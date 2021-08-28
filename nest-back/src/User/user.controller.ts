@@ -98,8 +98,10 @@ export class UserController {
      */
     @Get("googleLogin")
     googleAuthRedirect (@Body("email") email: string,
-                        @Body("accessToken") accessToken: string) {
-      return this.userService.googleLogin(email, accessToken, ActualPrisma())
+                        @Body("accessToken") accessToken: string,
+                        @Body("firstName") firstName: string,
+                        @Body("lastName") lastName: string) {
+      return this.userService.googleLogin(email, accessToken, firstName, lastName, ActualPrisma())
     }
 
     /**

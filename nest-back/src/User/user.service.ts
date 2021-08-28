@@ -239,7 +239,7 @@ export class UserService {
     }
   }
 
-  async googleLogin (email:string, accessToken:string, ctx:Context) {
+  async googleLogin (email:string, firstName:string, lastName: string, accessToken:string, ctx:Context) {
     if (!email) {
       throw new BadRequestException("No such google User")
     }
@@ -248,21 +248,32 @@ export class UserService {
       throw new BadRequestException("No such google User")
     }
 
+    const { OAuth2Client } = require("google-auth-library")
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
+
+    try {
+      await client.verifyIdToken({
+        idToken: accessToken,
+        audience: process.env.GOOGLE_CLIENT_ID
+      })
+    } catch (e) {
+      throw new UnauthorizedException("Invalid credentials provided")
+    }
 
     try {
       const myUser = await ctx.prisma.user.findUnique({
         where: {
-          email: req.user.email
+          email: email
         }
       })
 
       if (!myUser) {
         const createdUser = await ctx.prisma.user.create({
           data: {
-            firstName: req.user.firstName,
-            lastName: req.user.lastName,
+            firstName: firstName,
+            lastName: lastName,
             userType: "PLANNER",
-            email: req.user.email,
+            email: email,
             password: "GOOGLE_PASSWORD"
           }
         })
