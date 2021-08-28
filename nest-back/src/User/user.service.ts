@@ -239,14 +239,15 @@ export class UserService {
     }
   }
 
-  async googleLogin (req, ctx:Context) {
-    if (!req) {
+  async googleLogin (email:string, accessToken:string, ctx:Context) {
+    if (!email) {
       throw new BadRequestException("No such google User")
     }
 
-    if (!req.user) {
+    if (!accessToken) {
       throw new BadRequestException("No such google User")
     }
+
 
     try {
       const myUser = await ctx.prisma.user.findUnique({

@@ -90,28 +90,16 @@ export class UserController {
     }
 
     /**
-     * User Controller- googleLogin
-     *
-     * @param req
-     *
-     * @author Zelealem Tesema
-     * @callback googleAuthRedirect The function will callback to the googleredirect functionality
-     */
-    @Get("googleLogin")
-    @UseGuards(AuthGuard("google"))
-    async googleAuth (@Req() req) {}
-
-    /**
      * User Controller- googleRedirect
      *
      * @param req
      *
      * @author Zelealem Tesema
      */
-    @Get("googleRedirect")
-    @UseGuards(AuthGuard("google"))
-    googleAuthRedirect (@Req() req) {
-      return this.userService.googleLogin(req, ActualPrisma())
+    @Get("googleLogin")
+    googleAuthRedirect (@Body("email") email: string,
+                        @Body("accessToken") accessToken: string) {
+      return this.userService.googleLogin(email, accessToken, ActualPrisma())
     }
 
     /**
