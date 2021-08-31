@@ -853,15 +853,14 @@ export class WorkoutService {
       throw new NotFoundException("Parameters can not be left empty.")
     }
     try {
-      // const retrievedWorkout = await this.getWorkoutById(workoutID, ctx)
-      // fs.unlink("./src/GeneratedWorkouts/" + retrievedWorkout.workoutTitle + "Workout.pdf", (err) => {
-      //   if (err) {
-      //     throw err
-      //   }
-      // })
       await ctx.prisma.workout.delete({
         where: {
           workoutID: workoutID
+        }
+      })
+      fs.unlink("./src/GeneratedWorkouts/" + workoutID + ".pdf", (err) => {
+        if (err) {
+          throw err
         }
       })
       return ("Workout Deleted.")
