@@ -584,6 +584,12 @@ export class WorkoutController {
       return this.workoutService.createVideo(workoutID, this.ctx)
     }
 
+    @Get("mixAudio")
+    mixAudiio (
+    ) {
+      return this.workoutService.mixAudio()
+    }
+
     /**
      *Workout Controller - Get Workout PDF
      *
