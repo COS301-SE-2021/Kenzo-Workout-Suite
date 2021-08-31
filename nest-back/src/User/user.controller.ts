@@ -98,7 +98,7 @@ export class UserController {
      * @param firstName
      * @param lastName
      */
-    @Get("googleLogin")
+    @Post("googleLogin")
     googleAuthRedirect (@Body("email") email: string,
                         @Body("accessToken") accessToken: string,
                         @Body("firstName") firstName: string,

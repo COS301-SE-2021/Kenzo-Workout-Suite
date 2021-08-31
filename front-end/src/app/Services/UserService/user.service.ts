@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import { Storage } from "@ionic/storage";
 
 import {root} from "rxjs/internal-compatibility";
-import { initializeApp } from 'firebase/app';
+import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 @Injectable({
@@ -79,19 +79,30 @@ export class UserService {
           .then((result) => {
               // The signed-in user info.
               const user = result.user;
-              console.log(user);
-              return user;
-          // ...
-          }).catch((error) => {
+              const displayName = user.displayName;
+              const firstName = displayName.substring(0, displayName.indexOf(" "));
+              const lastName = displayName.substring(displayName.indexOf(" ")+1, displayName.length);
+              const url = "http://localhost:3000/user/googleLogin";
+              const body = {
+                  email: user.email,
+                  accessToken: user["accessToken"],
+                  firstName: firstName,
+                  lastName: lastName
+              };
+              return this.http.post(url, body).toPromise().then(r => {
+                  this.addToken(r["access_token"]);
+                  return 200;
+              }).catch((error)=>{
+                  if(error.status===0) {
+                      return 500;
+                  }
+                  console.log("About to throw error.status");
+                  return error.status;
+              });
+          }).catch((error) =>
               // Handle Errors here.
-              const errorCode = error.code;
-              const errorMessage = error.message;
-              // The email of the user's account used.
-              const email = error.email;
-              // The AuthCredential type that was used.
-              const credential = GoogleAuthProvider.credentialFromError(error);
-              // ...
-          });
+              error.code
+          );
   }
 
   /**
