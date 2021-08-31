@@ -1553,18 +1553,38 @@ export class WorkoutService {
     }
     console.log(songs)
 
-    // delete file if exists
+    await this.audioConcat(songs)
+
     /*
-    if (fs.existsSync("./src/videoGeneration/Sounds/all.wav")) {
-      try {
-        await fs.unlinkSync("./src/videoGeneration/Sounds/all.wav")
-      } catch (err) {
-        console.error(err)
-      }
-    }
+    const trimCommand = soxCommand()
+      .input("./src/videoGeneration/Sounds/song1.mp3")
+      .output("./src/videoGeneration/Sounds/trim.mp3")
+      .trim(5, 35)
+    trimCommand.on("prepare", function (args) {
+      console.log("Preparing sox command with args " + args.join(" "))
+    })
+
+    trimCommand.on("start", function (commandLine) {
+      console.log("Spawned sox with command " + commandLine)
+    })
+
+    trimCommand.on("progress", function (progress) {
+      console.log("Processing progress: ", progress)
+    })
+
+    trimCommand.on("error", function (err, stdout, stderr) {
+      console.log("Cannot process audio: " + err.message)
+      console.log("Sox Command Stdout: ", stdout)
+      console.log("Sox Command Stderr: ", stderr)
+    })
+
+    trimCommand.on("end", function () {
+      console.log("Sox command succeeded!")
+    })
+
+    trimCommand.run()
 
      */
-    await this.audioConcat(songs)
   }
 
   async audioConcat (songs: string[]) {
