@@ -4,6 +4,9 @@ import {Router} from "@angular/router";
 import {AlertController} from "@ionic/angular";
 import {UserService} from "../Services/UserService/user.service";
 
+import { GoogleAuthProvider } from "firebase/auth";
+
+
 @Component({
     selector: "app-sign-in",
     templateUrl: "./sign-in.page.html",
@@ -14,6 +17,8 @@ export class SignInPage implements OnInit {
   password: string;
   userData: any = {};
 
+
+  provider = new GoogleAuthProvider();
 
   constructor(private http: HttpClient,
               private route: Router,
@@ -63,6 +68,10 @@ export class SignInPage implements OnInit {
           await this.presentAlert(alert);
           throw new Error("Server is not responding.");
       }
+  }
+
+  async googleSignIn(){
+      await this.userService.attemptGoogleLogin();
   }
 
   /**
