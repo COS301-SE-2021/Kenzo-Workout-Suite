@@ -49,12 +49,15 @@ export class ProfilePage implements OnInit {
           userInputs[i].setAttribute("disabled", "false");
       }
       const editBtn = document.getElementById("editBtn");
-      editBtn.style.visibility = "hidden";
       editBtn.style.display = "none";
 
       const updateBtn = document.getElementById("updateBtn");
-      updateBtn.style.visibility = "visible";
+      updateBtn.style.display = "block";
       updateBtn.setAttribute("disabled", "false");
+
+      const cancelBtn = document.getElementById("cancelBtn");
+      cancelBtn.style.display = "block";
+      cancelBtn.setAttribute("disabled", "false");
   }
 
   /**
@@ -66,12 +69,15 @@ export class ProfilePage implements OnInit {
           userInputs[i].setAttribute("disabled", "true");
       }
       const editBtn = document.getElementById("editBtn");
-      editBtn.style.visibility = "visible";
       editBtn.style.display = "block";
 
       const updateBtn = document.getElementById("updateBtn");
-      updateBtn.style.visibility = "hidden";
+      updateBtn.style.display = "none";
       updateBtn.setAttribute("disabled", "true");
+
+      const cancelBtn = document.getElementById("cancelBtn");
+      cancelBtn.style.display = "none";
+      cancelBtn.setAttribute("disabled", "false");
 
       const status = await this.userService.attemptUpdateUserDetails(this.firstName, this.lastName, this.birthDate);
       if (status === 200) {
@@ -104,6 +110,26 @@ export class ProfilePage implements OnInit {
       }
       this.reloadWindow();
       return status;
+  }
+
+  /**
+   * Cancel Update Operation
+   */
+  async cancel(){
+      const userInputs = document.getElementsByClassName("enable-input") as HTMLCollectionOf<HTMLElement>;
+      for (let i =0; i<userInputs.length; i++){
+          userInputs[i].setAttribute("disabled", "true");
+      }
+      const editBtn = document.getElementById("editBtn");
+      editBtn.style.display = "block";
+
+      const updateBtn = document.getElementById("updateBtn");
+      updateBtn.style.display = "none";
+      updateBtn.setAttribute("disabled", "true");
+
+      const cancelBtn = document.getElementById("cancelBtn");
+      cancelBtn.style.display = "none";
+      cancelBtn.setAttribute("disabled", "false");
   }
 
   /**
