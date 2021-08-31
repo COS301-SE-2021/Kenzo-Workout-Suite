@@ -3,6 +3,11 @@ import {HttpClient} from "@angular/common/http";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
 import { Router } from "@angular/router";
 
+/**
+ * Exercise class to store the information obtained from requests in member array exercises to dynamically populate cards
+ *
+ * @author Jia Hui Wang, u18080449
+ */
 class Exercises{
   private _exerciseID: string;
   private _title: string;
@@ -96,9 +101,10 @@ export class SearchPage implements OnInit {
   }
 
   /**
-   * on keypress or enter key is pressed, filter the cards based on what is typed
+   * eventHandler for the search functionality on the page to filter for specific cards based on the text
    *
-   * @param event
+   * @param event The onChange when user enters or removes characters to filter the cards
+   * @author Jia Hui Wang, u18080449
    */
   eventHandler(event) {
       const text = event.srcElement.value.toLowerCase();
@@ -112,6 +118,11 @@ export class SearchPage implements OnInit {
       });
   }
 
+  /**
+   * Navigate to the update-exercise page with the respective ID of the selected exercise in order to update the workout.
+   *
+   * @author Jia Hui Wang, u18080449
+   */
   async sendExerciseID(id: string){
       await this.router.navigate(["/update-exercise"], {
           state:{

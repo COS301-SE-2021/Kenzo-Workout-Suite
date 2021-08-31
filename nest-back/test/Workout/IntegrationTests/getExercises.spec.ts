@@ -1,10 +1,10 @@
-import { Context, ActualPrisma } from "../../../context"
+import { ActualPrisma } from "../../../context"
 import { WorkoutService } from "../../../src/Workout/workout.service"
 import { UserService } from "../../../src/User/user.service"
 import { v4 as uuidv4 } from "uuid"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
 
-let ctx: Context
+const ctx = ActualPrisma()
 let workoutService: WorkoutService
 let userService: UserService
 let prisma: PrismaClient
@@ -13,7 +13,6 @@ const uuidExercise = uuidv4()
 describe("Integration tests of the getExercises function in the Workout Service", () => {
   beforeEach(async () => {
     workoutService = new WorkoutService(prisma, userService)
-    ctx = ActualPrisma()
     await ctx.prisma.exercise.deleteMany()
     await ctx.prisma.exercise.create({
       data: {

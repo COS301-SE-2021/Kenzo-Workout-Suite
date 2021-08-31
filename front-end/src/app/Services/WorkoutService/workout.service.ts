@@ -175,7 +175,10 @@ export class WorkoutService {
     }
 
     /**
-     * attempt to get all the workouts in the database for the library page
+     * This function attempts to obtain all the workouts in the database from the endpoint provided.
+     *
+     * @returns 200,400,500 represent a success, User error and server error, respectively.
+     * @author Jia Hui Wang, u18080449
      */
     async attemptGetWorkouts(): Promise<any>{
         const url = "http://localhost:3000/workout/getWorkouts";
@@ -189,7 +192,10 @@ export class WorkoutService {
     }
 
     /**
-     * attempt to get all the exercises in the database for the library page
+     * This function attempts to obtain all the exercises in the database from the endpoint provided.
+     *
+     * @returns 200,404,500 represent a success, not found error and server error, respectively.
+     * @author Jia Hui Wang, u18080449
      */
     async attemptGetExercises(): Promise<any>{
         const url = "http://localhost:3000/workout/getExercises";
@@ -202,6 +208,12 @@ export class WorkoutService {
         }).catch(err=>err);
     }
 
+    /**
+     * This function attempts to obtain all the workouts in the database for a specific planner from the endpoint provided.
+     *
+     * @returns 200,404,500 represent a success, not found error and server error, respectively.
+     * @author Jia Hui Wang, u18080449
+     */
     async attemptGetWorkoutsByPlanner(): Promise<any>{
         const url = "http://localhost:3000/workout/getWorkoutByPlanner";
 
@@ -219,6 +231,12 @@ export class WorkoutService {
         });
     }
 
+    /**
+     * This function attempts to obtain all the exercises in the database for a specific planner from the endpoint provided.
+     *
+     * @returns 200,404,500 represent a success, not found error and server error, respectively.
+     * @author Jia Hui Wang, u18080449
+     */
     async attemptGetExercisesByPlanner(): Promise<any>{
         const url = "http://localhost:3000/workout/getExercisesByPlanner";
 
@@ -236,6 +254,13 @@ export class WorkoutService {
         });
     }
 
+    /**
+     * This function attempts to obtain the PDF of a specific workout based on the ID passed in from the endpoint provided.
+     *
+     * @param id unique ID of the workout
+     * @returns 200,404,500 represent a success, not found error and server error, respectively.
+     * @author Jia Hui Wang, u18080449
+     */
     async attemptGetPDF(id: string): Promise<any>{
         const url = "http://localhost:3000/workout/getWorkoutPDF/"+id;
         return await this.http.get(url).toPromise().then(data=>{

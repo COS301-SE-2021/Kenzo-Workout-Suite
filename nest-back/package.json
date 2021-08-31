@@ -21,8 +21,9 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:workoutIntegration": "jest --coverage --detectOpenHandles --forceExit --testPathPattern=test/Workout/IntegrationTests",
-    "test:workoutUnit": "jest --coverage --detectOpenHandles --forceExit --testPathPattern=test/Workout/UnitTest",
-    "test:userUnit": "jest --coverage --detectOpenHandles --forceExit --testPathPattern=test/User/UnitTest"
+    "test:workoutTest": "jest --coverage --detectOpenHandles --forceExit --testPathPattern=test/Workout/UnitTest",
+    "test:userTest": "jest --coverage --detectOpenHandles --forceExit --testPathPattern=test/User/UnitTest",
+    "test:clientTest": "jest --coverage --detectOpenHandles --forceExit --testPathPattern=test/Client-Contact/UnitTest"
   },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",

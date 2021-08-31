@@ -11,13 +11,13 @@ import {AlertController} from "@ionic/angular";
 })
 export class ClientListPage implements OnInit {
 
-    public contacts: Client[];
-    public contactsOriginal: Client[];
+    private _contacts: Client[];
+    private _contactsOriginal: Client[];
 
-    name = "";
-    surname = "";
-    email = "";
-    contactID = "";
+    private _name = "";
+    private _surname = "";
+    private _email = "";
+    private _contactID = "";
 
     constructor(private router: Router, private clientService: ClientService, private alertController: AlertController) {
         this.getClients();
@@ -35,11 +35,11 @@ export class ClientListPage implements OnInit {
         const resp = await this.clientService.getClientList();
         const data = resp.data;
         // console.log(data);
-        this.contacts = new Array();
-        this.contactsOriginal = new Array();
+        this._contacts = new Array();
+        this._contactsOriginal = new Array();
         for (let i = 0; i <data.length; i++) {
-            this.contacts[i] = new Client(data[i].name, data[i].surname, data[i].contactEmail, data[i].contactId);
-            this.contactsOriginal[i] = new Client(data[i].name, data[i].surname, data[i].contactEmail, data[i].contactId);
+            this._contacts[i] = new Client(data[i].name, data[i].surname, data[i].contactEmail, data[i].contactId);
+            this._contactsOriginal[i] = new Client(data[i].name, data[i].surname, data[i].contactEmail, data[i].contactId);
         }
     }
 
@@ -64,12 +64,12 @@ export class ClientListPage implements OnInit {
         document.getElementById("list").style.display = "none";
         document.getElementById("create").style.display = "none";
 
-        for (let i = 0; i < this.contacts.length; i++) {
-            if(this.contacts[i].contactID===id){
-                this.name = this.contacts[i].firstName;
-                this.surname = this.contacts[i].lastName;
-                this.email = this.contacts[i].email;
-                this.contactID = id;
+        for (let i = 0; i < this._contacts.length; i++) {
+            if(this._contacts[i].contactID===id){
+                this._name = this._contacts[i].firstName;
+                this._surname = this._contacts[i].lastName;
+                this._email = this._contacts[i].email;
+                this._contactID = id;
                 break;
             }
         }
@@ -92,18 +92,17 @@ export class ClientListPage implements OnInit {
      * @author Luca Azmanov, u19004185
      */
     async submitContact() {
-        const client = new Client(this.name, this.surname, this.email, "");
+        const client = new Client(this._name, this._surname, this._email, "");
 
         const resp = await this.clientService.addClient(client);
-        console.log(resp);
 
         if(resp>=200 && resp<300){
             await this.router.navigate(["/client-list"])
                 .then(() => {
-                    window.location.reload();
+                    this.reloadWindow();
                 });
             return 200;
-        } else{
+        } else if(resp>=400 && resp<500){
             const alert = await this.alertController.create({
                 cssClass: "kenzo-alert",
                 header: "Could not create contact",
@@ -112,6 +111,16 @@ export class ClientListPage implements OnInit {
 
             await this.presentAlert(alert);
             throw new Error("Data is invalid.");
+        }else{
+            // Server Error
+            const alert = await this.alertController.create({
+                cssClass: "kenzo-alert",
+                header: "Server isn't responding",
+                message: "Please try again later.",
+                buttons: ["Dismiss"]
+            });
+            await this.presentAlert(alert);
+            throw new Error("Server is not responding.");
         }
     }
 
@@ -121,13 +130,12 @@ export class ClientListPage implements OnInit {
      * @author Luca Azmanov, u19004185
      */
     async update() {
-        const client = new Client(this.name, this.surname, this.email, this.contactID);
+        const client = new Client(this._name, this._surname, this._email, this._contactID);
         const status = await this.clientService.updateClient(client);
-
         if (status < 400) {
         // Success State
             this.router.navigate(["/client-list"]).then(()=>{
-                window.location.reload();
+                this.reloadWindow();
             }
             );
             return 200;
@@ -175,12 +183,12 @@ export class ClientListPage implements OnInit {
             return;
         }
 
-        const status = await this.clientService.removeClient(this.contactID);
-
+        const status = await this.clientService.removeClient(this._contactID);
+        console.log(" hi "+status);
         if (status < 300) {
         // Success State
             this.router.navigate(["/client-list"]).then(()=>{
-                window.location.reload();
+                this.reloadWindow();
             }
             );
             return 200;
@@ -247,33 +255,86 @@ export class ClientListPage implements OnInit {
      * @author Luca Azmanov, u19004185
      */
     search(event) {
-        this.contacts = this.contactsOriginal;
+        this._contacts = this._contactsOriginal;
         const result = event.srcElement.value.trim().toLowerCase();
         const resultArray = new Array();
         if(result===""){
             return;
         }
 
-        for (let i = 0; i < this.contacts.length; i++) {
-            if(this.contacts[i].firstName.toLowerCase().trim().includes(result)){
-                resultArray.push(this.contacts[i]);
+        for (let i = 0; i < this._contacts.length; i++) {
+            if(this._contacts[i].firstName.toLowerCase().trim().includes(result)){
+                resultArray.push(this._contacts[i]);
                 continue;
             }
-            if(this.contacts[i].lastName.toLowerCase().trim().includes(result)){
-                resultArray.push(this.contacts[i]);
+            if(this._contacts[i].lastName.toLowerCase().trim().includes(result)){
+                resultArray.push(this._contacts[i]);
                 continue;
             }
-            if(this.contacts[i].email.toLowerCase().trim().includes(result)){
-                resultArray.push(this.contacts[i]);
+            if(this._contacts[i].email.toLowerCase().trim().includes(result)){
+                resultArray.push(this._contacts[i]);
             }
         }
 
-        this.contacts = resultArray;
+        this._contacts = resultArray;
 
-        if(this.contacts.length===0){ //no results
+        if(this._contacts.length===0){ //no results
             document.getElementById("no-results").style.display = "block";
         }else {
             document.getElementById("no-results").style.display = "none";
         }
+    }
+
+    //Helper Functions
+    reloadWindow(){
+        window.location.reload();
+    }
+
+    get contacts(): Client[] {
+        return this._contacts;
+    }
+
+    set contacts(value: Client[]) {
+        this._contacts = value;
+    }
+
+    get contactsOriginal(): Client[] {
+        return this._contactsOriginal;
+    }
+
+    set contactsOriginal(value: Client[]) {
+        this._contactsOriginal = value;
+    }
+
+    get name(): string {
+        return this._name;
+    }
+
+    set name(value: string) {
+        this._name = value;
+    }
+
+    get surname(): string {
+        return this._surname;
+    }
+
+    set surname(value: string) {
+        this._surname = value;
+    }
+
+    get email(): string {
+        return this._email;
+    }
+
+    set email(value: string) {
+        this._email = value;
+    }
+
+    get contactID(): string {
+        return this._contactID;
+    }
+
+    set contactID(value: string) {
+        this._contactID = value;
     }
 }

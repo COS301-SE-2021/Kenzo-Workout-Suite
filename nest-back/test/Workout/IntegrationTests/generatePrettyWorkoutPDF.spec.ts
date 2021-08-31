@@ -1,15 +1,14 @@
-﻿import { Context, ActualPrisma } from "../../../context"
+﻿import { ActualPrisma } from "../../../context"
 import { WorkoutService } from "../../../src/Workout/workout.service"
 import { v4 as uuidv4 } from "uuid"
 import {
-  Exercise,
   userType
 } from "@prisma/client"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
 import { UserService } from "../../../src/User/user.service"
 import { JwtService } from "@nestjs/jwt"
 
-let ctx: Context
+const ctx = ActualPrisma()
 let workoutService: WorkoutService
 let userService: UserService
 let Jwt : JwtService
@@ -32,7 +31,6 @@ const exercise = {
 beforeEach(async () => {
   userService = new UserService(Jwt)
   workoutService = new WorkoutService(prisma, userService)
-  ctx = ActualPrisma()
   await ctx.prisma.exercise.deleteMany()
   await ctx.prisma.user.deleteMany()
   await ctx.prisma.tag.deleteMany()

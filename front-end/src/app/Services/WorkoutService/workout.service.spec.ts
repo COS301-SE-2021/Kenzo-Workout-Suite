@@ -762,4 +762,51 @@ describe("WorkoutService", () => {
         const status = await respStatus;
         expect(status).toEqual(500);
     });
+
+    /**
+     * Getting the PDF of the workouts
+     */
+    it("should obtain the PDF for the chosen workout and return a 200 status", async () => {
+        const respStatus = service.attemptGetPDF("");
+
+        const req = httpMock.expectOne("http://localhost:3000/workout/getWorkoutPDF/");
+        expect(req.request.method).toEqual("GET");
+
+        const resp = new HttpResponse({
+            status: 200,
+            statusText: " "
+        });
+        req.flush(resp);
+        const status = await respStatus;
+        const statusValue: number = status["status"];
+        expect(statusValue).toEqual(200);
+    });
+
+    it("should fail to the PDF for the chosen workout because the PDF does not exist in the data store and return a 404 status", async ()=>{
+        const respStatus = service.attemptGetPDF("");
+
+        const req = httpMock.expectOne("http://localhost:3000/workout/getWorkoutPDF/");
+        expect(req.request.method).toEqual("GET");
+
+        const resp = new HttpErrorResponse({
+            status: 404
+        });
+        req.flush(null, resp);
+        const status = await respStatus;
+        expect(status).toEqual(404);
+    });
+
+    it("should fail to the PDF for the chosen workout because server did not respond and returns a status of 500", async ()=>{
+        const respStatus = service.attemptGetPDF("");
+
+        const req = httpMock.expectOne("http://localhost:3000/workout/getWorkoutPDF/");
+        expect(req.request.method).toEqual("GET");
+
+        const resp = new HttpErrorResponse({
+            status: 500
+        });
+        req.flush(null, resp);
+        const status = await respStatus;
+        expect(status).toEqual(500);
+    });
 });

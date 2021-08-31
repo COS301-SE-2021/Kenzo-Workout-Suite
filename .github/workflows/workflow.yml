@@ -1,18 +1,22 @@
-﻿# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 name: Nest.js CI
 on:
   push:
-    branches: [ development ]
+    branches: 
+     - master
+     - development
   pull_request:
-    branches: [ development ]
+    branches:  
+     - master
+     - development
 env:
   CI: 1
   GOOGLE_CLIENT_ID: '201037185690-g3gkgbfa2m13iepgee7qljkkh5iol1b9.apps.googleusercontent.com'
   GOOGLE_SECRET: '2xP2IbH3SQVFg0qgFOG7Q198'
   JWT_SECRET: 'THESECRET'
   EXPIRY_TIME: '10800s'
-  DATABASE_URL: 'mysql://user:password@127.0.0.1:3306/test'
+  DATABASE_URL: 'mysql://user:password@localhost:3306/test'
 
 jobs:
   build:
@@ -32,7 +36,7 @@ jobs:
           MYSQL_PASSWORD: password
           MYSQL_DATABASE: test
           MYSQL_ROOT_PASSWORD: password
-          DATABASE_URL: 'mysql://user:password@127.0.0.1:3306/test'
+          DATABASE_URL: 'mysql://user:password@localhost:3306/test'
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
 
 
@@ -58,13 +62,16 @@ jobs:
       - name: npm CI(clean install)
         working-directory: ./nest-back
         run: npm ci
-      - name: Prisma Migrate
-        working-directory: ./nest-back
-        run: npx prisma migrate dev --name init
       - name: npm build
         working-directory: ./nest-back
         run: npm run build --if-present
-      - name: npm Workout
+      - name: npm Workout Tests
         working-directory: ./nest-back
-        run: npm test
+        run: npm run test:workoutTest
+      - name: npm User Tests
+        working-directory: ./nest-back
+        run: npm run test:userTest
+      - name: npm Client tests
+        working-directory: ./nest-back
+        run: npm run test:clientTest
 
