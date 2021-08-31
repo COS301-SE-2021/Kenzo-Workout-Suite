@@ -18,6 +18,9 @@ import fontkit from "@pdf-lib/fontkit"
 const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
 const base64ToImage = require("base64-to-image")
+const audioconcat = require("audioconcat")
+// const { getAudioDurationInSeconds } = require("get-audio-duration")
+// const soxCommand = require("sox-audio")
 // const sharp = require("sharp")
 // const resizeImg = require("resize-img")
 
@@ -1385,10 +1388,10 @@ export class WorkoutService {
   async textToSpeech (text:String, fileName:String) {
     const gtts = require("node-gtts")("en")
     const path = require("path")
-    const filepath = path.join("./src/Workout/GeneratedTextSpeech/", fileName + ".wav")
+    const filepath = path.join("./src/Workout/GeneratedTextSpeech/", fileName + ".mp3")
 
     try {
-      gtts.save(filepath, text, function () {
+      await gtts.save(filepath, text, function () {
       })
 
       return "text file has been created"
@@ -1534,6 +1537,34 @@ export class WorkoutService {
         console.error("Video created in:", output)
         return "Successfully created video."
       })
+  }
+
+  async mixAudio (): Promise<any> {
+    const songs: string[] = []
+    const subtitles = [
+      "He said he was not there yesterday; however, many people saw him there.",
+      "Getting up at dawn is for the birds.",
+      "Warm beer on a cold day isn't my idea of fun."
+    ]
+    // create tts
+    for (let i = 0; i < subtitles.length; i++) {
+      await this.textToSpeech(subtitles[i], "exercise1Pose" + (i + 1))
+      songs.push("./src/Workout/GeneratedTextSpeech/exercise1Pose" + (i + 1) + ".mp3")
+    }
+    console.log(songs)
+
+    // delete file if exists
+    /*
+    if (fs.existsSync("./src/videoGeneration/Sounds/all.wav")) {
+      try {
+        await fs.unlinkSync("./src/videoGeneration/Sounds/all.wav")
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+     */
+    // await this.audioConcat(songs)
   }
 
   /**
