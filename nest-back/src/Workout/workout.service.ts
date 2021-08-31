@@ -1564,7 +1564,22 @@ export class WorkoutService {
     }
 
      */
-    // await this.audioConcat(songs)
+    await this.audioConcat(songs)
+  }
+
+  async audioConcat (songs: string[]) {
+    await audioconcat(songs)
+      .concat("./src/videoGeneration/Sounds/all.wav")
+      .on("start", function (command) {
+        console.log("ffmpeg process started:", command)
+      })
+      .on("error", function (err, stdout, stderr) {
+        console.error("Error:", err)
+        console.error("ffmpeg stderr:", stderr)
+      })
+      .on("end", function (output) {
+        console.error("Audio created in:", output)
+      })
   }
 
   /**
