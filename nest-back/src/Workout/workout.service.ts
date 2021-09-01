@@ -1450,6 +1450,11 @@ export class WorkoutService {
     const fileNames = [""]
     let lengthOfVideo = 0
 
+    // customization options
+    const loop = 15
+    const songChoice = "song1.mp3"
+    const resolution = "1920x1080"
+
     // retrieve all exercises poses one by one from the local storage
     for (let i = 0; i < exercisesID.length; i++) {
       let temp: any[] = []
@@ -1484,10 +1489,10 @@ export class WorkoutService {
           images.push({
             path: "./src/videoGeneration/Images/" + fileName + ".jpg",
             caption: exerciseDescription,
-            loop: 20
+            loop: loop
           })
 
-          lengthOfVideo += 20
+          lengthOfVideo += loop
         }
 
         if (base64Images.length !== 1 && i < base64Images.length - 1) {
@@ -1513,7 +1518,7 @@ export class WorkoutService {
       transitionDuration: 1, // seconds
       videoBitrate: 1024,
       videoCodec: "libx264",
-      size: "1920x1080",
+      size: resolution,
       audioBitrate: "128k",
       audioChannels: 2,
       format: "mp4",
@@ -1523,7 +1528,7 @@ export class WorkoutService {
     // console.log(images)
 
     videoshow(images, videoOptions)
-      .audio("./src/videoGeneration/Sounds/song1.mp3")
+      .audio("./src/videoGeneration/Sounds/" + songChoice)
       .save("./src/videoGeneration/Videos/" + workoutID + ".mp4")
       .on("start", function (command) {
         console.log("ffmpeg process started:", command)
