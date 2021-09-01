@@ -307,9 +307,12 @@ export class YourWorkoutsPage implements OnInit {
   async presentModal(){
       const modal = await this.modalController.create({
           component: ModalPopupPage,
-          cssClass: "my-custom-class"
+          cssClass: "modalPopupCSS",
+          showBackdrop: true,
+          backdropDismiss: false
       });
       await modal.present();
+      const _contacts = await modal.onWillDismiss();
   }
 
   /**
@@ -324,7 +327,7 @@ export class YourWorkoutsPage implements OnInit {
           header: "Share documents",
           cssClass: "actionOptions",
           buttons: [{
-              text: "Email PDF to all clients",
+              text: "Email PDF to clients",
               role: "selected",
               icon: "mail-outline",
               handler: () => {
@@ -332,7 +335,7 @@ export class YourWorkoutsPage implements OnInit {
                   return true;
               }
           }, {
-              text: "Email video to all clients",
+              text: "Email video to clients",
               role: "selected",
               icon: "videocam-outline",
               handler: () => {
@@ -340,7 +343,7 @@ export class YourWorkoutsPage implements OnInit {
                   return true;
               }
           }, {
-              text: "Email PDF and video to all clients",
+              text: "Email PDF and video to clients",
               role: "selected",
               icon: "documents-sharp",
               handler: () => {
