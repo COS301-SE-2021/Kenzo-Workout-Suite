@@ -1,10 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
-import {ActionSheetController, AlertController} from "@ionic/angular";
+import {ActionSheetController, AlertController, ModalController} from "@ionic/angular";
 import { Router } from "@angular/router";
 import {Exercise} from "../Models/exercise";
 import {ClientService} from "../Services/ClientService/client.service";
+import {ModalPopupPage} from "../modal-popup/modal-popup.page";
 
 /**
  * Workouts class to store the information obtained from requests in member array workouts to dynamically populate cards
@@ -134,10 +135,12 @@ export class YourWorkoutsPage implements OnInit {
               private clientService: ClientService,
               public alertController: AlertController,
               private router: Router,
-              public actionSheetController: ActionSheetController) { }
+              public actionSheetController: ActionSheetController,
+              public modalController: ModalController) { }
 
   /**
    * Upon loading of the current page, call functions to load all the workouts and exercises to be displayed.
+   *
    * @author Jia Hui Wang, u18080449
    */
 
@@ -213,6 +216,7 @@ export class YourWorkoutsPage implements OnInit {
    * @author Jia Hui Wang, u18080449
    */
   async sharePDF(id: string){
+      await this.presentModal();
       this.pdf = await this.workoutService.attemptGetPDF(id);
       if (this.pdf.status===200){
           this.presentActionSheet(this.pdf.data, id);
@@ -239,6 +243,7 @@ export class YourWorkoutsPage implements OnInit {
 
   /**
    * Helper function to navigate to the search/browse page
+   *
    * @author Jia Hui Wang, u18080449
    */
   async goToSearch(){
@@ -250,6 +255,7 @@ export class YourWorkoutsPage implements OnInit {
 
   /**
    * Helper function to navigate to the profile page
+   *
    * @author Jia Hui Wang, u18080449
    */
   async goToProfile(){
@@ -290,6 +296,23 @@ export class YourWorkoutsPage implements OnInit {
   }
 
   /**
+   * Modal to display all the contacts to choose for emailing of pdf or video
+   *
+   * @author Jia Hui Wang, u180080449
+   */
+  private _firstName: string;
+  private _lastName: string;
+  private _email: string;
+  private _contactID: string;
+  async presentModal(){
+      const modal = await this.modalController.create({
+          component: ModalPopupPage,
+          cssClass: "my-custom-class"
+      });
+      await modal.present();
+  }
+
+  /**
    * ActionSheet to display a list of options for the user to choose from, from emailing the pdf, video, or both, to downloading the pdf.
    *
    * @param pdf the base64 data of the image if the user wishes to download the file.
@@ -298,7 +321,7 @@ export class YourWorkoutsPage implements OnInit {
    */
   async presentActionSheet(pdf: string, workoutID: string) {
       const actionSheet = await this.actionSheetController.create({
-          header: "Share PDF",
+          header: "Share documents",
           cssClass: "actionOptions",
           buttons: [{
               text: "Email PDF to all clients",
