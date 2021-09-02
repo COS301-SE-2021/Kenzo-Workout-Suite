@@ -103,8 +103,7 @@ export class UserController {
                       @Body("accessToken") accessToken: string,
                       @Body("firstName") firstName: string,
                       @Body("lastName") lastName: string) {
-
-      console.log(await this.userService.googleLogin(email, firstName, lastName, accessToken, ActualPrisma()))
+      return await this.userService.googleLogin(email, firstName, lastName, accessToken, ActualPrisma())
     }
 
     /**

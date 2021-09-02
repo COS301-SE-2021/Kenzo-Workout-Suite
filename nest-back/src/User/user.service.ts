@@ -272,18 +272,13 @@ export class UserService {
       throw new BadRequestException("No such google User")
     }
 
-    console.log(this.firebaseConfig)
-
     const admin = require("firebase-admin")
 
-    const app = admin.initializeApp(this.firebaseConfig)
-
-    console.log(accessToken)
+    admin.initializeApp(this.firebaseConfig)
 
     try {
       await admin.auth().verifyIdToken(accessToken)
     } catch (err) {
-      console.log("I am in here")
       throw new UnauthorizedException("Invalid credentials")
     }
 
@@ -316,7 +311,6 @@ export class UserService {
         } else {
           const payload = { userID: myUser.userID }
 
-          console.log("I MADE IT PAST HERE")
           return {
             access_token: this.jwtService.sign(payload),
             first_time: "false"
