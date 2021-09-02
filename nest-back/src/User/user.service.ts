@@ -9,9 +9,21 @@ import { JwtService } from "@nestjs/jwt"
 import { User } from "@prisma/client"
 import * as bcrypt from "bcrypt"
 import { Context } from "../../context"
+import { initializeApp } from "firebase-admin/lib/firebase-namespace-api"
+import { log } from "util"
 
 @Injectable()
 export class UserService {
+  firebaseConfig = {
+    apiKey: process.env.APIKEY,
+    authDomain: process.env.AUTHDOMAIN,
+    projectId: process.env.PROJECTID,
+    storageBucket: process.env.STORAGEBUCKET,
+    messagingSenderId: process.env.MESSAGINGSENDERID,
+    appId: process.env.APPID,
+    measurementId: process.env.MEASUREMENTID
+  };
+
   constructor (private jwtService: JwtService) {}
 
   /**
@@ -260,19 +272,19 @@ export class UserService {
       throw new BadRequestException("No such google User")
     }
 
+    console.log(this.firebaseConfig)
+
     const admin = require("firebase-admin")
 
-    admin
-      .auth()
-      .verifyIdToken(accessToken)
-      .then((decodedToken) => {
-        const uid = decodedToken.uid
-        console.log(uid)
-        // ...
-      })
-      .catch(() => {
-        throw new UnauthorizedException("Invalid credentials")
-      })
+    const app = admin.initializeApp(this.firebaseConfig)
+
+    console.log(accessToken)
+
+    try {
+      await admin.auth().verifyIdToken(accessToken)
+    } catch (err) {
+      throw new UnauthorizedException("Invalid credentials")
+    }
 
     try {
       const myUser = await ctx.prisma.user.findUnique({
@@ -282,6 +294,7 @@ export class UserService {
       })
 
       if (!myUser) {
+        console.log("I MADE IT PAST HERE")
         const createdUser = await ctx.prisma.user.create({
           data: {
             firstName: firstName,

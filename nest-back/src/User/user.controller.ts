@@ -99,11 +99,11 @@ export class UserController {
      * @param lastName
      */
     @Post("googleLogin")
-    googleAuthRedirect (@Body("email") email: string,
+    googleLogin (@Body("email") email: string,
                         @Body("accessToken") accessToken: string,
                         @Body("firstName") firstName: string,
                         @Body("lastName") lastName: string) {
-      return this.userService.googleLogin(email, accessToken, firstName, lastName, ActualPrisma())
+      return this.userService.googleLogin(email, firstName, lastName, accessToken, ActualPrisma())
     }
 
     /**
