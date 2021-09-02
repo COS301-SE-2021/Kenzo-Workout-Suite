@@ -99,11 +99,12 @@ export class UserController {
      * @param lastName
      */
     @Post("googleLogin")
-    googleLogin (@Body("email") email: string,
-                        @Body("accessToken") accessToken: string,
-                        @Body("firstName") firstName: string,
-                        @Body("lastName") lastName: string) {
-      return this.userService.googleLogin(email, firstName, lastName, accessToken, ActualPrisma())
+    async googleLogin (@Body("email") email: string,
+                      @Body("accessToken") accessToken: string,
+                      @Body("firstName") firstName: string,
+                      @Body("lastName") lastName: string) {
+
+      console.log(await this.userService.googleLogin(email, firstName, lastName, accessToken, ActualPrisma()))
     }
 
     /**

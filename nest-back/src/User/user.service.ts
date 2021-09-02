@@ -283,6 +283,7 @@ export class UserService {
     try {
       await admin.auth().verifyIdToken(accessToken)
     } catch (err) {
+      console.log("I am in here")
       throw new UnauthorizedException("Invalid credentials")
     }
 
@@ -294,7 +295,6 @@ export class UserService {
       })
 
       if (!myUser) {
-        console.log("I MADE IT PAST HERE")
         const createdUser = await ctx.prisma.user.create({
           data: {
             firstName: firstName,
@@ -316,6 +316,7 @@ export class UserService {
         } else {
           const payload = { userID: myUser.userID }
 
+          console.log("I MADE IT PAST HERE")
           return {
             access_token: this.jwtService.sign(payload),
             first_time: "false"
