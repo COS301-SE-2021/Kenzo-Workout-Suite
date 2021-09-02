@@ -21,8 +21,9 @@ export class UserService {
   };
 
   constructor(private http: HttpClient,
-                private storage: Storage) {
+              private storage: Storage) {
       this.storage.create();
+      initializeApp(this.firebaseConfig);
   }
 
   /**
@@ -72,7 +73,6 @@ export class UserService {
   }
 
   attemptGoogleLogin(){
-      const app = initializeApp(this.firebaseConfig);
       const provider = new GoogleAuthProvider();
       const auth = getAuth();
       return signInWithPopup(auth, provider)
@@ -85,10 +85,11 @@ export class UserService {
               const url = "http://localhost:3000/user/googleLogin";
               const body = {
                   email: user.email,
-                  accessToken: user["accessToken"],
                   firstName: firstName,
-                  lastName: lastName
+                  lastName: lastName,
+                  accessToken: user["accessToken"]
               };
+              console.log(body);
               return this.http.post(url, body).toPromise().then(r => {
                   this.addToken(r["access_token"]);
                   return 200;
@@ -96,11 +97,10 @@ export class UserService {
                   if(error.status===0) {
                       return 500;
                   }
-                  console.log("About to throw error.status");
                   return error.status;
               });
           }).catch((error) =>
-              // Handle Errors here.
+          // Handle Errors here.
               error.code
           );
   }
