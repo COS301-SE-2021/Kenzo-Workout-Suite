@@ -319,4 +319,24 @@ export class CreateExercisePage implements OnInit {
   async syncFrames(){
       this.images = await this.storage.get("images");
   }
+
+  /**
+   * This function will hide or show the optional fields
+   *
+   * @author Luca Azmanov, u19004185
+   */
+  showOptional() {
+      const options = document.getElementById("optionalFields");
+      const expand = document.getElementById("expand");
+      const hide = document.getElementById("hide");
+      if(options.style.display === "block"){
+          options.style.display = "none";
+          hide.style.display = "none";
+          expand.style.display = "inline-block";
+      } else{
+          options.style.display = "block";
+          hide.style.display = "inline-block";
+          expand.style.display = "none";
+      }
+  }
 }
