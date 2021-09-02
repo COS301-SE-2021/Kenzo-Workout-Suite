@@ -49,6 +49,17 @@
   </div>
   <br>
   <div class="input-div">
+    <!--      <ion-label class="input-description">Poses</ion-label>-->
+    <ion-card>
+      <ion-slides id="slideshow" scrollbar="true" pager="true" options="slideOpts">
+        <ion-slide *ngFor="let image of images">
+          <ion-img class="imagePose" [src]="image" alt="exercise pose"></ion-img>
+        </ion-slide>
+      </ion-slides>
+    </ion-card>
+  </div>
+  <br>
+  <div class="input-div">
     <ion-label class="input-description">Pose Description</ion-label>
     <ion-input [(ngModel)]="poseDescription" placeholder="Ensure that your shoulders are straight" class="kenzo-input"></ion-input>
   </div>
@@ -85,6 +96,6 @@
 <ion-footer class="ion-no-border">
   <ion-toolbar mode="ios" class="footer">
     <ion-button (click)="submitDeleteRequest()" mode="ios" class="delete">Delete</ion-button>
-    <ion-button (click)="submitUpdateRequest()" mode="ios" class="submit">Submit</ion-button>
+    <ion-button (click)="submitUpdateRequest()" mode="ios" class="submit">Update</ion-button>
   </ion-toolbar>
 </ion-footer>

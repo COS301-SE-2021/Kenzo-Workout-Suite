@@ -59,7 +59,7 @@ export class UpdateExercisePage implements OnInit {
       this.sets = unit["sets"];
       this.poseDescription = unit["poseDescription"];
       this.rest = unit["restPeriod"];
-      this.duration = unit["duration"];
+      this.duration = unit["duration"]/60;
       this.images = unit["images"];
 
       const tags = unit["tags"];
@@ -396,6 +396,17 @@ export class UpdateExercisePage implements OnInit {
       const randomBC = Math.floor(Math.random() * (6 - 0 + 1)) + 0;
 
       return new KenzoTag(colors[randomTC], colors[randomBC], label, false);
+  }
+
+  /** This function moves the user to a screen which allows them to manipulate a 3D avatar into specific poses which can be framed
+   * and used to depict the exercise
+   *
+   * @author Luca Azmanov, u1900415
+   */
+  async poseMaker() {
+      await this.route.navigate(["/pose-maker"], {
+
+      });
   }
 
   /**
