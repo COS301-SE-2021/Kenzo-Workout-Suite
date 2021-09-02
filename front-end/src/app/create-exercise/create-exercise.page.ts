@@ -21,6 +21,7 @@ export class CreateExercisePage implements OnInit {
   rest: number;
   duration: number;
   images: string[];
+  slideshow = new Array();
 
   tags: KenzoTag[] = new Array();
   tagBackup: KenzoTag[] = new Array();
@@ -306,9 +307,7 @@ export class CreateExercisePage implements OnInit {
    * @author Luca Azmanov, u1900415
    */
   async poseMaker() {
-      await this.route.navigate(["/pose-maker"], {
-
-      });
+      await this.route.navigate(["/pose-maker"]);
   }
 
   /**
@@ -317,7 +316,22 @@ export class CreateExercisePage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async syncFrames(){
+      this.slideshow = new Array();
       this.images = await this.storage.get("images");
+      for (let i=0; i<this.images.length; i++) {
+          const image = this.images[i];
+          if(image===undefined || image===null) {
+              this.images[i] = null;
+              continue;
+          }
+          this.slideshow.push(image);
+      }
+
+      if(this.images.length>0){
+          document.getElementById("pose-button").innerHTML = "Edit Poses";
+      }else{
+          document.getElementById("pose-button").innerHTML = "Add Poses";
+      }
   }
 
   /**

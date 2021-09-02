@@ -107,9 +107,17 @@
 }
 
 .imagePose{
-  height: 50px;
   width: 100%;
   object-fit: cover;
+}
+
+::-webkit-scrollbar {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb{
+  background-color: var(--ion-color-tertiary);
+  border-radius: 20px;
 }
 
 ion-slides{
