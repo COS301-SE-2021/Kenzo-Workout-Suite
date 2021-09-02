@@ -260,17 +260,19 @@ export class UserService {
       throw new BadRequestException("No such google User")
     }
 
-    const { OAuth2Client } = require("google-auth-library")
-    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
+    const admin = require("firebase-admin")
 
-    try {
-      await client.verifyIdToken({
-        idToken: accessToken,
-        audience: process.env.GOOGLE_CLIENT_ID
+    admin
+      .auth()
+      .verifyIdToken(accessToken)
+      .then((decodedToken) => {
+        const uid = decodedToken.uid
+        console.log(uid)
+        // ...
       })
-    } catch (e) {
-      throw new UnauthorizedException("Invalid credentials provided")
-    }
+      .catch(() => {
+        throw new UnauthorizedException("Invalid credentials")
+      })
 
     try {
       const myUser = await ctx.prisma.user.findUnique({

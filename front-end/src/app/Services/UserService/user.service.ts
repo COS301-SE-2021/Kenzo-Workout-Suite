@@ -79,6 +79,7 @@ export class UserService {
           .then((result) => {
               // The signed-in user info.
               const user = result.user;
+            console.log(user);
               const displayName = user.displayName;
               const firstName = displayName.substring(0, displayName.indexOf(" "));
               const lastName = displayName.substring(displayName.indexOf(" ")+1, displayName.length);
