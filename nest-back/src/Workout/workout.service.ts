@@ -19,10 +19,10 @@ const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
 const base64ToImage = require("base64-to-image")
 const audioconcat = require("audioconcat")
+const MP3Cutter = require("mp3-cutter")
+const getAudioDurationInSeconds = require("get-audio-duration")
 // const { getAudioDurationInSeconds } = require("get-audio-duration")
 // const soxCommand = require("sox-audio")
-// const sharp = require("sharp")
-// const resizeImg = require("resize-img")
 
 @Injectable()
 export class WorkoutService {
@@ -1545,11 +1545,13 @@ export class WorkoutService {
   }
 
   async mixAudio (): Promise<any> {
+    /*
     const songs: string[] = []
     const subtitles = [
       "He said he was not there yesterday; however, many people saw him there.",
       "Getting up at dawn is for the birds.",
-      "Warm beer on a cold day isn't my idea of fun."
+      "Warm beer on a cold day isn't my idea of fun.",
+      "what it do ababy what it do"
     ]
     // create tts
     for (let i = 0; i < subtitles.length; i++) {
@@ -1557,8 +1559,20 @@ export class WorkoutService {
       songs.push("./src/Workout/GeneratedTextSpeech/exercise1Pose" + (i + 1) + ".mp3")
     }
     console.log(songs)
+    /*
+    MP3Cutter.cut({
+      src: "./src/videoGeneration/Sounds/song1.mp3",
+      target: "./src/videoGeneration/Sounds/trim.mp3",
+      start: 25,
+      end: 70
+    })
+     */
+    const stream = fs.createReadStream("./src/videoGeneration/Sounds/song1.mp3")
+    getAudioDurationInSeconds(stream).then((duration) => {
+      console.log(duration)
+    })
 
-    await this.audioConcat(songs)
+    /// await this.audioConcat(songs)
 
     /*
     const trimCommand = soxCommand()
@@ -1594,7 +1608,7 @@ export class WorkoutService {
 
   async audioConcat (songs: string[]) {
     await audioconcat(songs)
-      .concat("./src/videoGeneration/Sounds/all.wav")
+      .concat("./src/videoGeneration/Sounds/all.mp3")
       .on("start", function (command) {
         console.log("ffmpeg process started:", command)
       })
