@@ -564,6 +564,10 @@ export class WorkoutController {
      *Workout Controller - Create Video
      *
      * @param workoutID  The workout ID
+     * @param loop Duration each each exercise pose in seconds
+     * @param songChoice Genre choice for background track
+     * @param resolutionWidth The width of the resolution
+     * @param resolutionHeight The height of the resolution
      * @param this.ctx  This is the prisma context that is injected into the function.
      * @throws NotFoundException if:
      *                               -No workout was found in the database with the specified workout ID.
@@ -595,9 +599,13 @@ export class WorkoutController {
       description: "Internal server error."
     })
     createVideo (
-        @Body("workoutID") workoutID: string
+        @Body("workoutID") workoutID: string,
+        @Body("loop") loop: number,
+        @Body("songChoice") songChoice: string,
+        @Body("resolutionWidth") resolutionWidth : number,
+        @Body("resolutionHeight") resolutionHeight : number
     ) {
-      return this.workoutService.createVideo(workoutID, this.ctx)
+      return this.workoutService.createVideo(workoutID, loop, songChoice, resolutionWidth, resolutionHeight, this.ctx)
     }
 
     @Get("mixAudio")
