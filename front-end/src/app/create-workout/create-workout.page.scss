@@ -15,6 +15,44 @@
   --background: var(--ion-color-secondary);
 }
 
+.scrollable-title{
+  width: 180px;
+  margin-top: 20px;
+  padding-bottom: 20px;
+}
+
+.custom-row{
+  height: 500px;
+}
+
+.editBtn{
+  --background: none;
+  --background-hover: none;
+  --color: var(--ion-color-tertiary);
+  --color-hover: var(--ion-color-primary);
+  --background-activated: none;
+  display: block;
+}
+
+.exercises{
+  transition: border 0.1s;
+  transition-timing-function: linear;
+  width: 300px;
+}
+
+.imagePose{
+  height: 150px;
+  width: 300px;
+  object-fit: cover;
+}
+
+ion-slides{
+  --progress-bar-background: none;
+  --progress-bar-background-activated: none;
+  --bullet-background-active: var(--ion-color-tertiary);
+  --bullet-background: var(--ion-color-KT_BLACK);
+}
+
 .input-div{
   display: block;
   width: 300px;
@@ -71,4 +109,22 @@
 
 ion-item{
   --background: none;
+}
+
+.required, .optional{
+  display: inline-block;
+  color: var(--ion-color-tertiary);
+  margin-bottom: 10px;
+}
+
+.required, .optional{
+  cursor: pointer;
+}
+
+#videoGen, #exerciseDropdown{
+  display: none;
+}
+
+#hideExercises, #hideVideo{
+  display: none;
 }
