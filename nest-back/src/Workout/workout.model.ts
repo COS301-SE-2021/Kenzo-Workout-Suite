@@ -80,6 +80,18 @@ export class UpdateWorkoutDTO {
 
     @ApiProperty({ type: Array, description: "Exercises part of the workout." })
     exercises: Exercise[];
+
+    @ApiProperty({ type: Number, description: "Duration each each exercise pose in seconds." })
+    loop: number;
+
+    @ApiProperty({ type: String, description: "Genre choice for background track." })
+    songChoice: string;
+
+    @ApiProperty({ type: Number, description: "The width of the resolution." })
+    resolutionWidth: number;
+
+    @ApiProperty({ type: Number, description: "The height of the resolution." })
+    resolutionHeight: number;
 }
 
 export class DeleteWorkoutDTO {
