@@ -19,9 +19,8 @@ const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
 const base64ToImage = require("base64-to-image")
 const audioconcat = require("audioconcat")
-const MP3Cutter = require("mp3-cutter")
-const getAudioDurationInSeconds = require("get-audio-duration")
-// const { getAudioDurationInSeconds } = require("get-audio-duration")
+// const MP3Cutter = require("mp3-cutter")
+// const getAudioDurationInSeconds = require("get-audio-duration")
 // const soxCommand = require("sox-audio")
 
 @Injectable()
@@ -1555,7 +1554,6 @@ export class WorkoutService {
   }
 
   async mixAudio (): Promise<any> {
-    /*
     const songs: string[] = []
     const subtitles = [
       "He said he was not there yesterday; however, many people saw him there.",
@@ -1569,6 +1567,7 @@ export class WorkoutService {
       songs.push("./src/Workout/GeneratedTextSpeech/exercise1Pose" + (i + 1) + ".mp3")
     }
     console.log(songs)
+
     /*
     MP3Cutter.cut({
       src: "./src/videoGeneration/Sounds/song1.mp3",
@@ -1576,13 +1575,16 @@ export class WorkoutService {
       start: 25,
       end: 70
     })
-     */
+
+    /*
     const stream = fs.createReadStream("./src/videoGeneration/Sounds/song1.mp3")
     getAudioDurationInSeconds(stream).then((duration) => {
       console.log(duration)
     })
 
-    /// await this.audioConcat(songs)
+     */
+
+    await this.audioConcat(songs)
 
     /*
     const trimCommand = soxCommand()
