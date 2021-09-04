@@ -699,6 +699,10 @@ export class WorkoutService {
    * @param workoutTitle This is the string workout title
    * @param workoutDescription This is the string workout description
    * @param exercises This is an array of exercises
+   * @param loop Duration each each exercise pose in seconds
+   * @param songChoice Genre choice for background track
+   * @param resolutionWidth The width of the resolution
+   * @param resolutionHeight The height of the resolution
    * @param plannerID This is the string planner ID
    * @param ctx  This is the prisma context that is injected into the function.
    * @throws PreconditionFailedException if:
@@ -708,8 +712,8 @@ export class WorkoutService {
    * @author Msi Sibanyoni
    *
    */
-  async createWorkout (workoutTitle: string, workoutDescription: string, exercises : Exercise[], plannerID :string, ctx: Context) {
-    if (workoutTitle === "" || workoutDescription === "" || plannerID === "" || exercises == null || workoutTitle == null || workoutDescription == null || plannerID == null) {
+  async createWorkout (workoutTitle: string, workoutDescription: string, exercises : Exercise[], loop: number, songChoice: string, resolutionWidth: number, resolutionHeight: number, plannerID :string, ctx: Context) {
+    if (workoutTitle === "" || workoutDescription === "" || plannerID === "" || loop === 0 || songChoice === "" || resolutionWidth === 0 || resolutionHeight === 0 || exercises == null || workoutTitle == null || workoutDescription == null || songChoice === null || plannerID == null) {
       throw new NotFoundException("Parameters can not be left empty.")
     }
     if ((Array.isArray(exercises) && exercises.length)) { // run create query with exercises only
@@ -737,7 +741,7 @@ export class WorkoutService {
       const fullWorkout = await this.getWorkoutById(createdWorkout.workoutID, ctx)
       await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
 
-      await this.createVideo(fullWorkout.workoutID, ctx)
+      await this.createVideo(fullWorkout.workoutID, loop, songChoice, resolutionWidth, resolutionHeight, ctx)
       return ("Workout Created.")
     } else {
       const createdWorkout = await ctx.prisma.workout.create({
@@ -764,6 +768,10 @@ export class WorkoutService {
    * @param workoutTitle This is the string workout title
    * @param workoutDescription This is the string workout description
    * @param exercises This is an array of exercises
+   * @param loop Duration each each exercise pose in seconds
+   * @param songChoice Genre choice for background track
+   * @param resolutionWidth The width of the resolution
+   * @param resolutionHeight The height of the resolution
    * @param plannerID This is the string planner ID
    * @param ctx  This is the prisma context that is injected into the function.
    * @throws PreconditionFailedException if:
@@ -773,8 +781,8 @@ export class WorkoutService {
    * @author Msi Sibanyoni
    *
    */
-  async updateWorkout (workoutID: string, workoutTitle: string, workoutDescription: string, exercises : Exercise[], plannerID :string, ctx: Context) {
-    if (workoutTitle === "" || workoutDescription === "" || plannerID === "" || exercises == null || workoutTitle == null || workoutDescription == null || plannerID == null) {
+  async updateWorkout (workoutID: string, workoutTitle: string, workoutDescription: string, exercises : Exercise[], loop: number, songChoice: string, resolutionWidth: number, resolutionHeight: number, plannerID :string, ctx: Context) {
+    if (workoutTitle === "" || workoutDescription === "" || plannerID === "" || loop === 0 || songChoice === "" || resolutionWidth === 0 || resolutionHeight === 0 || exercises == null || workoutTitle == null || workoutDescription == null || songChoice === null || plannerID == null) {
       throw new NotFoundException("Parameters can not be left empty.")
     }
     if ((Array.isArray(exercises) && exercises.length)) { // run create query with exercises only
@@ -806,7 +814,7 @@ export class WorkoutService {
 
         const updatedWorkout = await this.getWorkoutById(workoutID, ctx)
         await this.generatePrettyWorkoutPDF(updatedWorkout, ctx)
-        await this.createVideo(updatedWorkout.workoutID, ctx)
+        await this.createVideo(updatedWorkout.workoutID, loop, songChoice, resolutionWidth, resolutionHeight, ctx)
         return ("Workout Updated.")
       } catch (e) {
         throw new NotFoundException("Workout with provided ID does not exist")
@@ -1404,6 +1412,10 @@ export class WorkoutService {
    *Workout Controller - Create Video
    *
    * @param workoutID  The workout ID
+   * @param loop Duration each each exercise pose in seconds
+   * @param songChoice Genre choice for background track
+   * @param resolutionWidth The width of the resolution
+   * @param resolutionHeight The height of the resolution
    * @param ctx  This is the prisma context that is injected into the function.
    * @throws NotFoundException if:
    *                               -No workout was found in the database with the specified workout ID.
@@ -1417,7 +1429,7 @@ export class WorkoutService {
    * @author Tinashe Chamisa
    *
    */
-  async createVideo (workoutID: string, ctx: Context): Promise<any> {
+  async createVideo (workoutID: string, loop: number, songChoice: string, resolutionWidth: number, resolutionHeight: number, ctx: Context): Promise<any> {
     if (workoutID == null || workoutID === "") {
       throw new PreconditionFailedException("Invalid Workout ID passed in.")
     }
@@ -1451,9 +1463,7 @@ export class WorkoutService {
     let lengthOfVideo = 0
 
     // customization options
-    const loop = 15
-    const songChoice = "song1.mp3"
-    const resolution = "1920x1080"
+    const resolution = resolutionWidth + "x" + resolutionHeight
 
     // retrieve all exercises poses one by one from the local storage
     for (let i = 0; i < exercisesID.length; i++) {
