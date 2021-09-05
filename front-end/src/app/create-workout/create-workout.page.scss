@@ -64,6 +64,11 @@ ion-slides{
   color: var(--ion-color-tertiary);
 }
 
+.selector{
+  background-color: var(--ion-color-secondary);
+  border-radius: 9px;
+}
+
 .kenzo-input{
   font-family: "SF Pro Regular", serif;
   display: block;
@@ -73,7 +78,12 @@ ion-slides{
   color: var(--ion-color-tertiary);
   --padding-start: 10px;
   --padding-top: 15px;
-  border: solid 0.5px var(--ion-color-tertiary);
+  //border: solid 0.5px var(--ion-color-tertiary);
+}
+
+.resolution{
+  display: inline-block;
+  width: 80px;
 }
 
 .input-description{
@@ -115,6 +125,11 @@ ion-item{
   display: inline-block;
   color: var(--ion-color-tertiary);
   margin-bottom: 10px;
+}
+
+.hint{
+  color: gray;
+  font-size: 10px;
 }
 
 .required, .optional{

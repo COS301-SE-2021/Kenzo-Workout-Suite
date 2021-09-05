@@ -19,6 +19,12 @@ export class CreateWorkoutPage implements OnInit {
 
   @ViewChild("searchBar", {static: false}) searchbar: IonSearchbar;
 
+  //Video Generation Options
+  loop = 10; //seconds
+  resolutionWidth = 1920;
+  resolutionHeight = 1080;
+  genre: any;
+
   constructor(private http: HttpClient,
               private route: Router,
               private workoutService: WorkoutService,
