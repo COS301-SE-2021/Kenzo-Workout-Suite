@@ -853,15 +853,14 @@ export class WorkoutService {
       throw new NotFoundException("Parameters can not be left empty.")
     }
     try {
-      // const retrievedWorkout = await this.getWorkoutById(workoutID, ctx)
-      // fs.unlink("./src/GeneratedWorkouts/" + retrievedWorkout.workoutTitle + "Workout.pdf", (err) => {
-      //   if (err) {
-      //     throw err
-      //   }
-      // })
       await ctx.prisma.workout.delete({
         where: {
           workoutID: workoutID
+        }
+      })
+      fs.unlink("./src/GeneratedWorkouts/" + workoutID + ".pdf", (err) => {
+        if (err) {
+          throw err
         }
       })
       return ("Workout Deleted.")
@@ -897,13 +896,35 @@ export class WorkoutService {
 
     const titleHeadingColour = rgb(0.13, 0.185, 0.24)
     const fieldsHeadingColour = rgb(0.071, 0.22, 0.4117)
+    const form = pdfDoc.getForm()
     try {
-      firstPage.drawText(workout.workoutTitle, {
-        x: 310,
-        y: 210,
-        size: 38,
-        font: SFBold
-      })
+      const titleField = form.createTextField("workout.Title")
+      titleField.enableMultiline()
+      titleField.enableReadOnly()
+      titleField.setText(workout.workoutTitle)
+      if (workout.workoutTitle.length <= 12) {
+        titleField.addToPage(firstPage, {
+          x: 300,
+          y: 140,
+          width: 280,
+          height: 50,
+          borderWidth: 0
+        })
+        form.getTextField("workout.Title").setFontSize(36)
+      } else {
+        titleField.addToPage(firstPage, {
+          x: 300,
+          y: 190,
+          width: 280,
+          height: 90,
+          borderWidth: 0
+        })
+        if (workout.workoutTitle.length > 13 && workout.workoutTitle.length <= 32) {
+          form.getTextField("workout.Title").setFontSize(26)
+        } else {
+          form.getTextField("workout.Title").setFontSize(24)
+        }
+      }
       const userObject = await this.userService.findUserByUUID(workout.plannerID, ctx)
       const userFirstLastName = userObject.firstName + " " + userObject.lastName
       firstPage.drawText("Author ", {
@@ -925,7 +946,6 @@ export class WorkoutService {
         size: 18,
         font: SFBold
       })
-      const form = pdfDoc.getForm()
       const textField = form.createTextField("workout.description")
       textField.enableMultiline()
       textField.enableReadOnly()
@@ -959,7 +979,7 @@ export class WorkoutService {
               color: titleHeadingColour
             })
             // Description
-            currentPage.drawText("Exercise Description", {
+            currentPage.drawText("Exercise Description:", {
               x: 20,
               y: 710,
               size: 12,
@@ -973,7 +993,7 @@ export class WorkoutService {
               font: SFRegular
             })
             // Rep Range
-            currentPage.drawText("Rep Range ", {
+            currentPage.drawText("Rep Range: ", {
               x: 20,
               y: 620,
               size: 12,
@@ -991,7 +1011,7 @@ export class WorkoutService {
               font: SFRegular
             })
             // Sets
-            currentPage.drawText("Sets ".toString(), {
+            currentPage.drawText("Sets: ", {
               x: 20,
               y: 600,
               size: 12,
@@ -1009,7 +1029,7 @@ export class WorkoutService {
               font: SFRegular
             })
             // RestPeriod
-            currentPage.drawText("Rest Period ", {
+            currentPage.drawText("Rest Period: ", {
               x: 20,
               y: 570,
               size: 12,
@@ -1027,7 +1047,7 @@ export class WorkoutService {
               font: SFRegular
             })
             // Exercise Duration
-            currentPage.drawText("Exercise Duration ", {
+            currentPage.drawText("Exercise Duration: ", {
               x: 20,
               y: 540,
               size: 12,
@@ -1036,23 +1056,23 @@ export class WorkoutService {
             })
             let duration = "Consult Personal Trainer."
             if (workout.exercises[i].duration !== null) {
-              duration = (workout.exercises[i].duration / 60).toString()
+              duration = (workout.exercises[i].duration / 60).toString() + "minutes."
             }
-            currentPage.drawText(duration + " minutes", {
+            currentPage.drawText(duration, {
               x: 130,
               y: 540,
               size: 12,
               font: SFRegular
             })
             // Planner
-            currentPage.drawText("Planner ", {
+            currentPage.drawText("Planner: ", {
               x: 20,
               y: 510,
               size: 12,
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(userFirstLastName, {
+            currentPage.drawText(userFirstLastName.toString(), {
               x: 130,
               y: 510,
               size: 12,
@@ -1083,7 +1103,7 @@ export class WorkoutService {
               font: SFBold,
               color: titleHeadingColour
             })
-            currentPage.drawText("Exercise Description", {
+            currentPage.drawText("Exercise Description:", {
               x: 20,
               y: 340,
               size: 12,
@@ -1097,7 +1117,7 @@ export class WorkoutService {
               font: SFRegular
             })
             // Rep Range
-            currentPage.drawText("Rep Range ", {
+            currentPage.drawText("Rep Range: ", {
               x: 20,
               y: 250,
               size: 12,
@@ -1115,7 +1135,7 @@ export class WorkoutService {
               font: SFRegular
             })
             // Sets
-            currentPage.drawText("Sets ".toString(), {
+            currentPage.drawText("Sets ", {
               x: 20,
               y: 220,
               size: 12,
@@ -1151,7 +1171,7 @@ export class WorkoutService {
               font: SFRegular
             })
             // Exercise Duration
-            currentPage.drawText("Exercise Duration ", {
+            currentPage.drawText("Exercise Duration: ", {
               x: 20,
               y: 160,
               size: 12,
@@ -1169,14 +1189,14 @@ export class WorkoutService {
               font: SFRegular
             })
             // Planner
-            currentPage.drawText("Planner ", {
+            currentPage.drawText("Planner: ", {
               x: 20,
               y: 130,
               size: 12,
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(userFirstLastName, {
+            currentPage.drawText(userFirstLastName.toString(), {
               x: 130,
               y: 130,
               size: 12,
@@ -1225,22 +1245,26 @@ export class WorkoutService {
    */
   async getWorkoutPDF (workoutID: string, ctx: Context): Promise<any> {
     if (workoutID === null || workoutID === "") {
-      throw new NotAcceptableException("Workout ID cannot be empty")
+      throw new NotAcceptableException("Workout ID cannot be empty.")
+    }
+    let workoutObject
+    let uint8ArrayFP
+    let pdfDoc
+    try {
+      workoutObject = await this.getWorkoutById(workoutID, ctx)
+    } catch (E) {
+      throw new BadRequestException("Provided workout does not exist!")
     }
 
     try {
-      const workoutObject = await this.getWorkoutById(workoutID, ctx)
+      uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf")
+    } catch {
       await this.generatePrettyWorkoutPDF(workoutObject, ctx)
-
-      fs.readFile("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf", function (err, data) {
-        if (err) throw err
-      })
-      const uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf")
-      const pdfDoc = await PDFDocument.load(uint8ArrayFP)
-      return await pdfDoc.saveAsBase64({ dataUri: true })
-    } catch (E) {
-      throw new BadRequestException("Cannot return workout pdf.")
+      uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf")
+    } finally {
+      pdfDoc = await PDFDocument.load(uint8ArrayFP)
     }
+    return await pdfDoc.saveAsBase64({ dataUri: true })
   }
 
   /**
