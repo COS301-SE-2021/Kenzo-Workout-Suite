@@ -1560,21 +1560,24 @@ export class WorkoutService {
 
     // console.log(images)
 
-    videoshow(images, videoOptions)
-      .audio("./src/videoGeneration/Sounds/" + songChoice)
-      .save("./src/videoGeneration/Videos/" + workoutID + ".mp4")
-      .on("start", function (command) {
-        console.log("ffmpeg process started:", command)
-      })
-      .on("error", function (err, stdout, stderr) {
-        console.error("Error:", err)
-        console.error("ffmpeg stderr:", stderr)
-        throw new ServiceUnavailableException("Unable to create video.")
-      })
-      .on("end", function (output) {
-        console.error("Video created in:", output)
-        return "Successfully created video."
-      })
+    // eslint-disable-next-line no-useless-catch
+    try {
+      videoshow(images, videoOptions)
+        .audio("./src/videoGeneration/Sounds/song1")
+        .save("./src/videoGeneration/Videos/" + workoutID + ".mp4")
+        .on("start", function (command) {
+          console.log("ffmpeg process started:", command)
+        })
+        .on("error", function (err, stdout, stderr) {
+          console.error("Error:", err)
+          console.error("ffmpeg stderr:", stderr)
+          throw new ServiceUnavailableException("Unable to create video.")
+        })
+        .on("end", function (output) {
+          console.error("Video created in:", output)
+          return "Successfully created video."
+        })
+    } catch (e) { throw e }
   }
 
   async mixAudio (): Promise<any> {
