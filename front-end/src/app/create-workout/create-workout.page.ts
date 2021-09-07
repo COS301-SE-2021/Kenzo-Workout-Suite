@@ -68,7 +68,7 @@ export class CreateWorkoutPage implements OnInit {
       const newWorkout = new Workout(this.title, this.description, []);
       // console.log(this.format(this.exercises));
       // return ;
-      const status = await this.workoutService.attemptSubmitWorkout(newWorkout, this.format(this.exercises));
+      const status = await this.workoutService.attemptSubmitWorkout(newWorkout, this.format(this.exercises), this.loop, this.genre, this.resolutionWidth, this.resolutionHeight);
 
       if (status < 400) {
       // Success State
