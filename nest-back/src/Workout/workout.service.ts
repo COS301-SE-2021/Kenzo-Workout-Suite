@@ -19,8 +19,9 @@ const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
 const base64ToImage = require("base64-to-image")
 const audioconcat = require("audioconcat")
-// const MP3Cutter = require("mp3-cutter")
-// const getAudioDurationInSeconds = require("get-audio-duration")
+const ffmpeg = require("fluent-ffmpeg")
+const probe = require("ffmpeg-probe")
+const MP3Cutter = require("mp3-cutter")
 // const soxCommand = require("sox-audio")
 
 @Injectable()
@@ -1559,7 +1560,9 @@ export class WorkoutService {
       "He said he was not there yesterday; however, many people saw him there.",
       "Getting up at dawn is for the birds.",
       "Warm beer on a cold day isn't my idea of fun.",
-      "what it do ababy what it do"
+      "what it do ababy what it do",
+      "testing testing 1 2 3 4 5",
+      "father abraham has many songs"
     ]
     // create tts
     for (let i = 0; i < subtitles.length; i++) {
@@ -1567,6 +1570,10 @@ export class WorkoutService {
       songs.push("./src/Workout/GeneratedTextSpeech/exercise1Pose" + (i + 1) + ".mp3")
     }
     console.log(songs)
+
+    // loop through tts
+
+    // concatenate
 
     /*
     MP3Cutter.cut({
@@ -1576,15 +1583,19 @@ export class WorkoutService {
       end: 70
     })
 
-    /*
-    const stream = fs.createReadStream("./src/videoGeneration/Sounds/song1.mp3")
-    getAudioDurationInSeconds(stream).then((duration) => {
-      console.log(duration)
-    })
+    */
 
-     */
-
-    await this.audioConcat(songs)
+    audioconcat("./src/Workout/GeneratedTextSpeech/exercise1Pose1.mp3", "./src/Workout/GeneratedTextSpeech/exercise1Pose2.mp3", "./src/Workout/GeneratedTextSpeech/exercise1Pose3.mp3", "./src/Workout/GeneratedTextSpeech/exercise1Pose4.mp3").concat("./src/videoGeneration/Sounds/final.mp3")
+      .on("start", function (command) {
+        console.log("ffmpeg process started:", command)
+      })
+      .on("error", function (err, stdout, stderr) {
+        console.error("Error:", err)
+        console.error("ffmpeg stderr:", stderr)
+      })
+      .on("end", function (output) {
+        console.error("Audio created in:", output)
+      })
 
     /*
     const trimCommand = soxCommand()
@@ -1620,7 +1631,7 @@ export class WorkoutService {
 
   async audioConcat (songs: string[]) {
     await audioconcat(songs)
-      .concat("./src/videoGeneration/Sounds/all.mp3")
+      .concat("./src/videoGeneration/Sounds/final.mp3")
       .on("start", function (command) {
         console.log("ffmpeg process started:", command)
       })
