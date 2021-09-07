@@ -1563,7 +1563,7 @@ export class WorkoutService {
     // eslint-disable-next-line no-useless-catch
     try {
       videoshow(images, videoOptions)
-        .audio("./src/videoGeneration/Sounds/song1")
+        .audio("./src/videoGeneration/Sounds/song1.mp3")
         .save("./src/videoGeneration/Videos/" + workoutID + ".mp4")
         .on("start", function (command) {
           console.log("ffmpeg process started:", command)
