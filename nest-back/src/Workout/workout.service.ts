@@ -577,6 +577,34 @@ export class WorkoutService {
   }
 
   /**
+   *Workout Service - Get exercise images
+   *
+   * @param exercise This is the ID of the exercise which images one wishes to retrieve.
+   * @param path String path of where to retrieve the images
+   * @throws PreconditionFailedException if:
+   *                               -Not all parameters are given.
+   * @throws NotFoundException if:
+   *                               -An exercise with provided ID does not exist.
+   * @author Msi Sibanyoni
+   *
+   */
+  async getExerciseImages (exercise: any, path : string) {
+    if (exercise == null || path == null || path === "") {
+      throw new PreconditionFailedException("Not all parameters have been provided!")
+    }
+    const imageArray:any = []
+    let imageCounter = 1
+    while (imageCounter < 5) {
+      const imagePath = path + "I-" + exercise.exerciseID + "-" + imageCounter + ".jpg"
+      if (fs.existsSync(imagePath)) {
+        imageArray.push(imagePath)
+      }
+      imageCounter += 1
+    }
+    return imageArray
+  }
+
+  /**
    *Workout Service - Update Exercise
    *
    * @param exercise This is the ID of the exercise.
@@ -1123,6 +1151,7 @@ export class WorkoutService {
             const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
             const json = JSON.parse(jsonTest)
             const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
+            const exerciseImageArray = await this.getExerciseImages(workout.exercises[i], "./src/ExerciseImages/")
             if (exerciseImages !== undefined) {
               for (let c = 0; c < exerciseImages.images.length; c++) {
                 const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
@@ -1247,6 +1276,7 @@ export class WorkoutService {
             const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
             const json = JSON.parse(jsonTest)
             const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
+            const exerciseImageArray = await this.getExerciseImages(workout.exercises[i], "./src/ExerciseImages/")
             if (exerciseImages !== undefined) {
               for (let c = 0; c < exerciseImages.images.length; c++) {
                 const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
