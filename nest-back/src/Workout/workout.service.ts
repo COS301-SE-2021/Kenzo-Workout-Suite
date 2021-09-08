@@ -1148,13 +1148,11 @@ export class WorkoutService {
               font: SFRegular
             })
             // Images
-            const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
-            const json = JSON.parse(jsonTest)
-            const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
             const exerciseImageArray = await this.getExerciseImages(workout.exercises[i], "./src/ExerciseImages/")
-            if (exerciseImages !== undefined) {
-              for (let c = 0; c < exerciseImages.images.length; c++) {
-                const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
+            if (exerciseImageArray !== undefined || exerciseImageArray !== []) {
+              for (let c = 0; c < exerciseImageArray.length; c++) {
+                const uint8Array = fs.readFileSync(exerciseImageArray[c])
+                const currentImage = await pdfDoc.embedJpg(uint8Array)
                 currentPage.drawImage(currentImage, {
                   x: 20 + (c * 150),
                   y: 400,
@@ -1273,13 +1271,11 @@ export class WorkoutService {
               font: SFRegular
             })
             // Images
-            const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
-            const json = JSON.parse(jsonTest)
-            const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
             const exerciseImageArray = await this.getExerciseImages(workout.exercises[i], "./src/ExerciseImages/")
-            if (exerciseImages !== undefined) {
-              for (let c = 0; c < exerciseImages.images.length; c++) {
-                const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
+            if (exerciseImageArray !== undefined || exerciseImageArray !== []) {
+              for (let c = 0; c < exerciseImageArray.length; c++) {
+                const uint8Array = fs.readFileSync(exerciseImageArray[c])
+                const currentImage = await pdfDoc.embedJpg(uint8Array)
                 currentPage.drawImage(currentImage, {
                   x: 20 + (c * 150),
                   y: 20,
