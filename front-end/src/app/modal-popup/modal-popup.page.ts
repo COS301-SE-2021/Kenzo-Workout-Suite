@@ -11,6 +11,7 @@ import {Client} from "../Models/client";
 export class ModalPopupPage implements OnInit {
     private _contacts;
     private _contactsOriginal: Client[];
+    private _submittedContacts: Client[];
 
     private _name = "";
     private _surname = "";
@@ -22,14 +23,6 @@ export class ModalPopupPage implements OnInit {
 
     ngOnInit() {
         this.loadClients();
-    }
-
-    async submitModal(){
-
-    }
-
-    async cancelModal(){
-        await this.modalController.dismiss();
     }
 
     async loadClients(){
@@ -53,13 +46,59 @@ export class ModalPopupPage implements OnInit {
         }
     }
 
-    segmentChanged($event: any) {
-        if ($event.detail.value === "all"){
-
-        }else if ($event.detail.value === "select"){
-
+    /**
+     * Submit the selected contacts
+     *
+     * @author Jia Hui Wang u18080449
+     */
+    async submitModal(){
+        let contactsCounter = 0;
+        for (let i = 0; i <this._contacts.length; i++) {
+            if (this._contacts[i]._isChecked){
+                this._submittedContacts[contactsCounter] = this._contactsOriginal[i];
+                contactsCounter++;
+            }
+        }
+        if (contactsCounter === 0){
+            alert("You need to select contacts or cancel if you wish to cancel the operation. ");
+        }else if (contactsCounter === this._contacts.length){
+            return "Submit all";
         }else{
+            return this._submittedContacts;
+        }
+    }
 
+    /**
+     * Cancelling the contact selection
+     *
+     * @author Jia Hui Wang u18080449
+     */
+    async cancelModal(){
+        await this.modalController.dismiss("Cancelled");
+    }
+
+    /**
+     * Function to select all the contacts in the list if the top button is clicked, or deselect all of them
+     *
+     * @author Jia Hui Wang, u18080449
+     */
+    selectAllContacts(){
+        const allCheck = document.getElementById("contactsCbx");
+        const allContacts = document.getElementsByClassName("contactSelection");
+        if (!(allCheck as HTMLIonCheckboxElement).checked){
+            for (let i = 0; i <this._contacts.length; i++) {
+                this._contacts[i]._isChecked = true;
+                const thisContact = allContacts.item(i) as HTMLIonCheckboxElement;
+                thisContact.checked = true;
+                thisContact.disabled = true;
+            }
+        }else{
+            for (let i = 0; i <this._contacts.length; i++) {
+                this._contacts[i]._isChecked = false;
+                const thisContact = allContacts.item(i) as HTMLIonCheckboxElement;
+                thisContact.checked = false;
+                thisContact.disabled = false;
+            }
         }
     }
 }

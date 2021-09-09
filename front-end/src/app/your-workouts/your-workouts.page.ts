@@ -209,6 +209,29 @@ export class YourWorkoutsPage implements OnInit {
   }
 
   /**
+   * eventHandler for the search functionality on the page to filter for specific cards based on the text
+   *
+   * @param event The onChange when user enters or removes characters to filter the cards
+   * @author Jia Hui Wang, u18080449
+   */
+  eventHandler(event) {
+      const text = event.srcElement.value.toLowerCase();
+      this.workouts.forEach(data => {
+          const currElement = document.getElementById(data.workoutID);
+          if (!(data.title.toLowerCase().includes(text)) && !(data.description.toLowerCase().includes(text))) {
+              currElement.style.display = "none";
+          } else {
+              currElement.style.display = "block";
+          }
+      });
+  }
+
+  async presentAlert(alert: any) {
+      await alert.present();
+      await alert.onDidDismiss();
+  }
+
+  /**
    * Attempt to obtain the PDF of the workout and based on the status, either present an Action Sheet for the user to choose from multiple options then
    * return a code or just return a code.
    *
@@ -216,16 +239,104 @@ export class YourWorkoutsPage implements OnInit {
    * @author Jia Hui Wang, u18080449
    */
   async sharePDF(id: string){
-      await this.presentModal();
-      this.pdf = await this.workoutService.attemptGetPDF(id);
-      if (this.pdf.status===200){
-          this.presentActionSheet(this.pdf.data, id);
-          return 200;
-      }else if (this.pdf.status===404){
-          return 404;
+      const _contacts = await this.presentModal();
+      if (_contacts === "Cancelled"){
+          return "Cancelled";
       }else{
-          return 500;
+          this.pdf = await this.workoutService.attemptGetPDF(id);
+          if (this.pdf.status===200){
+              this.presentActionSheet(this.pdf.data, id, _contacts);
+              return 200;
+          }else if (this.pdf.status===404){
+              return 404;
+          }else{
+              return 500;
+          }
       }
+  }
+
+  /**
+   * Modal to display all the contacts to choose for emailing of pdf or video
+   *
+   * @author Jia Hui Wang, u180080449
+   */
+  private _firstName: string;
+  private _lastName: string;
+  private _email: string;
+  private _contactID: string;
+  async presentModal(){
+      const modal = await this.modalController.create({
+          component: ModalPopupPage,
+          cssClass: "modalPopupCSS",
+          showBackdrop: true,
+          backdropDismiss: false
+      });
+      await modal.present();
+      const _contacts = await modal.onWillDismiss();
+      if (_contacts.data === "Cancelled"){
+          return "Cancelled";
+      }else{
+
+      }
+  }
+
+  /**
+   * ActionSheet to display a list of options for the user to choose from, from emailing the pdf, video, or both, to downloading the pdf.
+   *
+   * @param pdf the base64 data of the image if the user wishes to download the file.
+   * @param workoutID the id of the chosen workout should the user wish to choose either email option, then the data can be passed back to back-end to find the file and send it.
+   * @author Jia Hui Wang, u18080449
+   */
+  async presentActionSheet(pdf: string, workoutID: string, procedure: any) {
+      const actionSheet = await this.actionSheetController.create({
+          header: "Share documents",
+          cssClass: "actionOptions",
+          buttons: [{
+              text: "Email PDF",
+              role: "selected",
+              icon: "mail-outline",
+              handler: () => {
+                  this.clientService.attemptEmailAllClientsPDF(workoutID);
+                  return true;
+              }
+          }, {
+              text: "Email video",
+              role: "selected",
+              icon: "videocam-outline",
+              handler: () => {
+                  this.clientService.attemptEmailAllClientsVideo(workoutID);
+                  return true;
+              }
+          }, {
+              text: "Email PDF and video",
+              role: "selected",
+              icon: "documents-sharp",
+              handler: () => {
+                  this.clientService.attemptEmailAllClientsMedia(workoutID);
+                  return true;
+              }
+          }, {
+              text: "Download PDF",
+              role: "selected",
+              icon: "download-outline",
+              handler: () => {
+                  const source = pdf;
+                  const link = document.createElement("a");
+                  link.href = source;
+                  link.download = "workout.pdf";
+                  link.click();
+                  return true;
+              }
+          }, {
+              text: "Cancel",
+              icon: "close",
+              role: "cancel",
+              handler: () => false
+          }]
+      });
+      await actionSheet.present();
+      const {role} = await actionSheet.onDidDismiss();
+      return role;
   }
 
   /**
@@ -270,107 +381,5 @@ export class YourWorkoutsPage implements OnInit {
           .then(() => {
               window.location.reload();
           });
-  }
-
-  /**
-   * eventHandler for the search functionality on the page to filter for specific cards based on the text
-   *
-   * @param event The onChange when user enters or removes characters to filter the cards
-   * @author Jia Hui Wang, u18080449
-   */
-  eventHandler(event) {
-      const text = event.srcElement.value.toLowerCase();
-      this.workouts.forEach(data => {
-          const currElement = document.getElementById(data.workoutID);
-          if (!(data.title.toLowerCase().includes(text)) && !(data.description.toLowerCase().includes(text))) {
-              currElement.style.display = "none";
-          } else {
-              currElement.style.display = "block";
-          }
-      });
-  }
-
-  async presentAlert(alert: any) {
-      await alert.present();
-      await alert.onDidDismiss();
-  }
-
-  /**
-   * Modal to display all the contacts to choose for emailing of pdf or video
-   *
-   * @author Jia Hui Wang, u180080449
-   */
-  private _firstName: string;
-  private _lastName: string;
-  private _email: string;
-  private _contactID: string;
-  async presentModal(){
-      const modal = await this.modalController.create({
-          component: ModalPopupPage,
-          cssClass: "modalPopupCSS",
-          showBackdrop: true,
-          backdropDismiss: false
-      });
-      await modal.present();
-      const _contacts = await modal.onWillDismiss();
-  }
-
-  /**
-   * ActionSheet to display a list of options for the user to choose from, from emailing the pdf, video, or both, to downloading the pdf.
-   *
-   * @param pdf the base64 data of the image if the user wishes to download the file.
-   * @param workoutID the id of the chosen workout should the user wish to choose either email option, then the data can be passed back to back-end to find the file and send it.
-   * @author Jia Hui Wang, u18080449
-   */
-  async presentActionSheet(pdf: string, workoutID: string) {
-      const actionSheet = await this.actionSheetController.create({
-          header: "Share documents",
-          cssClass: "actionOptions",
-          buttons: [{
-              text: "Email PDF to clients",
-              role: "selected",
-              icon: "mail-outline",
-              handler: () => {
-                  this.clientService.attemptEmailAllClientsPDF(workoutID);
-                  return true;
-              }
-          }, {
-              text: "Email video to clients",
-              role: "selected",
-              icon: "videocam-outline",
-              handler: () => {
-                  this.clientService.attemptEmailAllClientsVideo(workoutID);
-                  return true;
-              }
-          }, {
-              text: "Email PDF and video to clients",
-              role: "selected",
-              icon: "documents-sharp",
-              handler: () => {
-                  this.clientService.attemptEmailAllClientsMedia(workoutID);
-                  return true;
-              }
-          }, {
-              text: "Download PDF",
-              role: "selected",
-              icon: "download-outline",
-              handler: () => {
-                  const source = pdf;
-                  const link = document.createElement("a");
-                  link.href = source;
-                  link.download = "workout.pdf";
-                  link.click();
-                  return true;
-              }
-          }, {
-              text: "Cancel",
-              icon: "close",
-              role: "cancel",
-              handler: () => false
-          }]
-      });
-      await actionSheet.present();
-      const {role} = await actionSheet.onDidDismiss();
-      return role;
   }
 }

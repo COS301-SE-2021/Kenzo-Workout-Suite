@@ -1,18 +1,14 @@
 <ion-content>
   <div>
-    <ion-segment id="contactSegment" mode="ios" swipeGesture="true" (ionChange)="segmentChanged($event)">
-      <ion-segment-button mode="ios" value="all">
-        <ion-label>Select all contacts</ion-label>
-      </ion-segment-button>
-      <ion-segment-button mode="ios" value="select">
-        <ion-label>Select specific contacts</ion-label>
-      </ion-segment-button>
-    </ion-segment>
+    <ion-item>
+      <ion-label>Select all contacts</ion-label>
+      <ion-checkbox id="contactsCbx" (click)="selectAllContacts()">Select all</ion-checkbox>
+    </ion-item>
     <ion-infinite-scroll>
     <ion-list>
-      <ion-item *ngFor="let contact of _contacts">
+      <ion-item *ngFor="let contact of _contacts" >
         <ion-label>{{contact.email}}</ion-label>
-        <ion-checkbox slot="start" [(ngModel)]="contact.isChecked"></ion-checkbox>
+        <ion-checkbox slot="start" [(ngModel)]="contact.isChecked" class="contactSelection"></ion-checkbox>
       </ion-item>
     </ion-list>
     </ion-infinite-scroll>
