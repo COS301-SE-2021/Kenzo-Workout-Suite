@@ -40,8 +40,8 @@ export class ModalPopupPage implements OnInit {
                 name: this._name,
                 surname: this._surname,
                 email: this._email,
-                contactID: this._contactID,
-                isChecked: this._isChecked};
+                contactID: this._contactID
+            };
             this._contactsOriginal[i] = new Client(this._name, this._surname, this._email, this._contactID);
         }
     }
@@ -53,8 +53,9 @@ export class ModalPopupPage implements OnInit {
      */
     async submitModal(){
         let contactsCounter = 0;
+        this._submittedContacts = new Array();
         for (let i = 0; i <this._contacts.length; i++) {
-            if (this._contacts[i]._isChecked){
+            if (this._contacts[i].isChecked){
                 this._submittedContacts[contactsCounter] = this._contactsOriginal[i];
                 contactsCounter++;
             }
@@ -62,9 +63,9 @@ export class ModalPopupPage implements OnInit {
         if (contactsCounter === 0){
             alert("You need to select contacts or cancel if you wish to cancel the operation. ");
         }else if (contactsCounter === this._contacts.length){
-            return "Submit all";
+            await this.modalController.dismiss("Submit all");
         }else{
-            return this._submittedContacts;
+            await this.modalController.dismiss(this._submittedContacts);
         }
     }
 
@@ -87,14 +88,12 @@ export class ModalPopupPage implements OnInit {
         const allContacts = document.getElementsByClassName("contactSelection");
         if (!(allCheck as HTMLIonCheckboxElement).checked){
             for (let i = 0; i <this._contacts.length; i++) {
-                this._contacts[i]._isChecked = true;
                 const thisContact = allContacts.item(i) as HTMLIonCheckboxElement;
                 thisContact.checked = true;
                 thisContact.disabled = true;
             }
         }else{
             for (let i = 0; i <this._contacts.length; i++) {
-                this._contacts[i]._isChecked = false;
                 const thisContact = allContacts.item(i) as HTMLIonCheckboxElement;
                 thisContact.checked = false;
                 thisContact.disabled = false;

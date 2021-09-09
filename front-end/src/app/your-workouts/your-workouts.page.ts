@@ -240,6 +240,7 @@ export class YourWorkoutsPage implements OnInit {
    */
   async sharePDF(id: string){
       const _contacts = await this.presentModal();
+      console.log(_contacts);
       if (_contacts === "Cancelled"){
           return "Cancelled";
       }else{
@@ -257,6 +258,7 @@ export class YourWorkoutsPage implements OnInit {
 
   /**
    * Modal to display all the contacts to choose for emailing of pdf or video
+   * and then recieve data back based upon the user's choice.
    *
    * @author Jia Hui Wang, u180080449
    */
@@ -276,7 +278,7 @@ export class YourWorkoutsPage implements OnInit {
       if (_contacts.data === "Cancelled"){
           return "Cancelled";
       }else{
-
+          return _contacts.data;
       }
   }
 
@@ -296,7 +298,11 @@ export class YourWorkoutsPage implements OnInit {
               role: "selected",
               icon: "mail-outline",
               handler: () => {
-                  this.clientService.attemptEmailAllClientsPDF(workoutID);
+                  if (procedure === "Share all") {
+                      this.clientService.attemptEmailAllClientsPDF(workoutID);
+                  }else{
+                      this.clientService.attemptEmailClientsPDF(workoutID, procedure);
+                  }
                   return true;
               }
           }, {
@@ -304,7 +310,11 @@ export class YourWorkoutsPage implements OnInit {
               role: "selected",
               icon: "videocam-outline",
               handler: () => {
-                  this.clientService.attemptEmailAllClientsVideo(workoutID);
+                  if (procedure === "Share all") {
+                      this.clientService.attemptEmailAllClientsVideo(workoutID);
+                  }else{
+                      this.clientService.attemptEmailClientsVideo(workoutID, procedure);
+                  }
                   return true;
               }
           }, {
@@ -312,7 +322,11 @@ export class YourWorkoutsPage implements OnInit {
               role: "selected",
               icon: "documents-sharp",
               handler: () => {
-                  this.clientService.attemptEmailAllClientsMedia(workoutID);
+                  if (procedure === "Share all") {
+                      this.clientService.attemptEmailAllClientsMedia(workoutID);
+                  }else{
+                      this.clientService.attemptEmailClientsMedia(workoutID, procedure);
+                  }
                   return true;
               }
           }, {
