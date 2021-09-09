@@ -15,7 +15,12 @@ export class UpdateWorkoutPage implements OnInit {
   title="";
   currExercises=[];
   exercises = [];
-  exerciseSelection = new Array();
+
+  //Video Generation Options
+  loop = 10; //seconds
+  resolutionWidth = 1920;
+  resolutionHeight = 1080;
+  genre: any;
 
   @ViewChild("searchBar", {static: false}) searchbar: IonSearchbar;
   id: string;
@@ -56,14 +61,19 @@ export class UpdateWorkoutPage implements OnInit {
   async getExercises(current){
       const data = await this.workoutService.attemptGetExercisesByPlanner();
       const exercises = data.data;
+      // console.log(data.data);
       for (let i = 0; i <exercises.length; i++) {
           const exerciseID = exercises[i].exerciseID;
           const exerciseTitle = exercises[i].exerciseTitle;
-          this.exercises[i] = {id: exerciseID, title: exerciseTitle};
+          const images = exercises[i].images;
+          this.exercises[i] = {id: exerciseID, title: exerciseTitle, images: images, selected: false};
+      }
 
-          for (let j = 0; j < this.currExercises.length; j++) {
-              if(exerciseID===current[j].exerciseID){
-                  this.exerciseSelection.push(exerciseID);
+      for (let i = 0; i <current.length; i++) {
+          for (let j = 0; j < this.exercises.length; j++) {
+              if(this.exercises[j].id===current[i].exerciseID){
+                  this.exercises[j].selected = true;
+                  continue;
               }
           }
       }
@@ -84,7 +94,7 @@ export class UpdateWorkoutPage implements OnInit {
    */
   async submitUpdateRequest() {
       const newWorkout = new Workout(this.title, this.description, []);
-      const status = await this.workoutService.attemptUpdateWorkout(newWorkout, this.id, this.format(this.exerciseSelection));
+      const status = await this.workoutService.attemptUpdateWorkout(newWorkout, this.id, this.format(this.exercises), this.loop, this.genre, this.resolutionWidth, this.resolutionHeight);
 
       if (status < 400) {
       // Success State
@@ -211,9 +221,66 @@ export class UpdateWorkoutPage implements OnInit {
       const formattedExercises = [];
 
       for (let i = 0; i <data.length; i++) {
-          formattedExercises.push({exerciseID: data[i]});
+          if(data[i].selected) {
+              formattedExercises.push({exerciseID: data[i].id});
+          }
       }
 
       return formattedExercises;
+  }
+
+  select(id) {
+      for (let i = 0; i < this.exercises.length; i++) {
+          if(this.exercises[i].id === id){
+              this.exercises[i].selected = !this.exercises[i].selected;
+              return;
+          }
+      }
+  }
+
+  filterSelection(event) {
+      const text = event.srcElement.value.trim().toLowerCase();
+      for (let i = 0; i < this.exercises.length; i++) {
+          const exercise = this.exercises[i];
+          document.getElementById(exercise.id).style.display = "inline-block";
+      }
+
+      for (let i = 0; i < this.exercises.length; i++) {
+          const exercise = this.exercises[i];
+          if(!exercise.title.trim().toLowerCase().includes(text)){
+              document.getElementById(exercise.id).style.display = "none";
+          }
+      }
+  }
+
+
+  showExercises() {
+      const options = document.getElementById("exerciseDropdown");
+      const expand = document.getElementById("expandExercises");
+      const hide = document.getElementById("hideExercises");
+      if(options.style.display === "block"){
+          options.style.display = "none";
+          hide.style.display = "none";
+          expand.style.display = "inline-block";
+      } else{
+          options.style.display = "block";
+          hide.style.display = "inline-block";
+          expand.style.display = "none";
+      }
+  }
+
+  showVideoOptions() {
+      const options = document.getElementById("videoGen");
+      const expand = document.getElementById("expandVideo");
+      const hide = document.getElementById("hideVideo");
+      if(options.style.display === "block"){
+          options.style.display = "none";
+          hide.style.display = "none";
+          expand.style.display = "inline-block";
+      } else{
+          options.style.display = "block";
+          hide.style.display = "inline-block";
+          expand.style.display = "none";
+      }
   }
 }

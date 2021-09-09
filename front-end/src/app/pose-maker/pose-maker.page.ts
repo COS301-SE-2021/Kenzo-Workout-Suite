@@ -58,8 +58,8 @@ export class PoseMakerPage implements OnInit {
     public selection: number;
 
     // Stored Frames
-    private frames: string[] = new Array(4);
-    private frameColor: string[] = new Array(4);
+    private frames: string[] = new Array();
+    private frameColor: string[] = new Array();
 
     constructor(public alertController: AlertController, public route: Router, private storage: Storage) {
         this.xCoordinate = 0;
@@ -364,24 +364,9 @@ export class PoseMakerPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   returnToCreate() {
-      this.route.navigate(["/create-exercise"]).then(()=> {
-          const slideshow = document.getElementById("slideshow");
-          slideshow.innerHTML = "";
-
-          let count = 0;
-          for (let i = 0; i < this.frames.length; i++) {
-              if (this.frames[i] == null) {
-                  count = count+1;
-              }else{
-                  slideshow.innerHTML = slideshow.innerHTML+ "<ion-slide>" +
-                  "                   <img class=\"imagePose\" src='"+this.frames[i]+"' alt=\"Exercise Pose Image Missing\">" +
-                  "                </ion-slide>";
-              }
-          }
-          if (count !== 4) {
-              document.getElementById("pose-button").innerText = "Remake Poses";
-          }
-          this.storage.set("images", this.frames);
+      this.route.navigate(["/create-exercise"]).then(async () => {
+          await this.storage.set("images", this.frames);
+          document.getElementById("sync").click();
       });
   }
 }
