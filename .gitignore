@@ -31,3 +31,5 @@ npm-debug.log*
 /plugins
 /www
 /nest-back/src/ExerciseImages/
+/nest-back/src/GeneratedWorkouts/
+/nest-back/src/createdWorkoutImages.json

@@ -551,7 +551,7 @@ export class WorkoutService {
   /**
    *Workout Service - Save exercise images
    *
-   * @param exercise This is the ID of the exercise.
+   * @param exercise This is the exercise object of the exercise.
    * @param images String array of base64 images to use for workout
    * @param path String path of where to save the images
    * @throws PreconditionFailedException if:
@@ -579,7 +579,7 @@ export class WorkoutService {
   /**
    *Workout Service - Get exercise images
    *
-   * @param exercise This is the ID of the exercise which images one wishes to retrieve.
+   * @param exercise This is the exercise object of the exercise which images one wishes to retrieve.
    * @param path String path of where to retrieve the images
    * @throws PreconditionFailedException if:
    *                               -Not all parameters are given.
@@ -740,11 +740,19 @@ export class WorkoutService {
       throw new PreconditionFailedException("Parameter can not be left empty.")
     }
     try {
+      const exerciseImageArray = await this.getExerciseImages(await this.getExerciseByID(exercise, ctx), "./src/ExerciseImages/")
       await ctx.prisma.exercise.delete({
         where: {
           exerciseID: exercise
         }
       })
+      for (let i = 0; i < exerciseImageArray.length; i++) {
+        fs.unlink(exerciseImageArray[i], (err) => {
+          if (err) {
+            throw err
+          }
+        })
+      }
       return ("Exercise Deleted.")
     } catch (e) {
       throw new NotFoundException("Exercise with provided ID does not exist")
