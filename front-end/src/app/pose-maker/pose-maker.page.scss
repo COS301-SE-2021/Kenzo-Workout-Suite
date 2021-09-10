@@ -17,6 +17,11 @@
   --background: var(--ion-color-secondary);
 }
 
+.reset{
+  --background: none;
+  --color: var(--ion-color-tertiary);
+}
+
 .input-div{
   display: block;
   width: 300px;

@@ -56,6 +56,7 @@ export class PoseMakerPage implements OnInit {
     public yCoordinate: number;
     public zCoordinate: number;
     public selection: number;
+    public originalCoordinates = [];
 
     // Stored Frames
     private frames: string[] = new Array();
@@ -173,6 +174,12 @@ export class PoseMakerPage implements OnInit {
           this.leftUpperLeg = this.mesh.skeleton.bones[20];
           this.leftKnee = this.mesh.skeleton.bones[21];
           this.leftFoot = this.mesh.skeleton.bones[22];
+
+          // Set initial pose positions
+          for (let i=0; i<this.mesh.skeleton.bones.length; i++) {
+              const bone = this.mesh.skeleton.bones[i];
+              this.originalCoordinates.push({value: i, x: bone.rotation.x, y: bone.rotation.y, z: bone.rotation.z});
+          }
 
           // Retrieve Textures to set Scene
           const texture= new THREE.TextureLoader().load("assets/avatar/texture.jpg");
@@ -368,5 +375,17 @@ export class PoseMakerPage implements OnInit {
           await this.storage.set("images", this.frames);
           document.getElementById("sync").click();
       });
+  }
+
+  /**
+   * Resets the selected component
+   */
+  resetPart() {
+      if(this.selection===null) {
+          return;
+      }
+      this.xCoordinate = this.originalCoordinates[this.selection].x;
+      this.yCoordinate = this.originalCoordinates[this.selection].y;
+      this.zCoordinate = this.originalCoordinates[this.selection].z;
   }
 }
