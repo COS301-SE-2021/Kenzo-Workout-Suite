@@ -19,8 +19,6 @@ const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
 const base64ToImage = require("base64-to-image")
 const audioconcat = require("audioconcat")
-const ffmpeg = require("fluent-ffmpeg")
-const probe = require("ffmpeg-probe")
 const MP3Cutter = require("mp3-cutter")
 // const soxCommand = require("sox-audio")
 
@@ -1538,7 +1536,7 @@ export class WorkoutService {
     // console.log(images)
 
     videoshow(images, videoOptions)
-      .audio("./src/videoGeneration/Sounds/" + songChoice)
+      .audio("./src/videoGeneration/Sounds/" + songChoice + ".mp3")
       .save("./src/videoGeneration/Videos/" + workoutID + ".mp4")
       .on("start", function (command) {
         console.log("ffmpeg process started:", command)
@@ -1554,79 +1552,50 @@ export class WorkoutService {
       })
   }
 
-  async mixAudio (): Promise<any> {
+  async mixAudio (loop: number, songChoice: string): Promise<any> {
     const songs: string[] = []
+    const finalTimeline: string[] = []
     const subtitles = [
       "He said he was not there yesterday; however, many people saw him there.",
       "Getting up at dawn is for the birds.",
       "Warm beer on a cold day isn't my idea of fun.",
       "what it do ababy what it do",
       "testing testing 1 2 3 4 5",
-      "father abraham has many songs"
+      "father abraham has many songs",
+      "There should have been a time and a place, but this wasn't it.",
+      "I was starting to worry that my pet turtle could tell what I was thinking."
     ]
     // create tts
     for (let i = 0; i < subtitles.length; i++) {
       await this.textToSpeech(subtitles[i], "exercise1Pose" + (i + 1))
       songs.push("./src/Workout/GeneratedTextSpeech/exercise1Pose" + (i + 1) + ".mp3")
     }
-    console.log(songs)
-
-    // loop through tts
-
-    // concatenate
-
-    /*
-    MP3Cutter.cut({
-      src: "./src/videoGeneration/Sounds/song1.mp3",
-      target: "./src/videoGeneration/Sounds/trim.mp3",
-      start: 25,
-      end: 70
-    })
-
-    */
-
-    audioconcat("./src/Workout/GeneratedTextSpeech/exercise1Pose1.mp3", "./src/Workout/GeneratedTextSpeech/exercise1Pose2.mp3", "./src/Workout/GeneratedTextSpeech/exercise1Pose3.mp3", "./src/Workout/GeneratedTextSpeech/exercise1Pose4.mp3").concat("./src/videoGeneration/Sounds/final.mp3")
-      .on("start", function (command) {
-        console.log("ffmpeg process started:", command)
+    // trim song choice
+    if (songChoice === "hardcore") {
+      await MP3Cutter.cut({
+        src: "./src/videoGeneration/Sounds/" + songChoice + ".mp3",
+        target: "./src/videoGeneration/Sounds/trim.mp3",
+        start: 53,
+        end: loop + 53
       })
-      .on("error", function (err, stdout, stderr) {
-        console.error("Error:", err)
-        console.error("ffmpeg stderr:", stderr)
+    } else {
+      await MP3Cutter.cut({
+        src: "./src/videoGeneration/Sounds/" + songChoice + ".mp3",
+        target: "./src/videoGeneration/Sounds/trim.mp3",
+        start: 0,
+        end: loop
       })
-      .on("end", function (output) {
-        console.error("Audio created in:", output)
-      })
+    }
+    // create final timeline
+    for (let j = 0; j < songs.length; j++) {
+      finalTimeline.push(songs[j])
+      finalTimeline.push("./src/videoGeneration/Sounds/trim.mp3")
+    }
+    console.log(finalTimeline)
 
-    /*
-    const trimCommand = soxCommand()
-      .input("./src/videoGeneration/Sounds/song1.mp3")
-      .output("./src/videoGeneration/Sounds/trim.mp3")
-      .trim(5, 35)
-    trimCommand.on("prepare", function (args) {
-      console.log("Preparing sox command with args " + args.join(" "))
-    })
-
-    trimCommand.on("start", function (commandLine) {
-      console.log("Spawned sox with command " + commandLine)
-    })
-
-    trimCommand.on("progress", function (progress) {
-      console.log("Processing progress: ", progress)
-    })
-
-    trimCommand.on("error", function (err, stdout, stderr) {
-      console.log("Cannot process audio: " + err.message)
-      console.log("Sox Command Stdout: ", stdout)
-      console.log("Sox Command Stderr: ", stderr)
-    })
-
-    trimCommand.on("end", function () {
-      console.log("Sox command succeeded!")
-    })
-
-    trimCommand.run()
-
-     */
+    try {
+      await this.audioConcat(finalTimeline)
+    } catch (e) { console.log(e) }
   }
 
   async audioConcat (songs: string[]) {
