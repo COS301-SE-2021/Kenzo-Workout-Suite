@@ -142,6 +142,14 @@ export class createVideoDTO {
     workoutID: string;
 }
 
+export class mixAudioDTO {
+    @ApiProperty({ type: Number, description: "Duration each each exercise pose in seconds." })
+    loop: number;
+
+    @ApiProperty({ type: String, description: "Genre choice for background track." })
+    songChoice: string;
+}
+
 export class getWorkoutVideoDTO {
     @ApiProperty({ type: String, description: "Workout ID" })
     workoutID: string;
