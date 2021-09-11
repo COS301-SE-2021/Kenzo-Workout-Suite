@@ -747,12 +747,6 @@ export class WorkoutService {
      * @author Tinashe Chamisa
      *
      */
-  // async arrayRemove (arr, value) {
-  //   return arr.filter(function (ele) {
-  //     return ele !== value
-  //   })
-  // }
-
   async deleteExercise (exercise: string, ctx: Context): Promise<any> {
     if (exercise === "") {
       throw new PreconditionFailedException("Parameter can not be left empty.")
@@ -1679,22 +1673,6 @@ export class WorkoutService {
     const json = JSON.parse(jsonTest)
     const found = json.find(element => element.ID === id)
     return (typeof found !== "undefined") ? found.images : []
-  }
-
-  /**
-   *Workout service - Get Exercises Descriptions
-   *
-   * @brief Function that accepts an exercise ID and retrieves the description
-   * @param id Exercise ID
-   * @return  Re-formatted An exercise description.
-   * @author Tinashe Chamisa
-   *
-   */
-  getExerciseDescription (id: string) {
-    const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
-    const json = JSON.parse(jsonTest)
-    const found = json.find(element => element.ID === id)
-    return (typeof found !== "undefined") ? found.poseDescription : ""
   }
 
   /**
