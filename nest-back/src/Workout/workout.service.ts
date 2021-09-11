@@ -1517,7 +1517,7 @@ export class WorkoutService {
     // retrieve all exercises poses one by one from the local storage
     for (let i = 0; i < exercises.length; i++) {
       for (let j = 0; j < exercises[i].exercises.length; j++) {
-        fileNames = await this.getExerciseImages(exercises[i].exercises[j], "./src/videoGeneration/Images/")
+        fileNames = await this.getExerciseImages(exercises[i].exercises[j], "./src/ExerciseImages/")
         for (let k = 0; k < fileNames.length; k++) {
           images.push({
             path: fileNames[k],
@@ -1560,7 +1560,7 @@ export class WorkoutService {
     // eslint-disable-next-line no-useless-catch
     try {
       videoshow(images, videoOptions)
-        .audio("./src/videoGeneration/Sounds/song1.mp3")
+        .audio("./src/videoGeneration/Sounds/" + songChoice + ".mp3")
         .save("./src/videoGeneration/Videos/" + workoutID + ".mp4")
         .on("start", function (command) {
           console.log("ffmpeg process started:", command)
