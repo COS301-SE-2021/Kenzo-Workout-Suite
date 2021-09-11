@@ -161,7 +161,7 @@ export class WorkoutService {
       const exercisesWithImages: exercise[] = []
 
       for (let i = 0; i < exercises.length; i++) {
-        const image = await this.getExerciseImages(exercises[i], "./src/ExerciseImages/")
+        const image = await this.convertImageBase64(exercises[i])
         exercisesWithImages.push({
           exerciseID: exercises[i].exerciseID,
           exerciseTitle: exercises[i].exerciseTitle,
@@ -233,7 +233,7 @@ export class WorkoutService {
       const exercisesWithImages: Exercise[] = []
 
       for (let i = 0; i < exercise.length; i++) {
-        const image = await this.getExerciseImages(exercise[i], "./src/ExerciseImages/")
+        const image = await this.convertImageBase64(exercise[i])
         exercisesWithImages.push({
           exerciseID: exercise[i].exerciseID,
           exerciseTitle: exercise[i].exerciseTitle,
@@ -288,7 +288,7 @@ export class WorkoutService {
       } else {
         // add images for each exercise
 
-        const image = await this.getExerciseImages(exercise, "./src/ExerciseImages/")
+        const image = await this.convertImageBase64(exercise)
         return {
           exerciseID: exercise.exerciseID,
           exerciseTitle: exercise.exerciseTitle,
@@ -393,7 +393,7 @@ export class WorkoutService {
         const exercisesWithImages: Exercise[] = []
 
         for (let i = 0; i < exercise.length; i++) {
-          const image = await this.getExerciseImages(exercise[i], "./src/ExerciseImages/")
+          const image = await this.convertImageBase64(exercise[i])
           exercisesWithImages.push({
             exerciseID: exercise[i].exerciseID,
             exerciseTitle: exercise[i].exerciseTitle,
@@ -604,6 +604,25 @@ export class WorkoutService {
   }
 
   /**
+   *Workout Controller - Convert Image Base64
+   *
+   * @description Helper function for Exercise getters to convert jpeg to base64 strings
+   * @exercise An exercise object
+   * @return An array of base64 strings
+   *
+   * @author Tinashe Chamisa
+   *
+   */
+  async convertImageBase64 (exercise: any) {
+    const paths: string[] = await this.getExerciseImages(exercise, "./src/ExerciseImages/")
+    const base64Images: string[] = [""]
+    for (let i = 0; i < paths.length; i++) {
+      base64Images.push("data:image/jpeg;base64," + fs.readFileSync(paths[i], "base64"))
+    }
+    return base64Images
+  }
+
+  /**
    *Workout Service - Update Exercise
    *
    * @param exercise This is the ID of the exercise.
@@ -728,7 +747,6 @@ export class WorkoutService {
      * @author Tinashe Chamisa
      *
      */
-
   async deleteExercise (exercise: string, ctx: Context): Promise<any> {
     if (exercise === "") {
       throw new PreconditionFailedException("Parameter can not be left empty.")
@@ -1678,22 +1696,6 @@ export class WorkoutService {
     const json = JSON.parse(jsonTest)
     const found = json.find(element => element.ID === id)
     return (typeof found !== "undefined") ? found.images : []
-  }
-
-  /**
-   *Workout service - Get Exercises Descriptions
-   *
-   * @brief Function that accepts an exercise ID and retrieves the description
-   * @param id Exercise ID
-   * @return  Re-formatted An exercise description.
-   * @author Tinashe Chamisa
-   *
-   */
-  getExerciseDescription (id: string) {
-    const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
-    const json = JSON.parse(jsonTest)
-    const found = json.find(element => element.ID === id)
-    return (typeof found !== "undefined") ? found.poseDescription : ""
   }
 
   /**
