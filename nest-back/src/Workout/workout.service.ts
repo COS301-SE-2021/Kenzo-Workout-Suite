@@ -1482,7 +1482,7 @@ export class WorkoutService {
     if (workoutID == null || workoutID === "") {
       throw new PreconditionFailedException("Invalid Workout ID passed in.")
     }
-    const exercisesID: string[] = []
+    const exercises: any[] = []
     // eslint-disable-next-line no-useless-catch
     try {
       const workout = await this.getWorkoutById(workoutID, ctx)
@@ -1490,14 +1490,14 @@ export class WorkoutService {
         throw new NotFoundException("No workout was found in the database with the specified workout ID.")
       } else {
         workout.exercises.forEach(element => {
-          exercisesID.push(element.exerciseID)
+          exercises.push(element.exercises)
         })
       }
     } catch (err) {
       throw err
     }
 
-    if (exercisesID.length === 0) {
+    if (exercises.length === 0) {
       throw new BadRequestException("Cant create video without exercises")
     }
 
@@ -1508,67 +1508,39 @@ export class WorkoutService {
     }
 
     const images: IMAGE[] = []
-    const fileNames = [""]
+    let fileNames: string[]
     let lengthOfVideo = 0
 
     // customization options
     const resolution = resolutionWidth + "x" + resolutionHeight
 
     // retrieve all exercises poses one by one from the local storage
-    for (let i = 0; i < exercisesID.length; i++) {
-      let temp: any[] = []
-      if ((temp = await this.getExerciseBase64(exercisesID[i])) === []) {
-        console.log("error")
-      } else {
-        console.log("found")
-
-        const path = "./src/videoGeneration/Images/"
-
-        // null checker for nulls in temp
-        const base64Images: string[] = []
-        for (let k = 0; k < temp.length; k++) {
-          if (temp[k] !== null) { base64Images.push(temp[k]) }
-        }
-
-        // Loop through poses of an exercise
-        const exerciseDescription = this.getExerciseDescription(exercisesID[i])
-
-        for (let j = 0; j < base64Images.length; j++) {
-          const fileName = "image-" + exercisesID[i] + "-" + (j + 1) // filename format: image + exercise id + - + pose number
-          fileNames.push(fileName)
-
-          // convert base64 to image
-          // eslint-disable-next-line no-useless-catch
-          try {
-            const optionalObj = { fileName, type: "jpg" }
-            await base64ToImage(base64Images[j], path, optionalObj)
-          } catch (e) { throw e }
-
-          // push image to array
+    for (let i = 0; i < exercises.length; i++) {
+      for (let j = 0; j < exercises[i].exercises.length; j++) {
+        fileNames = await this.getExerciseImages(exercises[i].exercises[j], "./src/videoGeneration/Images/")
+        for (let k = 0; k < fileNames.length; k++) {
           images.push({
-            path: "./src/videoGeneration/Images/" + fileName + ".jpg",
-            caption: exerciseDescription,
+            path: fileNames[k],
+            caption: exercises[i].exercises.description,
             loop: loop
           })
-
-          lengthOfVideo += loop
         }
-
-        if (base64Images.length !== 1 && i < base64Images.length - 1) {
-          images.push({
-            path: "./src/videoGeneration/Images/kenzoLogo.jpg",
-            caption: "Exercise " + (i + 1) + " complete! On to the next...",
-            loop: 5
-          })
-        } else {
-          images.push({
-            path: "./src/videoGeneration/Images/kenzoLogo.jpg",
-            caption: "Workout complete!",
-            loop: 5
-          })
-        }
-        lengthOfVideo += 5
+        lengthOfVideo += loop
       }
+      if (exercises[i].exercises.length !== 1 && i < exercises[i].exercises.length - 1) {
+        images.push({
+          path: "./src/videoGeneration/Images/kenzoLogo.jpg",
+          caption: "Exercise " + (i + 1) + " complete! On to the next...",
+          loop: 5
+        })
+      } else {
+        images.push({
+          path: "./src/videoGeneration/Images/kenzoLogo.jpg",
+          caption: "Workout complete!",
+          loop: 5
+        })
+      }
+      lengthOfVideo += 5
     }
     const videoOptions = {
       fps: 25,
