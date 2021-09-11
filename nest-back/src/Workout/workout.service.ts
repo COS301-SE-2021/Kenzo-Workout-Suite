@@ -604,6 +604,25 @@ export class WorkoutService {
   }
 
   /**
+   *Workout Controller - Convert Image Base64
+   *
+   * @description Helper function for Exercise getters to convert jpeg to base64 strings
+   * @exercise An exercise object
+   * @return An array of base64 strings
+   *
+   * @author Tinashe Chamisa
+   *
+   */
+  async convertImageBase64 (exercise: any) {
+    const paths: string[] = await this.getExerciseImages(exercise, "./src/ExerciseImages/")
+    const base64Images: string[] = [""]
+    for (let i = 0; i < paths.length; i++) {
+      base64Images.push("data:image/jpeg;base64," + fs.readFileSync(paths[i], "base64"))
+    }
+    return base64Images
+  }
+
+  /**
    *Workout Service - Update Exercise
    *
    * @param exercise This is the ID of the exercise.
