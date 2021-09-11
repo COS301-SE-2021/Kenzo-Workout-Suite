@@ -154,12 +154,4 @@ export class SearchPage implements OnInit {
           });
   }
 
-  async signOut(){
-      await this.storage.remove("Token");
-      await this.router.navigate(["/sign-in"])
-          .then(() => {
-              window.location.reload();
-          });
-  }
-
 }

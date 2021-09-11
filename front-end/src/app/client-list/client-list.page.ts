@@ -241,14 +241,6 @@ export class ClientListPage implements OnInit {
             });
     }
 
-    async signOut(){
-        await this.storage.remove("Token");
-        await this.router.navigate(["/sign-in"])
-            .then(() => {
-                window.location.reload();
-            });
-    }
-
     /**
      * Helper Function to physically present alert to User independent of OS.
      *

@@ -256,14 +256,6 @@ export class YourWorkoutsPage implements OnInit {
           });
   }
 
-  async signOut(){
-      await this.storage.remove("Token");
-      await this.router.navigate(["/sign-in"])
-          .then(() => {
-              window.location.reload();
-          });
-  }
-
   /**
    * eventHandler for the search functionality on the page to filter for specific cards based on the text
    *

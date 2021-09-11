@@ -11,13 +11,18 @@
 }
 
 .profileHeader{
-  display: block;
+  display: inline-flex;
   margin-left: auto;
   margin-right: auto;
   font-family: "SF Pro Medium", serif;
   --color: var(--ion-color-tertiary);
   font-size: 25px;
   font-weight: bold;
+}
+
+.signOutItem{
+  display: inline-flex;
+  left: 30%;
 }
 
 .profile-label{
