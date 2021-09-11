@@ -94,10 +94,14 @@ export class UserService {
                   this.addToken(r["access_token"]);
                   return 200;
               }).catch((error)=>{
-                  if(error.status===0) {
-                      return 500;
+                  if(error.status===0 || error.status >=500) {
+                      const newErr = {
+                          status: 500,
+                          message: error.message
+                      };
+                      return newErr;
                   }
-                  return error.status;
+                  return error;
               });
           }).catch((error) =>
           // Handle Errors here.

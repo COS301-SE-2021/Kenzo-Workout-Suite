@@ -71,27 +71,27 @@ export class SignInPage implements OnInit {
   }
 
   async googleSignIn(){
-      const status = await this.userService.attemptGoogleLogin();
-      if (status < 400) {
+      const res = await this.userService.attemptGoogleLogin();
+      if (res < 400) {
       // Success State
           await this.route.navigate(["/your-workouts"]);
           return 200;
-      } else if (status >= 400 && status < 500) {
+      } else if (res["status"] >= 400 && res["status"] < 500) {
       // Invalid Sign In
           const alert = await this.alertController.create({
               cssClass: "kenzo-alert",
               header: "Incorrect login",
-              message: "Either your password or email is incorrect.",
+              message: res["message"],
               buttons: ["OK"]
           });
           await this.presentAlert(alert);
-          throw new Error("User credentials are incorrect.");
+          throw new Error("User error.");
       } else {
       // Server Error
           const alert = await this.alertController.create({
               cssClass: "kenzo-alert",
               header: "Server isn't responding",
-              message: "Please try again later.",
+              message: res["message"],
               buttons: ["Dismiss"]
           });
           await this.presentAlert(alert);
