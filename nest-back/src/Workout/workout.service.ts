@@ -19,8 +19,7 @@ const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
 const base64ToImage = require("base64-to-image")
 const audioconcat = require("audioconcat")
-// const MP3Cutter = require("mp3-cutter")
-// const getAudioDurationInSeconds = require("get-audio-duration")
+const MP3Cutter = require("mp3-cutter")
 // const soxCommand = require("sox-audio")
 
 @Injectable()
@@ -1586,7 +1585,6 @@ export class WorkoutService {
     }
 
     // console.log(images)
-
     // eslint-disable-next-line no-useless-catch
     try {
       videoshow(images, videoOptions)
@@ -1607,74 +1605,63 @@ export class WorkoutService {
     } catch (e) { throw e }
   }
 
-  async mixAudio (): Promise<any> {
+  /**
+   *Workout Controller - Mix Audio
+   *
+   * @description Helper function for createVideo. Merges tts with audio soundtrack
+   * @param subtitles  The workout exercises description
+   * @param loop Duration each each exercise pose in seconds
+   * @param songChoice Genre choice for background track
+   * @author Tinashe Chamisa
+   *
+   */
+  async mixAudio (subtitles: string[], loop: number, songChoice: string): Promise<any> {
     const songs: string[] = []
-    const subtitles = [
-      "He said he was not there yesterday; however, many people saw him there.",
-      "Getting up at dawn is for the birds.",
-      "Warm beer on a cold day isn't my idea of fun.",
-      "what it do ababy what it do"
-    ]
+    const finalTimeline: string[] = []
     // create tts
     for (let i = 0; i < subtitles.length; i++) {
       await this.textToSpeech(subtitles[i], "exercise1Pose" + (i + 1))
       songs.push("./src/Workout/GeneratedTextSpeech/exercise1Pose" + (i + 1) + ".mp3")
     }
-    console.log(songs)
+    // trim song choice
+    if (songChoice === "hardcore") {
+      await MP3Cutter.cut({
+        src: "./src/videoGeneration/Sounds/" + songChoice + ".mp3",
+        target: "./src/videoGeneration/Sounds/trim.mp3",
+        start: 53,
+        end: loop + 53
+      })
+    } else {
+      await MP3Cutter.cut({
+        src: "./src/videoGeneration/Sounds/" + songChoice + ".mp3",
+        target: "./src/videoGeneration/Sounds/trim.mp3",
+        start: 0,
+        end: loop
+      })
+    }
+    // create final timeline
+    for (let j = 0; j < songs.length; j++) {
+      finalTimeline.push(songs[j])
+      finalTimeline.push("./src/videoGeneration/Sounds/trim.mp3")
+    }
+    console.log(finalTimeline)
 
-    /*
-    MP3Cutter.cut({
-      src: "./src/videoGeneration/Sounds/song1.mp3",
-      target: "./src/videoGeneration/Sounds/trim.mp3",
-      start: 25,
-      end: 70
-    })
-
-    /*
-    const stream = fs.createReadStream("./src/videoGeneration/Sounds/song1.mp3")
-    getAudioDurationInSeconds(stream).then((duration) => {
-      console.log(duration)
-    })
-
-     */
-
-    await this.audioConcat(songs)
-
-    /*
-    const trimCommand = soxCommand()
-      .input("./src/videoGeneration/Sounds/song1.mp3")
-      .output("./src/videoGeneration/Sounds/trim.mp3")
-      .trim(5, 35)
-    trimCommand.on("prepare", function (args) {
-      console.log("Preparing sox command with args " + args.join(" "))
-    })
-
-    trimCommand.on("start", function (commandLine) {
-      console.log("Spawned sox with command " + commandLine)
-    })
-
-    trimCommand.on("progress", function (progress) {
-      console.log("Processing progress: ", progress)
-    })
-
-    trimCommand.on("error", function (err, stdout, stderr) {
-      console.log("Cannot process audio: " + err.message)
-      console.log("Sox Command Stdout: ", stdout)
-      console.log("Sox Command Stderr: ", stderr)
-    })
-
-    trimCommand.on("end", function () {
-      console.log("Sox command succeeded!")
-    })
-
-    trimCommand.run()
-
-     */
+    try {
+      await this.audioConcat(finalTimeline)
+    } catch (e) { console.log(e) }
   }
 
+  /**
+   *Workout Controller - Mix Audio
+   *
+   * @description Helper function for createVideo. Merges tts with audio soundtrack
+   * @param songs  An array of audio files for concatenation using audioconcat
+   * @author Tinashe Chamisa
+   *
+   */
   async audioConcat (songs: string[]) {
     await audioconcat(songs)
-      .concat("./src/videoGeneration/Sounds/all.mp3")
+      .concat("./src/videoGeneration/Sounds/final.mp3")
       .on("start", function (command) {
         console.log("ffmpeg process started:", command)
       })
