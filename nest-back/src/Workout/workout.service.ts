@@ -161,7 +161,7 @@ export class WorkoutService {
       const exercisesWithImages: exercise[] = []
 
       for (let i = 0; i < exercises.length; i++) {
-        const image = await this.getExerciseBase64(exercises[i].exerciseID)
+        const image = await this.getExerciseImages(exercises[i], "./src/ExerciseImages/")
         exercisesWithImages.push({
           exerciseID: exercises[i].exerciseID,
           exerciseTitle: exercises[i].exerciseTitle,
@@ -233,7 +233,7 @@ export class WorkoutService {
       const exercisesWithImages: Exercise[] = []
 
       for (let i = 0; i < exercise.length; i++) {
-        const image = await this.getExerciseBase64(exercise[i].exerciseID)
+        const image = await this.getExerciseImages(exercise[i], "./src/ExerciseImages/")
         exercisesWithImages.push({
           exerciseID: exercise[i].exerciseID,
           exerciseTitle: exercise[i].exerciseTitle,
@@ -288,7 +288,7 @@ export class WorkoutService {
       } else {
         // add images for each exercise
 
-        const image = await this.getExerciseBase64(exercise.exerciseID)
+        const image = await this.getExerciseImages(exercise, "./src/ExerciseImages/")
         return {
           exerciseID: exercise.exerciseID,
           exerciseTitle: exercise.exerciseTitle,
@@ -393,7 +393,7 @@ export class WorkoutService {
         const exercisesWithImages: Exercise[] = []
 
         for (let i = 0; i < exercise.length; i++) {
-          const image = await this.getExerciseBase64(exercise[i].exerciseID)
+          const image = await this.getExerciseImages(exercise[i], "./src/ExerciseImages/")
           exercisesWithImages.push({
             exerciseID: exercise[i].exerciseID,
             exerciseTitle: exercise[i].exerciseTitle,
