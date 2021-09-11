@@ -308,7 +308,6 @@ export class UserService {
           throw new UnauthorizedException("USER WITH THIS EMAIL HAS ALREADY BEEN REGISTERED AS A NON-GOOGLE USER")
         } else {
           const payload = { userID: myUser.userID }
-
           return {
             access_token: this.jwtService.sign(payload),
             first_time: "false"
