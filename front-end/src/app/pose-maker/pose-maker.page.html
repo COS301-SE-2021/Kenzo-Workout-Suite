@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-button class="back" id="save-back" slot="start" mode="ios" (click)="returnToCreate()">Back</ion-button>
     </ion-buttons>
-    <ion-title class="title">Pose Maker</ion-title>
+    <ion-title class="title">Pose Studio</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content class="background">
@@ -48,13 +48,14 @@
         <ion-select-option value="21">Left Knee</ion-select-option>
         <ion-select-option value="22">Left Foot</ion-select-option>
       </ion-select>
+      <ion-button class="reset" (click)="resetPart()" mode="ios">Reset Part</ion-button>
     </ion-item>
     <ion-item>
-      <ion-label>Save Poses</ion-label>
-      <ion-button mode="ios" id="0" [style.--background]="frameColor[0]" (click)="saveFrame(0)">Frame 1</ion-button>
-      <ion-button mode="ios" id="1" [style.--background]="frameColor[1]" (click)="saveFrame(1)">Frame 2</ion-button>
-      <ion-button mode="ios" id="2" [style.--background]="frameColor[2]" (click)="saveFrame(2)">Frame 3</ion-button>
-      <ion-button mode="ios" id="3" [style.--background]="frameColor[3]" (click)="saveFrame(3)">Frame 4</ion-button>
+      <ion-label>Timeline</ion-label>
+      <ion-button mode="ios" id="0" class="selectors" [style.borderColor]="frameColor[0]" (click)="selectFrame(0)">1</ion-button>
+      <ion-button mode="ios" id="1" [style.borderColor]="frameColor[1]" (click)="selectFrame(1)">2</ion-button>
+      <ion-button mode="ios" id="2" [style.borderColor]="frameColor[2]" (click)="selectFrame(2)">3</ion-button>
+      <ion-button mode="ios" id="3" [style.borderColor]="frameColor[3]" (click)="selectFrame(3)">4</ion-button>
     </ion-item>
     <ion-item>
       <ion-label id="x" class="x coord">X</ion-label>

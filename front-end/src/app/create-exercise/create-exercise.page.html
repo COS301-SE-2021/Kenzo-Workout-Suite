@@ -8,47 +8,73 @@
 </ion-header>
 <ion-content class="background">
   <br>
-    <div class="input-div">
-      <ion-label class="input-description">Title *</ion-label>
-      <ion-input [(ngModel)]="title" placeholder="Shred Program" class="kenzo-input"></ion-input>
-    </div>
-    <br>
-    <div class="input-div">
-      <ion-label class="input-description">Description *</ion-label>
-      <ion-input [(ngModel)]="description" placeholder="3 week program to lose weight" class="kenzo-input"></ion-input>
-    </div>
-    <br>
+  <div class="input-div">
+    <ion-label class="required">Required</ion-label>
+  </div>
+  <div class="input-div">
+    <ion-label class="input-description">Title</ion-label>
+    <ion-input [(ngModel)]="title" placeholder="Shred Program" class="kenzo-input"></ion-input>
+  </div>
+  <br>
+  <div class="input-div">
+    <ion-label class="input-description">Description</ion-label>
+    <ion-input [(ngModel)]="description" placeholder="3 week program to lose weight" class="kenzo-input"></ion-input>
+  </div>
+  <br>
 
-    <div class="input-div">
-      <ion-label class="input-description">Describe your workout with Kenzo Tags *</ion-label>
-      <ion-searchbar #searchBar (ionInput)="filterSelection($event)" placeholder="Search tags" mode="ios"></ion-searchbar>
+  <div class="input-div">
+    <ion-label class="input-description">Describe your workout with Kenzo Tags</ion-label>
+    <ion-searchbar #searchBar (ionInput)="filterSelection($event)" placeholder="Search tags" mode="ios"></ion-searchbar>
 
-      <span id="tags">
-        <ion-chip *ngFor="let tag of tags" (click)="select(tag.label)"
-                  [style]="{'--background': 'var(--ion-color-KTB_'+tag.backgroundColour+')', '--color': 'var(--ion-color-KT_'+tag.textColour+')'}" >
-          <ion-label>{{tag.label}}</ion-label>
-        </ion-chip>
-      </span>
-      <span style="display: none" id="no-tag-create">
+    <span id="tags">
+      <ion-chip *ngFor="let tag of tags" (click)="select(tag.label)"
+                [style]="{'--background': 'var(--ion-color-KTB_'+tag.backgroundColour+')', '--color': 'var(--ion-color-KT_'+tag.textColour+')'}" >
+        <ion-label>{{tag.label}}</ion-label>
+      </ion-chip>
+    </span>
+    <span style="display: none" id="no-tag-create">
       <span style="padding-left: 10px; color: var(--ion-color-tertiary); font-size: 15px">Create: </span>
       <ion-chip name="newChip" ngDefaultControl [(ngModel)]="newTag" id="{{newTag.label}}" (click)="select(newTag.label)"
                 [style]="{'--background': 'var(--ion-color-KTB_'+newTag.backgroundColour+')', '--color': 'var(--ion-color-KT_'+newTag.textColour+')'}" >
         <ion-label>{{newTag.label}}</ion-label>
       </ion-chip>
     </span><br>
-
+    <div id="selected">
+      <ion-label class="input-description">Selected</ion-label>
+      <ion-chip *ngFor="let tag of selected" (click)="select(tag.label)"
+                [style]="{'--background': 'var(--ion-color-KTB_'+tag.backgroundColour+')', '--color': 'var(--ion-color-KT_'+tag.textColour+')'}" >
+        <ion-label>{{tag.label}}</ion-label>
+      </ion-chip>
       <br>
-      <br>
-      <div id="selected">
-        <ion-label class="input-description">Selected</ion-label>
-        <ion-chip *ngFor="let tag of selected" (click)="select(tag.label)"
-                  [style]="{'--background': 'var(--ion-color-KTB_'+tag.backgroundColour+')', '--color': 'var(--ion-color-KT_'+tag.textColour+')'}" >
-          <ion-label>{{tag.label}}</ion-label>
-        </ion-chip>
-      </div>
     </div>
+  </div>
+  <div class="input-div">
+<!--      <ion-label class="input-description">Poses</ion-label>-->
+    <ion-card>
+      <ion-slides id="slideshow" scrollbar="true" pager="true" options="slideOpts">
+        <button id="sync" style="display: none" (click)="syncFrames()"></button>
+        <ion-slide *ngFor="let image of slideshow">
+          <ion-img class="imagePose" [src]="image" alt="exercise pose image"></ion-img>
+        </ion-slide>
+      </ion-slides>
+    </ion-card>
+    <ion-button mode="ios" id="pose-button" (click)="poseMaker()">Add Poses</ion-button>
+  </div>
+  <br>
+  <div class="input-div">
+    <ion-label  class="input-description">Pose Description</ion-label>
+    <ion-input [(ngModel)]="poseDescription" placeholder="Ensure that your shoulders are straight" class="kenzo-input"></ion-input>
+  </div>
+  <br>
+  <br>
 
-    <br>
+<!--  OPTIONAL -->
+  <div class="input-div" (click)="showOptional()">
+    <ion-label class="optional">Optional</ion-label>
+    <ion-icon id="expand" name="chevron-down-outline"></ion-icon>
+    <ion-icon id="hide" name="chevron-up-outline"></ion-icon>
+  </div>
+  <span id="optionalFields">
     <div class="input-div">
       <ion-label class="input-description">Rep Range</ion-label>
       <ion-input [(ngModel)]="range" placeholder="4-6" class="kenzo-input"></ion-input>
@@ -68,27 +94,10 @@
       <ion-label class="input-description">Duration of exercise (minutes)</ion-label>
       <ion-input [(ngModel)]="duration"  type="number" placeholder="10" class="kenzo-input"></ion-input>
     </div>
-    <br>
-    <div class="input-div">
-      <ion-label class="input-description">Poses *</ion-label>
-      <ion-card>
-        <ion-slides id="slideshow" scrollbar="true" pager="true" options="slideOpts">
-        </ion-slides>
-      </ion-card>
-      <ion-button mode="ios" id="pose-button" (click)="poseMaker()">Add Poses</ion-button>
-    </div>
-    <br>
-    <div class="input-div">
-      <ion-label class="input-description">Pose Description *</ion-label>
-      <ion-input [(ngModel)]="poseDescription" placeholder="Ensure that your shoulders are straight" class="kenzo-input"></ion-input>
-    </div>
-    <br>
-  <div class="input-div">
-    <ion-label class="required">* Required</ion-label>
-  </div>
+  </span>
 </ion-content>
 <ion-footer class="ion-no-border">
   <ion-toolbar mode="ios" class="footer">
-    <ion-button (click)="createExercise()" mode="ios" class="submit">Submit</ion-button>
+    <ion-button (click)="createExercise()" mode="ios" class="submit">Create</ion-button>
   </ion-toolbar>
 </ion-footer>

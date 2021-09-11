@@ -21,6 +21,7 @@ export class CreateExercisePage implements OnInit {
   rest: number;
   duration: number;
   images: string[];
+  slideshow = new Array();
 
   tags: KenzoTag[] = new Array();
   tagBackup: KenzoTag[] = new Array();
@@ -36,6 +37,7 @@ export class CreateExercisePage implements OnInit {
               private storage: Storage) {
       this.storage.create();
       this.storage.set("images", []);
+      this.storage.set("skeletons", []);
       this.getTags();
       this.newTag = this.getRandomTag("");
   }
@@ -306,9 +308,7 @@ export class CreateExercisePage implements OnInit {
    * @author Luca Azmanov, u1900415
    */
   async poseMaker() {
-      await this.route.navigate(["/pose-maker"], {
-
-      });
+      await this.route.navigate(["/pose-maker"]);
   }
 
   /**
@@ -317,6 +317,41 @@ export class CreateExercisePage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async syncFrames(){
+      this.slideshow = new Array();
       this.images = await this.storage.get("images");
+      for (let i=0; i<this.images.length; i++) {
+          const image = this.images[i];
+          if(image===undefined || image===null) {
+              this.images[i] = null;
+              continue;
+          }
+          this.slideshow.push(image);
+      }
+
+      if(this.images.length>0){
+          document.getElementById("pose-button").innerHTML = "Edit Poses";
+      }else{
+          document.getElementById("pose-button").innerHTML = "Add Poses";
+      }
+  }
+
+  /**
+   * This function will hide or show the optional fields
+   *
+   * @author Luca Azmanov, u19004185
+   */
+  showOptional() {
+      const options = document.getElementById("optionalFields");
+      const expand = document.getElementById("expand");
+      const hide = document.getElementById("hide");
+      if(options.style.display === "block"){
+          options.style.display = "none";
+          hide.style.display = "none";
+          expand.style.display = "inline-block";
+      } else{
+          options.style.display = "block";
+          hide.style.display = "inline-block";
+          expand.style.display = "none";
+      }
   }
 }

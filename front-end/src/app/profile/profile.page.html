@@ -1,7 +1,7 @@
 <ion-content class="your-workout-background">
   <div class="container">
     <div class="Spacing-div">
-      <ion-card>
+      <ion-card mode="ios">
         <ion-card-header>
           <ion-card-title class="profileHeader">Profile</ion-card-title>
         </ion-card-header>
@@ -27,12 +27,17 @@
             <ion-label class="profile-label">Account Type</ion-label>
             <ion-input [(ngModel)]="accountType" class="profile-input" type="text" disabled="true"></ion-input>
           </div>
-          <ion-button (click)="editDetails()" expand="full" mode="ios" id="editBtn">
-            Edit
-          </ion-button>
-          <ion-button (click)="updateDetails()" expand="full" mode="ios" id="updateBtn" disabled="true">
-            Update
-          </ion-button>
+          <ion-item>
+            <ion-button (click)="editDetails()" size="medium" slot="start" mode="ios" id="editBtn">
+              Edit
+            </ion-button>
+            <ion-button (click)="updateDetails()" size="medium" slot="end" mode="ios" id="updateBtn" disabled="true">
+              Update
+            </ion-button>
+            <ion-button (click)="cancel()" size="medium" slot="start" mode="ios" id="cancelBtn" disabled="true">
+              Cancel
+            </ion-button>
+          </ion-item>
         </ion-card-content>
       </ion-card>
     </div>

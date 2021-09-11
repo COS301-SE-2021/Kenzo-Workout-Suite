@@ -21,7 +21,9 @@
           <ion-card-content>
             {{client.email}}
           </ion-card-content>
-          <ion-button class="editBtn" (click)="editContact(client.contactID)">Edit</ion-button>
+          <ion-item>
+            <ion-button size="medium" mode="ios" class="editBtn" (click)="editContact(client.contactID)">Edit</ion-button>
+          </ion-item>
         </ion-card>
       </span>
     </ion-row>
@@ -41,10 +43,10 @@
     <ion-input class="kenzo-input" [(ngModel)]="surname" placeholder="Last name"></ion-input>
     <ion-input class="kenzo-input" [(ngModel)]="email" placeholder="Email"></ion-input>
     <br>
-    <span class="options" >
-      <ion-button (click)="cancel()" class="cancel-button">Cancel</ion-button>
-      <ion-button (click)="submitContact()" color="tertiary" class="create-button">Create</ion-button>
-    </span>
+    <ion-item class="options" >
+      <ion-button size="medium" mode="ios" slot="start" (click)="cancel()" class="editBtn">Cancel</ion-button>
+      <ion-button (click)="submitContact()" size="medium" mode="ios" slot="end" class="editBtn">Create</ion-button>
+    </ion-item>
   </ion-card>
 </ion-content>
 <ion-content id="edit" class="your-workout-background">
@@ -62,11 +64,11 @@
     <ion-input class="kenzo-input" [(ngModel)]="surname" placeholder="Last name"></ion-input>
     <ion-input class="kenzo-input" [(ngModel)]="email" placeholder="Email"></ion-input>
     <br>
-    <span class="options" >
-      <ion-button (click)="cancel()" class="cancel-button">Cancel</ion-button>
-      <ion-button (click)="update()" color="tertiary" class="create-button">Update</ion-button>
-      <ion-button (click)="remove()" color="danger" class="create-button">Delete</ion-button>
-    </span>
+    <ion-item class="options" >
+      <ion-button (click)="cancel()" size="medium" mode="ios" class="editBtn" >Cancel</ion-button>
+      <ion-button (click)="update()" slot="end" size="medium" class="editBtn">Update</ion-button>
+      <ion-button (click)="remove()" size="medium" color="danger" class="editBtn">Delete</ion-button>
+    </ion-item>
   </ion-card>
 </ion-content>
 <ion-tab-bar mode="md" slot="bottom">

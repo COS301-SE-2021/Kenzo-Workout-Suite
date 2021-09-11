@@ -55,34 +55,50 @@ export class PoseMakerPage implements OnInit {
     public xCoordinate: number;
     public yCoordinate: number;
     public zCoordinate: number;
-    public selection: number;
+    public selection;
+    public originalCoordinates = [];
 
     // Stored Frames
-    private frames: string[] = new Array(4);
-    private frameColor: string[] = new Array(4);
+    private frames: string[] = new Array();
+    private frameColor: string[] = new Array();
+    private skeletons;
+    private selectedFrame = 0;
 
     constructor(public alertController: AlertController, public route: Router, private storage: Storage) {
         this.xCoordinate = 0;
         this.yCoordinate = 0;
         this.zCoordinate = 0;
         this.selection = -1;
+        this.skeletons = new Array(4);
         this.storage.create();
+        for (let i = 0; i < this.skeletons.length; i++) {
+            this.skeletons[i] = [];
+        }
         this.getFrames();
     }
 
     ngOnInit() {
+
     }
 
     async getFrames(){
         const frames = await this.storage.get("images");
+        const skeletons = await this.storage.get("skeletons");
         if(frames!=null){
             for (let i = 0; i < frames.length; i++) {
                 if(frames[i]!=null){
                     this.frames[i] = frames[i];
-                    this.frameColor[i] = "#1D905B";
+                    this.frameColor[i] = "#30324A";
                 }
             }
         }
+
+        if(skeletons!=null){
+            for (let i = 0; i < skeletons.length; i++) {
+                this.skeletons[i] = skeletons[i];
+            }
+        }
+        this.frameColor[0] = "#eb445a";
     }
 
   /**
@@ -112,6 +128,7 @@ export class PoseMakerPage implements OnInit {
       document.getElementById("save-back").innerText = "Save";
       this.headerHeight = document.getElementById("header").offsetHeight;
       this.footerHeight = document.getElementById("footer").offsetHeight;
+      this.getFrames();
       this.initScene();
       this.renderAnimation();
   }
@@ -173,6 +190,26 @@ export class PoseMakerPage implements OnInit {
           this.leftUpperLeg = this.mesh.skeleton.bones[20];
           this.leftKnee = this.mesh.skeleton.bones[21];
           this.leftFoot = this.mesh.skeleton.bones[22];
+
+          // Set initial pose positions
+          for (let i=0; i<this.mesh.skeleton.bones.length; i++) {
+              const bone = this.mesh.skeleton.bones[i];
+              this.originalCoordinates.push({value: i, x: bone.rotation.x, y: bone.rotation.y, z: bone.rotation.z});
+          }
+          for (let i = 0; i < 4; i++) {
+              if(this.skeletons[i].length===0) {
+                  for (let j = 0; j < this.mesh.skeleton.bones.length; j++) {
+                      const bone = this.mesh.skeleton.bones[j];
+                      this.skeletons[i][j] = ({value: j, x: bone.rotation.x, y: bone.rotation.y, z: bone.rotation.z});
+                  }
+              }
+          }
+
+          for (let i = 0; i < this.mesh.skeleton.bones.length; i++) {
+              this.mesh.skeleton.bones[i].rotation.x = this.skeletons[0][i].x;
+              this.mesh.skeleton.bones[i].rotation.y = this.skeletons[0][i].y;
+              this.mesh.skeleton.bones[i].rotation.z = this.skeletons[0][i].z;
+          }
 
           // Retrieve Textures to set Scene
           const texture= new THREE.TextureLoader().load("assets/avatar/texture.jpg");
@@ -280,14 +317,10 @@ export class PoseMakerPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async getCoordinates(value) {
-      console.log(value);
       this.selection = value;
       this.xCoordinate = this.mesh.skeleton.bones[value].rotation.x * 100;
       this.yCoordinate = this.mesh.skeleton.bones[value].rotation.y * 100;
       this.zCoordinate = this.mesh.skeleton.bones[value].rotation.z * 100;
-      console.log(this.mesh.skeleton.bones[value].rotation.x,
-          this.mesh.skeleton.bones[value].rotation.y, this.mesh.skeleton.bones[value].rotation.z);
-      console.log(this.xCoordinate, this.yCoordinate, this.zCoordinate);
   }
 
   /**
@@ -302,29 +335,16 @@ export class PoseMakerPage implements OnInit {
    * @param frame
    * @author Luca Azmanov, u19004185
    */
-  async saveFrame(frame: number) {
-      if(this.frames[frame]!=null){
-          let confirmation = false;
-          const alert = await this.alertController.create({
-              cssClass: "kenzo-alert",
-              header: "Are you sure you would like to delete this frame?",
-              buttons: [{text:"Delete",
-                  handler: ()=>{
-                      confirmation = true;
-                  }}, "Cancel"]
-          });
-
-          await this.presentAlert(alert);
-          if(!confirmation) {
-              return;
-          }
-
-          this.frames[frame] = null;
-          this.frameColor[frame] = "#FF6868";
-          // console.log(JSON.stringify(this.frames));
-          return;
+  async saveFrame() {
+      // Save Coordinates of this Frame
+      // Set initial pose positions
+      for (let i = 0; i < this.mesh.skeleton.bones.length; i++) {
+          this.skeletons[this.selectedFrame][i].x = this.mesh.skeleton.bones[i].rotation.x;
+          this.skeletons[this.selectedFrame][i].y = this.mesh.skeleton.bones[i].rotation.y;
+          this.skeletons[this.selectedFrame][i].z = this.mesh.skeleton.bones[i].rotation.z;
       }
 
+      const frame = this.selectedFrame;
       const strMime = "image/jpeg";
 
       this.camera.aspect = 1920/1080;
@@ -339,12 +359,31 @@ export class PoseMakerPage implements OnInit {
       this.renderer.setSize(window.innerWidth, window.innerHeight-this.headerHeight-this.footerHeight);
       this.renderer.render(this.scene, this.camera);
 
-      // imgData = imgData.replace("data:image/jpeg;base64,", "");
       this.frames[frame] = imgData;
-      this.frameColor[frame] = "#1D905B";
+  }
 
-      // console.log(frame, imgData);
-      // console.log(JSON.stringify(this.frames));
+  /**
+   * This function globally sets the selected frame for saving and clearing
+   *
+   * @param frame
+   * @author Luca Azmanov, u19004185
+   */
+  selectFrame(frame: number){
+      this.saveFrame();
+      this.frameColor[this.selectedFrame] = "#30324A";
+      this.selectedFrame = frame;
+      this.frameColor[frame] = "#eb445a";
+      // console.log(this.skeletons);
+
+      for (let i = 0; i < this.mesh.skeleton.bones.length; i++) {
+          this.mesh.skeleton.bones[i].rotation.x = this.skeletons[this.selectedFrame][i].x;
+          this.mesh.skeleton.bones[i].rotation.y = this.skeletons[this.selectedFrame][i].y;
+          this.mesh.skeleton.bones[i].rotation.z = this.skeletons[this.selectedFrame][i].z;
+      }
+      if(this.selection===-1) {
+          return;
+      }
+      this.getCoordinates(this.selection);
   }
 
   /**
@@ -364,24 +403,23 @@ export class PoseMakerPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   returnToCreate() {
-      this.route.navigate(["/create-exercise"]).then(()=> {
-          const slideshow = document.getElementById("slideshow");
-          slideshow.innerHTML = "";
-
-          let count = 0;
-          for (let i = 0; i < this.frames.length; i++) {
-              if (this.frames[i] == null) {
-                  count = count+1;
-              }else{
-                  slideshow.innerHTML = slideshow.innerHTML+ "<ion-slide>" +
-                  "                   <img class=\"imagePose\" src='"+this.frames[i]+"' alt=\"Exercise Pose Image Missing\">" +
-                  "                </ion-slide>";
-              }
-          }
-          if (count !== 4) {
-              document.getElementById("pose-button").innerText = "Remake Poses";
-          }
-          this.storage.set("images", this.frames);
+      this.saveFrame();
+      this.route.navigate(["/create-exercise"]).then(async () => {
+          await this.storage.set("images", this.frames);
+          await this.storage.set("skeletons", this.skeletons);
+          document.getElementById("sync").click();
       });
+  }
+
+  /**
+   * Resets the selected component
+   */
+  resetPart() {
+      if(this.selection===null) {
+          return;
+      }
+      this.xCoordinate = this.originalCoordinates[this.selection].x;
+      this.yCoordinate = this.originalCoordinates[this.selection].y;
+      this.zCoordinate = this.originalCoordinates[this.selection].z;
   }
 }

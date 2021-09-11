@@ -59,7 +59,7 @@ export class UpdateExercisePage implements OnInit {
       this.sets = unit["sets"];
       this.poseDescription = unit["poseDescription"];
       this.rest = unit["restPeriod"];
-      this.duration = unit["duration"];
+      this.duration = unit["duration"]/60;
       this.images = unit["images"];
 
       const tags = unit["tags"];
@@ -398,4 +398,34 @@ export class UpdateExercisePage implements OnInit {
       return new KenzoTag(colors[randomTC], colors[randomBC], label, false);
   }
 
+  /** This function moves the user to a screen which allows them to manipulate a 3D avatar into specific poses which can be framed
+   * and used to depict the exercise
+   *
+   * @author Luca Azmanov, u1900415
+   */
+  async poseMaker() {
+      await this.route.navigate(["/pose-maker"], {
+
+      });
+  }
+
+  /**
+   * This function will hide or show the optional fields
+   *
+   * @author Luca Azmanov, u19004185
+   */
+  showOptional() {
+      const options = document.getElementById("optionalFields");
+      const expand = document.getElementById("expand");
+      const hide = document.getElementById("hide");
+      if(options.style.display === "block"){
+          options.style.display = "none";
+          hide.style.display = "none";
+          expand.style.display = "inline-block";
+      } else{
+          options.style.display = "block";
+          hide.style.display = "inline-block";
+          expand.style.display = "none";
+      }
+  }
 }

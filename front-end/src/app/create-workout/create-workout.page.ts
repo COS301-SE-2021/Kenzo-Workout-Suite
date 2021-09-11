@@ -18,7 +18,12 @@ export class CreateWorkoutPage implements OnInit {
   exercises = [];
 
   @ViewChild("searchBar", {static: false}) searchbar: IonSearchbar;
-  exerciseSelection: any;
+
+  //Video Generation Options
+  loop = 10; //seconds
+  resolutionWidth = 1920;
+  resolutionHeight = 1080;
+  genre: any;
 
   constructor(private http: HttpClient,
               private route: Router,
@@ -38,10 +43,12 @@ export class CreateWorkoutPage implements OnInit {
   async getExercises(){
       const data = await this.workoutService.attemptGetExercisesByPlanner();
       const exercises = data.data;
+      // console.log(data.data);
       for (let i = 0; i <exercises.length; i++) {
           const exerciseID = exercises[i].exerciseID;
           const exerciseTitle = exercises[i].exerciseTitle;
-          this.exercises[i] = {id: exerciseID, title: exerciseTitle};
+          const images = exercises[i].images;
+          this.exercises[i] = {id: exerciseID, title: exerciseTitle, images: images, selected: false};
       }
   }
 
@@ -58,10 +65,10 @@ export class CreateWorkoutPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async submitCreateRequest() {
-
-
       const newWorkout = new Workout(this.title, this.description, []);
-      const status = await this.workoutService.attemptSubmitWorkout(newWorkout, this.format(this.exerciseSelection));
+      // console.log(this.format(this.exercises));
+      // return ;
+      const status = await this.workoutService.attemptSubmitWorkout(newWorkout, this.format(this.exercises), this.loop, this.genre, this.resolutionWidth, this.resolutionHeight);
 
       if (status < 400) {
       // Success State
@@ -120,9 +127,65 @@ export class CreateWorkoutPage implements OnInit {
       const formattedExercises = [];
 
       for (let i = 0; i <data.length; i++) {
-          formattedExercises.push({exerciseID: data[i]});
+          if(data[i].selected) {
+              formattedExercises.push({exerciseID: data[i].id});
+          }
       }
 
       return formattedExercises;
+  }
+
+  select(id) {
+      for (let i = 0; i < this.exercises.length; i++) {
+          if(this.exercises[i].id === id){
+              this.exercises[i].selected = !this.exercises[i].selected;
+              return;
+          }
+      }
+  }
+
+  filterSelection(event) {
+      const text = event.srcElement.value.trim().toLowerCase();
+      for (let i = 0; i < this.exercises.length; i++) {
+          const exercise = this.exercises[i];
+          document.getElementById(exercise.id).style.display = "inline-block";
+      }
+
+      for (let i = 0; i < this.exercises.length; i++) {
+          const exercise = this.exercises[i];
+          if(!exercise.title.trim().toLowerCase().includes(text)){
+              document.getElementById(exercise.id).style.display = "none";
+          }
+      }
+  }
+
+  showExercises() {
+      const options = document.getElementById("exerciseDropdown");
+      const expand = document.getElementById("expandExercises");
+      const hide = document.getElementById("hideExercises");
+      if(options.style.display === "block"){
+          options.style.display = "none";
+          hide.style.display = "none";
+          expand.style.display = "inline-block";
+      } else{
+          options.style.display = "block";
+          hide.style.display = "inline-block";
+          expand.style.display = "none";
+      }
+  }
+
+  showVideoOptions() {
+      const options = document.getElementById("videoGen");
+      const expand = document.getElementById("expandVideo");
+      const hide = document.getElementById("hideVideo");
+      if(options.style.display === "block"){
+          options.style.display = "none";
+          hide.style.display = "none";
+          expand.style.display = "inline-block";
+      } else{
+          options.style.display = "block";
+          hide.style.display = "inline-block";
+          expand.style.display = "none";
+      }
   }
 }

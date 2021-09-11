@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Workout} from "../../Models/workout";
 import {Exercise} from "../../Models/exercise";
 import {UserService} from "../UserService/user.service";
@@ -22,14 +22,19 @@ export class WorkoutService {
      *
      * @returns 200,400,500 represent a success, User error and server error, respectively.
      */
-    async attemptSubmitWorkout(workout: Workout, exercises): Promise<number> {
+    async attemptSubmitWorkout(workout: Workout, exercises, loop, genre, width, height): Promise<number> {
         const url = "http://localhost:3000/workout/createWorkout";
 
         const body = {
             workoutTitle: workout.title,
             workoutDescription: workout.description,
-            exercises:exercises
+            exercises:exercises,
+            loop: loop,
+            songChoice: genre,
+            resolutionWidth: width,
+            resolutionHeight: height
         };
+        // console.log(body);
         return this.http.post(url, body ).toPromise().then(()=>200).catch(error=>{
             if(error.status===0) {
                 return 500;
@@ -48,14 +53,18 @@ export class WorkoutService {
      *
      * @returns 200,400,500 represent a success, User error and server error, respectively.
      */
-    async attemptUpdateWorkout(workout: Workout, id: string, exercises): Promise<number> {
+    async attemptUpdateWorkout(workout: Workout, id: string, exercises, loop, genre, width, height): Promise<number> {
         const url = "http://localhost:3000/workout/updateWorkout";
 
         const body = {
             workoutID:id,
             workoutTitle: workout.title,
             workoutDescription: workout.description,
-            exercises:exercises
+            exercises:exercises,
+            loop: loop,
+            songChoice: genre,
+            resolutionWidth: width,
+            resolutionHeight: height
         };
         return this.http.put(url, body ).toPromise().then(()=>200).catch(error=>{
             if(error.status===0) {

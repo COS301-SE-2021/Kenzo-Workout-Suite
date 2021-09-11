@@ -18,8 +18,10 @@ import fontkit from "@pdf-lib/fontkit"
 const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
 const base64ToImage = require("base64-to-image")
-// const sharp = require("sharp")
-// const resizeImg = require("resize-img")
+const audioconcat = require("audioconcat")
+// const MP3Cutter = require("mp3-cutter")
+// const getAudioDurationInSeconds = require("get-audio-duration")
+// const soxCommand = require("sox-audio")
 
 @Injectable()
 export class WorkoutService {
@@ -696,6 +698,10 @@ export class WorkoutService {
    * @param workoutTitle This is the string workout title
    * @param workoutDescription This is the string workout description
    * @param exercises This is an array of exercises
+   * @param loop Duration each each exercise pose in seconds
+   * @param songChoice Genre choice for background track
+   * @param resolutionWidth The width of the resolution
+   * @param resolutionHeight The height of the resolution
    * @param plannerID This is the string planner ID
    * @param ctx  This is the prisma context that is injected into the function.
    * @throws PreconditionFailedException if:
@@ -705,8 +711,8 @@ export class WorkoutService {
    * @author Msi Sibanyoni
    *
    */
-  async createWorkout (workoutTitle: string, workoutDescription: string, exercises : Exercise[], plannerID :string, ctx: Context) {
-    if (workoutTitle === "" || workoutDescription === "" || plannerID === "" || exercises == null || workoutTitle == null || workoutDescription == null || plannerID == null) {
+  async createWorkout (workoutTitle: string, workoutDescription: string, exercises : Exercise[], loop: number, songChoice: string, resolutionWidth: number, resolutionHeight: number, plannerID :string, ctx: Context) {
+    if (workoutTitle === "" || workoutDescription === "" || plannerID === "" || loop === 0 || songChoice === "" || resolutionWidth === 0 || resolutionHeight === 0 || exercises == null || workoutTitle == null || workoutDescription == null || songChoice === null || plannerID == null) {
       throw new NotFoundException("Parameters can not be left empty.")
     }
     if ((Array.isArray(exercises) && exercises.length)) { // run create query with exercises only
@@ -734,7 +740,7 @@ export class WorkoutService {
       const fullWorkout = await this.getWorkoutById(createdWorkout.workoutID, ctx)
       await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
 
-      await this.createVideo(fullWorkout.workoutID, ctx)
+      await this.createVideo(fullWorkout.workoutID, loop, songChoice, resolutionWidth, resolutionHeight, ctx)
       return ("Workout Created.")
     } else {
       const createdWorkout = await ctx.prisma.workout.create({
@@ -761,6 +767,10 @@ export class WorkoutService {
    * @param workoutTitle This is the string workout title
    * @param workoutDescription This is the string workout description
    * @param exercises This is an array of exercises
+   * @param loop Duration each each exercise pose in seconds
+   * @param songChoice Genre choice for background track
+   * @param resolutionWidth The width of the resolution
+   * @param resolutionHeight The height of the resolution
    * @param plannerID This is the string planner ID
    * @param ctx  This is the prisma context that is injected into the function.
    * @throws PreconditionFailedException if:
@@ -770,8 +780,8 @@ export class WorkoutService {
    * @author Msi Sibanyoni
    *
    */
-  async updateWorkout (workoutID: string, workoutTitle: string, workoutDescription: string, exercises : Exercise[], plannerID :string, ctx: Context) {
-    if (workoutTitle === "" || workoutDescription === "" || plannerID === "" || exercises == null || workoutTitle == null || workoutDescription == null || plannerID == null) {
+  async updateWorkout (workoutID: string, workoutTitle: string, workoutDescription: string, exercises : Exercise[], loop: number, songChoice: string, resolutionWidth: number, resolutionHeight: number, plannerID :string, ctx: Context) {
+    if (workoutTitle === "" || workoutDescription === "" || plannerID === "" || loop === 0 || songChoice === "" || resolutionWidth === 0 || resolutionHeight === 0 || exercises == null || workoutTitle == null || workoutDescription == null || songChoice === null || plannerID == null) {
       throw new NotFoundException("Parameters can not be left empty.")
     }
     if ((Array.isArray(exercises) && exercises.length)) { // run create query with exercises only
@@ -803,7 +813,7 @@ export class WorkoutService {
 
         const updatedWorkout = await this.getWorkoutById(workoutID, ctx)
         await this.generatePrettyWorkoutPDF(updatedWorkout, ctx)
-        await this.createVideo(updatedWorkout.workoutID, ctx)
+        await this.createVideo(updatedWorkout.workoutID, loop, songChoice, resolutionWidth, resolutionHeight, ctx)
         return ("Workout Updated.")
       } catch (e) {
         throw new NotFoundException("Workout with provided ID does not exist")
@@ -853,15 +863,14 @@ export class WorkoutService {
       throw new NotFoundException("Parameters can not be left empty.")
     }
     try {
-      // const retrievedWorkout = await this.getWorkoutById(workoutID, ctx)
-      // fs.unlink("./src/GeneratedWorkouts/" + retrievedWorkout.workoutTitle + "Workout.pdf", (err) => {
-      //   if (err) {
-      //     throw err
-      //   }
-      // })
       await ctx.prisma.workout.delete({
         where: {
           workoutID: workoutID
+        }
+      })
+      fs.unlink("./src/GeneratedWorkouts/" + workoutID + ".pdf", (err) => {
+        if (err) {
+          throw err
         }
       })
       return ("Workout Deleted.")
@@ -897,13 +906,35 @@ export class WorkoutService {
 
     const titleHeadingColour = rgb(0.13, 0.185, 0.24)
     const fieldsHeadingColour = rgb(0.071, 0.22, 0.4117)
+    const form = pdfDoc.getForm()
     try {
-      firstPage.drawText(workout.workoutTitle, {
-        x: 310,
-        y: 210,
-        size: 38,
-        font: SFBold
-      })
+      const titleField = form.createTextField("workout.Title")
+      titleField.enableMultiline()
+      titleField.enableReadOnly()
+      titleField.setText(workout.workoutTitle)
+      if (workout.workoutTitle.length <= 12) {
+        titleField.addToPage(firstPage, {
+          x: 300,
+          y: 140,
+          width: 280,
+          height: 50,
+          borderWidth: 0
+        })
+        form.getTextField("workout.Title").setFontSize(36)
+      } else {
+        titleField.addToPage(firstPage, {
+          x: 300,
+          y: 190,
+          width: 280,
+          height: 90,
+          borderWidth: 0
+        })
+        if (workout.workoutTitle.length > 13 && workout.workoutTitle.length <= 32) {
+          form.getTextField("workout.Title").setFontSize(26)
+        } else {
+          form.getTextField("workout.Title").setFontSize(24)
+        }
+      }
       const userObject = await this.userService.findUserByUUID(workout.plannerID, ctx)
       const userFirstLastName = userObject.firstName + " " + userObject.lastName
       firstPage.drawText("Author ", {
@@ -925,7 +956,6 @@ export class WorkoutService {
         size: 18,
         font: SFBold
       })
-      const form = pdfDoc.getForm()
       const textField = form.createTextField("workout.description")
       textField.enableMultiline()
       textField.enableReadOnly()
@@ -959,7 +989,7 @@ export class WorkoutService {
               color: titleHeadingColour
             })
             // Description
-            currentPage.drawText("Exercise Description", {
+            currentPage.drawText("Exercise Description:", {
               x: 20,
               y: 710,
               size: 12,
@@ -973,7 +1003,7 @@ export class WorkoutService {
               font: SFRegular
             })
             // Rep Range
-            currentPage.drawText("Rep Range ", {
+            currentPage.drawText("Rep Range: ", {
               x: 20,
               y: 620,
               size: 12,
@@ -991,7 +1021,7 @@ export class WorkoutService {
               font: SFRegular
             })
             // Sets
-            currentPage.drawText("Sets ".toString(), {
+            currentPage.drawText("Sets: ", {
               x: 20,
               y: 600,
               size: 12,
@@ -1009,7 +1039,7 @@ export class WorkoutService {
               font: SFRegular
             })
             // RestPeriod
-            currentPage.drawText("Rest Period ", {
+            currentPage.drawText("Rest Period: ", {
               x: 20,
               y: 570,
               size: 12,
@@ -1027,7 +1057,7 @@ export class WorkoutService {
               font: SFRegular
             })
             // Exercise Duration
-            currentPage.drawText("Exercise Duration ", {
+            currentPage.drawText("Exercise Duration: ", {
               x: 20,
               y: 540,
               size: 12,
@@ -1036,23 +1066,23 @@ export class WorkoutService {
             })
             let duration = "Consult Personal Trainer."
             if (workout.exercises[i].duration !== null) {
-              duration = (workout.exercises[i].duration / 60).toString()
+              duration = (workout.exercises[i].duration / 60).toString() + "minutes."
             }
-            currentPage.drawText(duration + " minutes", {
+            currentPage.drawText(duration, {
               x: 130,
               y: 540,
               size: 12,
               font: SFRegular
             })
             // Planner
-            currentPage.drawText("Planner ", {
+            currentPage.drawText("Planner: ", {
               x: 20,
               y: 510,
               size: 12,
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(userFirstLastName, {
+            currentPage.drawText(userFirstLastName.toString(), {
               x: 130,
               y: 510,
               size: 12,
@@ -1083,7 +1113,7 @@ export class WorkoutService {
               font: SFBold,
               color: titleHeadingColour
             })
-            currentPage.drawText("Exercise Description", {
+            currentPage.drawText("Exercise Description:", {
               x: 20,
               y: 340,
               size: 12,
@@ -1097,7 +1127,7 @@ export class WorkoutService {
               font: SFRegular
             })
             // Rep Range
-            currentPage.drawText("Rep Range ", {
+            currentPage.drawText("Rep Range: ", {
               x: 20,
               y: 250,
               size: 12,
@@ -1115,7 +1145,7 @@ export class WorkoutService {
               font: SFRegular
             })
             // Sets
-            currentPage.drawText("Sets ".toString(), {
+            currentPage.drawText("Sets ", {
               x: 20,
               y: 220,
               size: 12,
@@ -1151,7 +1181,7 @@ export class WorkoutService {
               font: SFRegular
             })
             // Exercise Duration
-            currentPage.drawText("Exercise Duration ", {
+            currentPage.drawText("Exercise Duration: ", {
               x: 20,
               y: 160,
               size: 12,
@@ -1169,14 +1199,14 @@ export class WorkoutService {
               font: SFRegular
             })
             // Planner
-            currentPage.drawText("Planner ", {
+            currentPage.drawText("Planner: ", {
               x: 20,
               y: 130,
               size: 12,
               font: SFBold,
               color: fieldsHeadingColour
             })
-            currentPage.drawText(userFirstLastName, {
+            currentPage.drawText(userFirstLastName.toString(), {
               x: 130,
               y: 130,
               size: 12,
@@ -1225,22 +1255,26 @@ export class WorkoutService {
    */
   async getWorkoutPDF (workoutID: string, ctx: Context): Promise<any> {
     if (workoutID === null || workoutID === "") {
-      throw new NotAcceptableException("Workout ID cannot be empty")
+      throw new NotAcceptableException("Workout ID cannot be empty.")
+    }
+    let workoutObject
+    let uint8ArrayFP
+    let pdfDoc
+    try {
+      workoutObject = await this.getWorkoutById(workoutID, ctx)
+    } catch (E) {
+      throw new BadRequestException("Provided workout does not exist!")
     }
 
     try {
-      const workoutObject = await this.getWorkoutById(workoutID, ctx)
+      uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf")
+    } catch {
       await this.generatePrettyWorkoutPDF(workoutObject, ctx)
-
-      fs.readFile("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf", function (err, data) {
-        if (err) throw err
-      })
-      const uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf")
-      const pdfDoc = await PDFDocument.load(uint8ArrayFP)
-      return await pdfDoc.saveAsBase64({ dataUri: true })
-    } catch (E) {
-      throw new BadRequestException("Cannot return workout pdf.")
+      uint8ArrayFP = fs.readFileSync("./src/GeneratedWorkouts/" + workoutObject.workoutID + ".pdf")
+    } finally {
+      pdfDoc = await PDFDocument.load(uint8ArrayFP)
     }
+    return await pdfDoc.saveAsBase64({ dataUri: true })
   }
 
   /**
@@ -1385,10 +1419,10 @@ export class WorkoutService {
   async textToSpeech (text:String, fileName:String) {
     const gtts = require("node-gtts")("en")
     const path = require("path")
-    const filepath = path.join("./src/Workout/GeneratedTextSpeech/", fileName + ".wav")
+    const filepath = path.join("./src/Workout/GeneratedTextSpeech/", fileName + ".mp3")
 
     try {
-      gtts.save(filepath, text, function () {
+      await gtts.save(filepath, text, function () {
       })
 
       return "text file has been created"
@@ -1401,6 +1435,10 @@ export class WorkoutService {
    *Workout Controller - Create Video
    *
    * @param workoutID  The workout ID
+   * @param loop Duration each each exercise pose in seconds
+   * @param songChoice Genre choice for background track
+   * @param resolutionWidth The width of the resolution
+   * @param resolutionHeight The height of the resolution
    * @param ctx  This is the prisma context that is injected into the function.
    * @throws NotFoundException if:
    *                               -No workout was found in the database with the specified workout ID.
@@ -1414,7 +1452,7 @@ export class WorkoutService {
    * @author Tinashe Chamisa
    *
    */
-  async createVideo (workoutID: string, ctx: Context): Promise<any> {
+  async createVideo (workoutID: string, loop: number, songChoice: string, resolutionWidth: number, resolutionHeight: number, ctx: Context): Promise<any> {
     if (workoutID == null || workoutID === "") {
       throw new PreconditionFailedException("Invalid Workout ID passed in.")
     }
@@ -1446,6 +1484,9 @@ export class WorkoutService {
     const images: IMAGE[] = []
     const fileNames = [""]
     let lengthOfVideo = 0
+
+    // customization options
+    const resolution = resolutionWidth + "x" + resolutionHeight
 
     // retrieve all exercises poses one by one from the local storage
     for (let i = 0; i < exercisesID.length; i++) {
@@ -1481,10 +1522,10 @@ export class WorkoutService {
           images.push({
             path: "./src/videoGeneration/Images/" + fileName + ".jpg",
             caption: exerciseDescription,
-            loop: 20
+            loop: loop
           })
 
-          lengthOfVideo += 20
+          lengthOfVideo += loop
         }
 
         if (base64Images.length !== 1 && i < base64Images.length - 1) {
@@ -1510,7 +1551,7 @@ export class WorkoutService {
       transitionDuration: 1, // seconds
       videoBitrate: 1024,
       videoCodec: "libx264",
-      size: "1920x1080",
+      size: resolution,
       audioBitrate: "128k",
       audioChannels: 2,
       format: "mp4",
@@ -1519,20 +1560,103 @@ export class WorkoutService {
 
     // console.log(images)
 
-    videoshow(images, videoOptions)
-      .audio("./src/videoGeneration/Sounds/song1.mp3")
-      .save("./src/videoGeneration/Videos/" + workoutID + ".mp4")
+    // eslint-disable-next-line no-useless-catch
+    try {
+      videoshow(images, videoOptions)
+        .audio("./src/videoGeneration/Sounds/song1.mp3")
+        .save("./src/videoGeneration/Videos/" + workoutID + ".mp4")
+        .on("start", function (command) {
+          console.log("ffmpeg process started:", command)
+        })
+        .on("error", function (err, stdout, stderr) {
+          console.error("Error:", err)
+          console.error("ffmpeg stderr:", stderr)
+          throw new ServiceUnavailableException("Unable to create video.")
+        })
+        .on("end", function (output) {
+          console.error("Video created in:", output)
+          return "Successfully created video."
+        })
+    } catch (e) { throw e }
+  }
+
+  async mixAudio (): Promise<any> {
+    const songs: string[] = []
+    const subtitles = [
+      "He said he was not there yesterday; however, many people saw him there.",
+      "Getting up at dawn is for the birds.",
+      "Warm beer on a cold day isn't my idea of fun.",
+      "what it do ababy what it do"
+    ]
+    // create tts
+    for (let i = 0; i < subtitles.length; i++) {
+      await this.textToSpeech(subtitles[i], "exercise1Pose" + (i + 1))
+      songs.push("./src/Workout/GeneratedTextSpeech/exercise1Pose" + (i + 1) + ".mp3")
+    }
+    console.log(songs)
+
+    /*
+    MP3Cutter.cut({
+      src: "./src/videoGeneration/Sounds/song1.mp3",
+      target: "./src/videoGeneration/Sounds/trim.mp3",
+      start: 25,
+      end: 70
+    })
+
+    /*
+    const stream = fs.createReadStream("./src/videoGeneration/Sounds/song1.mp3")
+    getAudioDurationInSeconds(stream).then((duration) => {
+      console.log(duration)
+    })
+
+     */
+
+    await this.audioConcat(songs)
+
+    /*
+    const trimCommand = soxCommand()
+      .input("./src/videoGeneration/Sounds/song1.mp3")
+      .output("./src/videoGeneration/Sounds/trim.mp3")
+      .trim(5, 35)
+    trimCommand.on("prepare", function (args) {
+      console.log("Preparing sox command with args " + args.join(" "))
+    })
+
+    trimCommand.on("start", function (commandLine) {
+      console.log("Spawned sox with command " + commandLine)
+    })
+
+    trimCommand.on("progress", function (progress) {
+      console.log("Processing progress: ", progress)
+    })
+
+    trimCommand.on("error", function (err, stdout, stderr) {
+      console.log("Cannot process audio: " + err.message)
+      console.log("Sox Command Stdout: ", stdout)
+      console.log("Sox Command Stderr: ", stderr)
+    })
+
+    trimCommand.on("end", function () {
+      console.log("Sox command succeeded!")
+    })
+
+    trimCommand.run()
+
+     */
+  }
+
+  async audioConcat (songs: string[]) {
+    await audioconcat(songs)
+      .concat("./src/videoGeneration/Sounds/all.mp3")
       .on("start", function (command) {
         console.log("ffmpeg process started:", command)
       })
       .on("error", function (err, stdout, stderr) {
         console.error("Error:", err)
         console.error("ffmpeg stderr:", stderr)
-        throw new ServiceUnavailableException("Unable to create video.")
       })
       .on("end", function (output) {
-        console.error("Video created in:", output)
-        return "Successfully created video."
+        console.error("Audio created in:", output)
       })
   }
 
