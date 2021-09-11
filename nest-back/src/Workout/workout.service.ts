@@ -1552,19 +1552,9 @@ export class WorkoutService {
       })
   }
 
-  async mixAudio (loop: number, songChoice: string): Promise<any> {
+  async mixAudio (subtitles: string[], loop: number, songChoice: string): Promise<any> {
     const songs: string[] = []
     const finalTimeline: string[] = []
-    const subtitles = [
-      "He said he was not there yesterday; however, many people saw him there.",
-      "Getting up at dawn is for the birds.",
-      "Warm beer on a cold day isn't my idea of fun.",
-      "what it do ababy what it do",
-      "testing testing 1 2 3 4 5",
-      "father abraham has many songs",
-      "There should have been a time and a place, but this wasn't it.",
-      "I was starting to worry that my pet turtle could tell what I was thinking."
-    ]
     // create tts
     for (let i = 0; i < subtitles.length; i++) {
       await this.textToSpeech(subtitles[i], "exercise1Pose" + (i + 1))
