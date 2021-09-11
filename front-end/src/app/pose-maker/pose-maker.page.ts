@@ -55,13 +55,13 @@ export class PoseMakerPage implements OnInit {
     public xCoordinate: number;
     public yCoordinate: number;
     public zCoordinate: number;
-    public selection: number;
+    public selection;
     public originalCoordinates = [];
 
     // Stored Frames
     private frames: string[] = new Array();
     private frameColor: string[] = new Array();
-    private coordinates = [];
+    private skeletons;
     private selectedFrame = 0;
 
     constructor(public alertController: AlertController, public route: Router, private storage: Storage) {
@@ -69,16 +69,21 @@ export class PoseMakerPage implements OnInit {
         this.yCoordinate = 0;
         this.zCoordinate = 0;
         this.selection = -1;
+        this.skeletons = new Array(4);
         this.storage.create();
+        for (let i = 0; i < this.skeletons.length; i++) {
+            this.skeletons[i] = [];
+        }
         this.getFrames();
     }
 
     ngOnInit() {
-        this.frameColor[0] = "#eb445a";
+
     }
 
     async getFrames(){
         const frames = await this.storage.get("images");
+        const skeletons = await this.storage.get("skeletons");
         if(frames!=null){
             for (let i = 0; i < frames.length; i++) {
                 if(frames[i]!=null){
@@ -87,6 +92,13 @@ export class PoseMakerPage implements OnInit {
                 }
             }
         }
+
+        if(skeletons!=null){
+            for (let i = 0; i < skeletons.length; i++) {
+                this.skeletons[i] = skeletons[i];
+            }
+        }
+        this.frameColor[0] = "#eb445a";
     }
 
   /**
@@ -116,6 +128,7 @@ export class PoseMakerPage implements OnInit {
       document.getElementById("save-back").innerText = "Save";
       this.headerHeight = document.getElementById("header").offsetHeight;
       this.footerHeight = document.getElementById("footer").offsetHeight;
+      this.getFrames();
       this.initScene();
       this.renderAnimation();
   }
@@ -183,10 +196,19 @@ export class PoseMakerPage implements OnInit {
               const bone = this.mesh.skeleton.bones[i];
               this.originalCoordinates.push({value: i, x: bone.rotation.x, y: bone.rotation.y, z: bone.rotation.z});
           }
-
-          // Set coordinates array
           for (let i = 0; i < 4; i++) {
-              this.coordinates.push(this.mesh.skeleton);
+              if(this.skeletons[i].length===0) {
+                  for (let j = 0; j < this.mesh.skeleton.bones.length; j++) {
+                      const bone = this.mesh.skeleton.bones[j];
+                      this.skeletons[i][j] = ({value: j, x: bone.rotation.x, y: bone.rotation.y, z: bone.rotation.z});
+                  }
+              }
+          }
+
+          for (let i = 0; i < this.mesh.skeleton.bones.length; i++) {
+              this.mesh.skeleton.bones[i].rotation.x = this.skeletons[0][i].x;
+              this.mesh.skeleton.bones[i].rotation.y = this.skeletons[0][i].y;
+              this.mesh.skeleton.bones[i].rotation.z = this.skeletons[0][i].z;
           }
 
           // Retrieve Textures to set Scene
@@ -316,7 +338,11 @@ export class PoseMakerPage implements OnInit {
   async saveFrame() {
       // Save Coordinates of this Frame
       // Set initial pose positions
-      this.coordinates[this.selectedFrame] = this.mesh.skeleton;
+      for (let i = 0; i < this.mesh.skeleton.bones.length; i++) {
+          this.skeletons[this.selectedFrame][i].x = this.mesh.skeleton.bones[i].rotation.x;
+          this.skeletons[this.selectedFrame][i].y = this.mesh.skeleton.bones[i].rotation.y;
+          this.skeletons[this.selectedFrame][i].z = this.mesh.skeleton.bones[i].rotation.z;
+      }
 
       const frame = this.selectedFrame;
       const strMime = "image/jpeg";
@@ -347,12 +373,17 @@ export class PoseMakerPage implements OnInit {
       this.frameColor[this.selectedFrame] = "#30324A";
       this.selectedFrame = frame;
       this.frameColor[frame] = "#eb445a";
-      console.log(this.mesh.skeleton.bones);
-      console.log(this.coordinates[frame].bones);
-      if(this.mesh.skeleton===this.coordinates[frame]){
-          console.log("WHY");
+      // console.log(this.skeletons);
+
+      for (let i = 0; i < this.mesh.skeleton.bones.length; i++) {
+          this.mesh.skeleton.bones[i].rotation.x = this.skeletons[this.selectedFrame][i].x;
+          this.mesh.skeleton.bones[i].rotation.y = this.skeletons[this.selectedFrame][i].y;
+          this.mesh.skeleton.bones[i].rotation.z = this.skeletons[this.selectedFrame][i].z;
       }
-      this.mesh.skeleton.bones = this.coordinates[frame].bones;
+      if(this.selection===-1) {
+          return;
+      }
+      this.getCoordinates(this.selection);
   }
 
   /**
@@ -375,6 +406,7 @@ export class PoseMakerPage implements OnInit {
       this.saveFrame();
       this.route.navigate(["/create-exercise"]).then(async () => {
           await this.storage.set("images", this.frames);
+          await this.storage.set("skeletons", this.skeletons);
           document.getElementById("sync").click();
       });
   }

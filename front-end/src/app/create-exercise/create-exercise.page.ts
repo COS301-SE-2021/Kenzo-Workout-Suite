@@ -37,6 +37,7 @@ export class CreateExercisePage implements OnInit {
               private storage: Storage) {
       this.storage.create();
       this.storage.set("images", []);
+      this.storage.set("skeletons", []);
       this.getTags();
       this.newTag = this.getRandomTag("");
   }
