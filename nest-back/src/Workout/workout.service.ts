@@ -765,9 +765,32 @@ export class WorkoutService {
           }
         })
       }
+      await this.cleanupWorkouts(ctx)
       return ("Exercise Deleted.")
     } catch (e) {
       throw new NotFoundException("Exercise with provided ID does not exist")
+    }
+  }
+
+  /**
+   *Workout Service - CleanupWorkouts
+   *
+   * @throws NotFoundException if:
+   *                               -There are no workouts.
+   * @author Msi Sibanyoni
+   *
+   */
+
+  async cleanupWorkouts (ctx: Context) {
+    try {
+      const allWorkouts = await this.getWorkouts(ctx)
+      for (let i = 0; i < allWorkouts.length; i++) {
+        if (allWorkouts[i].exercises.length === 0 || allWorkouts[i].exercises === []) {
+          await this.deleteWorkout(allWorkouts[i].workoutID, ctx)
+        }
+      }
+    } catch {
+      throw new NotFoundException("No workouts found in database.")
     }
   }
 
@@ -915,8 +938,8 @@ export class WorkoutService {
         }
       })
       fs.unlink("./src/GeneratedWorkouts/" + workoutID + ".pdf", (err) => {
+        // eslint-disable-next-line no-empty
         if (err) {
-          throw err
         }
       })
       return ("Workout Deleted.")
