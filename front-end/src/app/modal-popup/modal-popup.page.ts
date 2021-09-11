@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ModalController } from "@ionic/angular";
 import { ClientService } from "../Services/ClientService/client.service";
-import {Client} from "../Models/client";
+import { Contact } from "../Models/contact";
 
 @Component({
     selector: "app-modal-popup",
@@ -10,14 +10,15 @@ import {Client} from "../Models/client";
 })
 export class ModalPopupPage implements OnInit {
     private _contacts;
-    private _contactsOriginal: Client[];
-    private _submittedContacts: Client[];
+    private _contactsOriginal: Contact[];
+    private _submittedContacts: Contact[];
 
-    private _name = "";
-    private _surname = "";
-    private _email = "";
-    private _contactID = "";
-    private _isChecked = false;
+    private name = "";
+    private surname = "";
+    private contactEmail = "";
+    private contactID = "";
+    private isChecked = false;
+    private plannerID = "";
 
     constructor(private modalController: ModalController, private clientService: ClientService) { }
 
@@ -27,22 +28,32 @@ export class ModalPopupPage implements OnInit {
 
     async loadClients(){
         const resp = await this.clientService.getClientList();
+        console.log(resp);
         const data = resp.data;
         this._contacts = new Array();
         this._contactsOriginal = new Array();
         for (let i = 0; i <data.length; i++) {
-            this._name = data[i].name;
-            this._surname = data[i].surname;
-            this._email = data[i].contactEmail;
-            this._contactID = data[i].contactId;
-            this._isChecked = false;
+            this.name = data[i].name;
+            this.surname = data[i].surname;
+            this.contactEmail = data[i].contactEmail;
+            this.contactID = data[i].contactId;
+            this.plannerID = data[i].plannerID;
+            this.isChecked = false;
             this._contacts[i] = {
-                name: this._name,
-                surname: this._surname,
-                email: this._email,
-                contactID: this._contactID
+                contactID: this.contactID,
+                contactEmail: this.contactEmail,
+                name: this.name,
+                surname: this.surname,
+                plannerID: this.plannerID
             };
-            this._contactsOriginal[i] = new Client(this._name, this._surname, this._email, this._contactID);
+            this._contactsOriginal[i] = new Contact(this.contactID, this.contactEmail, this.name, this.surname, this.plannerID);
+            /*this._contactsOriginal[i] = {
+                contactId: this.contactID,
+                contactEmail: this.contactEmail,
+                name: this.name,
+                surname: this.surname,
+                plannerID: this.plannerID
+            };*/
         }
     }
 

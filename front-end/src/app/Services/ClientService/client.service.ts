@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Client} from "../../Models/client";
+import {Contact} from "../../Models/contact";
 
 @Injectable({
     providedIn: "root"
@@ -161,7 +162,7 @@ export class ClientService {
      * @return status is the code of the response
      * @author Jia Hui Wang, u18080449
      */
-    async attemptEmailClientsPDF(workoutID: string, clients: Client[]): Promise<any>{
+    async attemptEmailClientsPDF(workoutID: string, clients: Contact[]): Promise<any>{
         const url = "http://localhost:3000/client-contact/sendEmailsPDFToContacts";
         const body = {
             workoutID: workoutID,

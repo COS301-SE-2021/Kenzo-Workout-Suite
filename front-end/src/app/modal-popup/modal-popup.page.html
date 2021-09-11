@@ -7,7 +7,7 @@
     <ion-infinite-scroll>
     <ion-list>
       <ion-item *ngFor="let contact of _contacts" >
-        <ion-label>{{contact.email}}</ion-label>
+        <ion-label>{{contact.contactEmail}}</ion-label>
         <ion-checkbox slot="start" [(ngModel)]="contact.isChecked" class="contactSelection"></ion-checkbox>
       </ion-item>
     </ion-list>

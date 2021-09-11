@@ -298,7 +298,7 @@ export class YourWorkoutsPage implements OnInit {
               role: "selected",
               icon: "mail-outline",
               handler: () => {
-                  if (procedure === "Share all") {
+                  if (procedure === "Submit all") {
                       this.clientService.attemptEmailAllClientsPDF(workoutID);
                   }else{
                       this.clientService.attemptEmailClientsPDF(workoutID, procedure);
@@ -310,7 +310,7 @@ export class YourWorkoutsPage implements OnInit {
               role: "selected",
               icon: "videocam-outline",
               handler: () => {
-                  if (procedure === "Share all") {
+                  if (procedure === "Submit all") {
                       this.clientService.attemptEmailAllClientsVideo(workoutID);
                   }else{
                       this.clientService.attemptEmailClientsVideo(workoutID, procedure);
@@ -322,7 +322,7 @@ export class YourWorkoutsPage implements OnInit {
               role: "selected",
               icon: "documents-sharp",
               handler: () => {
-                  if (procedure === "Share all") {
+                  if (procedure === "Submit all") {
                       this.clientService.attemptEmailAllClientsMedia(workoutID);
                   }else{
                       this.clientService.attemptEmailClientsMedia(workoutID, procedure);
