@@ -1552,6 +1552,16 @@ export class WorkoutService {
       })
   }
 
+  /**
+   *Workout Controller - Mix Audio
+   *
+   * @description Helper function for createVideo. Merges tts with audio soundtrack
+   * @param subtitles  The workout exercises description
+   * @param loop Duration each each exercise pose in seconds
+   * @param songChoice Genre choice for background track
+   * @author Tinashe Chamisa
+   *
+   */
   async mixAudio (subtitles: string[], loop: number, songChoice: string): Promise<any> {
     const songs: string[] = []
     const finalTimeline: string[] = []
@@ -1588,6 +1598,14 @@ export class WorkoutService {
     } catch (e) { console.log(e) }
   }
 
+  /**
+   *Workout Controller - Mix Audio
+   *
+   * @description Helper function for createVideo. Merges tts with audio soundtrack
+   * @param songs  An array of audio files for concatenation using audioconcat
+   * @author Tinashe Chamisa
+   *
+   */
   async audioConcat (songs: string[]) {
     await audioconcat(songs)
       .concat("./src/videoGeneration/Sounds/final.mp3")

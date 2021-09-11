@@ -608,6 +608,16 @@ export class WorkoutController {
       return this.workoutService.createVideo(workoutID, loop, songChoice, resolutionWidth, resolutionHeight, this.ctx)
     }
 
+    /**
+     *Workout Controller - Mix Audio
+     *
+     * @description Helper function for createVideo. Merges tts with audio soundtrack
+     * @param subtitles  The workout exercises description
+     * @param loop Duration each each exercise pose in seconds
+     * @param songChoice Genre choice for background track
+     * @author Tinashe Chamisa
+     *
+     */
     @Get("mixAudio")
     mixAudiio (
         @Body("subtitles") subtitles: string[],
