@@ -146,6 +146,9 @@ export class mixAudioDTO {
     @ApiProperty({ type: Array, description: "Exercises descriptions" })
     subtitles: string[];
 
+    @ApiProperty({ type: Array, description: "The number of times of pose needs to loop" })
+    numberOfRuns: number[];
+
     @ApiProperty({ type: Number, description: "Duration each each exercise pose in seconds." })
     loop: number;
 
