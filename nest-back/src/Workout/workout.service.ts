@@ -615,7 +615,7 @@ export class WorkoutService {
    */
   async convertImageBase64 (exercise: any) {
     const paths: string[] = await this.getExerciseImages(exercise, "./src/ExerciseImages/")
-    const base64Images: string[] = [""]
+    const base64Images: string[] = []
     for (let i = 0; i < paths.length; i++) {
       base64Images.push("data:image/jpeg;base64," + fs.readFileSync(paths[i], "base64"))
     }
@@ -1544,6 +1544,9 @@ export class WorkoutService {
     }
 
     const images: IMAGE[] = []
+    const subtitles: string[] = []
+    const numberOfTimes: number[] = []
+    let count = 0
     let fileNames: string[]
     let lengthOfVideo = 0
 
@@ -1552,6 +1555,7 @@ export class WorkoutService {
 
     // retrieve all exercises poses one by one from the local storage
     for (let i = 0; i < exercises.length; i++) {
+      subtitles.push(exercises[i].exercises.description)
       for (let j = 0; j < exercises[i].exercises.length; j++) {
         fileNames = await this.getExerciseImages(exercises[i].exercises[j], "./src/ExerciseImages/")
         for (let k = 0; k < fileNames.length; k++) {
@@ -1561,6 +1565,7 @@ export class WorkoutService {
             loop: loop
           })
         }
+        count += 1
         lengthOfVideo += loop
       }
       if (exercises[i].exercises.length !== 1 && i < exercises[i].exercises.length - 1) {
@@ -1576,6 +1581,8 @@ export class WorkoutService {
           loop: 5
         })
       }
+      numberOfTimes.push(count)
+      count = 0
       lengthOfVideo += 5
     }
     const videoOptions = {
@@ -1618,12 +1625,13 @@ export class WorkoutService {
    *
    * @description Helper function for createVideo. Merges tts with audio soundtrack
    * @param subtitles  The workout exercises description
+   * @param numberOfTimes  The number of times of pose needs to loop
    * @param loop Duration each each exercise pose in seconds
    * @param songChoice Genre choice for background track
    * @author Tinashe Chamisa
    *
    */
-  async mixAudio (subtitles: string[], loop: number, songChoice: string): Promise<any> {
+  async mixAudio (subtitles: string[], numberOfTimes:number[], loop: number, songChoice: string): Promise<any> {
     const songs: string[] = []
     const finalTimeline: string[] = []
     // create tts
@@ -1649,7 +1657,9 @@ export class WorkoutService {
     }
     // create final timeline
     for (let j = 0; j < songs.length; j++) {
-      finalTimeline.push(songs[j])
+      for (let k = 0; k < numberOfTimes[j]; k++) {
+        finalTimeline.push(songs[j])
+      }
       finalTimeline.push("./src/videoGeneration/Sounds/trim.mp3")
     }
     console.log(finalTimeline)
