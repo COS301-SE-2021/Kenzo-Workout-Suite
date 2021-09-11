@@ -610,10 +610,11 @@ export class WorkoutController {
 
     @Get("mixAudio")
     mixAudiio (
+        @Body("subtitles") subtitles: string[],
         @Body("loop") loop: number,
         @Body("songChoice") songChoice: string
     ) {
-      return this.workoutService.mixAudio(loop, songChoice)
+      return this.workoutService.mixAudio(subtitles, loop, songChoice)
     }
 
     /**
