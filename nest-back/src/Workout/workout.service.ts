@@ -19,8 +19,7 @@ const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
 const base64ToImage = require("base64-to-image")
 const audioconcat = require("audioconcat")
-// const MP3Cutter = require("mp3-cutter")
-// const getAudioDurationInSeconds = require("get-audio-duration")
+const MP3Cutter = require("mp3-cutter")
 // const soxCommand = require("sox-audio")
 
 @Injectable()
@@ -162,7 +161,7 @@ export class WorkoutService {
       const exercisesWithImages: exercise[] = []
 
       for (let i = 0; i < exercises.length; i++) {
-        const image = await this.getExerciseBase64(exercises[i].exerciseID)
+        const image = await this.convertImageBase64(exercises[i])
         exercisesWithImages.push({
           exerciseID: exercises[i].exerciseID,
           exerciseTitle: exercises[i].exerciseTitle,
@@ -234,7 +233,7 @@ export class WorkoutService {
       const exercisesWithImages: Exercise[] = []
 
       for (let i = 0; i < exercise.length; i++) {
-        const image = await this.getExerciseBase64(exercise[i].exerciseID)
+        const image = await this.convertImageBase64(exercise[i])
         exercisesWithImages.push({
           exerciseID: exercise[i].exerciseID,
           exerciseTitle: exercise[i].exerciseTitle,
@@ -289,7 +288,7 @@ export class WorkoutService {
       } else {
         // add images for each exercise
 
-        const image = await this.getExerciseBase64(exercise.exerciseID)
+        const image = await this.convertImageBase64(exercise)
         return {
           exerciseID: exercise.exerciseID,
           exerciseTitle: exercise.exerciseTitle,
@@ -394,7 +393,7 @@ export class WorkoutService {
         const exercisesWithImages: Exercise[] = []
 
         for (let i = 0; i < exercise.length; i++) {
-          const image = await this.getExerciseBase64(exercise[i].exerciseID)
+          const image = await this.convertImageBase64(exercise[i])
           exercisesWithImages.push({
             exerciseID: exercise[i].exerciseID,
             exerciseTitle: exercise[i].exerciseTitle,
@@ -476,6 +475,7 @@ export class WorkoutService {
         }
       })
       const exerciseDetails = await this.getExerciseByID(createdExercise.exerciseID, ctx)
+      await this.saveExerciseImages(exerciseDetails, images, "./src/ExerciseImages/")
       await this.saveImagesToJSON(exerciseDetails, images)
       return ("Exercise created.")
     } else {
@@ -496,13 +496,14 @@ export class WorkoutService {
         }
       })
       const exerciseDetails = await this.getExerciseByID(createdExercise.exerciseID, ctx)
+      await this.saveExerciseImages(exerciseDetails, images, "./src/ExerciseImages/")
       await this.saveImagesToJSON(exerciseDetails, images)
       return ("Exercise created.")
     }
   }
 
   /**
-   *Workout Service - Update Exercise
+   *Workout Service - Save images to JSOn
    *
    * @param exercise This is the ID of the exercise.
    * @param images String array of base64 images to use for workout
@@ -510,8 +511,7 @@ export class WorkoutService {
    *                               -Not all parameters are given.
    * @throws NotFoundException if:
    *                               -An exercise with provided ID does not exist.
-   * @return  Message indicating success.
-   * @author Tinashe Chamisa
+   * @author Msi Sibanyoni
    *
    */
   async saveImagesToJSON (exercise:any, images:string[]) {
@@ -545,6 +545,81 @@ export class WorkoutService {
         if (err) throw err
       })
     })
+  }
+
+  /**
+   *Workout Service - Save exercise images
+   *
+   * @param exercise This is the exercise object of the exercise.
+   * @param images String array of base64 images to use for workout
+   * @param path String path of where to save the images
+   * @throws PreconditionFailedException if:
+   *                               -Not all parameters are given.
+   * @throws NotFoundException if:
+   *                               -An exercise with provided ID does not exist.
+   * @author Msi Sibanyoni
+   *
+   */
+  async saveExerciseImages (exercise: any, images : string[], path : string) {
+    if (exercise == null || images == null || path == null || path === "") {
+      throw new PreconditionFailedException("Not all parameters have been provided!")
+    }
+    // const path = "./src/ExerciseImages"
+    for (let j = 0; j < images.length; j++) {
+      const fileName = "I-" + exercise.exerciseID + "-" + (j + 1)
+      // eslint-disable-next-line no-useless-catch
+      try {
+        const optionalObj = { fileName, type: "jpg" }
+        await base64ToImage(images[j], path, optionalObj)
+      } catch (e) { throw e }
+    }
+  }
+
+  /**
+   *Workout Service - Get exercise images
+   *
+   * @param exercise This is the exercise object of the exercise which images one wishes to retrieve.
+   * @param path String path of where to retrieve the images
+   * @throws PreconditionFailedException if:
+   *                               -Not all parameters are given.
+   * @throws NotFoundException if:
+   *                               -An exercise with provided ID does not exist.
+   * @author Msi Sibanyoni
+   *
+   */
+  async getExerciseImages (exercise: any, path : string) {
+    if (exercise == null || path == null || path === "") {
+      throw new PreconditionFailedException("Not all parameters have been provided!")
+    }
+    const imageArray:any = []
+    let imageCounter = 1
+    while (imageCounter < 5) {
+      const imagePath = path + "I-" + exercise.exerciseID + "-" + imageCounter + ".jpg"
+      if (fs.existsSync(imagePath)) {
+        imageArray.push(imagePath)
+      }
+      imageCounter += 1
+    }
+    return imageArray
+  }
+
+  /**
+   *Workout Controller - Convert Image Base64
+   *
+   * @description Helper function for Exercise getters to convert jpeg to base64 strings
+   * @exercise An exercise object
+   * @return An array of base64 strings
+   *
+   * @author Tinashe Chamisa
+   *
+   */
+  async convertImageBase64 (exercise: any) {
+    const paths: string[] = await this.getExerciseImages(exercise, "./src/ExerciseImages/")
+    const base64Images: string[] = []
+    for (let i = 0; i < paths.length; i++) {
+      base64Images.push("data:image/jpeg;base64," + fs.readFileSync(paths[i], "base64"))
+    }
+    return base64Images
   }
 
   /**
@@ -623,6 +698,7 @@ export class WorkoutService {
         if (images !== null && images.length) {
           const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
           await this.saveImagesToJSON(exerciseDetails, images)
+          await this.saveExerciseImages(exerciseDetails, images, "./src/ExerciseImages/")
         }
         return "Exercise updated."
       } else {
@@ -649,6 +725,7 @@ export class WorkoutService {
         if (images !== null && images.length) {
           const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
           await this.saveImagesToJSON(exerciseDetails, images)
+          await this.saveExerciseImages(exerciseDetails, images, "./src/ExerciseImages/")
         }
         return "Exercise updated."
       }
@@ -670,25 +747,50 @@ export class WorkoutService {
      * @author Tinashe Chamisa
      *
      */
-  // async arrayRemove (arr, value) {
-  //   return arr.filter(function (ele) {
-  //     return ele !== value
-  //   })
-  // }
-
   async deleteExercise (exercise: string, ctx: Context): Promise<any> {
     if (exercise === "") {
       throw new PreconditionFailedException("Parameter can not be left empty.")
     }
     try {
+      const exerciseImageArray = await this.getExerciseImages(await this.getExerciseByID(exercise, ctx), "./src/ExerciseImages/")
       await ctx.prisma.exercise.delete({
         where: {
           exerciseID: exercise
         }
       })
+      for (let i = 0; i < exerciseImageArray.length; i++) {
+        fs.unlink(exerciseImageArray[i], (err) => {
+          if (err) {
+            throw err
+          }
+        })
+      }
+      await this.cleanupWorkouts(ctx)
       return ("Exercise Deleted.")
     } catch (e) {
       throw new NotFoundException("Exercise with provided ID does not exist")
+    }
+  }
+
+  /**
+   *Workout Service - CleanupWorkouts
+   *
+   * @throws NotFoundException if:
+   *                               -There are no workouts.
+   * @author Msi Sibanyoni
+   *
+   */
+
+  async cleanupWorkouts (ctx: Context) {
+    try {
+      const allWorkouts = await this.getWorkouts(ctx)
+      for (let i = 0; i < allWorkouts.length; i++) {
+        if (allWorkouts[i].exercises.length === 0 || allWorkouts[i].exercises === []) {
+          await this.deleteWorkout(allWorkouts[i].workoutID, ctx)
+        }
+      }
+    } catch {
+      throw new NotFoundException("No workouts found in database.")
     }
   }
 
@@ -706,16 +808,17 @@ export class WorkoutService {
    * @param ctx  This is the prisma context that is injected into the function.
    * @throws PreconditionFailedException if:
    *                               -Parameters can not be left empty.
-   *
+   * @throws BadRequestException if:
+   *                        -Cannot create workout
    * @return  Message indicating success.
    * @author Msi Sibanyoni
    *
    */
   async createWorkout (workoutTitle: string, workoutDescription: string, exercises : Exercise[], loop: number, songChoice: string, resolutionWidth: number, resolutionHeight: number, plannerID :string, ctx: Context) {
-    if (workoutTitle === "" || workoutDescription === "" || plannerID === "" || loop === 0 || songChoice === "" || resolutionWidth === 0 || resolutionHeight === 0 || exercises == null || workoutTitle == null || workoutDescription == null || songChoice === null || plannerID == null) {
+    if (workoutTitle === "" || workoutDescription === "" || plannerID === "" || loop === 0 || songChoice === "" || resolutionWidth === 0 || resolutionHeight === 0 || exercises == null || workoutTitle == null || workoutDescription == null || songChoice === null || plannerID == null || !(Array.isArray(exercises) && exercises.length)) {
       throw new NotFoundException("Parameters can not be left empty.")
     }
-    if ((Array.isArray(exercises) && exercises.length)) { // run create query with exercises only
+    try { // run create query with exercises only
       const exerciseConnection = exercises.map(n => {
         const container = {
           exerciseID: n.exerciseID
@@ -739,24 +842,10 @@ export class WorkoutService {
       })
       const fullWorkout = await this.getWorkoutById(createdWorkout.workoutID, ctx)
       await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
-
       await this.createVideo(fullWorkout.workoutID, loop, songChoice, resolutionWidth, resolutionHeight, ctx)
       return ("Workout Created.")
-    } else {
-      const createdWorkout = await ctx.prisma.workout.create({
-        data: {
-          workoutTitle: workoutTitle,
-          workoutDescription: workoutDescription,
-          planner: {
-            connect: {
-              userID: plannerID
-            }
-          }
-        }
-      })
-      const fullWorkout = await this.getWorkoutById(createdWorkout.workoutID, ctx)
-      await this.generatePrettyWorkoutPDF(fullWorkout, ctx)
-      return ("Workout Created.")
+    } catch {
+      throw new BadRequestException("Cannot create workout.")
     }
   }
 
@@ -781,10 +870,10 @@ export class WorkoutService {
    *
    */
   async updateWorkout (workoutID: string, workoutTitle: string, workoutDescription: string, exercises : Exercise[], loop: number, songChoice: string, resolutionWidth: number, resolutionHeight: number, plannerID :string, ctx: Context) {
-    if (workoutTitle === "" || workoutDescription === "" || plannerID === "" || loop === 0 || songChoice === "" || resolutionWidth === 0 || resolutionHeight === 0 || exercises == null || workoutTitle == null || workoutDescription == null || songChoice === null || plannerID == null) {
+    if (workoutTitle === "" || workoutDescription === "" || plannerID === "" || loop === 0 || songChoice === "" || resolutionWidth === 0 || resolutionHeight === 0 || exercises == null || workoutTitle == null || workoutDescription == null || songChoice === null || plannerID == null || !(Array.isArray(exercises) && exercises.length)) {
       throw new NotFoundException("Parameters can not be left empty.")
     }
-    if ((Array.isArray(exercises) && exercises.length)) { // run create query with exercises only
+    try { // run create query with exercises only
       const exerciseConnection = exercises.map(n => {
         const container = {
           exerciseID: n.exerciseID
@@ -818,28 +907,8 @@ export class WorkoutService {
       } catch (e) {
         throw new NotFoundException("Workout with provided ID does not exist")
       }
-    } else {
-      try {
-        await ctx.prisma.workout.update({
-          where: {
-            workoutID: workoutID
-          },
-          data: {
-            workoutTitle: workoutTitle,
-            workoutDescription: workoutDescription,
-            planner: {
-              connect: {
-                userID: plannerID
-              }
-            }
-          }
-        })
-        const updatedWorkout = await this.getWorkoutById(workoutID, ctx)
-        await this.generatePrettyWorkoutPDF(updatedWorkout, ctx)
-        return ("Workout Updated.")
-      } catch (e) {
-        throw new NotFoundException("Workout with provided ID does not exist")
-      }
+    } catch {
+      throw new BadRequestException("Cannot create workout.")
     }
   }
 
@@ -869,8 +938,8 @@ export class WorkoutService {
         }
       })
       fs.unlink("./src/GeneratedWorkouts/" + workoutID + ".pdf", (err) => {
+        // eslint-disable-next-line no-empty
         if (err) {
-          throw err
         }
       })
       return ("Workout Deleted.")
@@ -970,268 +1039,261 @@ export class WorkoutService {
 
       // OTHER PAGES
 
-      // Bring template in - [Amount of exercises]
-      if (workout.exercises === undefined) {
-        fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutID + ".pdf", await pdfDoc.save())
-      } else {
-        let exercisePosCount = 0
-        for (let i = 0; i < workout.exercises.length; i++) {
-          if (exercisePosCount < 1) {
-            const uint8ArrayOP = fs.readFileSync("./src/Assets/PDFTemplates/otherPagesTemplate.pdf")
-            const pdfDoc2 = await PDFDocument.load(uint8ArrayOP)
-            const [existingPage] = await pdfDoc.copyPages(pdfDoc2, [0])
-            const currentPage = pdfDoc.addPage(existingPage)
-            currentPage.drawText(workout.exercises[i].exerciseTitle, {
-              x: 20,
-              y: 740,
-              size: 19,
-              font: SFBold,
-              color: titleHeadingColour
-            })
-            // Description
-            currentPage.drawText("Exercise Description:", {
-              x: 20,
-              y: 710,
-              size: 12,
-              font: SFBold,
-              color: fieldsHeadingColour
-            })
-            currentPage.drawText(workout.exercises[i].exerciseDescription, {
-              x: 20,
-              y: 700,
-              size: 10,
-              font: SFRegular
-            })
-            // Rep Range
-            currentPage.drawText("Rep Range: ", {
-              x: 20,
-              y: 620,
-              size: 12,
-              font: SFBold,
-              color: fieldsHeadingColour
-            })
-            let repRange = "Consult Personal Trainer."
-            if (workout.exercises[i].repRange !== null) {
-              repRange = workout.exercises[i].repRange.toString()
-            }
-            currentPage.drawText(repRange, {
-              x: 130,
-              y: 620,
-              size: 12,
-              font: SFRegular
-            })
-            // Sets
-            currentPage.drawText("Sets: ", {
-              x: 20,
-              y: 600,
-              size: 12,
-              font: SFBold,
-              color: fieldsHeadingColour
-            })
-            let sets = "Consult Personal Trainer."
-            if (workout.exercises[i].sets !== null) {
-              sets = workout.exercises[i].sets.toString()
-            }
-            currentPage.drawText(sets, {
-              x: 130,
-              y: 600,
-              size: 12,
-              font: SFRegular
-            })
-            // RestPeriod
-            currentPage.drawText("Rest Period: ", {
-              x: 20,
-              y: 570,
-              size: 12,
-              font: SFBold,
-              color: fieldsHeadingColour
-            })
-            let restPeriod = "Consult Personal Trainer."
-            if (workout.exercises[i].restPeriod !== null) {
-              restPeriod = workout.exercises[i].restPeriod.toString()
-            }
-            currentPage.drawText(restPeriod, {
-              x: 130,
-              y: 570,
-              size: 12,
-              font: SFRegular
-            })
-            // Exercise Duration
-            currentPage.drawText("Exercise Duration: ", {
-              x: 20,
-              y: 540,
-              size: 12,
-              font: SFBold,
-              color: fieldsHeadingColour
-            })
-            let duration = "Consult Personal Trainer."
-            if (workout.exercises[i].duration !== null) {
-              duration = (workout.exercises[i].duration / 60).toString() + "minutes."
-            }
-            currentPage.drawText(duration, {
-              x: 130,
-              y: 540,
-              size: 12,
-              font: SFRegular
-            })
-            // Planner
-            currentPage.drawText("Planner: ", {
-              x: 20,
-              y: 510,
-              size: 12,
-              font: SFBold,
-              color: fieldsHeadingColour
-            })
-            currentPage.drawText(userFirstLastName.toString(), {
-              x: 130,
-              y: 510,
-              size: 12,
-              font: SFRegular
-            })
-            // Images
-            const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
-            const json = JSON.parse(jsonTest)
-            const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
-            if (exerciseImages !== undefined) {
-              for (let c = 0; c < exerciseImages.images.length; c++) {
-                const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
-                currentPage.drawImage(currentImage, {
-                  x: 20 + (c * 150),
-                  y: 400,
-                  width: 120,
-                  height: 90
-                })
-              }
-            }
-            exercisePosCount += 1
-          } else {
-            const currentPage = pdfDoc.getPage(pdfDoc.getPageCount() - 1)
-            currentPage.drawText(workout.exercises[i].exerciseTitle, {
-              x: 20,
-              y: 370,
-              size: 19,
-              font: SFBold,
-              color: titleHeadingColour
-            })
-            currentPage.drawText("Exercise Description:", {
-              x: 20,
-              y: 340,
-              size: 12,
-              font: SFBold,
-              color: fieldsHeadingColour
-            })
-            currentPage.drawText(workout.exercises[i].exerciseDescription, {
-              x: 20,
-              y: 330,
-              size: 10,
-              font: SFRegular
-            })
-            // Rep Range
-            currentPage.drawText("Rep Range: ", {
-              x: 20,
-              y: 250,
-              size: 12,
-              font: SFBold,
-              color: fieldsHeadingColour
-            })
-            let repRange = "Consult Personal Trainer."
-            if (workout.exercises[i].repRange !== null) {
-              repRange = workout.exercises[i].repRange.toString()
-            }
-            currentPage.drawText(repRange, {
-              x: 130,
-              y: 250,
-              size: 12,
-              font: SFRegular
-            })
-            // Sets
-            currentPage.drawText("Sets ", {
-              x: 20,
-              y: 220,
-              size: 12,
-              font: SFBold,
-              color: fieldsHeadingColour
-            })
-            let sets = "Consult Personal Trainer."
-            if (workout.exercises[i].sets !== null) {
-              sets = workout.exercises[i].sets.toString()
-            }
-            currentPage.drawText(sets, {
-              x: 130,
-              y: 220,
-              size: 12,
-              font: SFRegular
-            })
-            // RestPeriod
-            currentPage.drawText("Rest Period ", {
-              x: 20,
-              y: 190,
-              size: 12,
-              font: SFBold,
-              color: fieldsHeadingColour
-            })
-            let restPeriod = "Consult Personal Trainer."
-            if (workout.exercises[i].restPeriod !== null) {
-              restPeriod = workout.exercises[i].restPeriod.toString()
-            }
-            currentPage.drawText(restPeriod, {
-              x: 130,
-              y: 190,
-              size: 12,
-              font: SFRegular
-            })
-            // Exercise Duration
-            currentPage.drawText("Exercise Duration: ", {
-              x: 20,
-              y: 160,
-              size: 12,
-              font: SFBold,
-              color: fieldsHeadingColour
-            })
-            let duration = "Consult Personal Trainer."
-            if (workout.exercises[i].duration !== null) {
-              duration = (workout.exercises[i].duration / 60).toString() + " minutes."
-            }
-            currentPage.drawText(duration, {
-              x: 130,
-              y: 160,
-              size: 12,
-              font: SFRegular
-            })
-            // Planner
-            currentPage.drawText("Planner: ", {
-              x: 20,
-              y: 130,
-              size: 12,
-              font: SFBold,
-              color: fieldsHeadingColour
-            })
-            currentPage.drawText(userFirstLastName.toString(), {
-              x: 130,
-              y: 130,
-              size: 12,
-              font: SFRegular
-            })
-            // Images
-            const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
-            const json = JSON.parse(jsonTest)
-            const exerciseImages = json.find(({ ID }) => ID === workout.exercises[i].exerciseID)
-            if (exerciseImages !== undefined) {
-              for (let c = 0; c < exerciseImages.images.length; c++) {
-                const currentImage = await pdfDoc.embedJpg(exerciseImages.images[c])
-                currentPage.drawImage(currentImage, {
-                  x: 20 + (c * 150),
-                  y: 20,
-                  width: 120,
-                  height: 90
-                })
-              }
-            }
-            exercisePosCount -= 1
+      let exercisePosCount = 0
+      for (let i = 0; i < workout.exercises.length; i++) {
+        if (exercisePosCount < 1) {
+          const uint8ArrayOP = fs.readFileSync("./src/Assets/PDFTemplates/otherPagesTemplate.pdf")
+          const pdfDoc2 = await PDFDocument.load(uint8ArrayOP)
+          const [existingPage] = await pdfDoc.copyPages(pdfDoc2, [0])
+          const currentPage = pdfDoc.addPage(existingPage)
+          currentPage.drawText(workout.exercises[i].exerciseTitle, {
+            x: 20,
+            y: 740,
+            size: 19,
+            font: SFBold,
+            color: titleHeadingColour
+          })
+          // Description
+          currentPage.drawText("Exercise Description:", {
+            x: 20,
+            y: 710,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          currentPage.drawText(workout.exercises[i].exerciseDescription, {
+            x: 20,
+            y: 700,
+            size: 10,
+            font: SFRegular
+          })
+          // Rep Range
+          currentPage.drawText("Rep Range: ", {
+            x: 20,
+            y: 620,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          let repRange = "Consult Personal Trainer."
+          if (workout.exercises[i].repRange !== null) {
+            repRange = workout.exercises[i].repRange.toString()
           }
+          currentPage.drawText(repRange, {
+            x: 130,
+            y: 620,
+            size: 12,
+            font: SFRegular
+          })
+          // Sets
+          currentPage.drawText("Sets: ", {
+            x: 20,
+            y: 600,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          let sets = "Consult Personal Trainer."
+          if (workout.exercises[i].sets !== null) {
+            sets = workout.exercises[i].sets.toString()
+          }
+          currentPage.drawText(sets, {
+            x: 130,
+            y: 600,
+            size: 12,
+            font: SFRegular
+          })
+          // RestPeriod
+          currentPage.drawText("Rest Period: ", {
+            x: 20,
+            y: 570,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          let restPeriod = "Consult Personal Trainer."
+          if (workout.exercises[i].restPeriod !== null) {
+            restPeriod = workout.exercises[i].restPeriod.toString()
+          }
+          currentPage.drawText(restPeriod, {
+            x: 130,
+            y: 570,
+            size: 12,
+            font: SFRegular
+          })
+          // Exercise Duration
+          currentPage.drawText("Exercise Duration: ", {
+            x: 20,
+            y: 540,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          let duration = "Consult Personal Trainer."
+          if (workout.exercises[i].duration !== null) {
+            duration = (workout.exercises[i].duration / 60).toString() + "minutes."
+          }
+          currentPage.drawText(duration, {
+            x: 130,
+            y: 540,
+            size: 12,
+            font: SFRegular
+          })
+          // Planner
+          currentPage.drawText("Planner: ", {
+            x: 20,
+            y: 510,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          currentPage.drawText(userFirstLastName.toString(), {
+            x: 130,
+            y: 510,
+            size: 12,
+            font: SFRegular
+          })
+          // Images
+          const exerciseImageArray = await this.getExerciseImages(workout.exercises[i], "./src/ExerciseImages/")
+          if (exerciseImageArray !== undefined || exerciseImageArray !== []) {
+            for (let c = 0; c < exerciseImageArray.length; c++) {
+              const uint8Array = fs.readFileSync(exerciseImageArray[c])
+              const currentImage = await pdfDoc.embedJpg(uint8Array)
+              currentPage.drawImage(currentImage, {
+                x: 20 + (c * 150),
+                y: 400,
+                width: 120,
+                height: 90
+              })
+            }
+          }
+          exercisePosCount += 1
+        } else {
+          const currentPage = pdfDoc.getPage(pdfDoc.getPageCount() - 1)
+          currentPage.drawText(workout.exercises[i].exerciseTitle, {
+            x: 20,
+            y: 370,
+            size: 19,
+            font: SFBold,
+            color: titleHeadingColour
+          })
+          currentPage.drawText("Exercise Description:", {
+            x: 20,
+            y: 340,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          currentPage.drawText(workout.exercises[i].exerciseDescription, {
+            x: 20,
+            y: 330,
+            size: 10,
+            font: SFRegular
+          })
+          // Rep Range
+          currentPage.drawText("Rep Range: ", {
+            x: 20,
+            y: 250,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          let repRange = "Consult Personal Trainer."
+          if (workout.exercises[i].repRange !== null) {
+            repRange = workout.exercises[i].repRange.toString()
+          }
+          currentPage.drawText(repRange, {
+            x: 130,
+            y: 250,
+            size: 12,
+            font: SFRegular
+          })
+          // Sets
+          currentPage.drawText("Sets ", {
+            x: 20,
+            y: 220,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          let sets = "Consult Personal Trainer."
+          if (workout.exercises[i].sets !== null) {
+            sets = workout.exercises[i].sets.toString()
+          }
+          currentPage.drawText(sets, {
+            x: 130,
+            y: 220,
+            size: 12,
+            font: SFRegular
+          })
+          // RestPeriod
+          currentPage.drawText("Rest Period ", {
+            x: 20,
+            y: 190,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          let restPeriod = "Consult Personal Trainer."
+          if (workout.exercises[i].restPeriod !== null) {
+            restPeriod = workout.exercises[i].restPeriod.toString()
+          }
+          currentPage.drawText(restPeriod, {
+            x: 130,
+            y: 190,
+            size: 12,
+            font: SFRegular
+          })
+          // Exercise Duration
+          currentPage.drawText("Exercise Duration: ", {
+            x: 20,
+            y: 160,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          let duration = "Consult Personal Trainer."
+          if (workout.exercises[i].duration !== null) {
+            duration = (workout.exercises[i].duration / 60).toString() + " minutes."
+          }
+          currentPage.drawText(duration, {
+            x: 130,
+            y: 160,
+            size: 12,
+            font: SFRegular
+          })
+          // Planner
+          currentPage.drawText("Planner: ", {
+            x: 20,
+            y: 130,
+            size: 12,
+            font: SFBold,
+            color: fieldsHeadingColour
+          })
+          currentPage.drawText(userFirstLastName.toString(), {
+            x: 130,
+            y: 130,
+            size: 12,
+            font: SFRegular
+          })
+          // Images
+          const exerciseImageArray = await this.getExerciseImages(workout.exercises[i], "./src/ExerciseImages/")
+          if (exerciseImageArray !== undefined || exerciseImageArray !== []) {
+            for (let c = 0; c < exerciseImageArray.length; c++) {
+              const uint8Array = fs.readFileSync(exerciseImageArray[c])
+              const currentImage = await pdfDoc.embedJpg(uint8Array)
+              currentPage.drawImage(currentImage, {
+                x: 20 + (c * 150),
+                y: 20,
+                width: 120,
+                height: 90
+              })
+            }
+          }
+          exercisePosCount -= 1
         }
-        fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutID + ".pdf", await pdfDoc.save())
       }
+      fs.writeFileSync("./src/GeneratedWorkouts/" + workout.workoutID + ".pdf", await pdfDoc.save())
       return
     } catch (err) {
       throw new BadRequestException("Could not generate workout PDF.")
@@ -1456,7 +1518,7 @@ export class WorkoutService {
     if (workoutID == null || workoutID === "") {
       throw new PreconditionFailedException("Invalid Workout ID passed in.")
     }
-    const exercisesID: string[] = []
+    const exercises: any[] = []
     // eslint-disable-next-line no-useless-catch
     try {
       const workout = await this.getWorkoutById(workoutID, ctx)
@@ -1464,14 +1526,14 @@ export class WorkoutService {
         throw new NotFoundException("No workout was found in the database with the specified workout ID.")
       } else {
         workout.exercises.forEach(element => {
-          exercisesID.push(element.exerciseID)
+          exercises.push(element.exercises)
         })
       }
     } catch (err) {
       throw err
     }
 
-    if (exercisesID.length === 0) {
+    if (exercises.length === 0) {
       throw new BadRequestException("Cant create video without exercises")
     }
 
@@ -1482,67 +1544,46 @@ export class WorkoutService {
     }
 
     const images: IMAGE[] = []
-    const fileNames = [""]
+    const subtitles: string[] = []
+    const numberOfTimes: number[] = []
+    let count = 0
+    let fileNames: string[]
     let lengthOfVideo = 0
 
     // customization options
     const resolution = resolutionWidth + "x" + resolutionHeight
 
     // retrieve all exercises poses one by one from the local storage
-    for (let i = 0; i < exercisesID.length; i++) {
-      let temp: any[] = []
-      if ((temp = await this.getExerciseBase64(exercisesID[i])) === []) {
-        console.log("error")
-      } else {
-        console.log("found")
-
-        const path = "./src/videoGeneration/Images/"
-
-        // null checker for nulls in temp
-        const base64Images: string[] = []
-        for (let k = 0; k < temp.length; k++) {
-          if (temp[k] !== null) { base64Images.push(temp[k]) }
-        }
-
-        // Loop through poses of an exercise
-        const exerciseDescription = this.getExerciseDescription(exercisesID[i])
-
-        for (let j = 0; j < base64Images.length; j++) {
-          const fileName = "image-" + exercisesID[i] + "-" + (j + 1) // filename format: image + exercise id + - + pose number
-          fileNames.push(fileName)
-
-          // convert base64 to image
-          // eslint-disable-next-line no-useless-catch
-          try {
-            const optionalObj = { fileName, type: "jpg" }
-            await base64ToImage(base64Images[j], path, optionalObj)
-          } catch (e) { throw e }
-
-          // push image to array
+    for (let i = 0; i < exercises.length; i++) {
+      subtitles.push(exercises[i].exercises.description)
+      for (let j = 0; j < exercises[i].exercises.length; j++) {
+        fileNames = await this.getExerciseImages(exercises[i].exercises[j], "./src/ExerciseImages/")
+        for (let k = 0; k < fileNames.length; k++) {
           images.push({
-            path: "./src/videoGeneration/Images/" + fileName + ".jpg",
-            caption: exerciseDescription,
+            path: fileNames[k],
+            caption: exercises[i].exercises.description,
             loop: loop
           })
-
-          lengthOfVideo += loop
         }
-
-        if (base64Images.length !== 1 && i < base64Images.length - 1) {
-          images.push({
-            path: "./src/videoGeneration/Images/kenzoLogo.jpg",
-            caption: "Exercise " + (i + 1) + " complete! On to the next...",
-            loop: 5
-          })
-        } else {
-          images.push({
-            path: "./src/videoGeneration/Images/kenzoLogo.jpg",
-            caption: "Workout complete!",
-            loop: 5
-          })
-        }
-        lengthOfVideo += 5
+        count += 1
+        lengthOfVideo += loop
       }
+      if (exercises[i].exercises.length !== 1 && i < exercises[i].exercises.length - 1) {
+        images.push({
+          path: "./src/videoGeneration/Images/kenzoLogo.jpg",
+          caption: "Exercise " + (i + 1) + " complete! On to the next...",
+          loop: 5
+        })
+      } else {
+        images.push({
+          path: "./src/videoGeneration/Images/kenzoLogo.jpg",
+          caption: "Workout complete!",
+          loop: 5
+        })
+      }
+      numberOfTimes.push(count)
+      count = 0
+      lengthOfVideo += 5
     }
     const videoOptions = {
       fps: 25,
@@ -1559,11 +1600,10 @@ export class WorkoutService {
     }
 
     // console.log(images)
-
     // eslint-disable-next-line no-useless-catch
     try {
       videoshow(images, videoOptions)
-        .audio("./src/videoGeneration/Sounds/song1.mp3")
+        .audio("./src/videoGeneration/Sounds/" + songChoice + ".mp3")
         .save("./src/videoGeneration/Videos/" + workoutID + ".mp4")
         .on("start", function (command) {
           console.log("ffmpeg process started:", command)
@@ -1580,74 +1620,66 @@ export class WorkoutService {
     } catch (e) { throw e }
   }
 
-  async mixAudio (): Promise<any> {
+  /**
+   *Workout Controller - Mix Audio
+   *
+   * @description Helper function for createVideo. Merges tts with audio soundtrack
+   * @param subtitles  The workout exercises description
+   * @param numberOfTimes  The number of times of pose needs to loop
+   * @param loop Duration each each exercise pose in seconds
+   * @param songChoice Genre choice for background track
+   * @author Tinashe Chamisa
+   *
+   */
+  async mixAudio (subtitles: string[], numberOfTimes:number[], loop: number, songChoice: string): Promise<any> {
     const songs: string[] = []
-    const subtitles = [
-      "He said he was not there yesterday; however, many people saw him there.",
-      "Getting up at dawn is for the birds.",
-      "Warm beer on a cold day isn't my idea of fun.",
-      "what it do ababy what it do"
-    ]
+    const finalTimeline: string[] = []
     // create tts
     for (let i = 0; i < subtitles.length; i++) {
       await this.textToSpeech(subtitles[i], "exercise1Pose" + (i + 1))
       songs.push("./src/Workout/GeneratedTextSpeech/exercise1Pose" + (i + 1) + ".mp3")
     }
-    console.log(songs)
+    // trim song choice
+    if (songChoice === "hardcore") {
+      await MP3Cutter.cut({
+        src: "./src/videoGeneration/Sounds/" + songChoice + ".mp3",
+        target: "./src/videoGeneration/Sounds/trim.mp3",
+        start: 53,
+        end: loop + 53
+      })
+    } else {
+      await MP3Cutter.cut({
+        src: "./src/videoGeneration/Sounds/" + songChoice + ".mp3",
+        target: "./src/videoGeneration/Sounds/trim.mp3",
+        start: 0,
+        end: loop
+      })
+    }
+    // create final timeline
+    for (let j = 0; j < songs.length; j++) {
+      for (let k = 0; k < numberOfTimes[j]; k++) {
+        finalTimeline.push(songs[j])
+      }
+      finalTimeline.push("./src/videoGeneration/Sounds/trim.mp3")
+    }
+    console.log(finalTimeline)
 
-    /*
-    MP3Cutter.cut({
-      src: "./src/videoGeneration/Sounds/song1.mp3",
-      target: "./src/videoGeneration/Sounds/trim.mp3",
-      start: 25,
-      end: 70
-    })
-
-    /*
-    const stream = fs.createReadStream("./src/videoGeneration/Sounds/song1.mp3")
-    getAudioDurationInSeconds(stream).then((duration) => {
-      console.log(duration)
-    })
-
-     */
-
-    await this.audioConcat(songs)
-
-    /*
-    const trimCommand = soxCommand()
-      .input("./src/videoGeneration/Sounds/song1.mp3")
-      .output("./src/videoGeneration/Sounds/trim.mp3")
-      .trim(5, 35)
-    trimCommand.on("prepare", function (args) {
-      console.log("Preparing sox command with args " + args.join(" "))
-    })
-
-    trimCommand.on("start", function (commandLine) {
-      console.log("Spawned sox with command " + commandLine)
-    })
-
-    trimCommand.on("progress", function (progress) {
-      console.log("Processing progress: ", progress)
-    })
-
-    trimCommand.on("error", function (err, stdout, stderr) {
-      console.log("Cannot process audio: " + err.message)
-      console.log("Sox Command Stdout: ", stdout)
-      console.log("Sox Command Stderr: ", stderr)
-    })
-
-    trimCommand.on("end", function () {
-      console.log("Sox command succeeded!")
-    })
-
-    trimCommand.run()
-
-     */
+    try {
+      await this.audioConcat(finalTimeline)
+    } catch (e) { console.log(e) }
   }
 
+  /**
+   *Workout Controller - Mix Audio
+   *
+   * @description Helper function for createVideo. Merges tts with audio soundtrack
+   * @param songs  An array of audio files for concatenation using audioconcat
+   * @author Tinashe Chamisa
+   *
+   */
   async audioConcat (songs: string[]) {
     await audioconcat(songs)
-      .concat("./src/videoGeneration/Sounds/all.mp3")
+      .concat("./src/videoGeneration/Sounds/final.mp3")
       .on("start", function (command) {
         console.log("ffmpeg process started:", command)
       })
@@ -1674,22 +1706,6 @@ export class WorkoutService {
     const json = JSON.parse(jsonTest)
     const found = json.find(element => element.ID === id)
     return (typeof found !== "undefined") ? found.images : []
-  }
-
-  /**
-   *Workout service - Get Exercises Descriptions
-   *
-   * @brief Function that accepts an exercise ID and retrieves the description
-   * @param id Exercise ID
-   * @return  Re-formatted An exercise description.
-   * @author Tinashe Chamisa
-   *
-   */
-  getExerciseDescription (id: string) {
-    const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
-    const json = JSON.parse(jsonTest)
-    const found = json.find(element => element.ID === id)
-    return (typeof found !== "undefined") ? found.poseDescription : ""
   }
 
   /**
