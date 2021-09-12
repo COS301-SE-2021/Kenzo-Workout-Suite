@@ -14,10 +14,16 @@ import {
   ApiOkResponse, ApiPreconditionFailedResponse, ApiUnauthorizedResponse
 } from "@nestjs/swagger"
 import { loginDTO, signUpDTO, updateUserDTO } from "./user.model"
+import { JwtService } from "@nestjs/jwt"
 
 @Controller("user")
 export class UserController {
   constructor (private readonly userService: UserService) {
+    const Jwt = new JwtService({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: process.env.EXPIRY_TIME }
+    })
+    this.userService = new UserService(Jwt, ActualPrisma())
   }
 
   /**
@@ -57,7 +63,7 @@ export class UserController {
   signUpUser (
         @Body("user") user: User
   ) {
-    return this.userService.signUp(user, ActualPrisma())
+    return this.userService.signUp(user)
   }
 
     /**

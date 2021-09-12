@@ -23,7 +23,9 @@ export class UserService {
   };
 
   private admin;
-  constructor (private jwtService: JwtService) {
+  private ctx;
+  constructor (private jwtService: JwtService, Prismactx: Context) {
+    this.ctx = Prismactx
     this.admin = require("firebase-admin")
     if (!this.admin.apps.length) { this.admin.initializeApp(this.firebaseConfig) }
   }
@@ -42,12 +44,12 @@ export class UserService {
    * @author Zelealem Tesema
    *
    */
-  async validateUser (email: string, pass: string, ctx: Context): Promise<any> {
+  async validateUser (email: string, pass: string): Promise<any> {
     if (email == null || pass == null) {
       throw new NotFoundException("Invalid Email or Password")
     }
 
-    const user = await ctx.prisma.user.findUnique({
+    const user = await this.ctx.prisma.user.findUnique({
       where: {
         email: email
       }
@@ -122,7 +124,7 @@ export class UserService {
    *@author Zelealem Tesema
    *
    */
-  async signUp (user:User, ctx: Context) : Promise<any> {
+  async signUp (user:User) : Promise<any> {
     if (user == null) {
       throw new PreconditionFailedException("Invalid User object")
     }
@@ -140,7 +142,7 @@ export class UserService {
     const saltOrRounds = 10
     const hash = await bcrypt.hash(user.password, saltOrRounds)
 
-    const countEmail = await ctx.prisma.user.count({
+    const countEmail = await this.ctx.prisma.user.count({
       where: {
         email: user.email
       }
@@ -150,7 +152,7 @@ export class UserService {
       throw new BadRequestException("User with this email already exists")
     }
 
-    const createdUser = await ctx.prisma.user.create({
+    const createdUser = await this.ctx.prisma.user.create({
       data: {
         firstName: user.firstName,
         lastName: user.lastName,
@@ -184,13 +186,13 @@ export class UserService {
    *
    * @author Zelealem Tesema
    */
-  async findUserByUUID (passedUserId: string, ctx: Context) : Promise<any> {
+  async findUserByUUID (passedUserId: string) : Promise<any> {
     if (passedUserId === null || passedUserId === "") {
       throw new BadRequestException("Null values cannot be passed in for userId")
     }
 
     try {
-      const user = await ctx.prisma.user.findUnique({
+      const user = await this.ctx.prisma.user.findUnique({
         where: {
           userID: passedUserId
         }
@@ -230,7 +232,7 @@ export class UserService {
 
     const date = new Date(dateOfBirth)
     try {
-      const updatedUser = await ctx.prisma.user.update({
+      const updatedUser = await this.ctx.prisma.user.update({
         where: {
           userID: userId
         },
@@ -281,14 +283,14 @@ export class UserService {
     }
 
     try {
-      const myUser = await ctx.prisma.user.findUnique({
+      const myUser = await this.ctx.prisma.user.findUnique({
         where: {
           email: email
         }
       })
 
       if (!myUser) {
-        const createdUser = await ctx.prisma.user.create({
+        const createdUser = await this.ctx.prisma.user.create({
           data: {
             firstName: firstName,
             lastName: lastName,
