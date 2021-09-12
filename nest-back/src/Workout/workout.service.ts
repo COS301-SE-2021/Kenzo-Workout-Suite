@@ -476,7 +476,6 @@ export class WorkoutService {
       })
       const exerciseDetails = await this.getExerciseByID(createdExercise.exerciseID, ctx)
       await this.saveExerciseImages(exerciseDetails, images, "./src/ExerciseImages/")
-      await this.saveImagesToJSON(exerciseDetails, images)
       return ("Exercise created.")
     } else {
       const createdExercise = await ctx.prisma.exercise.create({
@@ -497,54 +496,8 @@ export class WorkoutService {
       })
       const exerciseDetails = await this.getExerciseByID(createdExercise.exerciseID, ctx)
       await this.saveExerciseImages(exerciseDetails, images, "./src/ExerciseImages/")
-      await this.saveImagesToJSON(exerciseDetails, images)
       return ("Exercise created.")
     }
-  }
-
-  /**
-   *Workout Service - Save images to JSOn
-   *
-   * @param exercise This is the ID of the exercise.
-   * @param images String array of base64 images to use for workout
-   * @throws PreconditionFailedException if:
-   *                               -Not all parameters are given.
-   * @throws NotFoundException if:
-   *                               -An exercise with provided ID does not exist.
-   * @author Msi Sibanyoni
-   *
-   */
-  async saveImagesToJSON (exercise:any, images:string[]) {
-    const arrayImages : Array<string> = []
-    images.forEach(function (item, index) {
-      if (item != null) {
-        arrayImages.push(item)
-      }
-    })
-    // TODO: Add create if file doesnt exist
-    fs.readFile("./src/createdWorkoutImages.json", function (err, data) {
-      if (err) throw err
-      const json = JSON.parse(data.toString())
-      const final = {}
-      final["ID"] = exercise.exerciseID
-      final["poseDescription"] = exercise.poseDescription
-      final["images"] = arrayImages
-      // eslint-disable-next-line array-callback-return
-      const index = json.findIndex(element => {
-        if (element["ID"] === exercise.exerciseID) {
-          return true
-        }
-      })
-      if (index !== -1) {
-        json[index] = final
-      } else {
-        json.push(final)
-      }
-
-      fs.writeFile("./src/createdWorkoutImages.json", JSON.stringify(json), function (err) {
-        if (err) throw err
-      })
-    })
   }
 
   /**
@@ -697,7 +650,6 @@ export class WorkoutService {
         })
         if (images !== null && images.length) {
           const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
-          await this.saveImagesToJSON(exerciseDetails, images)
           await this.saveExerciseImages(exerciseDetails, images, "./src/ExerciseImages/")
         }
         return "Exercise updated."
@@ -724,7 +676,6 @@ export class WorkoutService {
         })
         if (images !== null && images.length) {
           const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
-          await this.saveImagesToJSON(exerciseDetails, images)
           await this.saveExerciseImages(exerciseDetails, images, "./src/ExerciseImages/")
         }
         return "Exercise updated."
@@ -1690,22 +1641,6 @@ export class WorkoutService {
       .on("end", function (output) {
         console.error("Audio created in:", output)
       })
-  }
-
-  /**
-   *Workout service - Get Exercises Base 64
-   *
-   * @brief Function that accepts an exercise ID as a parameter and returns the list of poses associated with the exercise. If exercise doesn't exist, return -1.
-   * @param id Exercise ID
-   * @return  Re-formatted Array of base64 images.
-   * @author Tinashe Chamisa
-   *
-   */
-  async getExerciseBase64 (id: string) {
-    const jsonTest = fs.readFileSync("./src/createdWorkoutImages.json", "utf8")
-    const json = JSON.parse(jsonTest)
-    const found = json.find(element => element.ID === id)
-    return (typeof found !== "undefined") ? found.images : []
   }
 
   /**
