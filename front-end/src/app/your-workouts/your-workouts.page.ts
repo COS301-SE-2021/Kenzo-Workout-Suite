@@ -1,11 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
-import {ActionSheetController, AlertController} from "@ionic/angular";
+import {ActionSheetController, AlertController, ModalController} from "@ionic/angular";
 import { Router } from "@angular/router";
 import {Exercise} from "../Models/exercise";
 import {ClientService} from "../Services/ClientService/client.service";
-import { Storage } from "@ionic/storage";
+import {ModalPopupPage} from "../modal-popup/modal-popup.page";
 
 /**
  * Workouts class to store the information obtained from requests in member array workouts to dynamically populate cards
@@ -136,7 +136,13 @@ export class YourWorkoutsPage implements OnInit {
               public alertController: AlertController,
               private router: Router,
               public actionSheetController: ActionSheetController,
-              private storage: Storage) { }
+              public modalController: ModalController) { }
+
+  /**
+   * Upon loading of the current page, call functions to load all the workouts and exercises to be displayed.
+   *
+   * @author Jia Hui Wang, u18080449
+   */
 
   ngOnInit() {
       this.loadExercises();
@@ -147,7 +153,6 @@ export class YourWorkoutsPage implements OnInit {
    *
    * @author Jia Hui Wang, u18080449
    */
-  creat;
   async loadWorkouts(){
       const tempWorkouts = await this.workoutService.attemptGetWorkoutsByPlanner();
       if (tempWorkouts.status===200){
@@ -204,59 +209,6 @@ export class YourWorkoutsPage implements OnInit {
   }
 
   /**
-   * Attempt to obtain the PDF of the workout and based on the status, either present an Action Sheet for the user to choose from multiple options then
-   * return a code or just return a code.
-   *
-   * @param id The id of the workout of which the pdf is to obtained for.
-   * @author Jia Hui Wang, u18080449
-   */
-  async sharePDF(id: string){
-      this.pdf = await this.workoutService.attemptGetPDF(id);
-      if (this.pdf.status===200){
-          this.presentActionSheet(this.pdf.data, id);
-          return 200;
-      }else if (this.pdf.status===404){
-          return 404;
-      }else{
-          return 500;
-      }
-  }
-
-  /**
-   * Navigate to the update-workout page with the respective ID of the selected workout in order to update the workout.
-   *
-   * @author Jia Hui Wang, u18080449
-   */
-  async sendWorkoutID(id: string){
-      await this.router.navigate(["/update-workout"], {
-          state:{
-              id: id
-          }
-      });
-  }
-
-  async goToSearch(){
-      await this.router.navigate(["/search"])
-          .then(() => {
-              window.location.reload();
-          });
-  }
-
-  async goToProfile(){
-      await this.router.navigate(["/profile"])
-          .then(() => {
-              window.location.reload();
-          });
-  }
-
-  async goToClients(){
-      await this.router.navigate(["/client-list"])
-          .then(() => {
-              window.location.reload();
-          });
-  }
-
-  /**
    * eventHandler for the search functionality on the page to filter for specific cards based on the text
    *
    * @param event The onChange when user enters or removes characters to filter the cards
@@ -280,38 +232,100 @@ export class YourWorkoutsPage implements OnInit {
   }
 
   /**
+   * Attempt to obtain the PDF of the workout and based on the status, either present an Action Sheet for the user to choose from multiple options then
+   * return a code or just return a code.
+   *
+   * @param id The id of the workout of which the pdf is to obtained for.
+   * @author Jia Hui Wang, u18080449
+   */
+  async sharePDF(id: string){
+      const _contacts = await this.presentModal();
+      if (_contacts === "Cancelled"){
+          return "Cancelled";
+      }else{
+          this.pdf = await this.workoutService.attemptGetPDF(id);
+          if (this.pdf.status===200){
+              this.presentActionSheet(this.pdf.data, id, _contacts);
+              return 200;
+          }else if (this.pdf.status===404){
+              return 404;
+          }else{
+              return 500;
+          }
+      }
+  }
+
+  /**
+   * Modal to display all the contacts to choose for emailing of pdf or video
+   * and then recieve data back based upon the user's choice.
+   *
+   * @author Jia Hui Wang, u180080449
+   */
+  private _firstName: string;
+  private _lastName: string;
+  private _email: string;
+  private _contactID: string;
+  async presentModal(){
+      const modal = await this.modalController.create({
+          component: ModalPopupPage,
+          cssClass: "modalPopupCSS",
+          showBackdrop: true,
+          backdropDismiss: false
+      });
+      await modal.present();
+      const _contacts = await modal.onWillDismiss();
+      if (_contacts.data === "Cancelled"){
+          return "Cancelled";
+      }else{
+          return _contacts.data;
+      }
+  }
+
+  /**
    * ActionSheet to display a list of options for the user to choose from, from emailing the pdf, video, or both, to downloading the pdf.
    *
    * @param pdf the base64 data of the image if the user wishes to download the file.
    * @param workoutID the id of the chosen workout should the user wish to choose either email option, then the data can be passed back to back-end to find the file and send it.
    * @author Jia Hui Wang, u18080449
    */
-  async presentActionSheet(pdf: string, workoutID: string) {
+  async presentActionSheet(pdf: string, workoutID: string, procedure: any) {
       const actionSheet = await this.actionSheetController.create({
-          header: "Share PDF",
+          header: "Share documents",
           cssClass: "actionOptions",
           buttons: [{
-              text: "Email PDF to all clients",
+              text: "Email PDF",
               role: "selected",
               icon: "mail-outline",
               handler: () => {
-                  this.clientService.attemptEmailAllClientsPDF(workoutID);
+                  if (procedure === "Submit all") {
+                      this.clientService.attemptEmailAllClientsPDF(workoutID);
+                  }else{
+                      this.clientService.attemptEmailClientsPDF(workoutID, procedure);
+                  }
                   return true;
               }
           }, {
-              text: "Email video to all clients",
+              text: "Email video",
               role: "selected",
               icon: "videocam-outline",
               handler: () => {
-                  this.clientService.attemptEmailAllClientsVideo(workoutID);
+                  if (procedure === "Submit all") {
+                      this.clientService.attemptEmailAllClientsVideo(workoutID);
+                  }else{
+                      this.clientService.attemptEmailClientsVideo(workoutID, procedure);
+                  }
                   return true;
               }
           }, {
-              text: "Email PDF and video to all clients",
+              text: "Email PDF and video",
               role: "selected",
               icon: "documents-sharp",
               handler: () => {
-                  this.clientService.attemptEmailAllClientsMedia(workoutID);
+                  if (procedure === "Submit all") {
+                      this.clientService.attemptEmailAllClientsMedia(workoutID);
+                  }else{
+                      this.clientService.attemptEmailClientsMedia(workoutID, procedure);
+                  }
                   return true;
               }
           }, {
@@ -336,5 +350,49 @@ export class YourWorkoutsPage implements OnInit {
       await actionSheet.present();
       const {role} = await actionSheet.onDidDismiss();
       return role;
+  }
+
+  /**
+   * Navigate to the update-workout page with the respective ID of the selected workout in order to update the workout.
+   *
+   * @author Jia Hui Wang, u18080449
+   */
+  async sendWorkoutID(id: string){
+      await this.router.navigate(["/update-workout"], {
+          state:{
+              id: id
+          }
+      });
+  }
+
+  /**
+   * Helper function to navigate to the search/browse page
+   *
+   * @author Jia Hui Wang, u18080449
+   */
+  async goToSearch(){
+      await this.router.navigate(["/search"])
+          .then(() => {
+              window.location.reload();
+          });
+  }
+
+  /**
+   * Helper function to navigate to the profile page
+   *
+   * @author Jia Hui Wang, u18080449
+   */
+  async goToProfile(){
+      await this.router.navigate(["/profile"])
+          .then(() => {
+              window.location.reload();
+          });
+  }
+
+  async goToClients(){
+      await this.router.navigate(["/client-list"])
+          .then(() => {
+              window.location.reload();
+          });
   }
 }

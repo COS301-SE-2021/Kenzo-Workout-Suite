@@ -78,6 +78,7 @@ export class SearchPage implements OnInit {
 
   /**
    * Load all the exercises
+   * @author Jia Hui Wang, u18080449
    */
   async loadExercises(){
       const tempExercises = await this.workoutService.attemptGetExercisesByPlanner();

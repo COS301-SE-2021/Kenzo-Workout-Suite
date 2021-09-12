@@ -50,7 +50,12 @@ const routes: Routes = [
     {
         path: "pose-maker",
         loadChildren: () => import("./pose-maker/pose-maker.module").then( m => m.PoseMakerPageModule)
+    },
+    {
+        path: "modal-popup",
+        loadChildren: () => import("./modal-popup/modal-popup.module").then( m => m.ModalPopupPageModule)
     }
+
 
 ];
 
