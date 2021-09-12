@@ -136,7 +136,7 @@ export class UserController {
     })
     @HttpCode(200)
     getUserData (@Request() req) {
-      return this.userService.findUserByUUID(req.user.userID, ActualPrisma())
+      return this.userService.findUserByUUID(req.user.userID)
     }
 
     /**
@@ -174,6 +174,6 @@ export class UserController {
                      @Body("firstName") firstName: string,
                      @Body("lastName") lastName: string,
                      @Body("dateOfBirth") dateOfBirth: string) {
-      return this.userService.updateUserDetails(firstName, lastName, dateOfBirth, req.user.userID, ActualPrisma())
+      return this.userService.updateUserDetails(firstName, lastName, dateOfBirth, req.user.userID)
     }
 }

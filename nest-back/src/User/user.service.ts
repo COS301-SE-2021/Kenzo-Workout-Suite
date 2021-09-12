@@ -225,7 +225,7 @@ export class UserService {
    *
    * @author Zelealem Tesema
    */
-  async updateUserDetails (firstName:string, lastName:string, dateOfBirth:string, userId:string, ctx:Context) {
+  async updateUserDetails (firstName:string, lastName:string, dateOfBirth:string, userId:string) {
     if (firstName == null || lastName == null || userId == null || firstName === "" || lastName === "" || userId === "") {
       throw new BadRequestException("Null values can not be passed in for firstName, lastName or userId")
     }
