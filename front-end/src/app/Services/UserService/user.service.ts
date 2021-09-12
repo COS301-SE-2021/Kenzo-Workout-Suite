@@ -5,6 +5,7 @@ import { Storage } from "@ionic/storage";
 import {root} from "rxjs/internal-compatibility";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
     providedIn: "root"
@@ -19,6 +20,8 @@ export class UserService {
       appId: "1:201037185690:web:33e899d5a3e3dc4b6e1523",
       measurementId: "G-4DYHDREX4G"
   };
+
+  private apiURL = environment.apiURL;
 
   constructor(private http: HttpClient,
               private storage: Storage) {
@@ -46,7 +49,7 @@ export class UserService {
    * @returns 200,400,500 represent a success, User error and server error, respectively.
    */
   async attemptSignIn(email: string, password: string): Promise<number> {
-      const url = "http://localhost:3000/user/login";
+      const url = this.apiURL+"/user/login";
 
       //Client Validation
       if (email == null) {
@@ -82,7 +85,7 @@ export class UserService {
               const displayName = user.displayName;
               const firstName = displayName.substring(0, displayName.indexOf(" "));
               const lastName = displayName.substring(displayName.indexOf(" ")+1, displayName.length);
-              const url = "http://localhost:3000/user/googleLogin";
+              const url = this.apiURL+"/user/googleLogin";
               const body = {
                   email: user.email,
                   firstName: firstName,
@@ -119,7 +122,7 @@ export class UserService {
    * @param accountType
    */
   async attemptSignUp(firstName: string, lastName: string, email: string, password: string, accountType: string): Promise<number>{
-      const url ="http://localhost:3000/user/signUp";
+      const url =this.apiURL+"/user/signUp";
       if (firstName == null) {
           firstName = "";
       }
@@ -144,7 +147,7 @@ export class UserService {
           }
       };
 
-      return this.http.post(url, body).toPromise().then(r => 201).catch((error)=>{
+      return this.http.post(url, body).toPromise().then(() => 201).catch((error)=>{
           if(error.status===0) {
               return 500;
           }
@@ -156,7 +159,7 @@ export class UserService {
    * Get the details of the current User from the token in local storage
    */
   async obtainUserDetails(): Promise<string>{
-      const url ="http://localhost:3000/user/getUserDetails";
+      const url =this.apiURL+"/user/getUserDetails";
 
       return this.http.get(url).toPromise().then(r=>r).catch((error)=>error);
   }
@@ -174,8 +177,8 @@ export class UserService {
           lastName: lastName,
           dateOfBirth: birthDate
       };
-      const url = "http://localhost:3000/user/updateUserDetail";
-      return this.http.put(url, user).toPromise().then(r=>200).catch((error)=>{
+      const url = this.apiURL+"/user/updateUserDetail";
+      return this.http.put(url, user).toPromise().then(()=>200).catch((error)=>{
           if(error.status===401) {
               return 401;
           } else {

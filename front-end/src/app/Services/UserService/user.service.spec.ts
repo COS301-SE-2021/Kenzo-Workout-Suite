@@ -4,10 +4,12 @@ import {HttpClientTestingModule, HttpTestingController} from "@angular/common/ht
 import { UserService } from "./user.service";
 import { HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {IonicStorageModule} from "@ionic/storage-angular";
+import {environment} from "../../../environments/environment";
 
 describe("UserServiceService", () => {
     let service: UserService;
     let httpMock: HttpTestingController;
+    const apiURL = environment.apiURL;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -31,7 +33,7 @@ describe("UserServiceService", () => {
 
         const respStatus = service.attemptSignIn("luca@me.com", "Test123!");
 
-        const req = httpMock.expectOne("http://localhost:3000/user/login");
+        const req = httpMock.expectOne(apiURL+"/user/login");
         expect(req.request.method).toEqual("POST");
         expect(req.request.body).toEqual({username: "luca@me.com", password: "Test123!"});
 
@@ -50,7 +52,7 @@ describe("UserServiceService", () => {
 
         const respStatus = service.attemptSignIn("luca@me.com", "Test123!");
 
-        const req = httpMock.expectOne("http://localhost:3000/user/login");
+        const req = httpMock.expectOne(apiURL+"/user/login");
         expect(req.request.method).toEqual("POST");
         expect(req.request.body).toEqual({username: "luca@me.com", password: "Test123!"});
 
@@ -69,7 +71,7 @@ describe("UserServiceService", () => {
 
         const respStatus = service.attemptSignIn("luca@me.com", "Test123!");
 
-        const req = httpMock.expectOne("http://localhost:3000/user/login");
+        const req = httpMock.expectOne(apiURL+"/user/login");
         expect(req.request.method).toEqual("POST");
         expect(req.request.body).toEqual({username: "luca@me.com", password: "Test123!"});
 
@@ -100,7 +102,7 @@ describe("UserServiceService", () => {
             }
         };
 
-        const req = httpMock.expectOne("http://localhost:3000/user/signUp");
+        const req = httpMock.expectOne(apiURL+"/user/signUp");
         expect(req.request.method).toEqual("POST");
         expect(req.request.body).toEqual(body);
 
@@ -127,7 +129,7 @@ describe("UserServiceService", () => {
                 password: "Potat"
             }
         };
-        const req = httpMock.expectOne("http://localhost:3000/user/signUp");
+        const req = httpMock.expectOne(apiURL+"/user/signUp");
         expect(req.request.method).toEqual("POST");
         expect(req.request.body).toEqual(body);
 
@@ -154,7 +156,7 @@ describe("UserServiceService", () => {
                 password: "Jackie@123"
             }
         };
-        const req = httpMock.expectOne("http://localhost:3000/user/signUp");
+        const req = httpMock.expectOne(apiURL+"/user/signUp");
         expect(req.request.method).toEqual("POST");
         expect(req.request.body).toEqual(body);
 
@@ -182,7 +184,7 @@ describe("UserServiceService", () => {
                 password: "Potat@123"
             }
         };
-        const req = httpMock.expectOne("http://localhost:3000/user/signUp");
+        const req = httpMock.expectOne(apiURL+"/user/signUp");
         expect(req.request.method).toEqual("POST");
         expect(req.request.body).toEqual(body);
 
@@ -211,7 +213,7 @@ describe("UserServiceService", () => {
             }
         };
 
-        const req = httpMock.expectOne("http://localhost:3000/user/signUp");
+        const req = httpMock.expectOne(apiURL+"/user/signUp");
         expect(req.request.method).toEqual("POST");
         expect(req.request.body).toEqual(body);
 
@@ -230,7 +232,7 @@ describe("UserServiceService", () => {
 
         const respStatus = service.attemptSignUp("Jackster", "Wang", "luca@me.com", "Potat", "CLIENT");
 
-        const req = httpMock.expectOne("http://localhost:3000/user/signUp");
+        const req = httpMock.expectOne(apiURL+"/user/signUp");
         const error = new HttpErrorResponse({
             status: 400,
             statusText: "Bad request, invalid details"
@@ -253,7 +255,7 @@ describe("UserServiceService", () => {
                 password: "Jackie@123"
             }
         };
-        const req = httpMock.expectOne("http://localhost:3000/user/signUp");
+        const req = httpMock.expectOne(apiURL+"/user/signUp");
         expect(req.request.method).toEqual("POST");
         expect(req.request.body).toEqual(body);
 
@@ -281,7 +283,7 @@ describe("UserServiceService", () => {
                 password: "Potat@123"
             }
         };
-        const req = httpMock.expectOne("http://localhost:3000/user/signUp");
+        const req = httpMock.expectOne(apiURL+"/user/signUp");
         expect(req.request.method).toEqual("POST");
         expect(req.request.body).toEqual(body);
 

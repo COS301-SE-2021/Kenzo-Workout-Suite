@@ -1,11 +1,13 @@
 import { Injectable } from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Client} from "../../Models/client";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
     providedIn: "root"
 })
 export class ClientService {
+    private apiURL = environment.apiURL;
 
     constructor(private http: HttpClient) { }
 
@@ -15,7 +17,7 @@ export class ClientService {
      * @author Luca Azmanov, u19004185
      */
     async getClientList(){
-        const url = "http://localhost:3000/client-contact/getAllPlannersContacts";
+        const url = this.apiURL+"/client-contact/getAllPlannersContacts";
         return this.http.get(url).toPromise().then(data=>{
             data = {
                 status: 200,
@@ -33,7 +35,7 @@ export class ClientService {
      * @author Luca Azmanov, u19004185
      */
     async addClient(client: Client): Promise<number> {
-        const url = "http://localhost:3000/client-contact/createClientContact";
+        const url = this.apiURL+"/client-contact/createClientContact";
         const body = {
             contactEmail: client.email,
             name: client.firstName,
@@ -56,7 +58,7 @@ export class ClientService {
      * @author Luca Azmanov, u19004185
      */
     async removeClient(id: string){
-        const url = "http://localhost:3000/client-contact/deleteClientContact";
+        const url = this.apiURL+"/client-contact/deleteClientContact";
         const body = {
             contactID:id,
         };
@@ -76,7 +78,7 @@ export class ClientService {
      * @author Luca Azmanov, u19004185
      */
     async updateClient(client: Client){
-        const url = "http://localhost:3000/client-contact/updateClientContact";
+        const url = this.apiURL+"/client-contact/updateClientContact";
 
         const body = {
             contactID: client.contactID,
@@ -101,7 +103,7 @@ export class ClientService {
      * @author Jia Hui Wang, u18080449
      */
     async attemptEmailAllClientsPDF(workoutID: string): Promise<any>{
-        const url = "http://localhost:3000/client-contact/sendEmailsPDFToAllContacts";
+        const url = this.apiURL+"/client-contact/sendEmailsPDFToAllContacts";
         const body = {
             workoutID: workoutID
         };
@@ -121,7 +123,7 @@ export class ClientService {
      * @author Jia Hui Wang, u18080449
      */
     async attemptEmailAllClientsVideo(workoutID: string): Promise<any>{
-        const url = "http://localhost:3000/client-contact/sendEmailsVideoToAllContacts";
+        const url = this.apiURL+"/client-contact/sendEmailsVideoToAllContacts";
         const body = {
             workoutID: workoutID
         };
@@ -141,7 +143,7 @@ export class ClientService {
      * @author Jia Hui Wang, u18080449
      */
     async attemptEmailAllClientsMedia(workoutID: string): Promise<any>{
-        const url = "http://localhost:3000/client-contact/sendEmailsMultimediaToAllContacts";
+        const url = this.apiURL+"/client-contact/sendEmailsMultimediaToAllContacts";
         const body = {
             workoutID: workoutID
         };
@@ -162,7 +164,7 @@ export class ClientService {
      * @author Jia Hui Wang, u18080449
      */
     async attemptEmailClientsPDF(workoutID: string, contact: any[]): Promise<any>{
-        const url = "http://localhost:3000/client-contact/sendEmailsPDFToContacts";
+        const url = this.apiURL+"/client-contact/sendEmailsPDFToContacts";
         const body = {
             contacts: contact,
             workoutID: workoutID,
@@ -184,7 +186,7 @@ export class ClientService {
      * @author Jia Hui Wang, u18080449
      */
     async attemptEmailClientsVideo(workoutID: string, contact: any[]): Promise<any>{
-        const url = "http://localhost:3000/client-contact/sendEmailsVideoToContacts";
+        const url = this.apiURL+"/client-contact/sendEmailsVideoToContacts";
         const body = {
             contacts: contact,
             workoutID: workoutID,
@@ -206,7 +208,7 @@ export class ClientService {
      * @author Jia Hui Wang, u18080449
      */
     async attemptEmailClientsMedia(workoutID: string, contact: any[]): Promise<any>{
-        const url = "http://localhost:3000/client-contact/sendEmailsMultimediaToContacts";
+        const url = this.apiURL+"/client-contact/sendEmailsMultimediaToContacts";
         const body = {
             contacts: contact,
             workoutID: workoutID,
