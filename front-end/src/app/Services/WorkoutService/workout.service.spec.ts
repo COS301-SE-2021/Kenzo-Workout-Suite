@@ -136,14 +136,18 @@ describe("WorkoutService", () => {
     // Create Workout Unit Tests
     it("should create a workout successfully because server responds with status code 200", async () => {
         const workout: Workout = new Workout("Leg Killer", "A hard day for your legs", []);
-        const respStatus = service.attemptSubmitWorkout(workout, []);
+        const respStatus = service.attemptSubmitWorkout(workout, [], 10, "upbeat", 1920, 1080);
 
         const req = httpMock.expectOne("http://localhost:3000/workout/createWorkout");
         expect(req.request.method).toEqual("POST");
         expect(req.request.body).toEqual({
             workoutTitle: workout.title,
             workoutDescription: workout.description,
-            exercises:workout.exercises
+            exercises:workout.exercises,
+            loop: 10,
+            songChoice: "upbeat",
+            resolutionWidth: 1920,
+            resolutionHeight: 1080
         });
 
         const resp = new HttpResponse({
@@ -156,14 +160,18 @@ describe("WorkoutService", () => {
     });
     it("should fail to create a workout because server responds with status code 400 (i.e. data is missing or invalid)", async () => {
         const workout: Workout = new Workout("Leg Killer", null, []);
-        const respStatus = service.attemptSubmitWorkout(workout, []);
+        const respStatus = service.attemptSubmitWorkout(workout, [], 10, "upbeat", 1920, 1080);
 
         const req = httpMock.expectOne("http://localhost:3000/workout/createWorkout");
         expect(req.request.method).toEqual("POST");
         expect(req.request.body).toEqual({
             workoutTitle: workout.title,
             workoutDescription: workout.description,
-            exercises:workout.exercises
+            exercises:workout.exercises,
+            loop: 10,
+            songChoice: "upbeat",
+            resolutionWidth: 1920,
+            resolutionHeight: 1080
         });
 
         const resp = new HttpErrorResponse({
@@ -176,14 +184,18 @@ describe("WorkoutService", () => {
     });
     it("should fail to create a workout because server does not respond and returns status 0 which should be translated to 500", async () => {
         const workout: Workout = new Workout("Leg Killer", null, []);
-        const respStatus = service.attemptSubmitWorkout(workout, []);
+        const respStatus = service.attemptSubmitWorkout(workout, [], 10, "upbeat", 1920, 1080);
 
         const req = httpMock.expectOne("http://localhost:3000/workout/createWorkout");
         expect(req.request.method).toEqual("POST");
         expect(req.request.body).toEqual({
             workoutTitle: workout.title,
             workoutDescription: workout.description,
-            exercises:workout.exercises
+            exercises:workout.exercises,
+            loop: 10,
+            songChoice: "upbeat",
+            resolutionWidth: 1920,
+            resolutionHeight: 1080
         });
 
         const resp = new HttpErrorResponse({
@@ -196,14 +208,18 @@ describe("WorkoutService", () => {
     });
     it("should fail to create a workout because server responds with unknown status which should be translated to 500", async () => {
         const workout: Workout = new Workout("Leg Killer", "A test for the legs", []);
-        const respStatus = service.attemptSubmitWorkout(workout, []);
+        const respStatus = service.attemptSubmitWorkout(workout, [], 10, "upbeat", 1920, 1080);
 
         const req = httpMock.expectOne("http://localhost:3000/workout/createWorkout");
         expect(req.request.method).toEqual("POST");
         expect(req.request.body).toEqual({
             workoutTitle: workout.title,
             workoutDescription: workout.description,
-            exercises:workout.exercises
+            exercises:workout.exercises,
+            loop: 10,
+            songChoice: "upbeat",
+            resolutionWidth: 1920,
+            resolutionHeight: 1080
         });
 
         const resp = new HttpErrorResponse({
@@ -218,14 +234,18 @@ describe("WorkoutService", () => {
     // Update Workout Unit Tests
     it("should update a workout successfully because server responds with status code 200", async () => {
         const workout: Workout = new Workout("Leg Killer", "A hard day for your legs", []);
-        const respStatus = service.attemptUpdateWorkout(workout, "A VALID ID", []);
+        const respStatus = service.attemptUpdateWorkout(workout, "A VALID ID", [], 10, "upbeat", 1920, 1080);
         const req = httpMock.expectOne("http://localhost:3000/workout/updateWorkout");
         expect(req.request.method).toEqual("PUT");
         expect(req.request.body).toEqual({
             workoutID:"A VALID ID",
             workoutTitle: workout.title,
             workoutDescription: workout.description,
-            exercises:workout.exercises
+            exercises:workout.exercises,
+            loop: 10,
+            songChoice: "upbeat",
+            resolutionWidth: 1920,
+            resolutionHeight: 1080
         });
 
         const resp = new HttpResponse({
@@ -238,14 +258,18 @@ describe("WorkoutService", () => {
     });
     it("should fail to update a workout because server responds with status code 400 (i.e. data is missing or invalid)", async () => {
         const workout: Workout = new Workout("Leg Killer", null, []);
-        const respStatus = service.attemptUpdateWorkout(workout, "A VALID ID", []);
+        const respStatus = service.attemptUpdateWorkout(workout, "A VALID ID", [], 10, "upbeat", 1920, 1080);
         const req = httpMock.expectOne("http://localhost:3000/workout/updateWorkout");
         expect(req.request.method).toEqual("PUT");
         expect(req.request.body).toEqual({
             workoutID:"A VALID ID",
             workoutTitle: workout.title,
             workoutDescription: workout.description,
-            exercises:workout.exercises
+            exercises:workout.exercises,
+            loop: 10,
+            songChoice: "upbeat",
+            resolutionWidth: 1920,
+            resolutionHeight: 1080
         });
 
         const resp = new HttpErrorResponse({
@@ -258,14 +282,18 @@ describe("WorkoutService", () => {
     });
     it("should fail to update a workout because server does not respond and returns status 0 which should be translated to 500", async () => {
         const workout: Workout = new Workout("Leg Killer", null, []);
-        const respStatus = service.attemptUpdateWorkout(workout, "A VALID ID", []);
+        const respStatus = service.attemptUpdateWorkout(workout, "A VALID ID", [], 10, "upbeat", 1920, 1080);
         const req = httpMock.expectOne("http://localhost:3000/workout/updateWorkout");
         expect(req.request.method).toEqual("PUT");
         expect(req.request.body).toEqual({
             workoutID:"A VALID ID",
             workoutTitle: workout.title,
             workoutDescription: workout.description,
-            exercises:workout.exercises
+            exercises:workout.exercises,
+            loop: 10,
+            songChoice: "upbeat",
+            resolutionWidth: 1920,
+            resolutionHeight: 1080
         });
 
         const resp = new HttpErrorResponse({
@@ -278,14 +306,18 @@ describe("WorkoutService", () => {
     });
     it("should fail to update a workout because server responds with unknown status which should be translated to 500", async () => {
         const workout: Workout = new Workout("Leg Killer", "A test for the legs", []);
-        const respStatus = service.attemptUpdateWorkout(workout, "A VALID ID", []);
+        const respStatus = service.attemptUpdateWorkout(workout, "A VALID ID", [], 10, "upbeat", 1920, 1080);
         const req = httpMock.expectOne("http://localhost:3000/workout/updateWorkout");
         expect(req.request.method).toEqual("PUT");
         expect(req.request.body).toEqual({
             workoutID:"A VALID ID",
             workoutTitle: workout.title,
             workoutDescription: workout.description,
-            exercises:workout.exercises
+            exercises:workout.exercises,
+            loop: 10,
+            songChoice: "upbeat",
+            resolutionWidth: 1920,
+            resolutionHeight: 1080
         });
 
         const resp = new HttpErrorResponse({

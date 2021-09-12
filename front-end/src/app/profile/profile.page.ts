@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import { UserService } from "../Services/UserService/user.service";
 import {AlertController} from "@ionic/angular";
 import {Router} from "@angular/router";
+import {Storage} from "@ionic/storage";
 
 @Component({
     selector: "app-profile",
@@ -19,7 +20,8 @@ export class ProfilePage implements OnInit {
   constructor(private http: HttpClient,
               private userService: UserService,
               public alertController: AlertController,
-              private router: Router) { }
+              private router: Router,
+              private storage: Storage) { }
 
   ngOnInit() {
       this.getDetails();
@@ -49,12 +51,15 @@ export class ProfilePage implements OnInit {
           userInputs[i].setAttribute("disabled", "false");
       }
       const editBtn = document.getElementById("editBtn");
-      editBtn.style.visibility = "hidden";
       editBtn.style.display = "none";
 
       const updateBtn = document.getElementById("updateBtn");
-      updateBtn.style.visibility = "visible";
+      updateBtn.style.display = "block";
       updateBtn.setAttribute("disabled", "false");
+
+      const cancelBtn = document.getElementById("cancelBtn");
+      cancelBtn.style.display = "block";
+      cancelBtn.setAttribute("disabled", "false");
   }
 
   /**
@@ -66,12 +71,15 @@ export class ProfilePage implements OnInit {
           userInputs[i].setAttribute("disabled", "true");
       }
       const editBtn = document.getElementById("editBtn");
-      editBtn.style.visibility = "visible";
       editBtn.style.display = "block";
 
       const updateBtn = document.getElementById("updateBtn");
-      updateBtn.style.visibility = "hidden";
+      updateBtn.style.display = "none";
       updateBtn.setAttribute("disabled", "true");
+
+      const cancelBtn = document.getElementById("cancelBtn");
+      cancelBtn.style.display = "none";
+      cancelBtn.setAttribute("disabled", "false");
 
       const status = await this.userService.attemptUpdateUserDetails(this.firstName, this.lastName, this.birthDate);
       if (status === 200) {
@@ -107,6 +115,26 @@ export class ProfilePage implements OnInit {
   }
 
   /**
+   * Cancel Update Operation
+   */
+  async cancel(){
+      const userInputs = document.getElementsByClassName("enable-input") as HTMLCollectionOf<HTMLElement>;
+      for (let i =0; i<userInputs.length; i++){
+          userInputs[i].setAttribute("disabled", "true");
+      }
+      const editBtn = document.getElementById("editBtn");
+      editBtn.style.display = "block";
+
+      const updateBtn = document.getElementById("updateBtn");
+      updateBtn.style.display = "none";
+      updateBtn.setAttribute("disabled", "true");
+
+      const cancelBtn = document.getElementById("cancelBtn");
+      cancelBtn.style.display = "none";
+      cancelBtn.setAttribute("disabled", "false");
+  }
+
+  /**
    * Helper Function to physically present alert to User independent of OS.
    *
    * @param alert
@@ -136,6 +164,14 @@ export class ProfilePage implements OnInit {
 
   async goToClients(){
       await this.router.navigate(["/client-list"])
+          .then(() => {
+              window.location.reload();
+          });
+  }
+
+  async signOut(){
+      await this.storage.remove("Token");
+      await this.router.navigate(["/sign-in"])
           .then(() => {
               window.location.reload();
           });

@@ -1,0 +1,20 @@
+<ion-content>
+  <div>
+    <ion-item>
+      <ion-label>Select all contacts</ion-label>
+      <ion-checkbox id="contactsCbx" (click)="selectAllContacts()">Select all</ion-checkbox>
+    </ion-item>
+    <ion-infinite-scroll>
+    <ion-list>
+      <ion-item *ngFor="let contact of _contacts" >
+        <ion-label>{{contact.contactEmail}}</ion-label>
+        <ion-checkbox slot="start" [(ngModel)]="contact.isChecked" class="contactSelection"></ion-checkbox>
+      </ion-item>
+    </ion-list>
+    </ion-infinite-scroll>
+  </div>
+  <div class="modalButtons">
+    <ion-button class="submitButton" mode="ios" (click)="submitModal()">Submit</ion-button>
+    <ion-button class="cancelButton" mode="ios" (click)="cancelModal()">Cancel</ion-button>
+  </div>
+</ion-content>

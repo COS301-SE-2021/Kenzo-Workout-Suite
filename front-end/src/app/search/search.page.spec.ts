@@ -37,21 +37,21 @@ describe("SearchPage", () => {
     });
 
     it("should, given an empty database, fail to obtain all exercises.", async () => {
-        spyOn(service, "attemptGetExercises").and.resolveTo({status: 404});
+        spyOn(service, "attemptGetExercisesByPlanner").and.resolveTo({status: 404});
         await component.loadExercises().catch(error=>{
             expect(error).toEqual(404);
         });
     });
 
     it("should fail to get all exercises as server is not responding.", async () => {
-        spyOn(service, "attemptGetExercises").and.resolveTo(500);
+        spyOn(service, "attemptGetExercisesByPlanner").and.resolveTo(500);
         await component.loadExercises().catch(error=>{
             expect(error).toEqual(500);
         });
     });
 
     it("should successfully obtain all exercises.", async () => {
-        spyOn(service, "attemptGetExercises").and.resolveTo({status: 200, data:[]});
+        spyOn(service, "attemptGetExercisesByPlanner").and.resolveTo({status: 200, data:[]});
         await component.loadExercises().then(data=>{
             expect(data).toEqual(200);
         });

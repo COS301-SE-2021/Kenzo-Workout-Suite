@@ -152,4 +152,70 @@ export class ClientService {
             return error.status;
         });
     }
+
+    /**
+     * Send an email of the workout's PDF to selected clients of the planner.
+     *
+     * @param workoutID is the id of the workout to get the pdf from
+     * @param clients is an array of the selected clients
+     * @return status is the code of the response
+     * @author Jia Hui Wang, u18080449
+     */
+    async attemptEmailClientsPDF(workoutID: string, contact: any[]): Promise<any>{
+        const url = "http://localhost:3000/client-contact/sendEmailsPDFToContacts";
+        const body = {
+            contacts: contact,
+            workoutID: workoutID,
+        };
+        return this.http.post(url, body).toPromise().then(()=>200).catch(error=>{
+            if(error.status===0) {
+                return 500;
+            }
+            return error.status;
+        });
+    }
+
+    /**
+     * Send an email of the workout's video to selected clients of the planner.
+     *
+     * @param workoutID is the id of the workout to get the pdf from
+     * @param clients is an array of the selected clients
+     * @return status is the code of the response
+     * @author Jia Hui Wang, u18080449
+     */
+    async attemptEmailClientsVideo(workoutID: string, contact: any[]): Promise<any>{
+        const url = "http://localhost:3000/client-contact/sendEmailsVideoToContacts";
+        const body = {
+            contacts: contact,
+            workoutID: workoutID,
+        };
+        return this.http.post(url, body).toPromise().then(()=>200).catch(error=>{
+            if(error.status===0) {
+                return 500;
+            }
+            return error.status;
+        });
+    }
+
+    /**
+     * Send an email of the workout's PDF and video to selected clients of the planner.
+     *
+     * @param workoutID is the id of the workout to get the pdf from
+     * @param clients is an array of the selected clients
+     * @return status is the code of the response
+     * @author Jia Hui Wang, u18080449
+     */
+    async attemptEmailClientsMedia(workoutID: string, contact: any[]): Promise<any>{
+        const url = "http://localhost:3000/client-contact/sendEmailsMultimediaToContacts";
+        const body = {
+            contacts: contact,
+            workoutID: workoutID,
+        };
+        return this.http.post(url, body).toPromise().then(()=>200).catch(error=>{
+            if(error.status===0) {
+                return 500;
+            }
+            return error.status;
+        });
+    }
 }

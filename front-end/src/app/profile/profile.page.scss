@@ -11,14 +11,18 @@
 }
 
 .profileHeader{
-  display: block;
+  display: inline-flex;
   margin-left: auto;
   margin-right: auto;
   font-family: "SF Pro Medium", serif;
+  --color: var(--ion-color-tertiary);
   font-size: 25px;
-  color: black;
   font-weight: bold;
-  padding-left: 40%;
+}
+
+.signOutItem{
+  display: inline-flex;
+  left: 30%;
 }
 
 .profile-label{
@@ -52,27 +56,17 @@
   margin-bottom: 20px;
 }
 
-#editBtn{
+#editBtn, #updateBtn, #cancelBtn{
   display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 350px;
-  font-family: "SF Pro Regular", serif;
-  --background: var(--ion-color-primary);
-  color: var(--ion-color-secondary);
-  position: absolute;
-  bottom: 2.5%;
-  left: 3.5%
+  --background: none;
+  --color: var(--ion-color-tertiary);
+  --background-hover: none;
+  --color-hover: var(--ion-color-primary);
+  --background-activated: none;
 }
 
-#updateBtn{
-  font-family: "SF Pro Regular", serif;
-  --background: var(--ion-color-primary);
-  color: var(--ion-color-secondary);
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  visibility: hidden;
+#updateBtn, #cancelBtn{
+  display: none;
 }
 
 .container{
@@ -123,15 +117,6 @@
     margin-left: 25%;
   }
   .profile-input{
-    width: 280px;
-  }
-
-  #editBtn{
-    left: 6%;
-    bottom: 3.5%;
-  }
-
-  #editBtn, #updateBtn{
     width: 280px;
   }
 }

@@ -19,7 +19,9 @@ export class ClientListPage implements OnInit {
     private _email = "";
     private _contactID = "";
 
-    constructor(private router: Router, private clientService: ClientService, private alertController: AlertController) {
+    constructor(private router: Router,
+                private clientService: ClientService,
+                private alertController: AlertController) {
         this.getClients();
     }
 

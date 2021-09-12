@@ -13,8 +13,31 @@
   text-decoration: underline;
 }
 
+ion-button{
+  --background: none;
+  border: var(--ion-color-tertiary) 1px solid;
+  border-radius: 10px;
+  --color: var(--ion-color-tertiary);
+  --background-hover: none;
+  --background-activated: none;
+}
+
+.selectors{
+  border-radius: 50px;
+}
+
 .header{
   --background: var(--ion-color-secondary);
+}
+
+.controls{
+  border: none;
+}
+
+.reset{
+  --background: none;
+  --color: var(--ion-color-tertiary);
+  border: none;
 }
 
 .input-div{

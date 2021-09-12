@@ -22,6 +22,12 @@
   margin-right: auto;
 }
 
+#tags{
+  display: block;
+  height: 80px;
+  overflow-y: scroll;
+}
+
 #selected{
   display: none;
 }
@@ -39,7 +45,7 @@
   color: var(--ion-color-tertiary);
   --padding-start: 10px;
   --padding-top: 15px;
-  border: solid 0.5px var(--ion-color-tertiary);
+  //border: solid 0.5px var(--ion-color-tertiary);
 }
 
 .input-description{
@@ -51,13 +57,31 @@
   font-weight: 500;
 }
 
-.required{
+.required, .optional{
   font-family: "SF Pro Medium", serif;
-  display: block;
-  color: var(--ion-color-primary);
+  display: inline-block;
+  color: var(--ion-color-tertiary);
   padding-left: 5px;
   padding-bottom: 5px;
-  font-weight: 500;
+  font-weight: bold;
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.optional{
+  cursor: pointer;
+}
+
+.expand{
+  display: inline-block;
+}
+
+#optionalFields{
+  display: none;
+}
+
+#hide{
+  display: none;
 }
 
 .radios{
@@ -83,9 +107,17 @@
 }
 
 .imagePose{
-  height: 50px;
   width: 100%;
   object-fit: cover;
+}
+
+::-webkit-scrollbar {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb{
+  background-color: var(--ion-color-tertiary);
+  border-radius: 20px;
 }
 
 ion-slides{

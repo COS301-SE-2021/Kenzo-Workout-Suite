@@ -18,21 +18,62 @@
     <ion-input [(ngModel)]="description" id="desc" placeholder="3 week program to lose weight" class="kenzo-input"></ion-input>
   </div>
   <br>
-  <br>
-  <div class="input-div">
-    <ion-item mode="ios">
-      <ion-label class="input-description">Exercises</ion-label>
-      <ion-select [(ngModel)]="exerciseSelection" multiple="true" okText="Done">
-        <span *ngFor="let exercise of exercises">
-          <ion-select-option value="{{exercise.id}}">{{exercise.title}}</ion-select-option>
-        </span>
-      </ion-select>
-    </ion-item>
+<!--  VIDEO GENERATION -->
+  <div class="input-div" (click)="showVideoOptions()">
+    <ion-label class="input-description required">Video Options</ion-label>
+    <ion-icon id="expandVideo" name="chevron-down-outline"></ion-icon>
+    <ion-icon id="hideVideo" name="chevron-up-outline"></ion-icon>
   </div>
-
+  <div id="videoGen" class="input-div">
+    <br>
+    <ion-label class="input-description">Pose Frame Length</ion-label>
+    <ion-input [(ngModel)]="loop" id="loop" class="kenzo-input resolution"></ion-input> seconds
+    <span class="hint">(minimum 10)</span>
+    <br>
+    <br>
+    <ion-label class="input-description">Resolution <span class="hint">(Width x Height)</span></ion-label>
+    <ion-input [(ngModel)]="resolutionWidth" class="kenzo-input resolution"></ion-input>
+    x
+    <ion-input [(ngModel)]="resolutionHeight" class="kenzo-input resolution"></ion-input>
+    pixels
+    <br>
+    <br>
+    <ion-select [(ngModel)]="genre" class="selector" placeholder="Genre Selection">
+      <ion-select-option value="chill">Chill</ion-select-option>
+      <ion-select-option value="upbeat">Upbeat</ion-select-option>
+      <ion-select-option value="hardcore">Hardcore</ion-select-option>
+    </ion-select>
+  </div>
+  <br>
+<!--  EXERCISES -->
+  <div class="input-div" (click)="showExercises()">
+    <ion-label class="input-description required">Exercises</ion-label>
+    <ion-icon id="expandExercises" name="chevron-down-outline"></ion-icon>
+    <ion-icon id="hideExercises" name="chevron-up-outline"></ion-icon>
+  </div>
+  <span id="exerciseDropdown">
+    <div class="input-div">
+      <ion-searchbar #searchBar (ionInput)="filterSelection($event)" placeholder="Search Exercises" mode="ios"></ion-searchbar>
+    </div>
+    <ion-row class="ion-justify-content-center">
+        <span *ngFor="let exercise of exercises" mode="ios">
+          <ion-card [id]="exercise.id" class="exercises">
+            <ion-slides scrollbar="true" pager="true" options="slideOpts">
+              <ion-slide *ngFor="let image of exercise.images">
+                <ion-img alt="exercise pose" class="imagePose" [src]="image"></ion-img>
+              </ion-slide>
+            </ion-slides>
+            <ion-item>
+              <ion-card-title class="scrollable-title" slot="start" [textContent]="exercise.title"></ion-card-title>
+              <ion-checkbox slot="end" (ionChange)="select(exercise.id)"></ion-checkbox>
+            </ion-item>
+          </ion-card>
+        </span>
+    </ion-row>
+  </span>
 </ion-content>
 <ion-footer class="ion-no-border">
   <ion-toolbar mode="ios" class="footer">
-    <ion-button (click)="submitCreateRequest()" mode="ios" class="submit">Submit</ion-button>
+    <ion-button (click)="submitCreateRequest()" mode="ios" class="submit">Create</ion-button>
   </ion-toolbar>
 </ion-footer>
