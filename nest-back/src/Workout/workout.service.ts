@@ -1659,8 +1659,8 @@ export class WorkoutService {
     for (let j = 0; j < songs.length; j++) {
       for (let k = 0; k < numberOfTimes[j]; k++) {
         finalTimeline.push(songs[j])
+        finalTimeline.push("./src/videoGeneration/Sounds/trim.mp3")
       }
-      finalTimeline.push("./src/videoGeneration/Sounds/trim.mp3")
     }
     console.log(finalTimeline)
 
