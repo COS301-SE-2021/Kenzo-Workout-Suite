@@ -4,6 +4,11 @@
       <ion-card mode="ios">
         <ion-card-header>
           <ion-card-title class="profileHeader">Profile</ion-card-title>
+          <ion-item mode="ios" button="true" class="signOutItem" lines="none" (click)="signOut()">
+            <ion-label>Sign out</ion-label>
+            <ion-icon name="power" size="small"></ion-icon>
+          </ion-item>
+
         </ion-card-header>
         <ion-card-content class="profileContent">
           <!--Will put avatar/image here but for now leaving it blank-->
@@ -27,7 +32,7 @@
             <ion-label class="profile-label">Account Type</ion-label>
             <ion-input [(ngModel)]="accountType" class="profile-input" type="text" disabled="true"></ion-input>
           </div>
-          <ion-item>
+          <ion-item lines="none">
             <ion-button (click)="editDetails()" size="medium" slot="start" mode="ios" id="editBtn">
               Edit
             </ion-button>

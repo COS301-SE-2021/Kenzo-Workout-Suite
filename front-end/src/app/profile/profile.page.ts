@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import { UserService } from "../Services/UserService/user.service";
 import {AlertController} from "@ionic/angular";
 import {Router} from "@angular/router";
+import {Storage} from "@ionic/storage";
 
 @Component({
     selector: "app-profile",
@@ -19,7 +20,8 @@ export class ProfilePage implements OnInit {
   constructor(private http: HttpClient,
               private userService: UserService,
               public alertController: AlertController,
-              private router: Router) { }
+              private router: Router,
+              private storage: Storage) { }
 
   ngOnInit() {
       this.getDetails();
@@ -162,6 +164,14 @@ export class ProfilePage implements OnInit {
 
   async goToClients(){
       await this.router.navigate(["/client-list"])
+          .then(() => {
+              window.location.reload();
+          });
+  }
+
+  async signOut(){
+      await this.storage.remove("Token");
+      await this.router.navigate(["/sign-in"])
           .then(() => {
               window.location.reload();
           });
