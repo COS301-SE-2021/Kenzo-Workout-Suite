@@ -1,6 +1,5 @@
-import { Body, Controller, Get, Post, Put, UseGuards, Request, Req, HttpCode } from "@nestjs/common"
+import { Body, Controller, Get, Post, Put, UseGuards, Request, HttpCode } from "@nestjs/common"
 import { UserService } from "./user.service"
-import { AuthGuard } from "@nestjs/passport"
 import { LocalAuthGuard } from "./AuthGuards/local-auth.guard"
 import { JwtAuthGuard } from "./AuthGuards/jwt-auth.guard"
 import { User } from "@prisma/client"
@@ -90,28 +89,21 @@ export class UserController {
     }
 
     /**
-     * User Controller- googleLogin
-     *
-     * @param req
-     *
-     * @author Zelealem Tesema
-     * @callback googleAuthRedirect The function will callback to the googleredirect functionality
-     */
-    @Get("googleLogin")
-    @UseGuards(AuthGuard("google"))
-    async googleAuth (@Req() req) {}
-
-    /**
      * User Controller- googleRedirect
      *
-     * @param req
      *
      * @author Zelealem Tesema
+     * @param email
+     * @param accessToken
+     * @param firstName
+     * @param lastName
      */
-    @Get("googleRedirect")
-    @UseGuards(AuthGuard("google"))
-    googleAuthRedirect (@Req() req) {
-      return this.userService.googleLogin(req, ActualPrisma())
+    @Post("googleLogin")
+    async googleLogin (@Body("email") email: string,
+                      @Body("accessToken") accessToken: string,
+                      @Body("firstName") firstName: string,
+                      @Body("lastName") lastName: string) {
+      return await this.userService.googleLogin(email, firstName, lastName, accessToken, ActualPrisma())
     }
 
     /**
