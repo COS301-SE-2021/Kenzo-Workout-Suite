@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { IonicModule } from "@ionic/angular";
+import {IonicModule} from "@ionic/angular";
 
 import { ModalPopupPage } from "./modal-popup.page";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 describe("ModalPopupPage", () => {
     let component: ModalPopupPage;
@@ -10,7 +11,10 @@ describe("ModalPopupPage", () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [ ModalPopupPage ],
-            imports: [IonicModule.forRoot()]
+            imports: [
+                IonicModule.forRoot(),
+                HttpClientTestingModule
+            ]
         }).compileComponents();
 
         fixture = TestBed.createComponent(ModalPopupPage);

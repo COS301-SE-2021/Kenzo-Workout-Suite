@@ -90,6 +90,7 @@ describe("YourWorkoutsPage", () => {
         spyOn(service, "attemptGetPDF").and.resolveTo({status: 404});
         spyOn(component, "presentAlert").and.stub();
         spyOn(component, "presentActionSheet").and.stub();
+        spyOn(component, "presentModal").and.stub();
         await component.sharePDF(" ").then(error=>{
             expect(error).toEqual(404);
         });
@@ -99,6 +100,7 @@ describe("YourWorkoutsPage", () => {
         spyOn(service, "attemptGetPDF").and.resolveTo({status: 500});
         spyOn(component, "presentAlert").and.stub();
         spyOn(component, "presentActionSheet").and.stub();
+        spyOn(component, "presentModal").and.stub();
         await component.sharePDF(" ").then(error=>{
             expect(error).toEqual(500);
         });
@@ -108,6 +110,7 @@ describe("YourWorkoutsPage", () => {
         spyOn(service, "attemptGetPDF").and.resolveTo({status: 200});
         spyOn(component, "presentAlert").and.stub();
         spyOn(component, "presentActionSheet").and.stub();
+        spyOn(component, "presentModal").and.stub();
         await component.sharePDF(" ").then(error=>{
             expect(error).toEqual(200);
         });
