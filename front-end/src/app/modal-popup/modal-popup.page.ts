@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ModalController } from "@ionic/angular";
 import { ClientService } from "../Services/ClientService/client.service";
-import { Contact } from "../Models/contact";
 
 @Component({
     selector: "app-modal-popup",
@@ -10,8 +9,8 @@ import { Contact } from "../Models/contact";
 })
 export class ModalPopupPage implements OnInit {
     private _contacts;
-    private _contactsOriginal: Contact[];
-    private _submittedContacts: Contact[];
+    private _contactsOriginal: any[];
+    private _submittedContacts: any[];
 
     private name = "";
     private surname = "";
@@ -28,7 +27,6 @@ export class ModalPopupPage implements OnInit {
 
     async loadClients(){
         const resp = await this.clientService.getClientList();
-        console.log(resp);
         const data = resp.data;
         this._contacts = new Array();
         this._contactsOriginal = new Array();
@@ -46,14 +44,14 @@ export class ModalPopupPage implements OnInit {
                 surname: this.surname,
                 plannerID: this.plannerID
             };
-            this._contactsOriginal[i] = new Contact(this.contactID, this.contactEmail, this.name, this.surname, this.plannerID);
-            /*this._contactsOriginal[i] = {
+            //this._contactsOriginal[i] = new Contact(this.contactID, this.contactEmail, this.name, this.surname, this.plannerID);
+            this._contactsOriginal[i] = {
                 contactId: this.contactID,
                 contactEmail: this.contactEmail,
                 name: this.name,
                 surname: this.surname,
                 plannerID: this.plannerID
-            };*/
+            };
         }
     }
 

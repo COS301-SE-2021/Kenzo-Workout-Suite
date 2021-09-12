@@ -240,7 +240,6 @@ export class YourWorkoutsPage implements OnInit {
    */
   async sharePDF(id: string){
       const _contacts = await this.presentModal();
-      console.log(_contacts);
       if (_contacts === "Cancelled"){
           return "Cancelled";
       }else{

@@ -32,6 +32,7 @@ export class SignUpPage implements OnInit {
    * then processed through the userService's attemptSignUp function,
    * from there the attemptSignUp will return a response code based on the success of the sign up
    * and from that code we return a human understandable message.
+   *
    * @author Jia Hui Wang, u18080449
    */
   async signUp() {
