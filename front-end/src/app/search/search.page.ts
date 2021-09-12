@@ -80,7 +80,7 @@ export class SearchPage implements OnInit {
    * Load all the exercises
    */
   async loadExercises(){
-      const tempExercises = await this.workoutService.attemptGetExercises();
+      const tempExercises = await this.workoutService.attemptGetExercisesByPlanner();
       if (tempExercises.status===200){
           for (let i = 0; i < tempExercises.data.length; i++) {
               const images = new Array();
