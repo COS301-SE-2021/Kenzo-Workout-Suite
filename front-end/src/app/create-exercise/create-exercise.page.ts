@@ -319,13 +319,15 @@ export class CreateExercisePage implements OnInit {
   async syncFrames(){
       this.slideshow = new Array();
       this.images = await this.storage.get("images");
-      for (let i=0; i<this.images.length; i++) {
-          const image = this.images[i];
-          if(image===undefined || image===null) {
-              this.images[i] = null;
-              continue;
+      if(this.images!==null) {
+          for (let i = 0; i < this.images.length; i++) {
+              const image = this.images[i];
+              if (image === undefined || image === null) {
+                  this.images[i] = null;
+                  continue;
+              }
+              this.slideshow.push(image);
           }
-          this.slideshow.push(image);
       }
 
       if(this.images.length>0){
