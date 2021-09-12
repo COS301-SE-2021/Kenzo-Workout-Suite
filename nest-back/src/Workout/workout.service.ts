@@ -1526,7 +1526,8 @@ export class WorkoutService {
         throw new NotFoundException("No workout was found in the database with the specified workout ID.")
       } else {
         workout.exercises.forEach(element => {
-          exercises.push(element.exercises)
+          // console.log(element)
+          exercises.push(element)
         })
       }
     } catch (err) {
@@ -1555,20 +1556,19 @@ export class WorkoutService {
 
     // retrieve all exercises poses one by one from the local storage
     for (let i = 0; i < exercises.length; i++) {
-      subtitles.push(exercises[i].exercises.description)
-      for (let j = 0; j < exercises[i].exercises.length; j++) {
-        fileNames = await this.getExerciseImages(exercises[i].exercises[j], "./src/ExerciseImages/")
-        for (let k = 0; k < fileNames.length; k++) {
-          images.push({
-            path: fileNames[k],
-            caption: exercises[i].exercises.description,
-            loop: loop
-          })
-        }
-        count += 1
-        lengthOfVideo += loop
+      subtitles.push(exercises[i].exerciseDescription)
+      fileNames = await this.getExerciseImages(exercises[i], "./src/ExerciseImages/")
+      for (let k = 0; k < fileNames.length; k++) {
+        images.push({
+          path: fileNames[k],
+          caption: exercises[i].exerciseDescription,
+          loop: loop
+        })
       }
-      if (exercises[i].exercises.length !== 1 && i < exercises[i].exercises.length - 1) {
+      count += 1
+      lengthOfVideo += loop
+
+      if (exercises[i].length !== 1 && i < exercises[i].length - 1) {
         images.push({
           path: "./src/videoGeneration/Images/kenzoLogo.jpg",
           caption: "Exercise " + (i + 1) + " complete! On to the next...",

@@ -34,7 +34,7 @@ export class WorkoutService {
             resolutionWidth: width,
             resolutionHeight: height
         };
-        // console.log(body);
+        console.log(body);
         return this.http.post(url, body ).toPromise().then(()=>200).catch(error=>{
             if(error.status===0) {
                 return 500;
