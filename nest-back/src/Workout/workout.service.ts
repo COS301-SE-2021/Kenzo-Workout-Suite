@@ -477,7 +477,7 @@ export class WorkoutService {
       })
       const exerciseDetails = await this.getExerciseByID(createdExercise.exerciseID, ctx)
       await this.saveExerciseImages(exerciseDetails, images, "./src/ExerciseImages/")
-      await this.textToSpeech(createdExercise.exerciseDescription, createdExercise.exerciseID)
+      await this.textToSpeech(createdExercise.poseDescription, createdExercise.exerciseID)
       return ("Exercise created.")
     } else {
       const createdExercise = await ctx.prisma.exercise.create({
@@ -498,7 +498,7 @@ export class WorkoutService {
       })
       const exerciseDetails = await this.getExerciseByID(createdExercise.exerciseID, ctx)
       await this.saveExerciseImages(exerciseDetails, images, "./src/ExerciseImages/")
-      await this.textToSpeech(createdExercise.exerciseDescription, createdExercise.exerciseID)
+      await this.textToSpeech(createdExercise.poseDescription, createdExercise.exerciseID)
       return ("Exercise created.")
     }
   }
@@ -654,7 +654,7 @@ export class WorkoutService {
         if (images !== null && images.length) {
           const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
           await this.saveExerciseImages(exerciseDetails, images, "./src/ExerciseImages/")
-          await this.textToSpeech(updatedExercise.exerciseDescription, updatedExercise.exerciseID)
+          await this.textToSpeech(updatedExercise.poseDescription, updatedExercise.exerciseID)
         }
         return "Exercise updated."
       } else {
@@ -681,7 +681,7 @@ export class WorkoutService {
         if (images !== null && images.length) {
           const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
           await this.saveExerciseImages(exerciseDetails, images, "./src/ExerciseImages/")
-          await this.textToSpeech(updatedExercise.exerciseDescription, updatedExercise.exerciseID)
+          await this.textToSpeech(updatedExercise.poseDescription, updatedExercise.exerciseID)
         }
         return "Exercise updated."
       }
@@ -1522,7 +1522,7 @@ export class WorkoutService {
         lengthOfVideo += loop
       }
 
-      if (exercises[i].length !== 1 && i < exercises[i].length - 1) {
+      if (exercises.length !== 1 && i < exercises.length - 1) {
         images.push({
           path: "./src/videoGeneration/Images/kenzoLogo.jpg",
           caption: "Exercise " + (i + 1) + " complete! On to the next...",
@@ -1556,10 +1556,10 @@ export class WorkoutService {
     // console.log(images)
     // eslint-disable-next-line no-useless-catch
     try {
-      await this.mixAudio(exerciseID, numberOfTimes, loop, songChoice)
+      await this.mixAudio(workoutID,exerciseID, numberOfTimes, loop, songChoice)
 
       videoshow(images, videoOptions)
-        .audio("./src/videoGeneration/Sounds/final.mp3")
+        .audio("./src/videoGeneration/Sounds/" + workoutID + ".mp3")
         .save("./src/videoGeneration/Videos/" + workoutID + ".mp4")
         .on("start", function (command) {
           console.log("ffmpeg process started:", command)
@@ -1580,6 +1580,7 @@ export class WorkoutService {
    *Workout Controller - Mix Audio
    *
    * @description Helper function for createVideo. Merges tts with audio soundtrack
+   * @param workoutID  The workout ID
    * @param exerciseID  The ID of the workout
    * @param numberOfTimes  The number of times of pose needs to loop
    * @param loop Duration each each exercise pose in seconds
@@ -1587,12 +1588,12 @@ export class WorkoutService {
    * @author Tinashe Chamisa
    *
    */
-  async mixAudio (exerciseID: string[], numberOfTimes:number[], loop: number, songChoice: string): Promise<any> {
+  async mixAudio (workoutID: string, exerciseID: string[], numberOfTimes:number[], loop: number, songChoice: string): Promise<any> {
     const songs: string[] = []
     const finalTimeline: string[] = []
     // fetch tts
     for (let i = 0; i < exerciseID.length; i++) {
-      songs.push("./src/Workout/GeneratedTextSpeech/" + exerciseID + ".mp3")
+      songs.push("./src/Workout/GeneratedTextSpeech/" + exerciseID[i] + ".mp3")
     }
     // trim song choice
     if (songChoice === "hardcore") {
@@ -1618,7 +1619,7 @@ export class WorkoutService {
       }
     }
     console.log(finalTimeline)
-    await this.audioConcat(finalTimeline, "final")
+    await this.audioConcat(finalTimeline, workoutID)
   }
 
   /**
