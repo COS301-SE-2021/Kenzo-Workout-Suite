@@ -143,6 +143,9 @@ export class createVideoDTO {
 }
 
 export class mixAudioDTO {
+    @ApiProperty({ type: String, description: "Workout ID" })
+    workoutID: string;
+    
     @ApiProperty({ type: Array, description: "Array of exercise ID's" })
     exerciseID: string[];
 
