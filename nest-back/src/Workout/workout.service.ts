@@ -18,9 +18,8 @@ import fontkit from "@pdf-lib/fontkit"
 const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
 const base64ToImage = require("base64-to-image")
-const audioconcat = require("audioconcat")
 const MP3Cutter = require("mp3-cutter")
-// const soxCommand = require("sox-audio")
+const Ffmpeg = require("fluent-ffmpeg")
 
 @Injectable()
 export class WorkoutService {
@@ -1614,10 +1613,7 @@ export class WorkoutService {
       }
     }
     console.log(finalTimeline)
-
-    try {
-      await this.audioConcat(finalTimeline)
-    } catch (e) { console.log(e) }
+    await this.audioConcat(finalTimeline, "final")
   }
 
   /**
@@ -1625,22 +1621,24 @@ export class WorkoutService {
    *
    * @description Helper function for createVideo. Merges tts with audio soundtrack
    * @param songs  An array of audio files for concatenation using audioconcat
+   * @param fileName  The name of the concatenated file
    * @author Tinashe Chamisa
    *
    */
-  async audioConcat (songs: string[]) {
-    await audioconcat(songs)
-      .concat("./src/videoGeneration/Sounds/final.mp3")
-      .on("start", function (command) {
-        console.log("ffmpeg process started:", command)
-      })
-      .on("error", function (err, stdout, stderr) {
-        console.error("Error:", err)
-        console.error("ffmpeg stderr:", stderr)
-      })
-      .on("end", function (output) {
-        console.error("Audio created in:", output)
-      })
+  async audioConcat (songs: string[], fileName: string) {
+    try {
+      const execute = new Ffmpeg()
+      for (let i = 0; i < songs.length; i++) {
+        await execute.mergeAdd(songs[i])
+        if (i === songs.length - 1) {
+          await execute.mergeToFile("./src/videoGeneration/Sounds/" + fileName + ".mp3").on("error", function (err) {
+            console.log("An error occurred: " + err.message)
+          }).on("end", function () {
+            console.log("Final audio clip created")
+          })
+        }
+      }
+    } catch (e) { console.log(e) }
   }
 
   /**
