@@ -612,6 +612,7 @@ export class WorkoutController {
      *Workout Controller - Mix Audio
      *
      * @description Helper function for createVideo. Merges tts with audio soundtrack
+     * @param workoutID  The workout ID
      * @param exerciseID  Array of exercise ID's
      * @param numberOfTimes  The number of times of pose needs to loop
      * @param loop Duration each exercise pose in seconds
@@ -621,12 +622,13 @@ export class WorkoutController {
      */
     @Get("mixAudio")
     mixAudiio (
+        @Body("workoutID") workoutID: string,
         @Body("exerciseID") exerciseID: string[],
         @Body("numberOfTimes") numberOfTimes: number[],
         @Body("loop") loop: number,
         @Body("songChoice") songChoice: string
     ) {
-      return this.workoutService.mixAudio(exerciseID, numberOfTimes, loop, songChoice)
+      return this.workoutService.mixAudio(workoutID, exerciseID, numberOfTimes, loop, songChoice)
     }
 
     /**
