@@ -1518,9 +1518,9 @@ export class WorkoutService {
           caption: exercises[i].exerciseDescription,
           loop: loop
         })
+        count += 1
+        lengthOfVideo += loop
       }
-      count += 1
-      lengthOfVideo += loop
 
       if (exercises[i].length !== 1 && i < exercises[i].length - 1) {
         images.push({
