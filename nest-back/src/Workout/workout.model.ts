@@ -143,8 +143,8 @@ export class createVideoDTO {
 }
 
 export class mixAudioDTO {
-    @ApiProperty({ type: Array, description: "Exercises descriptions" })
-    subtitles: string[];
+    @ApiProperty({ type: Array, description: "Array of exercise ID's" })
+    exerciseID: string[];
 
     @ApiProperty({ type: Array, description: "The number of times of pose needs to loop" })
     numberOfRuns: number[];
