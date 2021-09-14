@@ -14,6 +14,8 @@ import { PDFDocument, rgb, StandardFonts } from "pdf-lib"
 import * as fs from "fs"
 import { UserService } from "../User/user.service"
 import fontkit from "@pdf-lib/fontkit"
+import { resolve } from "dns"
+import { delay } from "rxjs/operators"
 
 const Filter = require("bad-words"); const filter = new Filter()
 const videoshow = require("videoshow")
@@ -475,6 +477,7 @@ export class WorkoutService {
       })
       const exerciseDetails = await this.getExerciseByID(createdExercise.exerciseID, ctx)
       await this.saveExerciseImages(exerciseDetails, images, "./src/ExerciseImages/")
+      await this.textToSpeech(createdExercise.exerciseDescription, createdExercise.exerciseID)
       return ("Exercise created.")
     } else {
       const createdExercise = await ctx.prisma.exercise.create({
@@ -495,6 +498,7 @@ export class WorkoutService {
       })
       const exerciseDetails = await this.getExerciseByID(createdExercise.exerciseID, ctx)
       await this.saveExerciseImages(exerciseDetails, images, "./src/ExerciseImages/")
+      await this.textToSpeech(createdExercise.exerciseDescription, createdExercise.exerciseID)
       return ("Exercise created.")
     }
   }
@@ -650,6 +654,7 @@ export class WorkoutService {
         if (images !== null && images.length) {
           const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
           await this.saveExerciseImages(exerciseDetails, images, "./src/ExerciseImages/")
+          await this.textToSpeech(updatedExercise.exerciseDescription, updatedExercise.exerciseID)
         }
         return "Exercise updated."
       } else {
@@ -676,6 +681,7 @@ export class WorkoutService {
         if (images !== null && images.length) {
           const exerciseDetails = await this.getExerciseByID(updatedExercise.exerciseID, ctx)
           await this.saveExerciseImages(exerciseDetails, images, "./src/ExerciseImages/")
+          await this.textToSpeech(updatedExercise.exerciseDescription, updatedExercise.exerciseID)
         }
         return "Exercise updated."
       }
@@ -730,7 +736,6 @@ export class WorkoutService {
    * @author Msi Sibanyoni
    *
    */
-
   async cleanupWorkouts (ctx: Context) {
     try {
       const allWorkouts = await this.getWorkouts(ctx)
@@ -1431,11 +1436,10 @@ export class WorkoutService {
   async textToSpeech (text:String, fileName:String) {
     const gtts = require("node-gtts")("en")
     const path = require("path")
-    const filepath = path.join("./src/Workout/GeneratedTextSpeech/", fileName + ".mp3")
+    const filepath = await path.join("./src/Workout/GeneratedTextSpeech/", fileName + ".mp3")
 
     try {
-      await gtts.save(filepath, text, function () {
-      })
+      await gtts.save(filepath, text)
 
       return "text file has been created"
     } catch (err) {
@@ -1495,7 +1499,7 @@ export class WorkoutService {
     }
 
     const images: IMAGE[] = []
-    const subtitles: string[] = []
+    const exerciseID: string[] = []
     const numberOfTimes: number[] = []
     let count = 0
     let fileNames: string[]
@@ -1506,7 +1510,7 @@ export class WorkoutService {
 
     // retrieve all exercises poses one by one from the local storage
     for (let i = 0; i < exercises.length; i++) {
-      subtitles.push(exercises[i].exerciseDescription)
+      exerciseID.push(exercises[i].exerciseID)
       fileNames = await this.getExerciseImages(exercises[i], "./src/ExerciseImages/")
       for (let k = 0; k < fileNames.length; k++) {
         images.push({
@@ -1552,8 +1556,10 @@ export class WorkoutService {
     // console.log(images)
     // eslint-disable-next-line no-useless-catch
     try {
+      await this.mixAudio(exerciseID, numberOfTimes, loop, songChoice)
+
       videoshow(images, videoOptions)
-        .audio("./src/videoGeneration/Sounds/" + songChoice + ".mp3")
+        .audio("./src/videoGeneration/Sounds/final.mp3")
         .save("./src/videoGeneration/Videos/" + workoutID + ".mp4")
         .on("start", function (command) {
           console.log("ffmpeg process started:", command)
@@ -1574,20 +1580,19 @@ export class WorkoutService {
    *Workout Controller - Mix Audio
    *
    * @description Helper function for createVideo. Merges tts with audio soundtrack
-   * @param subtitles  The workout exercises description
+   * @param exerciseID  The ID of the workout
    * @param numberOfTimes  The number of times of pose needs to loop
    * @param loop Duration each each exercise pose in seconds
    * @param songChoice Genre choice for background track
    * @author Tinashe Chamisa
    *
    */
-  async mixAudio (subtitles: string[], numberOfTimes:number[], loop: number, songChoice: string): Promise<any> {
+  async mixAudio (exerciseID: string[], numberOfTimes:number[], loop: number, songChoice: string): Promise<any> {
     const songs: string[] = []
     const finalTimeline: string[] = []
-    // create tts
-    for (let i = 0; i < subtitles.length; i++) {
-      await this.textToSpeech(subtitles[i], "exercise1Pose" + (i + 1))
-      songs.push("./src/Workout/GeneratedTextSpeech/exercise1Pose" + (i + 1) + ".mp3")
+    // fetch tts
+    for (let i = 0; i < exerciseID.length; i++) {
+      songs.push("./src/Workout/GeneratedTextSpeech/" + exerciseID + ".mp3")
     }
     // trim song choice
     if (songChoice === "hardcore") {
