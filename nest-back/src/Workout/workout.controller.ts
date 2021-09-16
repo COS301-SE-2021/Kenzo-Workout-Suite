@@ -679,7 +679,6 @@ export class WorkoutController {
      */
     @UseGuards(JwtAuthGuard)
     @Get("getWorkoutVideo/:workoutID")
-    @ApiBody({ type: getWorkoutVideoDTO })
     @ApiCreatedResponse({
       description: "Successfully created video."
     })
