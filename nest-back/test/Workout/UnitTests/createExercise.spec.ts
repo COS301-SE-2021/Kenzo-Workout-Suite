@@ -37,7 +37,9 @@ describe("Unit tests for createExercise in workout subsystem", () => {
     }
     mockCtx.prisma.exercise.create.mockResolvedValue(Exercise)
     spyOn(workoutService, "getExerciseByID").and.stub()
-    spyOn(workoutService, "saveImagesToJSON").and.stub()
+    spyOn(workoutService, "saveExerciseImages").and.stub()
+    spyOn(workoutService, "textToSpeech").and.stub()
+
 
     await expect(workoutService.createExercise(Exercise.exerciseTitle, Exercise.exerciseDescription, Exercise.repRange, Exercise.sets, Exercise.poseDescription, Exercise.restPeriod, empty, Exercise.duration, Exercise.plannerID, imagesArray, ctx)).resolves.toEqual(
       "Exercise created."
@@ -60,7 +62,8 @@ describe("Unit tests for createExercise in workout subsystem", () => {
     spyOn(workoutService, "addNewTags")
     spyOn(workoutService, "createTag").and.returnValue(tagArray)
     spyOn(workoutService, "getExerciseByID").and.stub()
-    spyOn(workoutService, "saveImagesToJSON").and.stub()
+    spyOn(workoutService, "saveExerciseImages").and.stub()
+    spyOn(workoutService, "textToSpeech").and.stub()
     mockCtx.prisma.exercise.create.mockResolvedValue(Exercise)
 
     await expect(workoutService.createExercise(Exercise.exerciseTitle, Exercise.exerciseDescription, Exercise.repRange, Exercise.sets, Exercise.poseDescription, Exercise.restPeriod, tagArray, Exercise.duration, Exercise.plannerID, imagesArray, ctx)).resolves.toEqual(
