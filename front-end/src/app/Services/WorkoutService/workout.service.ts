@@ -36,7 +36,6 @@ export class WorkoutService {
           resolutionWidth: width,
           resolutionHeight: height
       };
-      console.log(body);
       return this.http.post(url, body ).toPromise().then(()=>200).catch(error=>{
           if(error.status===0) {
               return 500;
@@ -287,11 +286,41 @@ export class WorkoutService {
                   data: error.error.text
               };
               return error;
-          }
-          if(error.status===0 || error.status === 500) {
+          } else if(error.status===0 || error.status === 500) {
               return 500;
+          }else {
+              return 404;
           }
-          return 404;
+      });
+  }
+
+  /**
+   * This function attempts to obtain the video of a specific workout based on the ID passed in from the endpoint provided.
+   *
+   * @param id unique ID of the workout
+   * @returns 200,404,500 represent a success, not found error and server error, respectively.
+   * @author Jia Hui Wang, u18080449
+   */
+  async attemptGetVideo(id: string): Promise<any>{
+      const url = this.apiURL+"/workout/getWorkoutVideo/"+id;
+      return await this.http.get(url).toPromise().then(data=>{
+          data = {
+              status: 200,
+              data: data
+          };
+          return data;
+      }).catch(error=>{
+          if(error.status >=200 && error.status<300){
+              error = {
+                  status: 200,
+                  data: error.error.text
+              };
+              return error;
+          } else if(error.status===0 || error.status === 500) {
+              return 500;
+          }else {
+              return 404;
+          }
       });
   }
 
