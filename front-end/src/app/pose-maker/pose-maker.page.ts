@@ -218,8 +218,14 @@ export class PoseMakerPage implements OnInit {
 
           // Retrieve Textures to set Scene
           const texture= new THREE.TextureLoader().load("assets/avatar/"+this.floor);
+          texture.wrapS = THREE.RepeatWrapping;
+          texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(4, 4);
           const brickTexture = new THREE.TextureLoader().load("assets/avatar/"+this.wall);
           const roofTexture= new THREE.TextureLoader().load("assets/avatar/"+this.roof);
+          roofTexture.wrapS = THREE.RepeatWrapping;
+          roofTexture.wrapT = THREE.RepeatWrapping;
+          roofTexture.repeat.set(4, 4);
 
           // Set Scene
           // FLOOR
@@ -444,9 +450,9 @@ export class PoseMakerPage implements OnInit {
           this.floor = "marble.jpg";
           break;
       case "1":
-          this.wall = "blue_paint.jpg";
+          this.wall = "fancy.jpg";
           this.roof = "marble.jpg";
-          this.floor = "marble.jpg";
+          this.floor = "victorian.jpg";
           break;
       case "2":
           this.wall = "Studio_wall.jpg";
@@ -460,7 +466,7 @@ export class PoseMakerPage implements OnInit {
           break;
       default:
           this.wall = "brick.jpg";
-          this.roof = "roofTexture.jpg";
+          this.roof = "marble.jpg";
           this.floor = "texture.jpg";
       }
       this.element.removeChild(this.renderer.domElement);
