@@ -82,13 +82,8 @@ describe("Unit tests of the getExercises function in the Workout Service", () =>
       restPeriod: 2,
       tags: [],
       duration: 2,
-      images: [{
-        ID: eUUID,
-        poseDescription: "TestDescription",
-        images: ["1", "2", "3", "4"]
-      }]
+      images: []
     }]
-    spyOn(workoutService, "convertImageBase64").and.returnValue(base64)
 
     mockCtx.prisma.exercise.findMany.mockResolvedValue(Exercise)
 

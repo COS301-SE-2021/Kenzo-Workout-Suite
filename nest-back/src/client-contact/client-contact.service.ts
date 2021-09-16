@@ -6,7 +6,9 @@ import {
 import { UserService } from "../User/user.service"
 @Injectable()
 export class ClientContactService {
+  ctx: Context
   constructor (private userService: UserService) {
+    this.ctx = ActualPrisma()
   }
 
   /**
@@ -93,6 +95,7 @@ export class ClientContactService {
    *Client Service - Delete client contact
    *
    * @param contactID This is the unique ID of the client to be deleted
+   * @param ctx
    * @throws NotFoundException if:
    *                               -An empty contactID is passed in.
    * @throws BadRequestException if:
@@ -122,6 +125,7 @@ export class ClientContactService {
    *Client Service - Get all the contacts for a specific Planner
    *
    * @param plannerID This is the unique ID of the planner to be searched under
+   * @param ctx
    * @throws BadRequestException if:
    *                               -An empty plannerID is passed in
    *                               -No contacts could be found under this planner.
@@ -181,7 +185,7 @@ export class ClientContactService {
       throw new NotFoundException("Parameters can not be left empty")
     }
 
-    const planner = await this.userService.findUserByUUID(plannerID, ActualPrisma())
+    const planner = await this.userService.findUserByUUID(plannerID, this.ctx)
 
     const sgMail = require("@sendgrid/mail")
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
@@ -256,7 +260,7 @@ export class ClientContactService {
       throw new NotFoundException("Parameters can not be left empty")
     }
 
-    const planner = await this.userService.findUserByUUID(plannerID, ActualPrisma())
+    const planner = await this.userService.findUserByUUID(plannerID, this.ctx)
 
     const sgMail = require("@sendgrid/mail")
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
@@ -331,7 +335,7 @@ export class ClientContactService {
       throw new NotFoundException("Parameters can not be left empty")
     }
 
-    const planner = await this.userService.findUserByUUID(plannerID, ActualPrisma())
+    const planner = await this.userService.findUserByUUID(plannerID, this.ctx)
 
     const sgMail = require("@sendgrid/mail")
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
