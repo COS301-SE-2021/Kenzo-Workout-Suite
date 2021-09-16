@@ -17,7 +17,9 @@ import { loginDTO, signUpDTO, updateUserDTO } from "./user.model"
 
 @Controller("user")
 export class UserController {
+  private prismaContext;
   constructor (private readonly userService: UserService) {
+    this.prismaContext = ActualPrisma()
   }
 
   /**
@@ -57,7 +59,7 @@ export class UserController {
   signUpUser (
         @Body("user") user: User
   ) {
-    return this.userService.signUp(user, ActualPrisma())
+    return this.userService.signUp(user, this.prismaContext)
   }
 
     /**
@@ -103,7 +105,7 @@ export class UserController {
                       @Body("accessToken") accessToken: string,
                       @Body("firstName") firstName: string,
                       @Body("lastName") lastName: string) {
-      return await this.userService.googleLogin(email, firstName, lastName, accessToken, ActualPrisma())
+      return await this.userService.googleLogin(email, firstName, lastName, accessToken, this.prismaContext)
     }
 
     /**
@@ -130,7 +132,7 @@ export class UserController {
     })
     @HttpCode(200)
     getUserData (@Request() req) {
-      return this.userService.findUserByUUID(req.user.userID, ActualPrisma())
+      return this.userService.findUserByUUID(req.user.userID, this.prismaContext)
     }
 
     /**
@@ -168,6 +170,6 @@ export class UserController {
                      @Body("firstName") firstName: string,
                      @Body("lastName") lastName: string,
                      @Body("dateOfBirth") dateOfBirth: string) {
-      return this.userService.updateUserDetails(firstName, lastName, dateOfBirth, req.user.userID, ActualPrisma())
+      return this.userService.updateUserDetails(firstName, lastName, dateOfBirth, req.user.userID, this.prismaContext)
     }
 }
