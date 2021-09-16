@@ -328,12 +328,12 @@ export class CreateExercisePage implements OnInit {
               }
               this.slideshow.push(image);
           }
-      }
 
-      if(this.images.length>0){
-          document.getElementById("pose-button").innerHTML = "Edit Poses";
-      }else{
-          document.getElementById("pose-button").innerHTML = "Add Poses";
+          if(this.images.length>0){
+              document.getElementById("pose-button").innerHTML = "Edit Poses";
+          }else{
+              document.getElementById("pose-button").innerHTML = "Add Poses";
+          }
       }
   }
 
