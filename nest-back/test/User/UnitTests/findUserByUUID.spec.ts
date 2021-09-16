@@ -29,18 +29,19 @@ describe("Unit tests of the function findUserByUUID in the UserService", () => {
 
   test("Test, Valid User returned by mock prisma service should return the User details without the password", async () => {
     const userUUID = uuidv4()
+
     const myUser = {
       userID: userUUID,
-      email: "test@gmail.com",
+      email: process.env.testemail!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword",
+      password: process.env.testpassword!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
 
     const expectedReturn = {
-      email: "test@gmail.com",
+      email: process.env.testemail!,
       firstName: "test",
       lastName: "tester",
       userType: userType.PLANNER,

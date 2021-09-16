@@ -21,10 +21,10 @@ describe("Unit tests of the function updateUserDetails in the UserService", () =
     const userUUID = uuidv4()
     const myUser = {
       userID: userUUID,
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword",
+      password: process.env.TESTPASSWORD!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
@@ -37,10 +37,10 @@ describe("Unit tests of the function updateUserDetails in the UserService", () =
     const userUUID = uuidv4()
     const myUser = {
       userID: userUUID,
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword",
+      password: process.env.TESTPASSWORD!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
@@ -53,10 +53,10 @@ describe("Unit tests of the function updateUserDetails in the UserService", () =
     const userUUID = uuidv4()
     const myUser = {
       userID: userUUID,
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword",
+      password: process.env.TESTPASSWORD!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
@@ -71,10 +71,10 @@ describe("Unit tests of the function updateUserDetails in the UserService", () =
     const userUUID = uuidv4()
     const myUser = {
       userID: userUUID,
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword",
+      password: process.env.TESTPASSWORD!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
@@ -89,10 +89,10 @@ describe("Unit tests of the function updateUserDetails in the UserService", () =
     const userUUID = uuidv4()
     const myUser = {
       userID: userUUID,
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword",
+      password: process.env.TESTPASSWORD!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
@@ -107,10 +107,10 @@ describe("Unit tests of the function updateUserDetails in the UserService", () =
     const userUUID = uuidv4()
     const myUser = {
       userID: userUUID,
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword",
+      password: process.env.TESTPASSWORD!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
@@ -125,10 +125,10 @@ describe("Unit tests of the function updateUserDetails in the UserService", () =
     const userUUID = uuidv4()
     const myUser = {
       userID: userUUID,
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword",
+      password: process.env.TESTPASSWORD!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
@@ -146,10 +146,10 @@ describe("Unit tests of the function updateUserDetails in the UserService", () =
     const userUUID = uuidv4()
     const myUser = {
       userID: userUUID,
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword",
+      password: process.env.TESTPASSWORD!,
       userType: userType.PLANNER,
       dateOfBirth: testDate
     }
