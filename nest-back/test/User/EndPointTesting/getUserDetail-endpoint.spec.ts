@@ -40,9 +40,9 @@ describe("End point testing of the User subsystem", () => {
       data: {
         firstName: "Zelu",
         lastName: "Tesema",
-        email: "zelu2@gmail.com",
+        email: process.env.TESTEMAIL!,
         userType: "PLANNER",
-        password: "Zelu2000"
+        password: process.env.testpassword!
       }
     })
 

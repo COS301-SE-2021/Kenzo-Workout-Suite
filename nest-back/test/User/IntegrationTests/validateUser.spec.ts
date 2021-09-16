@@ -21,10 +21,10 @@ describe("Integration tests of the function validateUser in the UserService", ()
   test("Invalid details passed in, should throw not found exception", async () => {
     const myUser = {
       userID: "1234567",
-      email: "test@gmail.com",
+      email: process.env.testemail!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword2000#",
+      password: process.env.testpassword!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
@@ -33,20 +33,20 @@ describe("Integration tests of the function validateUser in the UserService", ()
 
     await ctx.prisma.user.findUnique({
       where: {
-        email: "test@gmail.com"
+        email: process.env.testemail!
       }
     })
 
-    await expect(userService.validateUser("invalid@gmail.com", "thePassword2000#", ctx)).rejects.toThrow("Invalid Email or Password")
+    await expect(userService.validateUser("invalid@gmail.com", process.env.testpassword!, ctx)).rejects.toThrow("Invalid Email or Password")
   })
 
   test("Valid details passed in, User should be validated and User object without password should be returned", async () => {
     const myUser = {
       userID: "1234567",
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword2000#",
+      password: process.env.TESTPASSWORD!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
@@ -68,7 +68,7 @@ describe("Integration tests of the function validateUser in the UserService", ()
       dateOfBirth: null
     }
 
-    const response = await userService.validateUser("test@gmail.com", "thePassword2000#", ctx)
+    const response = await userService.validateUser(process.env.testemail!, process.env.testpassword!, ctx)
 
     expect(response).toStrictEqual(finalExpectedUser)
   })
