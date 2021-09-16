@@ -9,6 +9,8 @@ import {
 import { PrismaClient } from "@prisma/client/scripts/default-index"
 import { UserService } from "../../../src/User/user.service"
 import { JwtService } from "@nestjs/jwt"
+import fs from "fs"
+import { NotFoundException } from "@nestjs/common"
 
 const ctx = ActualPrisma()
 let workoutService: WorkoutService
@@ -70,8 +72,12 @@ beforeEach(async () => {
   const emptyTags: Tag[] = []
   await workoutService.updateExercise(exerciseUUID, exercise2.exerciseTitle, exercise2.exerciseDescription, exercise2.repRange, exercise2.sets, exercise2.poseDescription, exercise2.restPeriod, emptyTags, exercise2.duration, userUUID, exercise2.images, ctx)
 })
+afterAll(async () => {
+  await workoutService.removeCreatedFiles("./src/ExerciseImages/")
+  await workoutService.removeCreatedFiles("./src/GeneratedWorkouts/")
+})
 describe("Integration tests of the updateWorkout function in the Workout Service", () => {
-  test("Should update workout [no exercises]", async () => {
+  test("Should not update workout [no exercises]", async () => {
     const workoutUUID = uuidv4()
     const Workout = {
       workoutID: workoutUUID,
@@ -83,13 +89,13 @@ describe("Integration tests of the updateWorkout function in the Workout Service
         }
       }
     }
-    const createdWorkout = await ctx.prisma.workout.create({
+    await ctx.prisma.workout.create({
       data: Workout
     })
 
     const emptyExercise: Exercise[] = []
     spyOn(workoutService, "createVideo").and.stub()
-    await expect(workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, emptyExercise, 2, "goodSong", 1920, 1080,userUUID, ctx)).rejects.toThrow(
+    await expect(await workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, emptyExercise, 2, "chill", 1920, 1080, userUUID, ctx)).rejects.toThrow(
       "Parameters can not be left empty."
     )
   })
@@ -106,12 +112,11 @@ describe("Integration tests of the updateWorkout function in the Workout Service
         }
       }
     }
-    const test = await ctx.prisma.workout.create({
+    await ctx.prisma.workout.create({
       data: Workout
     })
     const fullExercise = [exercise2]
-    spyOn(workoutService, "createVideo").and.stub()
-    await expect(workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, fullExercise, 2, "goodSong", 1920, 1080, userUUID, ctx)).resolves.toEqual(
+    await expect(await workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, fullExercise, 2, "chill", 1920, 1080, userUUID, ctx)).toEqual(
       "Workout Updated."
     )
   })

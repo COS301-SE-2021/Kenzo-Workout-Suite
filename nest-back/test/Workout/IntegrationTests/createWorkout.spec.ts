@@ -38,8 +38,12 @@ describe("Integration test for createWorkout for the Workout Service", () => {
       data: myUser
     })
   })
+  afterAll(async () => {
+    await workoutService.removeCreatedFiles("./src/ExerciseImages/")
+    await workoutService.removeCreatedFiles("./src/GeneratedWorkouts/")
+  })
 
-  test("Should create workout [no exercises]", async () => {
+  test("Should not create workout [no exercises]", async () => {
     const workoutUUID = uuidv4()
     const Workout = {
       workoutID: workoutUUID,
@@ -50,7 +54,7 @@ describe("Integration test for createWorkout for the Workout Service", () => {
 
     const emptyExercise: Exercise[] = []
 
-    await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, emptyExercise, 2, "goodSong", 1920, 1080,Workout.planner_ID, ctx)).rejects.toThrow(
+    await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, emptyExercise, 2, "goodSong", 1920, 1080, Workout.planner_ID, ctx)).rejects.toThrow(
       "Parameters can not be left empty."
     )
   })
@@ -96,8 +100,8 @@ describe("Integration test for createWorkout for the Workout Service", () => {
     const emptyTags: Tag[] = []
     await workoutService.updateExercise(exerciseUUID, exercise2.exerciseTitle, exercise2.exerciseDescription, exercise2.repRange, exercise2.sets, exercise2.poseDescription, exercise2.restPeriod, emptyTags, exercise2.duration, userUUID, exercise2.images, ctx)
     const fullExercise = [exercise2]
-    spyOn(workoutService, "createVideo").and.stub()
-    await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, fullExercise, 2, "goodSong", 1920, 1080, Workout.planner_ID, ctx)).resolves.toEqual(
+    // spyOn(workoutService, "createVideo").and.stub()
+    await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, fullExercise, 2, "chill", 1920, 1080, Workout.planner_ID, ctx)).resolves.toEqual(
       "Workout Created."
     )
   })
