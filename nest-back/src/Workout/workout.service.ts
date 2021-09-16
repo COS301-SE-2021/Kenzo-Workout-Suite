@@ -1554,7 +1554,7 @@ export class WorkoutService {
     // console.log(images)
     // eslint-disable-next-line no-useless-catch
     try {
-      await this.mixAudio(workoutID,exerciseID, numberOfTimes, loop, songChoice)
+      await this.mixAudio(workoutID, exerciseID, numberOfTimes, loop, songChoice)
 
       videoshow(images, videoOptions)
         .audio("./src/videoGeneration/Sounds/" + workoutID + ".mp3")

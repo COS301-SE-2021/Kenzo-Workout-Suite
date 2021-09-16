@@ -113,13 +113,13 @@ ion-icon{
   vertical-align: middle;
 }
 
-#shareBtn{
+.shareBtn{
   display: block;
   background: none;
   color: var(--ion-color-tertiary);
 }
 
-#shareBtn:hover{
+.shareBtn:hover{
   color: var(--ion-color-primary);
   background-activated: none;
 }
