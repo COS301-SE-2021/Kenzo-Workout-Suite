@@ -1514,7 +1514,7 @@ export class WorkoutService {
       for (let k = 0; k < fileNames.length; k++) {
         images.push({
           path: fileNames[k],
-          caption: exercises[i].exerciseDescription,
+          caption: exercises[i].poseDescription,
           loop: loop
         })
         count += 1
