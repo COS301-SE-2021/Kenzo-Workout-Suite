@@ -41,10 +41,10 @@ describe("Unit tests of the function validateUser in the UserService", () => {
 
     const myUser = {
       userID: uuidv4(),
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword",
+      password: process.env.TESTPASSWORD!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
@@ -62,17 +62,17 @@ describe("Unit tests of the function validateUser in the UserService", () => {
 
     const myUser = {
       userID: userUUID,
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword",
+      password: process.env.TESTPASSWORD!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
 
     const expectedResponse = {
       userID: userUUID,
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
       userType: userType.PLANNER,
