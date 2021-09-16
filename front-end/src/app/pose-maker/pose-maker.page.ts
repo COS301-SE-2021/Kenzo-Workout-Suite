@@ -65,9 +65,9 @@ export class PoseMakerPage implements OnInit {
     private selectedFrame = 0;
 
     // Texture Mapping
-    private wall = "brick.jpg";
-    private floor = "texture.jpg";
-    private roof = "roofTexture.jpg";
+    private wall = "red_brick.jpg";
+    private roof = "black_fancy.jpg";
+    private floor = "marble.jpg";
 
     constructor(public alertController: AlertController, public route: Router, private storage: Storage) {
         this.xCoordinate = 0;
@@ -440,23 +440,23 @@ export class PoseMakerPage implements OnInit {
       switch (value){
       case "0":
           this.wall = "red_brick.jpg";
-          this.roof = "roofTexture.jpg";
-          this.floor = "texture.jpg";
+          this.roof = "black_fancy.jpg";
+          this.floor = "marble.jpg";
           break;
       case "1":
-          this.wall = "art_wall.jpg";
-          this.roof = "texture.jpg";
-          this.floor = "texture.jpg";
+          this.wall = "blue_paint.jpg";
+          this.roof = "marble.jpg";
+          this.floor = "marble.jpg";
           break;
       case "2":
           this.wall = "Studio_wall.jpg";
-          this.roof = "roofTexture.jpg";
+          this.roof = "modern.jpg";
           this.floor = "texture.jpg";
           break;
-      case "4":
-          this.wall = "brick.jpg";
-          this.roof = "roofTexture.jpg";
-          this.floor = "texture.jpg";
+      case "3":
+          this.wall = "black.jpg";
+          this.roof = "black.jpg";
+          this.floor = "black.jpg";
           break;
       default:
           this.wall = "brick.jpg";
