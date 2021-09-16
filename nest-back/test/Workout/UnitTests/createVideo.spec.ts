@@ -20,12 +20,12 @@ describe("Unit tests of the createVideo function in the Workout Service", () => 
   test("Should not receive error for invalid workout ID", async () => {
     let workout
     mockCtx.prisma.workout.create.mockResolvedValue(workout)
-    await expect(workoutService.createVideo("", ctx)).rejects.toThrow("Invalid Workout ID passed in.")
+    await expect(workoutService.createVideo("", 2, "test", 2, 2, ctx)).rejects.toThrow("Invalid Workout ID passed in.")
   })
 
   test("Should not receive error for non-existent workout ID", async () => {
     let workout
     mockCtx.prisma.workout.create.mockResolvedValue(workout)
-    await expect(workoutService.createVideo("testesttest", ctx)).rejects.toThrow("No workouts were found in the database with the specified id.")
+    await expect(workoutService.createVideo("testesttest", 2, "test", 2, 2, ctx)).rejects.toThrow("No workouts were found in the database with the specified id.")
   })
 })

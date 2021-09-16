@@ -89,7 +89,7 @@ describe("Unit tests of the getExerciseByTitle function in the Workout Service",
         images: ["1", "2", "3", "4"]
       }]
     }]
-    spyOn(workoutService, "getExerciseBase64").and.returnValue(base64)
+    spyOn(workoutService, "convertImageBase64").and.returnValue(base64)
 
     mockCtx.prisma.exercise.findMany.mockResolvedValue(Exercise)
 
