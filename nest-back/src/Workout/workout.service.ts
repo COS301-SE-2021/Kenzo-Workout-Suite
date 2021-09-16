@@ -1554,7 +1554,7 @@ export class WorkoutService {
     // console.log(images)
     // eslint-disable-next-line no-useless-catch
     try {
-      await this.mixAudio(workoutID,exerciseID, numberOfTimes, loop, songChoice)
+      await this.mixAudio(workoutID, exerciseID, numberOfTimes, loop, songChoice)
 
       videoshow(images, videoOptions)
         .audio("./src/videoGeneration/Sounds/" + workoutID + ".mp3")
@@ -1597,14 +1597,14 @@ export class WorkoutService {
     if (songChoice === "hardcore") {
       await MP3Cutter.cut({
         src: "./src/videoGeneration/Sounds/" + songChoice + ".mp3",
-        target: "./src/videoGeneration/Sounds/trim.mp3",
+        target: "./src/videoGeneration/Sounds/trim-" + workoutID + ".mp3",
         start: 53,
         end: loop + 53
       })
     } else {
       await MP3Cutter.cut({
         src: "./src/videoGeneration/Sounds/" + songChoice + ".mp3",
-        target: "./src/videoGeneration/Sounds/trim.mp3",
+        target: "./src/videoGeneration/Sounds/trim-" + workoutID + ".mp3",
         start: 0,
         end: loop
       })
@@ -1613,7 +1613,7 @@ export class WorkoutService {
     for (let j = 0; j < songs.length; j++) {
       for (let k = 0; k < numberOfTimes[j]; k++) {
         finalTimeline.push(songs[j])
-        finalTimeline.push("./src/videoGeneration/Sounds/trim.mp3")
+        finalTimeline.push("./src/videoGeneration/Sounds/trim-" + workoutID + ".mp3")
       }
     }
     console.log(finalTimeline)
@@ -1665,13 +1665,6 @@ export class WorkoutService {
       fs.readFile("./src/videoGeneration/Videos/" + workoutID + ".mp4", function (err, data) {
         if (err) throw err
       })
-      /*
-      const result = [""]
-      for (let i = 0; i < fileData.length; i += 2) {
-        if (i === 0) { result.shift() }
-        result.push("0x" + fileData[i] + "" + fileData[i + 1])
-      }
-       */
       return fs.readFileSync("./src/videoGeneration/Videos/" + workoutID + ".mp4").toString("base64")
     } catch (E) {
       throw new BadRequestException("Cannot return video.")
