@@ -678,7 +678,7 @@ export class WorkoutController {
      *
      */
     @UseGuards(JwtAuthGuard)
-    @Post("getWorkoutVideo")
+    @Get("getWorkoutVideo/:workoutID")
     @ApiBody({ type: getWorkoutVideoDTO })
     @ApiCreatedResponse({
       description: "Successfully created video."
@@ -696,7 +696,7 @@ export class WorkoutController {
       description: "Internal server error."
     })
     getWorkoutVideo (
-        @Body("workoutID") workoutID: string
+        @Param("workoutID") workoutID: string
     ) {
       return this.workoutService.getWorkoutVideo(workoutID, this.ctx)
     }
