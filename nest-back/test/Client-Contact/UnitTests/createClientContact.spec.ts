@@ -42,7 +42,7 @@ describe("Unit tests of the function createClientContact in client-contact", () 
     const testContactID = v4()
     const clientContact = {
       contactId: testContactID,
-      contactEmail: "test@gmail.com",
+      contactEmail: process.env.testemail!,
       name: "test",
       surname: "tester",
       plannerID: testUUID

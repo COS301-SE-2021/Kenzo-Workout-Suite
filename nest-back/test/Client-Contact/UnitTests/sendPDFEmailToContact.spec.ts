@@ -6,7 +6,6 @@ let clientContactService: ClientContactService
 let userService: UserService
 let Jwt : JwtService
 const sgMail = require("@sendgrid/mail")
-const fs = require("fs")
 
 describe("Unit tests of the function sendPDFEmailToContact in client-contact", () => {
   beforeEach(() => {
