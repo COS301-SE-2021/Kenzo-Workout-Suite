@@ -129,6 +129,7 @@ export class YourWorkoutsPage implements OnInit {
   workouts: Workouts[] = new Array();
   exercises: Exercises[] = new Array();
   pdf: any;
+  video: any;
 
   constructor(private http: HttpClient,
               private workoutService: WorkoutService,
@@ -238,14 +239,14 @@ export class YourWorkoutsPage implements OnInit {
    * @param id The id of the workout of which the pdf is to obtained for.
    * @author Jia Hui Wang, u18080449
    */
-  async sharePDF(id: string){
+  async shareMedia(id: string){
       const _contacts = await this.presentModal();
       if (_contacts === "Cancelled"){
           return "Cancelled";
       }else{
           this.pdf = await this.workoutService.attemptGetPDF(id);
           if (this.pdf.status===200){
-              this.presentActionSheet(this.pdf.data, id, _contacts);
+              this.presentActionSheet(id, _contacts);
               return 200;
           }else if (this.pdf.status===404){
               return 404;
@@ -256,15 +257,51 @@ export class YourWorkoutsPage implements OnInit {
   }
 
   /**
+   * Attempt to obtain the PDF of the workout and based on the status, either present an Action Sheet for the user to choose from multiple options then
+   * return a code or just return a code.
+   *
+   * @param id The id of the workout of which the pdf is to obtained for.
+   * @author Jia Hui Wang, u18080449
+   */
+  async getPDF(id: string){
+      this.pdf = await this.workoutService.attemptGetPDF(id);
+      if (this.pdf.status===200){
+          await this.getVideo(id, this.pdf.data);
+          return 200;
+      }else if (this.pdf.status===404){
+          return 404;
+      }else{
+          return 500;
+      }
+  }
+
+  async getVideo(id: string, pdf: string){
+      this.video = await this.workoutService.attemptGetVideo(id);
+      if (this.video.status===200){
+          await this.presentDownloadSheet(this.video.data, pdf);
+          return 200;
+      }else if (this.video===404){
+          return 404;
+      }else if (this.video===400){
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Generating workout...",
+              message: "Video of workout is still processing, please try again in a moment!",
+              buttons: ["Dismiss"]
+          });
+          await this.presentAlert(alert);
+          return 400;
+      }else{
+          return 500;
+      }
+  }
+
+  /**
    * Modal to display all the contacts to choose for emailing of pdf or video
    * and then recieve data back based upon the user's choice.
    *
    * @author Jia Hui Wang, u180080449
    */
-  private _firstName: string;
-  private _lastName: string;
-  private _email: string;
-  private _contactID: string;
   async presentModal(){
       const modal = await this.modalController.create({
           component: ModalPopupPage,
@@ -288,7 +325,7 @@ export class YourWorkoutsPage implements OnInit {
    * @param workoutID the id of the chosen workout should the user wish to choose either email option, then the data can be passed back to back-end to find the file and send it.
    * @author Jia Hui Wang, u18080449
    */
-  async presentActionSheet(pdf: string, workoutID: string, procedure: any) {
+  async presentActionSheet(workoutID: string, procedure: any) {
       const actionSheet = await this.actionSheetController.create({
           header: "Share documents",
           cssClass: "actionOptions",
@@ -329,6 +366,22 @@ export class YourWorkoutsPage implements OnInit {
                   return true;
               }
           }, {
+              text: "Cancel",
+              icon: "close",
+              role: "cancel",
+              handler: () => false
+          }]
+      });
+      await actionSheet.present();
+      const {role} = await actionSheet.onDidDismiss();
+      return role;
+  }
+
+  async presentDownloadSheet(video: string, pdf: string) {
+      const actionSheet = await this.actionSheetController.create({
+          header: "Download documents",
+          cssClass: "actionOptions",
+          buttons: [{
               text: "Download PDF",
               role: "selected",
               icon: "download-outline",
@@ -337,6 +390,18 @@ export class YourWorkoutsPage implements OnInit {
                   const link = document.createElement("a");
                   link.href = source;
                   link.download = "workout.pdf";
+                  link.click();
+                  return true;
+              }
+          }, {
+              text: "Download video",
+              role: "selected",
+              icon: "download-outline",
+              handler: () => {
+                  const source = video;
+                  const link = document.createElement("a");
+                  link.href = "data:video/mpeg;base64,"+source;
+                  link.download = "workout.mp4";
                   link.click();
                   return true;
               }

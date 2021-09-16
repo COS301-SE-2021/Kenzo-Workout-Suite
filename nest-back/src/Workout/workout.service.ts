@@ -24,6 +24,7 @@ const Ffmpeg = require("fluent-ffmpeg")
 @Injectable()
 export class WorkoutService {
   constructor (private prisma: PrismaService, private userService: UserService) {
+
   }
 
   /**
@@ -1513,7 +1514,7 @@ export class WorkoutService {
       for (let k = 0; k < fileNames.length; k++) {
         images.push({
           path: fileNames[k],
-          caption: exercises[i].exerciseDescription,
+          caption: exercises[i].poseDescription,
           loop: loop
         })
         count += 1
@@ -1554,7 +1555,7 @@ export class WorkoutService {
     // console.log(images)
     // eslint-disable-next-line no-useless-catch
     try {
-      await this.mixAudio(workoutID,exerciseID, numberOfTimes, loop, songChoice)
+      await this.mixAudio(workoutID, exerciseID, numberOfTimes, loop, songChoice)
 
       videoshow(images, videoOptions)
         .audio("./src/videoGeneration/Sounds/" + workoutID + ".mp3")
@@ -1597,14 +1598,14 @@ export class WorkoutService {
     if (songChoice === "hardcore") {
       await MP3Cutter.cut({
         src: "./src/videoGeneration/Sounds/" + songChoice + ".mp3",
-        target: "./src/videoGeneration/Sounds/trim.mp3",
+        target: "./src/videoGeneration/Sounds/trim-" + workoutID + ".mp3",
         start: 53,
         end: loop + 53
       })
     } else {
       await MP3Cutter.cut({
         src: "./src/videoGeneration/Sounds/" + songChoice + ".mp3",
-        target: "./src/videoGeneration/Sounds/trim.mp3",
+        target: "./src/videoGeneration/Sounds/trim-" + workoutID + ".mp3",
         start: 0,
         end: loop
       })
@@ -1613,7 +1614,7 @@ export class WorkoutService {
     for (let j = 0; j < songs.length; j++) {
       for (let k = 0; k < numberOfTimes[j]; k++) {
         finalTimeline.push(songs[j])
-        finalTimeline.push("./src/videoGeneration/Sounds/trim.mp3")
+        finalTimeline.push("./src/videoGeneration/Sounds/trim-" + workoutID + ".mp3")
       }
     }
     console.log(finalTimeline)
@@ -1661,20 +1662,17 @@ export class WorkoutService {
     if (workoutID == null || workoutID === "") {
       throw new PreconditionFailedException("Invalid Workout ID passed in.")
     }
+
     try {
-      fs.readFile("./src/videoGeneration/Videos/" + workoutID + ".mp4", function (err, data) {
-        if (err) throw err
-      })
-      /*
-      const result = [""]
-      for (let i = 0; i < fileData.length; i += 2) {
-        if (i === 0) { result.shift() }
-        result.push("0x" + fileData[i] + "" + fileData[i + 1])
-      }
-       */
+      await this.getWorkoutById(workoutID, ctx)
+    } catch (err) {
+      throw new NotFoundException("No such workout exists")
+    }
+
+    try {
       return fs.readFileSync("./src/videoGeneration/Videos/" + workoutID + ".mp4").toString("base64")
-    } catch (E) {
-      throw new BadRequestException("Cannot return video.")
+    } catch (error) {
+      throw new BadRequestException("Video of workout is still processing, please try again in a moment!")
     }
   }
 }

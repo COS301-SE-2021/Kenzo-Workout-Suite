@@ -798,7 +798,7 @@ describe("WorkoutService", () => {
     });
 
     /**
-     * Getting the PDF of the workouts
+     * Getting the PDF of the workout
      */
     it("should obtain the PDF for the chosen workout and return a 200 status", async () => {
         const respStatus = service.attemptGetPDF("");
@@ -834,6 +834,67 @@ describe("WorkoutService", () => {
         const respStatus = service.attemptGetPDF("");
 
         const req = httpMock.expectOne(apiURL+"/workout/getWorkoutPDF/");
+        expect(req.request.method).toEqual("GET");
+
+        const resp = new HttpErrorResponse({
+            status: 500
+        });
+        req.flush(null, resp);
+        const status = await respStatus;
+        expect(status).toEqual(500);
+    });
+
+    /**
+     * Getting the video of the workout
+     */
+    it("should obtain the video for the chosen workout and return a 200 status", async () => {
+        const respStatus = service.attemptGetVideo("");
+
+        const req = httpMock.expectOne(apiURL+"/workout/getWorkoutVideo/");
+        expect(req.request.method).toEqual("GET");
+
+        const resp = new HttpResponse({
+            status: 200,
+            statusText: " "
+        });
+        req.flush(resp);
+        const status = await respStatus;
+        const statusValue: number = status["status"];
+        expect(statusValue).toEqual(200);
+    });
+
+    it("should fail to the video for the chosen workout because the video does not exist in the data store and return a 404 status", async ()=>{
+        const respStatus = service.attemptGetVideo("");
+
+        const req = httpMock.expectOne(apiURL+"/workout/getWorkoutVideo/");
+        expect(req.request.method).toEqual("GET");
+
+        const resp = new HttpErrorResponse({
+            status: 404
+        });
+        req.flush(null, resp);
+        const status = await respStatus;
+        expect(status).toEqual(404);
+    });
+
+    it("should fail to the video for the chosen workout because the video is still generating and return a 400 status", async ()=>{
+        const respStatus = service.attemptGetVideo("");
+
+        const req = httpMock.expectOne(apiURL+"/workout/getWorkoutVideo/");
+        expect(req.request.method).toEqual("GET");
+
+        const resp = new HttpErrorResponse({
+            status: 400
+        });
+        req.flush(null, resp);
+        const status = await respStatus;
+        expect(status).toEqual(400);
+    });
+
+    it("should fail to the video for the chosen workout because server did not respond and returns a status of 500", async ()=>{
+        const respStatus = service.attemptGetVideo("");
+
+        const req = httpMock.expectOne(apiURL+"/workout/getWorkoutVideo/");
         expect(req.request.method).toEqual("GET");
 
         const resp = new HttpErrorResponse({
