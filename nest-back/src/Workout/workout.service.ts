@@ -853,7 +853,6 @@ export class WorkoutService {
             }
           }
         })
-
         const updatedWorkout = await this.getWorkoutById(workoutID, ctx)
         await this.generatePrettyWorkoutPDF(updatedWorkout, ctx)
         await this.createVideo(updatedWorkout.workoutID, loop, songChoice, resolutionWidth, resolutionHeight, ctx)
@@ -1564,8 +1563,8 @@ export class WorkoutService {
           // console.log("ffmpeg process started:", command)
         })
         .on("error", function (err, stdout, stderr) {
-          // console.error("Error:", err)
-          // console.error("ffmpeg stderr:", stderr)
+          console.error("Error:", err)
+          console.error("ffmpeg stderr:", stderr)
           throw new ServiceUnavailableException("Unable to create video.")
         })
         .on("end", function (output) {
@@ -1637,9 +1636,9 @@ export class WorkoutService {
         await execute.mergeAdd(songs[i])
         if (i === songs.length - 1) {
           await execute.mergeToFile("./src/videoGeneration/Sounds/" + fileName + ".mp3").on("error", function (err) {
-            // console.log("An error occurred: " + err.message)
+            console.log("An error occurred: " + err.message)
           }).on("end", function () {
-            // console.log("Final audio clip created")
+            console.log("Final audio clip created")
           })
         }
       }
@@ -1693,8 +1692,9 @@ export class WorkoutService {
 
       for (const file of files) {
         if (file !== "description.txt") {
+          // eslint-disable-next-line node/handle-callback-err
           fs.unlink(path + file, err => {
-            if (err) throw new NotFoundException("File in path not found!")
+
           })
         }
       }

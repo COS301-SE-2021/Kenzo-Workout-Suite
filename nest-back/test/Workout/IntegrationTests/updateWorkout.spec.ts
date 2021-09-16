@@ -9,8 +9,6 @@ import {
 import { PrismaClient } from "@prisma/client/scripts/default-index"
 import { UserService } from "../../../src/User/user.service"
 import { JwtService } from "@nestjs/jwt"
-import fs from "fs"
-import { NotFoundException } from "@nestjs/common"
 
 const ctx = ActualPrisma()
 let workoutService: WorkoutService
@@ -55,10 +53,10 @@ beforeEach(async () => {
   await ctx.prisma.tag.deleteMany()
   const myUser = {
     userID: userUUID,
-    email: "test@gmail.com",
+    email: process.env.TESTEMAIL!,
     firstName: "test",
     lastName: "tester",
-    password: "Test123*",
+    password: process.env.TESTPASSWORD!,
     userType: userType.PLANNER,
     dateOfBirth: new Date("2000-05-30")
   }
@@ -75,6 +73,7 @@ beforeEach(async () => {
 afterAll(async () => {
   await workoutService.removeCreatedFiles("./src/ExerciseImages/")
   await workoutService.removeCreatedFiles("./src/GeneratedWorkouts/")
+  await workoutService.removeCreatedFiles("./src/videoGeneration/Videos")
 })
 describe("Integration tests of the updateWorkout function in the Workout Service", () => {
   test("Should not update workout [no exercises]", async () => {
@@ -94,8 +93,7 @@ describe("Integration tests of the updateWorkout function in the Workout Service
     })
 
     const emptyExercise: Exercise[] = []
-    spyOn(workoutService, "createVideo").and.stub()
-    await expect(await workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, emptyExercise, 2, "chill", 1920, 1080, userUUID, ctx)).rejects.toThrow(
+    await expect(workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, emptyExercise, 2, "chill", 1920, 1080, userUUID, ctx)).rejects.toThrow(
       "Parameters can not be left empty."
     )
   })
