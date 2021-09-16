@@ -12,7 +12,8 @@ export class WorkoutService {
 
   private apiURL = environment.apiURL;
 
-  constructor(private http: HttpClient, private user: UserService) {
+  constructor(private http: HttpClient,
+              private user: UserService) {
   }
 
   /** This function attempts to submit a workout by using the following parameters:
@@ -318,6 +319,8 @@ export class WorkoutService {
               return error;
           } else if(error.status===0 || error.status === 500) {
               return 500;
+          }else if(error.status===400) {
+              return 400;
           }else {
               return 404;
           }

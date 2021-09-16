@@ -877,6 +877,20 @@ describe("WorkoutService", () => {
         expect(status).toEqual(404);
     });
 
+    it("should fail to the video for the chosen workout because the video is still generating and return a 400 status", async ()=>{
+        const respStatus = service.attemptGetVideo("");
+
+        const req = httpMock.expectOne(apiURL+"/workout/getWorkoutVideo/");
+        expect(req.request.method).toEqual("GET");
+
+        const resp = new HttpErrorResponse({
+            status: 400
+        });
+        req.flush(null, resp);
+        const status = await respStatus;
+        expect(status).toEqual(400);
+    });
+
     it("should fail to the video for the chosen workout because server did not respond and returns a status of 500", async ()=>{
         const respStatus = service.attemptGetVideo("");
 

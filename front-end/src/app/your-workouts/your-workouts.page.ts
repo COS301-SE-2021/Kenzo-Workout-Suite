@@ -266,7 +266,7 @@ export class YourWorkoutsPage implements OnInit {
   async getPDF(id: string){
       this.pdf = await this.workoutService.attemptGetPDF(id);
       if (this.pdf.status===200){
-          this.getVideo(id, this.pdf.data);
+          await this.getVideo(id, this.pdf.data);
           return 200;
       }else if (this.pdf.status===404){
           return 404;
@@ -278,10 +278,19 @@ export class YourWorkoutsPage implements OnInit {
   async getVideo(id: string, pdf: string){
       this.video = await this.workoutService.attemptGetVideo(id);
       if (this.video.status===200){
-          this.presentDownloadSheet(this.video.data, pdf);
+          await this.presentDownloadSheet(this.video.data, pdf);
           return 200;
-      }else if (this.video.status===404){
+      }else if (this.video===404){
           return 404;
+      }else if (this.video===400){
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Generating workout...",
+              message: "Video of workout is still processing, please try again in a moment!",
+              buttons: ["Dismiss"]
+          });
+          await this.presentAlert(alert);
+          return 400;
       }else{
           return 500;
       }

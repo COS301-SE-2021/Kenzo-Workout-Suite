@@ -137,6 +137,7 @@ describe("YourWorkoutsPage", () => {
     it("should, given a data-store where the pdf of the workout does exist, obtain the PDF of the workout.", async () => {
         spyOn(service, "attemptGetPDF").and.resolveTo({status: 200});
         spyOn(component, "presentAlert").and.stub();
+        spyOn(component, "getVideo").and.stub();
         await component.getPDF(" ").then(error=>{
             expect(error).toEqual(200);
         });
@@ -144,7 +145,7 @@ describe("YourWorkoutsPage", () => {
 
     //Downloading of video
     it("should, given a data-store where the video of the workout doesn't exist, fail to obtain the video of the workout.", async () => {
-        spyOn(service, "attemptGetVideo").and.resolveTo({status: 404});
+        spyOn(service, "attemptGetVideo").and.resolveTo(404);
         spyOn(component, "presentAlert").and.stub();
         spyOn(component, "presentDownloadSheet").and.stub();
         await component.getVideo(" ", " ").then(error=>{
@@ -152,8 +153,17 @@ describe("YourWorkoutsPage", () => {
         });
     });
 
+    it("should, given a data-store where the video is still generating, fail to obtain the video of the workout.", async () => {
+        spyOn(service, "attemptGetVideo").and.resolveTo(400);
+        spyOn(component, "presentAlert").and.stub();
+        spyOn(component, "presentDownloadSheet").and.stub();
+        await component.getVideo(" ", " ").then(error=>{
+            expect(error).toEqual(400);
+        });
+    });
+
     it("should fail to obtain the video of the workout as the server is not responding.", async () => {
-        spyOn(service, "attemptGetVideo").and.resolveTo({status: 500});
+        spyOn(service, "attemptGetVideo").and.resolveTo(500);
         spyOn(component, "presentAlert").and.stub();
         spyOn(component, "presentDownloadSheet").and.stub();
         await component.getVideo(" ", " ").then(error=>{
