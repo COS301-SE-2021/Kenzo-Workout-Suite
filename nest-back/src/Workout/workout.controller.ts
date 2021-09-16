@@ -48,6 +48,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Get("getWorkouts")
     @ApiOkResponse({
       description: "A workout object."
@@ -74,6 +75,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Get("getWorkoutById/:id")
     @ApiOkResponse({
       description: "A workout object."
@@ -99,6 +101,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Get("getExercises")
     @ApiOkResponse({
       description: "An exercise object."
@@ -125,6 +128,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Get("getExerciseByTitle/:title")
     @ApiOkResponse({
       description: "A workout object."
@@ -151,6 +155,7 @@ export class WorkoutController {
      * @author Msi Sibanyoni
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Get("getExerciseByID/:ID")
     @ApiOkResponse({
       description: "A workout object."
@@ -330,6 +335,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Delete("deleteExercise")
     @ApiBody({ type: deleteExerciseDTO })
     @ApiOkResponse({
@@ -454,6 +460,7 @@ export class WorkoutController {
      * @author Msi Sibanyoni
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Delete("deleteWorkout")
     @ApiBody({ type: DeleteWorkoutDTO })
     @ApiOkResponse({
@@ -488,6 +495,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Post("createTag")
     @ApiOkResponse({
       description: "Successfully created Tag."
@@ -526,6 +534,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Get("getTags")
     @ApiOkResponse({
       description: "Successfully created Tag."
@@ -552,6 +561,7 @@ export class WorkoutController {
      * @author Zelealem Tesema
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Get("createTTS")
     createTTS (
       @Body("text") text: string,
@@ -581,6 +591,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Post("createVideo")
     @ApiBody({ type: createVideoDTO })
     @ApiCreatedResponse({
@@ -620,6 +631,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Get("mixAudio")
     mixAudiio (
         @Body("workoutID") workoutID: string,
@@ -642,6 +654,7 @@ export class WorkoutController {
      *
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Get("getWorkoutPDF/:workoutID")
     @ApiOkResponse({
       description: "A workout pdf."
@@ -664,6 +677,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Post("getWorkoutVideo")
     @ApiBody({ type: getWorkoutVideoDTO })
     @ApiCreatedResponse({

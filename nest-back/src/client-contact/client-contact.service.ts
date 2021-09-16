@@ -7,7 +7,6 @@ import { UserService } from "../User/user.service"
 @Injectable()
 export class ClientContactService {
   constructor (private userService: UserService) {
-
   }
 
   /**
