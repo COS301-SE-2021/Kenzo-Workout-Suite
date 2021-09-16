@@ -67,12 +67,6 @@ describe("Unit tests of the getExerciseByTitle function in the Workout Service",
       plannerID: ""
     }]
 
-    const base64 = [{
-      ID: eUUID,
-      poseDescription: "TestDescription",
-      images: ["1", "2", "3", "4"]
-    }]
-
     const expected = [{
       exerciseID: eUUID,
       exerciseTitle: "TestExercise",
@@ -83,13 +77,8 @@ describe("Unit tests of the getExerciseByTitle function in the Workout Service",
       restPeriod: 2,
       tags: [],
       duration: 2,
-      images: [{
-        ID: eUUID,
-        poseDescription: "TestDescription",
-        images: ["1", "2", "3", "4"]
-      }]
+      images: []
     }]
-    spyOn(workoutService, "getExerciseBase64").and.returnValue(base64)
 
     mockCtx.prisma.exercise.findMany.mockResolvedValue(Exercise)
 
