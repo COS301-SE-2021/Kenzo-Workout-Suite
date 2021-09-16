@@ -50,8 +50,8 @@ describe("Integration test for createWorkout for the Workout Service", () => {
 
     const emptyExercise: Exercise[] = []
 
-    await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, emptyExercise, Workout.planner_ID, ctx)).resolves.toEqual(
-      "Workout Created."
+    await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, emptyExercise, 2, "goodSong", 1920, 1080,Workout.planner_ID, ctx)).rejects.toThrow(
+      "Parameters can not be left empty."
     )
   })
 
@@ -97,7 +97,7 @@ describe("Integration test for createWorkout for the Workout Service", () => {
     await workoutService.updateExercise(exerciseUUID, exercise2.exerciseTitle, exercise2.exerciseDescription, exercise2.repRange, exercise2.sets, exercise2.poseDescription, exercise2.restPeriod, emptyTags, exercise2.duration, userUUID, exercise2.images, ctx)
     const fullExercise = [exercise2]
     spyOn(workoutService, "createVideo").and.stub()
-    await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, fullExercise, Workout.planner_ID, ctx)).resolves.toEqual(
+    await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, fullExercise, 2, "goodSong", 1920, 1080, Workout.planner_ID, ctx)).resolves.toEqual(
       "Workout Created."
     )
   })

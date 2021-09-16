@@ -88,9 +88,9 @@ describe("Integration tests of the updateWorkout function in the Workout Service
     })
 
     const emptyExercise: Exercise[] = []
-
-    await expect(workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, emptyExercise, userUUID, ctx)).resolves.toEqual(
-      "Workout Updated."
+    spyOn(workoutService, "createVideo").and.stub()
+    await expect(workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, emptyExercise, 2, "goodSong", 1920, 1080,userUUID, ctx)).rejects.toThrow(
+      "Parameters can not be left empty."
     )
   })
 
@@ -111,7 +111,7 @@ describe("Integration tests of the updateWorkout function in the Workout Service
     })
     const fullExercise = [exercise2]
     spyOn(workoutService, "createVideo").and.stub()
-    await expect(workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, fullExercise, userUUID, ctx)).resolves.toEqual(
+    await expect(workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, fullExercise, 2, "goodSong", 1920, 1080, userUUID, ctx)).resolves.toEqual(
       "Workout Updated."
     )
   })
