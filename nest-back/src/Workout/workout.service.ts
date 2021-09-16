@@ -1598,14 +1598,14 @@ export class WorkoutService {
     if (songChoice === "hardcore") {
       await MP3Cutter.cut({
         src: "./src/videoGeneration/Sounds/" + songChoice + ".mp3",
-        target: "./src/videoGeneration/Sounds/trim.mp3",
+        target: "./src/videoGeneration/Sounds/trim-" + workoutID + ".mp3",
         start: 53,
         end: loop + 53
       })
     } else {
       await MP3Cutter.cut({
         src: "./src/videoGeneration/Sounds/" + songChoice + ".mp3",
-        target: "./src/videoGeneration/Sounds/trim.mp3",
+        target: "./src/videoGeneration/Sounds/trim-" + workoutID + ".mp3",
         start: 0,
         end: loop
       })
@@ -1614,7 +1614,7 @@ export class WorkoutService {
     for (let j = 0; j < songs.length; j++) {
       for (let k = 0; k < numberOfTimes[j]; k++) {
         finalTimeline.push(songs[j])
-        finalTimeline.push("./src/videoGeneration/Sounds/trim.mp3")
+        finalTimeline.push("./src/videoGeneration/Sounds/trim-" + workoutID + ".mp3")
       }
     }
     console.log(finalTimeline)
