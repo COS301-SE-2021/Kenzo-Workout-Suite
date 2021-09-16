@@ -23,6 +23,7 @@
     "test:workoutIntegration": "jest --coverage --detectOpenHandles --forceExit --testPathPattern=test/Workout/IntegrationTests",
     "test:workoutTest": "jest --coverage --detectOpenHandles --forceExit --testPathPattern=test/Workout/UnitTest",
     "test:userTest": "jest --coverage --detectOpenHandles --forceExit --testPathPattern=test/User/UnitTest",
+    "test:userIntegration": "jest --coverage --detectOpenHandles --forceExit --testPathPattern=test/User/IntegrationTests",
     "test:clientTest": "jest --coverage --detectOpenHandles --forceExit --testPathPattern=test/Client-Contact/UnitTest"
   },
   "dependencies": {
