@@ -64,6 +64,11 @@ export class PoseMakerPage implements OnInit {
     private skeletons;
     private selectedFrame = 0;
 
+    // Texture Mapping
+    private wall = "brick.jpg";
+    private floor = "texture.jpg";
+    private roof = "roofTexture.jpg";
+
     constructor(public alertController: AlertController, public route: Router, private storage: Storage) {
         this.xCoordinate = 0;
         this.yCoordinate = 0;
@@ -212,41 +217,48 @@ export class PoseMakerPage implements OnInit {
           }
 
           // Retrieve Textures to set Scene
-          const texture= new THREE.TextureLoader().load("assets/avatar/texture.jpg");
-          const brickTexture = new THREE.TextureLoader().load("assets/avatar/brick.jpg");
-          const roofTexture= new THREE.TextureLoader().load("assets/avatar/roofTexture.jpg");
+          const texture= new THREE.TextureLoader().load("assets/avatar/"+this.floor);
+          const brickTexture = new THREE.TextureLoader().load("assets/avatar/"+this.wall);
+          const roofTexture= new THREE.TextureLoader().load("assets/avatar/"+this.roof);
 
           // Set Scene
+          // FLOOR
           const geometry = new THREE.BoxGeometry( 13, 0.5, 13 );
           const material = new THREE.MeshBasicMaterial( {map: texture} );
           const floor = new THREE.Mesh( geometry, material );
           tempScene.add( floor );
           floor.position.y-=2.1;
 
-          const geometry2 = new THREE.BoxGeometry( 13, 13, 0.5 );
+          // WALLS
+          const geometry2 = new THREE.BoxGeometry( 13, 8, 0.5 );
           const material2 = new THREE.MeshBasicMaterial( {map: brickTexture} );
           const backWall = new THREE.Mesh( geometry2, material2 );
           tempScene.add( backWall );
           backWall.position.z-=6;
+          backWall.position.y+=2;
 
-          const geometry3 = new THREE.BoxGeometry( 13, 13, 0.5 );
+          const geometry3 = new THREE.BoxGeometry( 13, 8, 0.5 );
           const material3 = new THREE.MeshBasicMaterial( {map: brickTexture} );
           const frontWall = new THREE.Mesh( geometry3, material3 );
           tempScene.add( frontWall );
           frontWall.position.z-=-6;
+          frontWall.position.y+=2;
 
-          const geometry4 = new THREE.BoxGeometry( 0.5, 13, 13 );
+          const geometry4 = new THREE.BoxGeometry( 0.5, 8, 13 );
           const material4 = new THREE.MeshBasicMaterial( {map: brickTexture} );
           const rightWall = new THREE.Mesh( geometry4, material4 );
           tempScene.add( rightWall );
           rightWall.position.x-=-6;
+          rightWall.position.y+=2;
 
-          const geometry5 = new THREE.BoxGeometry( 0.5, 13, 13 );
+          const geometry5 = new THREE.BoxGeometry( 0.5, 8, 13 );
           const material5 = new THREE.MeshBasicMaterial( {map: brickTexture} );
           const leftWall = new THREE.Mesh( geometry5, material5 );
           tempScene.add( leftWall );
           leftWall.position.x-=6;
+          leftWall.position.y+=2;
 
+          // ROOF
           const geometry6 = new THREE.BoxGeometry( 13, 0.5, 13 );
           const material6 = new THREE.MeshBasicMaterial( {map: roofTexture} );
           const roof = new THREE.Mesh( geometry6, material6 );
@@ -274,6 +286,7 @@ export class PoseMakerPage implements OnInit {
       this.scene.add(this.camera);
 
       this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+      this.controls.maxDistance = 6;
       this.controls.update();
   }
 
@@ -421,5 +434,36 @@ export class PoseMakerPage implements OnInit {
       this.xCoordinate = this.originalCoordinates[this.selection].x;
       this.yCoordinate = this.originalCoordinates[this.selection].y;
       this.zCoordinate = this.originalCoordinates[this.selection].z;
+  }
+
+  setBackground(value: any) {
+      switch (value){
+      case "0":
+          this.wall = "red_brick.jpg";
+          this.roof = "roofTexture.jpg";
+          this.floor = "texture.jpg";
+          break;
+      case "1":
+          this.wall = "art_wall.jpg";
+          this.roof = "texture.jpg";
+          this.floor = "texture.jpg";
+          break;
+      case "2":
+          this.wall = "Studio_wall.jpg";
+          this.roof = "roofTexture.jpg";
+          this.floor = "texture.jpg";
+          break;
+      case "4":
+          this.wall = "brick.jpg";
+          this.roof = "roofTexture.jpg";
+          this.floor = "texture.jpg";
+          break;
+      default:
+          this.wall = "brick.jpg";
+          this.roof = "roofTexture.jpg";
+          this.floor = "texture.jpg";
+      }
+      this.element.removeChild(this.renderer.domElement);
+      this.initScene();
   }
 }

@@ -51,6 +51,16 @@
       <ion-button class="reset" (click)="resetPart()" mode="ios">Reset Part</ion-button>
     </ion-item>
     <ion-item>
+      <ion-label>Background</ion-label>
+      <ion-select #scene (ionChange)="setBackground(scene.value)" placeholder="Choose" mode="ios">
+        <ion-select-option value="0">Default</ion-select-option>
+        <ion-select-option value="1">Art Museum</ion-select-option>
+        <ion-select-option value="2">Studio</ion-select-option>
+        <ion-select-option value="3">Other</ion-select-option>
+        <ion-select-option value="4">Original 1987</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
       <ion-label>Timeline</ion-label>
       <ion-button mode="ios" id="0" class="selectors" [style.borderColor]="frameColor[0]" (click)="selectFrame(0)">1</ion-button>
       <ion-button mode="ios" id="1" [style.borderColor]="frameColor[1]" (click)="selectFrame(1)">2</ion-button>
