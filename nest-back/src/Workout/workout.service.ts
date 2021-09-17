@@ -853,7 +853,6 @@ export class WorkoutService {
             }
           }
         })
-
         const updatedWorkout = await this.getWorkoutById(workoutID, ctx)
         await this.generatePrettyWorkoutPDF(updatedWorkout, ctx)
         await this.createVideo(updatedWorkout.workoutID, loop, songChoice, resolutionWidth, resolutionHeight, ctx)
@@ -1561,7 +1560,7 @@ export class WorkoutService {
         .audio("./src/videoGeneration/Sounds/" + workoutID + ".mp3")
         .save("./src/videoGeneration/Videos/" + workoutID + ".mp4")
         .on("start", function (command) {
-          console.log("ffmpeg process started:", command)
+          // console.log("ffmpeg process started:", command)
         })
         .on("error", function (err, stdout, stderr) {
           console.error("Error:", err)
@@ -1569,7 +1568,7 @@ export class WorkoutService {
           throw new ServiceUnavailableException("Unable to create video.")
         })
         .on("end", function (output) {
-          console.error("Video created in:", output)
+          // console.error("Video created in:", output)
           return "Successfully created video."
         })
     } catch (e) { throw e }
@@ -1617,7 +1616,7 @@ export class WorkoutService {
         finalTimeline.push("./src/videoGeneration/Sounds/trim-" + workoutID + ".mp3")
       }
     }
-    console.log(finalTimeline)
+    // console.log(finalTimeline)
     await this.audioConcat(finalTimeline, workoutID)
   }
 
@@ -1643,7 +1642,8 @@ export class WorkoutService {
           })
         }
       }
-    } catch (e) { console.log(e) }
+    } catch (e) { // console.log(e)
+    }
   }
 
   /**
@@ -1674,5 +1674,30 @@ export class WorkoutService {
     } catch (error) {
       throw new BadRequestException("Video of workout is still processing, please try again in a moment!")
     }
+  }
+
+  /**
+   *Workout Controller - Remove created files
+   *
+   * @throws ApiPreconditionFailedResponse if: -Invalid Workout ID passed in.
+   * @throws NotFoundException if: - Folder path does not exist.
+   * @throws NotFoundException if: - File in folder does not exist.
+   * @author Msi Sibanyoni
+   *
+   * @param path
+   */
+  async removeCreatedFiles (path: string) {
+    fs.readdir(path, (err, files) => {
+      if (err) throw new NotFoundException("Path not found!")
+
+      for (const file of files) {
+        if (file !== "description.txt") {
+          // eslint-disable-next-line node/handle-callback-err
+          fs.unlink(path + file, err => {
+
+          })
+        }
+      }
+    })
   }
 }

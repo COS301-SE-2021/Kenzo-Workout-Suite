@@ -53,10 +53,10 @@ beforeEach(async () => {
   await ctx.prisma.tag.deleteMany()
   const myUser = {
     userID: userUUID,
-    email: "test@gmail.com",
+    email: process.env.TESTEMAIL!,
     firstName: "test",
     lastName: "tester",
-    password: "Test123*",
+    password: process.env.TESTPASSWORD!,
     userType: userType.PLANNER,
     dateOfBirth: new Date("2000-05-30")
   }
@@ -70,8 +70,13 @@ beforeEach(async () => {
   const emptyTags: Tag[] = []
   await workoutService.updateExercise(exerciseUUID, exercise2.exerciseTitle, exercise2.exerciseDescription, exercise2.repRange, exercise2.sets, exercise2.poseDescription, exercise2.restPeriod, emptyTags, exercise2.duration, userUUID, exercise2.images, ctx)
 })
+afterAll(async () => {
+  await workoutService.removeCreatedFiles("./src/ExerciseImages/")
+  await workoutService.removeCreatedFiles("./src/GeneratedWorkouts/")
+  await workoutService.removeCreatedFiles("./src/videoGeneration/Videos")
+})
 describe("Integration tests of the updateWorkout function in the Workout Service", () => {
-  test("Should update workout [no exercises]", async () => {
+  test("Should not update workout [no exercises]", async () => {
     const workoutUUID = uuidv4()
     const Workout = {
       workoutID: workoutUUID,
@@ -83,14 +88,13 @@ describe("Integration tests of the updateWorkout function in the Workout Service
         }
       }
     }
-    const createdWorkout = await ctx.prisma.workout.create({
+    await ctx.prisma.workout.create({
       data: Workout
     })
 
     const emptyExercise: Exercise[] = []
-
-    await expect(workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, emptyExercise, userUUID, ctx)).resolves.toEqual(
-      "Workout Updated."
+    await expect(workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, emptyExercise, 2, "chill", 1920, 1080, userUUID, ctx)).rejects.toThrow(
+      "Parameters can not be left empty."
     )
   })
 
@@ -106,12 +110,11 @@ describe("Integration tests of the updateWorkout function in the Workout Service
         }
       }
     }
-    const test = await ctx.prisma.workout.create({
+    await ctx.prisma.workout.create({
       data: Workout
     })
     const fullExercise = [exercise2]
-    spyOn(workoutService, "createVideo").and.stub()
-    await expect(workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, fullExercise, userUUID, ctx)).resolves.toEqual(
+    await expect(await workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, fullExercise, 2, "chill", 1920, 1080, userUUID, ctx)).toEqual(
       "Workout Updated."
     )
   })

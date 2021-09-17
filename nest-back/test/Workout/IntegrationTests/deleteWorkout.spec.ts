@@ -19,10 +19,10 @@ beforeEach(async () => {
   await ctx.prisma.user.deleteMany()
   const myUser = {
     userID: userUUID,
-    email: "test@gmail.com",
+    email: process.env.TESTEMAIL!,
     firstName: "test",
     lastName: "tester",
-    password: "Test123*",
+    password: process.env.TESTPASSWORD!,
     userType: userType.PLANNER,
     dateOfBirth: null
   }
@@ -38,7 +38,11 @@ describe("Integration tests of the deleteWorkout function in the Workout Service
       workoutID: workoutUUID,
       workoutTitle: "Test",
       workoutDescription: "Test",
-      plannerID: userUUID
+      planner: {
+        connect: {
+          userID: userUUID
+        }
+      }
     }
     await ctx.prisma.workout.create({
       data: Workout
