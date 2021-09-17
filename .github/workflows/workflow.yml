@@ -13,7 +13,7 @@ on:
 env:
   CI: 1
   GOOGLE_CLIENT_ID: '201037185690-g3gkgbfa2m13iepgee7qljkkh5iol1b9.apps.googleusercontent.com'
-  GOOGLE_SECRET: '2xP2IbH3SQVFg0qgFOG7Q198'
+  GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
   JWT_SECRET: 'THESECRET'
   EXPIRY_TIME: '10800s'
   DATABASE_URL: 'mysql://user:password@localhost:3306/test'
