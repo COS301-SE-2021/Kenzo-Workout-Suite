@@ -21,10 +21,10 @@ describe("Integration tests of the function findUserByUUID in the UserService", 
   test("Test, Valid User returned by mock prisma service", async () => {
     const createdUser = await ctx.prisma.user.create({
       data: {
-        email: "test@gmail.com",
+        email: process.env.TESTEMAIL!,
         firstName: "test",
         lastName: "tester",
-        password: "Test2000#",
+        password: process.env.TESTPASSWORD!,
         userType: userType.PLANNER,
         dateOfBirth: null
       }
@@ -35,7 +35,7 @@ describe("Integration tests of the function findUserByUUID in the UserService", 
     const searchUUID = createdUser.userID
 
     const expectedUser = {
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
       userType: userType.PLANNER,

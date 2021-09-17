@@ -31,9 +31,11 @@
               </ion-card-header>
 <!--              <ion-card-content>{{ workout.description}}</ion-card-content>-->
               <ion-item>
-                <ion-icon slot="end" size="medium" name="share-outline" id="shareBtn" (click)="sharePDF(workout.workoutID)"></ion-icon>
                 <ion-button slot="start" size="medium" mode="ios" class="editBtn" (click)="sendWorkoutID(workout.workoutID)">Edit</ion-button>
+                <ion-icon slot="end" size="medium" name="download-outline" class="shareBtn" (click)="getPDF(workout.workoutID)"></ion-icon>
+                <ion-icon slot="end" size="medium" name="share-outline" class="shareBtn" (click)="shareMedia(workout.workoutID)"></ion-icon>
               </ion-item>
+
               </ion-card>
         </span>
       </ion-row>

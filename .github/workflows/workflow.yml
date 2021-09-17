@@ -17,6 +17,8 @@ env:
   JWT_SECRET: 'THESECRET'
   EXPIRY_TIME: '10800s'
   DATABASE_URL: 'mysql://user:password@localhost:3306/test'
+  TESTEMAIL: 'test.email@test.com'
+  TESTPASSWORD: 'TestPassword123*'
 
 jobs:
   build:
@@ -37,6 +39,8 @@ jobs:
           MYSQL_DATABASE: test
           MYSQL_ROOT_PASSWORD: password
           DATABASE_URL: 'mysql://user:password@localhost:3306/test'
+          TESTEMAIL: 'test.email@test.com'
+          TESTPASSWORD: 'TestPassword123*'
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
 
 

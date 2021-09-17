@@ -19,25 +19,6 @@ beforeEach(() => {
   ctx = (mockCtx as unknown) as Context
 })
 describe("Unit tests for createWorkout in workout subsystem", () => {
-  test("Should create new workout [Without Exercises]", async () => {
-    const Workout = {
-      workoutID: uuidv4(),
-      workoutTitle: "Test",
-      workoutDescription: "Test",
-      plannerID: uuidv4()
-    }
-
-    const emptyExercise: Exercise[] = []
-    spyOn(workoutService, "getWorkoutById").and.stub()
-    spyOn(workoutService, "generatePrettyWorkoutPDF").and.stub()
-    spyOn(workoutService, "createVideo").and.stub()
-    mockCtx.prisma.workout.create.mockResolvedValue(Workout)
-
-    await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, emptyExercise, Workout.plannerID, ctx)).resolves.toEqual(
-      "Workout Created."
-    )
-  })
-
   test("Should create new workout [With Exercises]", async () => {
     const Workout = {
       workoutID: uuidv4(),
@@ -64,7 +45,7 @@ describe("Unit tests for createWorkout in workout subsystem", () => {
     spyOn(workoutService, "generatePrettyWorkoutPDF").and.stub()
     spyOn(workoutService, "createVideo").and.stub()
 
-    await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, fullExercise, Workout.plannerID, ctx)).resolves.toEqual(
+    await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, fullExercise, 2, "good song", 2, 2, Workout.plannerID, ctx)).resolves.toEqual(
       "Workout Created."
     )
   })
@@ -82,7 +63,7 @@ describe("Unit tests for createWorkout in workout subsystem", () => {
     spyOn(workoutService, "getWorkoutById").and.stub()
     spyOn(workoutService, "generatePrettyWorkoutPDF").and.stub()
 
-    await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, emptyExercise, Workout.plannerID, ctx)).rejects.toThrow(
+    await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, emptyExercise, 2, "good song", 2, 2, Workout.plannerID, ctx)).rejects.toThrow(
       "Parameters can not be left empty."
     )
   })
@@ -100,7 +81,7 @@ describe("Unit tests for createWorkout in workout subsystem", () => {
     spyOn(workoutService, "getWorkoutById").and.stub()
     spyOn(workoutService, "generatePrettyWorkoutPDF").and.stub()
 
-    await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, emptyExercise, Workout.plannerID, ctx)).rejects.toThrow(
+    await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, emptyExercise, 2, "good song", 2, 2, Workout.plannerID, ctx)).rejects.toThrow(
       "Parameters can not be left empty."
     )
   })

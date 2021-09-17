@@ -1,3 +1,14 @@
+.delete{
+  width: var(--button-width);
+  display: block;
+  --background: var(--ion-color-tertiary);
+  --background-activated: var(--ion-color-primary);
+  --color-activated: var(--ion-color-tertiary);
+  --background-hover: var(--ion-color-primary);
+  --color-hover: var(--ion-color-tertiary);
+  margin: 20px auto;
+}
+
 .background{
   --background: var(--ion-off-white);
 }
@@ -15,6 +26,44 @@
   --background: var(--ion-color-secondary);
 }
 
+.scrollable-title{
+  width: 180px;
+  margin-top: 20px;
+  padding-bottom: 20px;
+}
+
+.custom-row{
+  height: 500px;
+}
+
+.editBtn{
+  --background: none;
+  --background-hover: none;
+  --color: var(--ion-color-tertiary);
+  --color-hover: var(--ion-color-primary);
+  --background-activated: none;
+  display: block;
+}
+
+.exercises{
+  transition: border 0.1s;
+  transition-timing-function: linear;
+  width: 300px;
+}
+
+ion-slides{
+  --progress-bar-background: none;
+  --progress-bar-background-activated: none;
+  --bullet-background-active: var(--ion-color-tertiary);
+  --bullet-background: var(--ion-color-KT_BLACK);
+}
+
+.imagePose{
+  height: 150px;
+  width: 300px;
+  object-fit: cover;
+}
+
 .input-div{
   display: block;
   width: 300px;
@@ -26,6 +75,11 @@
   color: var(--ion-color-tertiary);
 }
 
+.selector{
+  background-color: var(--ion-color-secondary);
+  border-radius: 9px;
+}
+
 .kenzo-input{
   font-family: "SF Pro Regular", serif;
   display: block;
@@ -35,7 +89,12 @@
   color: var(--ion-color-tertiary);
   --padding-start: 10px;
   --padding-top: 15px;
-  border: solid 0.5px var(--ion-color-tertiary);
+  //border: solid 0.5px var(--ion-color-tertiary);
+}
+
+.resolution{
+  display: inline-block;
+  width: 80px;
 }
 
 .input-description{
@@ -64,18 +123,34 @@
   margin: 20px auto;
 }
 
-.delete{
-  width: var(--button-width);
-  display: block;
-  --background: var(--ion-color-tertiary);
-  --background-activated: var(--ion-color-primary);
-  --color-activated: var(--ion-color-tertiary);
-  --background-hover: var(--ion-color-primary);
-  --color-hover: var(--ion-color-tertiary);
-  margin: 20px auto;
-}
-
 .footer{
   --background: var(--ion-off-white);
   border: none;
+}
+
+ion-item{
+  --background: none;
+}
+
+.required, .optional{
+  display: inline-block;
+  color: var(--ion-color-tertiary);
+  margin-bottom: 10px;
+}
+
+.hint{
+  color: gray;
+  font-size: 10px;
+}
+
+.required, .optional{
+  cursor: pointer;
+}
+
+#videoGen, #exerciseDropdown{
+  display: none;
+}
+
+#hideExercises, #hideVideo{
+  display: none;
 }

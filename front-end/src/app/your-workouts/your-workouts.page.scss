@@ -71,23 +71,13 @@
 }
 
 .editBtn{
+    display: block;
     --background: none;
     --background-hover: none;
     --color: var(--ion-color-tertiary);
     --color-hover: var(--ion-color-primary);
     --background-activated: none;
-    display: block;
 }
-
-//#shareBtn{
-//  //position: absolute;
-//  //bottom: 88%;
-//  //left: 91%;
-//  //width: 25px;
-//  //height: 30px;
-//  //z-index: 10000;
-//  //color:#212F3D;
-//}
 
 .navThumbnail{
     display: block;
@@ -116,6 +106,22 @@
 .text{
     display: inline-block;
     vertical-align: middle;
+}
+
+ion-icon{
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.shareBtn{
+  display: block;
+  background: none;
+  color: var(--ion-color-tertiary);
+}
+
+.shareBtn:hover{
+  color: var(--ion-color-primary);
+  background-activated: none;
 }
 
 ion-card{

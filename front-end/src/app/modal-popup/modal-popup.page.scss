@@ -1,0 +1,12 @@
+.cancelButton, .submitButton{
+  --background: none;
+  --background-hover: none;
+  --color: var(--ion-color-tertiary);
+  --color-hover: var(--ion-color-primary);
+  --background-activated: none;
+}
+
+.modalButtons{
+  display: block;
+  float: bottom;
+}

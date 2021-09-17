@@ -21,7 +21,7 @@ describe("Integration tests of the function login in the UserService", () => {
 
     const myUser = {
       userID: theUUID,
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
       userType: userType.PLANNER,

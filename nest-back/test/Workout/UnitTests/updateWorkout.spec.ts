@@ -20,23 +20,6 @@ beforeEach(() => {
   ctx = (mockCtx as unknown) as Context
 })
 describe("Unit tests for updateWorkout in workout subsystem", () => {
-  test("Should update new workout [Without Exercises]", async () => {
-    const Workout = {
-      workoutID: workoutUUID,
-      workoutTitle: "Test",
-      workoutDescription: "Test",
-      plannerID: plannerUUID
-    }
-    const emptyExercise: Exercise[] = []
-    mockCtx.prisma.workout.update.mockResolvedValue(Workout)
-    spyOn(workoutService, "getWorkoutById").and.stub()
-    spyOn(workoutService, "generatePrettyWorkoutPDF").and.stub()
-    spyOn(workoutService, "createVideo").and.stub()
-    await expect(workoutService.updateWorkout(workoutUUID, "Test", "test", emptyExercise, plannerUUID, mockCtx)).resolves.toEqual(
-      "Workout Updated."
-    )
-  })
-
   test("Should create new workout [With Exercises]", async () => {
     const Workout = {
       workoutID: workoutUUID,
@@ -65,7 +48,7 @@ describe("Unit tests for updateWorkout in workout subsystem", () => {
     spyOn(workoutService, "generatePrettyWorkoutPDF").and.stub()
     spyOn(workoutService, "createVideo").and.stub()
 
-    await expect(workoutService.updateWorkout(workoutUUID, "Test", "test", fullExercise, userUUID, mockCtx)).resolves.toEqual(
+    await expect(workoutService.updateWorkout(workoutUUID, "Test", "test", fullExercise, 2, "good song", 2, 2, userUUID, mockCtx)).resolves.toEqual(
       "Workout Updated."
     )
   })
@@ -76,7 +59,7 @@ describe("Unit tests for updateWorkout in workout subsystem", () => {
     const emptyExercise: Exercise[] = []
     mockCtx.prisma.tag.update.mockResolvedValue(workout)
     spyOn(workoutService, "generatePrettyWorkoutPDF").and.stub()
-    await expect(workoutService.updateWorkout(uuidv4(), "", "test", emptyExercise, uuidv4(), ctx)).rejects.toThrow(
+    await expect(workoutService.updateWorkout(uuidv4(), "", "test", emptyExercise, 2, "good song", 2, 2, uuidv4(), ctx)).rejects.toThrow(
       "Parameters can not be left empty."
     )
   })
@@ -87,7 +70,7 @@ describe("Unit tests for updateWorkout in workout subsystem", () => {
     const emptyExercise: Exercise[] = []
     mockCtx.prisma.tag.update.mockResolvedValue(workout)
     spyOn(workoutService, "generatePrettyWorkoutPDF").and.stub()
-    await expect(workoutService.updateWorkout(uuidv4(), "test", "", emptyExercise, uuidv4(), ctx)).rejects.toThrow(
+    await expect(workoutService.updateWorkout(uuidv4(), "test", "", emptyExercise, 2, "good song", 2, 2, uuidv4(), ctx)).rejects.toThrow(
       "Parameters can not be left empty."
     )
   })

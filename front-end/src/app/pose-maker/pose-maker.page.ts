@@ -55,34 +55,55 @@ export class PoseMakerPage implements OnInit {
     public xCoordinate: number;
     public yCoordinate: number;
     public zCoordinate: number;
-    public selection: number;
+    public selection;
+    public originalCoordinates = [];
 
     // Stored Frames
-    private frames: string[] = new Array(4);
-    private frameColor: string[] = new Array(4);
+    private frames: string[] = new Array();
+    private frameColor: string[] = new Array();
+    private skeletons;
+    private selectedFrame = 0;
+
+    // Texture Mapping
+    private wall = "red_brick.jpg";
+    private roof = "black_fancy.jpg";
+    private floor = "marble.jpg";
 
     constructor(public alertController: AlertController, public route: Router, private storage: Storage) {
         this.xCoordinate = 0;
         this.yCoordinate = 0;
         this.zCoordinate = 0;
         this.selection = -1;
+        this.skeletons = new Array(4);
         this.storage.create();
+        for (let i = 0; i < this.skeletons.length; i++) {
+            this.skeletons[i] = [];
+        }
         this.getFrames();
     }
 
     ngOnInit() {
+
     }
 
     async getFrames(){
         const frames = await this.storage.get("images");
+        const skeletons = await this.storage.get("skeletons");
         if(frames!=null){
             for (let i = 0; i < frames.length; i++) {
                 if(frames[i]!=null){
                     this.frames[i] = frames[i];
-                    this.frameColor[i] = "#1D905B";
+                    this.frameColor[i] = "#30324A";
                 }
             }
         }
+
+        if(skeletons!=null){
+            for (let i = 0; i < skeletons.length; i++) {
+                this.skeletons[i] = skeletons[i];
+            }
+        }
+        this.frameColor[0] = "#eb445a";
     }
 
   /**
@@ -112,6 +133,7 @@ export class PoseMakerPage implements OnInit {
       document.getElementById("save-back").innerText = "Save";
       this.headerHeight = document.getElementById("header").offsetHeight;
       this.footerHeight = document.getElementById("footer").offsetHeight;
+      this.getFrames();
       this.initScene();
       this.renderAnimation();
   }
@@ -174,42 +196,75 @@ export class PoseMakerPage implements OnInit {
           this.leftKnee = this.mesh.skeleton.bones[21];
           this.leftFoot = this.mesh.skeleton.bones[22];
 
+          // Set initial pose positions
+          for (let i=0; i<this.mesh.skeleton.bones.length; i++) {
+              const bone = this.mesh.skeleton.bones[i];
+              this.originalCoordinates.push({value: i, x: bone.rotation.x, y: bone.rotation.y, z: bone.rotation.z});
+          }
+          for (let i = 0; i < 4; i++) {
+              if(this.skeletons[i].length===0) {
+                  for (let j = 0; j < this.mesh.skeleton.bones.length; j++) {
+                      const bone = this.mesh.skeleton.bones[j];
+                      this.skeletons[i][j] = ({value: j, x: bone.rotation.x, y: bone.rotation.y, z: bone.rotation.z});
+                  }
+              }
+          }
+
+          for (let i = 0; i < this.mesh.skeleton.bones.length; i++) {
+              this.mesh.skeleton.bones[i].rotation.x = this.skeletons[0][i].x;
+              this.mesh.skeleton.bones[i].rotation.y = this.skeletons[0][i].y;
+              this.mesh.skeleton.bones[i].rotation.z = this.skeletons[0][i].z;
+          }
+
           // Retrieve Textures to set Scene
-          const texture= new THREE.TextureLoader().load("assets/avatar/texture.jpg");
-          const brickTexture = new THREE.TextureLoader().load("assets/avatar/brick.jpg");
-          const roofTexture= new THREE.TextureLoader().load("assets/avatar/roofTexture.jpg");
+          const texture= new THREE.TextureLoader().load("assets/avatar/"+this.floor);
+          texture.wrapS = THREE.RepeatWrapping;
+          texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(4, 4);
+          const brickTexture = new THREE.TextureLoader().load("assets/avatar/"+this.wall);
+          const roofTexture= new THREE.TextureLoader().load("assets/avatar/"+this.roof);
+          roofTexture.wrapS = THREE.RepeatWrapping;
+          roofTexture.wrapT = THREE.RepeatWrapping;
+          roofTexture.repeat.set(4, 4);
 
           // Set Scene
+          // FLOOR
           const geometry = new THREE.BoxGeometry( 13, 0.5, 13 );
           const material = new THREE.MeshBasicMaterial( {map: texture} );
           const floor = new THREE.Mesh( geometry, material );
           tempScene.add( floor );
           floor.position.y-=2.1;
 
-          const geometry2 = new THREE.BoxGeometry( 13, 13, 0.5 );
+          // WALLS
+          const geometry2 = new THREE.BoxGeometry( 13, 8, 0.5 );
           const material2 = new THREE.MeshBasicMaterial( {map: brickTexture} );
           const backWall = new THREE.Mesh( geometry2, material2 );
           tempScene.add( backWall );
           backWall.position.z-=6;
+          backWall.position.y+=2;
 
-          const geometry3 = new THREE.BoxGeometry( 13, 13, 0.5 );
+          const geometry3 = new THREE.BoxGeometry( 13, 8, 0.5 );
           const material3 = new THREE.MeshBasicMaterial( {map: brickTexture} );
           const frontWall = new THREE.Mesh( geometry3, material3 );
           tempScene.add( frontWall );
           frontWall.position.z-=-6;
+          frontWall.position.y+=2;
 
-          const geometry4 = new THREE.BoxGeometry( 0.5, 13, 13 );
+          const geometry4 = new THREE.BoxGeometry( 0.5, 8, 13 );
           const material4 = new THREE.MeshBasicMaterial( {map: brickTexture} );
           const rightWall = new THREE.Mesh( geometry4, material4 );
           tempScene.add( rightWall );
           rightWall.position.x-=-6;
+          rightWall.position.y+=2;
 
-          const geometry5 = new THREE.BoxGeometry( 0.5, 13, 13 );
+          const geometry5 = new THREE.BoxGeometry( 0.5, 8, 13 );
           const material5 = new THREE.MeshBasicMaterial( {map: brickTexture} );
           const leftWall = new THREE.Mesh( geometry5, material5 );
           tempScene.add( leftWall );
           leftWall.position.x-=6;
+          leftWall.position.y+=2;
 
+          // ROOF
           const geometry6 = new THREE.BoxGeometry( 13, 0.5, 13 );
           const material6 = new THREE.MeshBasicMaterial( {map: roofTexture} );
           const roof = new THREE.Mesh( geometry6, material6 );
@@ -237,6 +292,7 @@ export class PoseMakerPage implements OnInit {
       this.scene.add(this.camera);
 
       this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+      this.controls.maxDistance = 6;
       this.controls.update();
   }
 
@@ -280,14 +336,10 @@ export class PoseMakerPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async getCoordinates(value) {
-      console.log(value);
       this.selection = value;
       this.xCoordinate = this.mesh.skeleton.bones[value].rotation.x * 100;
       this.yCoordinate = this.mesh.skeleton.bones[value].rotation.y * 100;
       this.zCoordinate = this.mesh.skeleton.bones[value].rotation.z * 100;
-      console.log(this.mesh.skeleton.bones[value].rotation.x,
-          this.mesh.skeleton.bones[value].rotation.y, this.mesh.skeleton.bones[value].rotation.z);
-      console.log(this.xCoordinate, this.yCoordinate, this.zCoordinate);
   }
 
   /**
@@ -302,29 +354,16 @@ export class PoseMakerPage implements OnInit {
    * @param frame
    * @author Luca Azmanov, u19004185
    */
-  async saveFrame(frame: number) {
-      if(this.frames[frame]!=null){
-          let confirmation = false;
-          const alert = await this.alertController.create({
-              cssClass: "kenzo-alert",
-              header: "Are you sure you would like to delete this frame?",
-              buttons: [{text:"Delete",
-                  handler: ()=>{
-                      confirmation = true;
-                  }}, "Cancel"]
-          });
-
-          await this.presentAlert(alert);
-          if(!confirmation) {
-              return;
-          }
-
-          this.frames[frame] = null;
-          this.frameColor[frame] = "#FF6868";
-          // console.log(JSON.stringify(this.frames));
-          return;
+  async saveFrame() {
+      // Save Coordinates of this Frame
+      // Set initial pose positions
+      for (let i = 0; i < this.mesh.skeleton.bones.length; i++) {
+          this.skeletons[this.selectedFrame][i].x = this.mesh.skeleton.bones[i].rotation.x;
+          this.skeletons[this.selectedFrame][i].y = this.mesh.skeleton.bones[i].rotation.y;
+          this.skeletons[this.selectedFrame][i].z = this.mesh.skeleton.bones[i].rotation.z;
       }
 
+      const frame = this.selectedFrame;
       const strMime = "image/jpeg";
 
       this.camera.aspect = 1920/1080;
@@ -339,12 +378,31 @@ export class PoseMakerPage implements OnInit {
       this.renderer.setSize(window.innerWidth, window.innerHeight-this.headerHeight-this.footerHeight);
       this.renderer.render(this.scene, this.camera);
 
-      // imgData = imgData.replace("data:image/jpeg;base64,", "");
       this.frames[frame] = imgData;
-      this.frameColor[frame] = "#1D905B";
+  }
 
-      // console.log(frame, imgData);
-      // console.log(JSON.stringify(this.frames));
+  /**
+   * This function globally sets the selected frame for saving and clearing
+   *
+   * @param frame
+   * @author Luca Azmanov, u19004185
+   */
+  selectFrame(frame: number){
+      this.saveFrame();
+      this.frameColor[this.selectedFrame] = "#30324A";
+      this.selectedFrame = frame;
+      this.frameColor[frame] = "#eb445a";
+      // console.log(this.skeletons);
+
+      for (let i = 0; i < this.mesh.skeleton.bones.length; i++) {
+          this.mesh.skeleton.bones[i].rotation.x = this.skeletons[this.selectedFrame][i].x;
+          this.mesh.skeleton.bones[i].rotation.y = this.skeletons[this.selectedFrame][i].y;
+          this.mesh.skeleton.bones[i].rotation.z = this.skeletons[this.selectedFrame][i].z;
+      }
+      if(this.selection===-1) {
+          return;
+      }
+      this.getCoordinates(this.selection);
   }
 
   /**
@@ -364,24 +422,54 @@ export class PoseMakerPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   returnToCreate() {
-      this.route.navigate(["/create-exercise"]).then(()=> {
-          const slideshow = document.getElementById("slideshow");
-          slideshow.innerHTML = "";
-
-          let count = 0;
-          for (let i = 0; i < this.frames.length; i++) {
-              if (this.frames[i] == null) {
-                  count = count+1;
-              }else{
-                  slideshow.innerHTML = slideshow.innerHTML+ "<ion-slide>" +
-                  "                   <img class=\"imagePose\" src='"+this.frames[i]+"' alt=\"Exercise Pose Image Missing\">" +
-                  "                </ion-slide>";
-              }
-          }
-          if (count !== 4) {
-              document.getElementById("pose-button").innerText = "Remake Poses";
-          }
-          this.storage.set("images", this.frames);
+      this.saveFrame();
+      this.route.navigate(["/create-exercise"]).then(async () => {
+          await this.storage.set("images", this.frames);
+          await this.storage.set("skeletons", this.skeletons);
+          document.getElementById("sync").click();
       });
+  }
+
+  /**
+   * Resets the selected component
+   */
+  resetPart() {
+      if(this.selection===null) {
+          return;
+      }
+      this.xCoordinate = this.originalCoordinates[this.selection].x;
+      this.yCoordinate = this.originalCoordinates[this.selection].y;
+      this.zCoordinate = this.originalCoordinates[this.selection].z;
+  }
+
+  setBackground(value: any) {
+      switch (value){
+      case "0":
+          this.wall = "red_brick.jpg";
+          this.roof = "black_fancy.jpg";
+          this.floor = "marble.jpg";
+          break;
+      case "1":
+          this.wall = "fancy.jpg";
+          this.roof = "marble.jpg";
+          this.floor = "victorian.jpg";
+          break;
+      case "2":
+          this.wall = "Studio_wall.jpg";
+          this.roof = "modern.jpg";
+          this.floor = "texture.jpg";
+          break;
+      case "3":
+          this.wall = "black.jpg";
+          this.roof = "black.jpg";
+          this.floor = "black.jpg";
+          break;
+      default:
+          this.wall = "brick.jpg";
+          this.roof = "marble.jpg";
+          this.floor = "texture.jpg";
+      }
+      this.element.removeChild(this.renderer.domElement);
+      this.initScene();
   }
 }

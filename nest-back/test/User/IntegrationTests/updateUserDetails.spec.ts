@@ -17,10 +17,10 @@ describe("Integration tests of the function updateUserDetails in the UserService
   test("Invalid emails passed in, should throw NotFoundException", async () => {
     const myUser = {
       userID: "123456",
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword2000#",
+      password: process.env.testpassword!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
@@ -37,10 +37,10 @@ describe("Integration tests of the function updateUserDetails in the UserService
   test("Valid details passed in, User details should be updated and should reflect update in the database", async () => {
     const myUser = {
       userID: "123456",
-      email: "test@gmail.com",
+      email: process.env.testemail!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword2000#",
+      password: process.env.testpassword!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
@@ -67,10 +67,10 @@ describe("Integration tests of the function updateUserDetails in the UserService
     const updatedDate = new Date("2000-05-30")
     const myUser = {
       userID: "123456",
-      email: "test@gmail.com",
+      email: process.env.testemail!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword2000#",
+      password: process.env.testpassword!,
       userType: userType.PLANNER,
       dateOfBirth: updatedDate
     }

@@ -28,7 +28,7 @@ describe("Integration tests of the function signUp in the UserService", () => {
       email: "testgmail.com",
       firstName: "test",
       lastName: "tester",
-      password: "thePassword",
+      password: process.env.TESTPASSWORD!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
@@ -43,7 +43,7 @@ describe("Integration tests of the function signUp in the UserService", () => {
       email: "test@@gmail.com",
       firstName: "test",
       lastName: "tester",
-      password: "thePassword",
+      password: process.env.TESTPASSWORD!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
@@ -58,22 +58,7 @@ describe("Integration tests of the function signUp in the UserService", () => {
       email: "test@@gmail.com",
       firstName: "test",
       lastName: "tester",
-      password: "thePassword",
-      userType: userType.PLANNER,
-      dateOfBirth: null
-    }
-    await expect(userService.signUp(myUser, ctx)).rejects.toThrow("Invalid email address")
-  })
-
-  test("Invalid email passed in, should throw PreconditionFailedException", async () => {
-    const userUUID = uuidv4()
-
-    const myUser = {
-      userID: userUUID,
-      email: "test@@gmail..com",
-      firstName: "test",
-      lastName: "tester",
-      password: "thePassword",
+      password: process.env.TESTPASSWORD!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
@@ -88,7 +73,7 @@ describe("Integration tests of the function signUp in the UserService", () => {
       email: "test@gmail..com",
       firstName: "test",
       lastName: "tester",
-      password: "thePassword",
+      password: process.env.TESTPASSWORD!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }
@@ -100,7 +85,7 @@ describe("Integration tests of the function signUp in the UserService", () => {
 
     const myUser = {
       userID: userUUID,
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
       password: "thePassword",
@@ -110,42 +95,42 @@ describe("Integration tests of the function signUp in the UserService", () => {
     await expect(userService.signUp(myUser, ctx)).rejects.toThrow("Invalid password")
   })
 
-  test("Invalid password passed in, should throw PreconditionFailedException", async () => {
+  test("Invalid password without symbol passed in, should throw PreconditionFailedException", async () => {
     const userUUID = uuidv4()
 
     const myUser = {
       userID: userUUID,
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword2000",
+      password: "thePassword500",
       userType: userType.PLANNER,
       dateOfBirth: null
     }
     await expect(userService.signUp(myUser, ctx)).rejects.toThrow("Invalid password")
   })
 
-  test("Invalid password passed in, should throw PreconditionFailedException", async () => {
+  test("Invalid password passed in no capitals, should throw PreconditionFailedException", async () => {
     const userUUID = uuidv4()
 
     const myUser = {
       userID: userUUID,
-      email: "test@gmail.com",
+      email: process.env.TESTEMAIL!,
       firstName: "test",
       lastName: "tester",
-      password: "thepassword2000",
+      password: "thepassword2000#",
       userType: userType.PLANNER,
       dateOfBirth: null
     }
     await expect(userService.signUp(myUser, ctx)).rejects.toThrow("Invalid password")
   })
 
-  test("Invalid password passed in, should throw PreconditionFailedException", async () => {
+  test("Invalid password passed (No lower case) in, should throw PreconditionFailedException", async () => {
     const userUUID = uuidv4()
 
     const myUser = {
       userID: userUUID,
-      email: "test@gmail.com",
+      email: process.env.testemail!,
       firstName: "test",
       lastName: "tester",
       password: "THEPASSWORD2000",
@@ -158,10 +143,10 @@ describe("Integration tests of the function signUp in the UserService", () => {
   test("Valid details passed in, should create an entry of a User with details in the database.", async () => {
     const myUser = {
       userID: "",
-      email: "test@gmail.com",
+      email: process.env.testemail!,
       firstName: "test",
       lastName: "tester",
-      password: "thePassword2000#",
+      password: process.env.testpassword!,
       userType: userType.PLANNER,
       dateOfBirth: null
     }

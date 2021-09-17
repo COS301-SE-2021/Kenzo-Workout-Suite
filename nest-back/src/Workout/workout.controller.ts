@@ -48,6 +48,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Get("getWorkouts")
     @ApiOkResponse({
       description: "A workout object."
@@ -74,6 +75,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Get("getWorkoutById/:id")
     @ApiOkResponse({
       description: "A workout object."
@@ -99,6 +101,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Get("getExercises")
     @ApiOkResponse({
       description: "An exercise object."
@@ -125,6 +128,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Get("getExerciseByTitle/:title")
     @ApiOkResponse({
       description: "A workout object."
@@ -151,6 +155,7 @@ export class WorkoutController {
      * @author Msi Sibanyoni
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Get("getExerciseByID/:ID")
     @ApiOkResponse({
       description: "A workout object."
@@ -330,6 +335,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Delete("deleteExercise")
     @ApiBody({ type: deleteExerciseDTO })
     @ApiOkResponse({
@@ -356,6 +362,10 @@ export class WorkoutController {
      * @param workoutTitle This is the string workout title
      * @param workoutDescription This is the string workout description
      * @param exercises This is an array of exercises
+     * @param loop Duration each each exercise pose in seconds
+     * @param songChoice Genre choice for background track
+     * @param resolutionWidth The width of the resolution
+     * @param resolutionHeight The height of the resolution
      * @param req This contains the User object of the User currently logged in [from this the string User id is retrieved]
      * @throws PreconditionFailedException if:
      *                               -Parameters can not be left empty.
@@ -381,9 +391,13 @@ export class WorkoutController {
         @Body("workoutTitle") workoutTitle: string,
         @Body("workoutDescription") workoutDescription: string,
         @Body("exercises") exercises : Exercise[],
+        @Body("loop") loop: number,
+        @Body("songChoice") songChoice: string,
+        @Body("resolutionWidth") resolutionWidth : number,
+        @Body("resolutionHeight") resolutionHeight : number,
         @Request() req
     ) {
-      return this.workoutService.createWorkout(workoutTitle, workoutDescription, exercises, req.user.userID, this.ctx)
+      return this.workoutService.createWorkout(workoutTitle, workoutDescription, exercises, loop, songChoice, resolutionWidth, resolutionHeight, req.user.userID, this.ctx)
     }
 
     /**
@@ -393,6 +407,10 @@ export class WorkoutController {
      * @param workoutTitle This is the string workout title
      * @param workoutDescription This is the string workout description
      * @param exercises This is an array of exercises
+     * @param loop Duration each each exercise pose in seconds
+     * @param songChoice Genre choice for background track
+     * @param resolutionWidth The width of the resolution
+     * @param resolutionHeight The height of the resolution
      * @param req This contains the User object of the User currently logged in [from this the string User id is retrieved]
      * @throws PreconditionFailedException if:
      *                               -Parameters can not be left empty.
@@ -419,9 +437,13 @@ export class WorkoutController {
         @Body("workoutTitle") workoutTitle: string,
         @Body("workoutDescription") workoutDescription: string,
         @Body("exercises") exercises : Exercise[],
+        @Body("loop") loop: number,
+        @Body("songChoice") songChoice: string,
+        @Body("resolutionWidth") resolutionWidth : number,
+        @Body("resolutionHeight") resolutionHeight : number,
         @Request() req
     ) {
-      return this.workoutService.updateWorkout(workoutID, workoutTitle, workoutDescription, exercises, req.user.userID, this.ctx)
+      return this.workoutService.updateWorkout(workoutID, workoutTitle, workoutDescription, exercises, loop, songChoice, resolutionWidth, resolutionHeight, req.user.userID, this.ctx)
     }
 
     /**
@@ -438,6 +460,7 @@ export class WorkoutController {
      * @author Msi Sibanyoni
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Delete("deleteWorkout")
     @ApiBody({ type: DeleteWorkoutDTO })
     @ApiOkResponse({
@@ -472,6 +495,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Post("createTag")
     @ApiOkResponse({
       description: "Successfully created Tag."
@@ -510,6 +534,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Get("getTags")
     @ApiOkResponse({
       description: "Successfully created Tag."
@@ -536,6 +561,7 @@ export class WorkoutController {
      * @author Zelealem Tesema
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Get("createTTS")
     createTTS (
       @Body("text") text: string,
@@ -548,6 +574,10 @@ export class WorkoutController {
      *Workout Controller - Create Video
      *
      * @param workoutID  The workout ID
+     * @param loop Duration each each exercise pose in seconds
+     * @param songChoice Genre choice for background track
+     * @param resolutionWidth The width of the resolution
+     * @param resolutionHeight The height of the resolution
      * @param this.ctx  This is the prisma context that is injected into the function.
      * @throws NotFoundException if:
      *                               -No workout was found in the database with the specified workout ID.
@@ -561,6 +591,7 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Post("createVideo")
     @ApiBody({ type: createVideoDTO })
     @ApiCreatedResponse({
@@ -579,9 +610,37 @@ export class WorkoutController {
       description: "Internal server error."
     })
     createVideo (
-        @Body("workoutID") workoutID: string
+        @Body("workoutID") workoutID: string,
+        @Body("loop") loop: number,
+        @Body("songChoice") songChoice: string,
+        @Body("resolutionWidth") resolutionWidth : number,
+        @Body("resolutionHeight") resolutionHeight : number
     ) {
-      return this.workoutService.createVideo(workoutID, this.ctx)
+      return this.workoutService.createVideo(workoutID, loop, songChoice, resolutionWidth, resolutionHeight, this.ctx)
+    }
+
+    /**
+     *Workout Controller - Mix Audio
+     *
+     * @description Helper function for createVideo. Merges tts with audio soundtrack
+     * @param workoutID  The workout ID
+     * @param exerciseID  Array of exercise ID's
+     * @param numberOfTimes  The number of times of pose needs to loop
+     * @param loop Duration each exercise pose in seconds
+     * @param songChoice Genre choice for background track
+     * @author Tinashe Chamisa
+     *
+     */
+    @UseGuards(JwtAuthGuard)
+    @Get("mixAudio")
+    mixAudiio (
+        @Body("workoutID") workoutID: string,
+        @Body("exerciseID") exerciseID: string[],
+        @Body("numberOfTimes") numberOfTimes: number[],
+        @Body("loop") loop: number,
+        @Body("songChoice") songChoice: string
+    ) {
+      return this.workoutService.mixAudio(workoutID, exerciseID, numberOfTimes, loop, songChoice)
     }
 
     /**
@@ -595,6 +654,7 @@ export class WorkoutController {
      *
      *
      */
+    @UseGuards(JwtAuthGuard)
     @Get("getWorkoutPDF/:workoutID")
     @ApiOkResponse({
       description: "A workout pdf."
@@ -617,8 +677,8 @@ export class WorkoutController {
      * @author Tinashe Chamisa
      *
      */
-    @Post("getWorkoutVideo")
-    @ApiBody({ type: getWorkoutVideoDTO })
+    @UseGuards(JwtAuthGuard)
+    @Get("getWorkoutVideo/:workoutID")
     @ApiCreatedResponse({
       description: "Successfully created video."
     })
@@ -635,7 +695,7 @@ export class WorkoutController {
       description: "Internal server error."
     })
     getWorkoutVideo (
-        @Body("workoutID") workoutID: string
+        @Param("workoutID") workoutID: string
     ) {
       return this.workoutService.getWorkoutVideo(workoutID, this.ctx)
     }

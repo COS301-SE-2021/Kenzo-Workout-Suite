@@ -23,12 +23,12 @@ describe("End point testing of the User subsystem", () => {
     await ctx.prisma.user.deleteMany()
   })
 
-  it("Testing login endpoint with valid data, should return status 404", async () => {
+  it("Testing login endpoint with invalid data, should return status 404", async () => {
     return request(app.getHttpServer())
       .post("/User/login")
       .send({
-        username: "zelu20@gmail.com",
-        password: "Zelu2000#"
+        username: process.env.TESTEMAIL,
+        password: process.env.testpassword
       })
       .expect(404)
   })

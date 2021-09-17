@@ -54,6 +54,18 @@ export class CreateWorkoutDTO {
 
     @ApiProperty({ type: Array, description: "Exercises part of the workout." })
     exercises: Exercise[];
+
+    @ApiProperty({ type: Number, description: "Duration each each exercise pose in seconds." })
+    loop: number;
+
+    @ApiProperty({ type: String, description: "Genre choice for background track." })
+    songChoice: string;
+
+    @ApiProperty({ type: Number, description: "The width of the resolution." })
+    resolutionWidth: number;
+
+    @ApiProperty({ type: Number, description: "The height of the resolution." })
+    resolutionHeight: number;
 }
 
 export class UpdateWorkoutDTO {
@@ -68,6 +80,18 @@ export class UpdateWorkoutDTO {
 
     @ApiProperty({ type: Array, description: "Exercises part of the workout." })
     exercises: Exercise[];
+
+    @ApiProperty({ type: Number, description: "Duration each each exercise pose in seconds." })
+    loop: number;
+
+    @ApiProperty({ type: String, description: "Genre choice for background track." })
+    songChoice: string;
+
+    @ApiProperty({ type: Number, description: "The width of the resolution." })
+    resolutionWidth: number;
+
+    @ApiProperty({ type: Number, description: "The height of the resolution." })
+    resolutionHeight: number;
 }
 
 export class DeleteWorkoutDTO {
@@ -116,6 +140,23 @@ export class deleteExerciseDTO {
 export class createVideoDTO {
     @ApiProperty({ type: String, description: "Workout ID" })
     workoutID: string;
+}
+
+export class mixAudioDTO {
+    @ApiProperty({ type: String, description: "Workout ID" })
+    workoutID: string;
+    
+    @ApiProperty({ type: Array, description: "Array of exercise ID's" })
+    exerciseID: string[];
+
+    @ApiProperty({ type: Array, description: "The number of times of pose needs to loop" })
+    numberOfRuns: number[];
+
+    @ApiProperty({ type: Number, description: "Duration each each exercise pose in seconds." })
+    loop: number;
+
+    @ApiProperty({ type: String, description: "Genre choice for background track." })
+    songChoice: string;
 }
 
 export class getWorkoutVideoDTO {
