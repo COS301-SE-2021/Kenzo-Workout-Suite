@@ -2,7 +2,7 @@ import { ActualPrisma } from "../../../context"
 import { WorkoutService } from "../../../src/Workout/workout.service"
 import { v4 as uuidv4 } from "uuid"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
-import { Tag } from "@prisma/client"
+import { Tag, userType } from "@prisma/client"
 import { UserService } from "../../../src/User/user.service"
 
 const ctx = ActualPrisma()
@@ -25,12 +25,12 @@ describe("Integration tests of the updateExercise function in the Workout Servic
     await ctx.prisma.user.create({
       data: {
         userID: uuidPlanner,
-        email: "test&gmail.com",
+        email: process.env.TESTEMAIL!,
         firstName: "test",
-        lastName: "test",
-        password: "Test123!",
-        dateOfBirth: null,
-        userType: "PLANNER"
+        lastName: "tester",
+        password: process.env.TESTPASSWORD!,
+        userType: userType.PLANNER,
+        dateOfBirth: null
       }
     })
   })

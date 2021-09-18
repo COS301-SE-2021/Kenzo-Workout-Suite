@@ -3,6 +3,7 @@ import { WorkoutService } from "../../../src/Workout/workout.service"
 import { v4 as uuidv4 } from "uuid"
 import { PrismaClient } from "@prisma/client/scripts/default-index"
 import { UserService } from "../../../src/User/user.service"
+import { userType } from "@prisma/client"
 
 let workoutService: WorkoutService
 let userService: UserService
@@ -20,12 +21,12 @@ describe("Integration tests of the getWorkoutByPlanner function in the Workout S
     await ctx.prisma.user.create({
       data: {
         userID: uuidPlanner,
-        email: "test&gmail.com",
+        email: process.env.TESTEMAIL!,
         firstName: "test",
-        lastName: "test",
-        password: "Test123!",
-        dateOfBirth: null,
-        userType: "PLANNER"
+        lastName: "tester",
+        password: process.env.TESTPASSWORD!,
+        userType: userType.PLANNER,
+        dateOfBirth: null
       }
     })
     await ctx.prisma.workout.create({

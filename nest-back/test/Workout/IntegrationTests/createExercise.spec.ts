@@ -21,10 +21,10 @@ beforeEach(async () => {
   await ctx.prisma.user.deleteMany()
   const myUser = {
     userID: userUUID,
-    email: "test@gmail.com",
+    email: process.env.TESTEMAIL!,
     firstName: "test",
     lastName: "tester",
-    password: "Test123*",
+    password: process.env.TESTPASSWORD!,
     userType: userType.PLANNER,
     dateOfBirth: null
   }
