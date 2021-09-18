@@ -438,7 +438,7 @@ export class WorkoutService {
    * @author Msi Sibanyoni
    *
    */
-  async createExercise (title:string, description:string, repRange:string, sets:number, poseDescription:string, restPeriod:number, tags:Tag[], duration:number, plannerID:string, images:string[], ctx: Context) {
+  async createExercise (title:string, description:string, repRange:string, sets:number, poseDescription:string, restPeriod:number, tags:Tag[], duration:number, plannerID:string, images:string[], ctx: Context) : Promise<any> {
     if (images.length === 0) {
       throw new PreconditionFailedException("Cannot create exercise with no images.")
     }
@@ -768,7 +768,7 @@ export class WorkoutService {
    * @author Msi Sibanyoni
    *
    */
-  async createWorkout (workoutTitle: string, workoutDescription: string, exercises : Exercise[], loop: number, songChoice: string, resolutionWidth: number, resolutionHeight: number, plannerID :string, ctx: Context) {
+  async createWorkout (workoutTitle: string, workoutDescription: string, exercises : Exercise[], loop: number, songChoice: string, resolutionWidth: number, resolutionHeight: number, plannerID :string, ctx: Context): Promise<any> {
     if (workoutTitle === "" || workoutDescription === "" || plannerID === "" || loop === 0 || songChoice === "" || resolutionWidth === 0 || resolutionHeight === 0 || exercises == null || workoutTitle == null || workoutDescription == null || songChoice === null || plannerID == null || !(Array.isArray(exercises) && exercises.length)) {
       throw new NotFoundException("Parameters can not be left empty.")
     }
@@ -823,43 +823,44 @@ export class WorkoutService {
    * @author Msi Sibanyoni
    *
    */
-  async updateWorkout (workoutID: string, workoutTitle: string, workoutDescription: string, exercises : Exercise[], loop: number, songChoice: string, resolutionWidth: number, resolutionHeight: number, plannerID :string, ctx: Context) {
+  async updateWorkout (workoutID: string, workoutTitle: string, workoutDescription: string, exercises : Exercise[], loop: number, songChoice: string, resolutionWidth: number, resolutionHeight: number, plannerID :string, ctx: Context) : Promise<any> {
     if (workoutTitle === "" || workoutDescription === "" || plannerID === "" || loop === 0 || songChoice === "" || resolutionWidth === 0 || resolutionHeight === 0 || exercises == null || workoutTitle == null || workoutDescription == null || songChoice === null || plannerID == null || !(Array.isArray(exercises) && exercises.length)) {
       throw new NotFoundException("Parameters can not be left empty.")
     }
-    try { // run create query with exercises only
-      const exerciseConnection = exercises.map(n => {
-        const container = {
-          exerciseID: n.exerciseID
-        }
 
-        return container
-      })
-      try {
-        await ctx.prisma.workout.update({
-          where: {
-            workoutID: workoutID
+    const exerciseConnection = exercises.map(n => {
+      const container = {
+        exerciseID: n.exerciseID
+      }
+
+      return container
+    })
+    console.log(exerciseConnection)
+    try {
+      console.log("here")
+      await ctx.prisma.workout.update({
+        where: {
+          workoutID: workoutID
+        },
+        data: {
+          workoutTitle: workoutTitle,
+          workoutDescription: workoutDescription,
+          exercises: {
+            set: exerciseConnection
           },
-          data: {
-            workoutTitle: workoutTitle,
-            workoutDescription: workoutDescription,
-            exercises: {
-              set: exerciseConnection
-            },
-            planner: {
-              connect: {
-                userID: plannerID
-              }
+          planner: {
+            connect: {
+              userID: plannerID
             }
           }
-        })
-        const updatedWorkout = await this.getWorkoutById(workoutID, ctx)
-        await this.generatePrettyWorkoutPDF(updatedWorkout, ctx)
-        await this.createVideo(updatedWorkout.workoutID, loop, songChoice, resolutionWidth, resolutionHeight, ctx)
-        return ("Workout Updated.")
-      } catch (e) {
-        throw new NotFoundException("Workout with provided ID does not exist")
-      }
+        }
+      })
+      console.log("here 2")
+      const updatedWorkout = await this.getWorkoutById(workoutID, ctx)
+      console.log(updatedWorkout)
+      await this.generatePrettyWorkoutPDF(updatedWorkout, ctx)
+      await this.createVideo(updatedWorkout.workoutID, loop, songChoice, resolutionWidth, resolutionHeight, ctx)
+      return ("Workout Updated.")
     } catch {
       throw new BadRequestException("Cannot create workout.")
     }
@@ -880,7 +881,7 @@ export class WorkoutService {
      * @author Msi Sibanyoni
      *
      */
-  async deleteWorkout (workoutID: string, ctx: Context) {
+  async deleteWorkout (workoutID: string, ctx: Context): Promise<any> {
     if (workoutID === "") {
       throw new NotFoundException("Parameters can not be left empty.")
     }
@@ -917,7 +918,7 @@ export class WorkoutService {
    * @author Msi Sibanyoni
    *
    */
-  async generatePrettyWorkoutPDF (workout: any, ctx: Context) {
+  async generatePrettyWorkoutPDF (workout: any, ctx: Context): Promise<any> {
     const uint8ArrayFP = fs.readFileSync("./src/Assets/PDFTemplates/frontPageTemplate.pdf")
     const pdfDoc = await PDFDocument.load(uint8ArrayFP)
     pdfDoc.registerFontkit(fontkit)

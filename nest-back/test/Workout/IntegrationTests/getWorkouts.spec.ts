@@ -17,6 +17,9 @@ describe("Integration tests of the getWorkouts function in the Workout Service",
     workoutService = new WorkoutService(prisma, userService)
     await ctx.prisma.workout.deleteMany()
     await ctx.prisma.user.deleteMany()
+  })
+
+  test("Should receive valid information about all workouts", async () => {
     await ctx.prisma.user.create({
       data: {
         userID: uuidPlanner,
@@ -36,9 +39,6 @@ describe("Integration tests of the getWorkouts function in the Workout Service",
         plannerID: uuidPlanner
       }
     })
-  })
-
-  test("Should receive valid information about all workouts", async () => {
     const workout = [{
       workoutID: "1",
       workoutTitle: "test",

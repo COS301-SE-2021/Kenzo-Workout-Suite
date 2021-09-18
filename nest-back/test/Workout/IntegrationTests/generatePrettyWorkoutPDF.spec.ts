@@ -32,46 +32,56 @@ beforeEach(async () => {
   userService = new UserService(Jwt)
   workoutService = new WorkoutService(prisma, userService)
   await ctx.prisma.exercise.deleteMany()
-  await ctx.prisma.user.deleteMany()
   await ctx.prisma.tag.deleteMany()
-  const myUser = {
-    userID: userUUID,
-    email: process.env.TESTEMAIL!,
-    firstName: "test",
-    lastName: "tester",
-    password: process.env.TESTPASSWORD!,
-    userType: userType.PLANNER,
-    dateOfBirth: null
-  }
 
-  await ctx.prisma.user.create({
-    data: myUser
-  })
 
-  await ctx.prisma.exercise.create({
-    data: exercise
-  })
 })
-
+afterAll(async () => {
+  // await workoutService.removeCreatedFiles("./src/ExerciseImages/")
+  await workoutService.removeCreatedFiles("./src/GeneratedWorkouts/")
+})
 describe("Integration tests of the generatePrettyWorkoutPDF function in the Workout Service", () => {
-  test("Should update workout [no exercises]", async () => {
+  test("Should generate PDF", async () => {
+    await ctx.prisma.user.deleteMany()
+    const myUser = {
+      userID: userUUID,
+      email: process.env.TESTEMAIL!,
+      firstName: "test",
+      lastName: "tester",
+      password: process.env.TESTPASSWORD!,
+      userType: userType.PLANNER,
+      dateOfBirth: null
+    }
+
+    await ctx.prisma.user.create({
+      data: myUser
+    })
+    await ctx.prisma.exercise.create({
+      data: exercise
+    })
+
     const workoutUUID = uuidv4()
     const Workout = {
       workoutID: workoutUUID,
       workoutTitle: "Test",
       workoutDescription: "Test",
+      exercises: {
+        connect: {
+          exerciseID: exerciseUUID
+        }
+      },
       planner: {
         connect: {
           userID: userUUID
         }
       }
     }
-    const createdWorkout = await ctx.prisma.workout.create({
+    await ctx.prisma.workout.create({
       data: Workout
     })
+    const createdWorkout = await workoutService.getWorkoutById(workoutUUID, ctx)
 
     // const emptyExercise: Exercise[] = []
-
-    await expect(workoutService.generatePrettyWorkoutPDF(createdWorkout, ctx)).resolves
+    await expect(await workoutService.generatePrettyWorkoutPDF(createdWorkout, ctx)).resolves
   })
 })

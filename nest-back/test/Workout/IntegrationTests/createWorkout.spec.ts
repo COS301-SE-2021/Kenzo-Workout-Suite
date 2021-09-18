@@ -24,6 +24,13 @@ describe("Integration test for createWorkout for the Workout Service", () => {
     await ctx.prisma.exercise.deleteMany()
     await ctx.prisma.user.deleteMany()
     await ctx.prisma.tag.deleteMany()
+  })
+  afterAll(async () => {
+    // await workoutService.removeCreatedFiles("./src/ExerciseImages/")
+    await workoutService.removeCreatedFiles("./src/GeneratedWorkouts/")
+  })
+
+  test("Should create new workout [With exercises]", async () => {
     const myUser = {
       userID: userUUID,
       email: process.env.TESTEMAIL!,
@@ -37,13 +44,6 @@ describe("Integration test for createWorkout for the Workout Service", () => {
     await ctx.prisma.user.create({
       data: myUser
     })
-  })
-  afterAll(async () => {
-    // await workoutService.removeCreatedFiles("./src/ExerciseImages/")
-    await workoutService.removeCreatedFiles("./src/GeneratedWorkouts/")
-  })
-
-  test("Should create new workout [With exercises]", async () => {
     const workoutUUID = uuidv4()
     const Workout = {
       workoutID: workoutUUID,
@@ -84,6 +84,7 @@ describe("Integration test for createWorkout for the Workout Service", () => {
     const emptyTags: Tag[] = []
     await workoutService.updateExercise(exerciseUUID, exercise2.exerciseTitle, exercise2.exerciseDescription, exercise2.repRange, exercise2.sets, exercise2.poseDescription, exercise2.restPeriod, emptyTags, exercise2.duration, userUUID, exercise2.images, ctx)
     const fullExercise = [exercise2]
+    spyOn(workoutService, "createVideo").and.stub()
     await expect(workoutService.createWorkout(Workout.workoutTitle, Workout.workoutDescription, fullExercise, 2, "chill", 1920, 1080, Workout.planner_ID, ctx)).resolves.toEqual(
       "Workout Created."
     )

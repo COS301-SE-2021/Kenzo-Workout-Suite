@@ -14,10 +14,12 @@ const uuidPlanner = uuidv4()
 
 describe("Integration tests of the getWorkoutByPlanner function in the Workout Service", () => {
   beforeEach(async () => {
-    workoutService = new WorkoutService(prisma, userService)
-
     await ctx.prisma.workout.deleteMany()
     await ctx.prisma.user.deleteMany()
+    workoutService = new WorkoutService(prisma, userService)
+  })
+
+  test("Should receive valid information about workout with corresponding planner", async () => {
     await ctx.prisma.user.create({
       data: {
         userID: uuidPlanner,
@@ -37,9 +39,6 @@ describe("Integration tests of the getWorkoutByPlanner function in the Workout S
         plannerID: uuidPlanner
       }
     })
-  })
-
-  test("Should receive valid information about workout with corresponding planner", async () => {
     const workout = [{
       workoutID: "1",
       workoutTitle: "test",
@@ -54,6 +53,25 @@ describe("Integration tests of the getWorkoutByPlanner function in the Workout S
   })
 
   test("Should not receive valid information about workout with corresponding planner as workout does not exist", async () => {
+    await ctx.prisma.user.create({
+      data: {
+        userID: uuidPlanner,
+        email: process.env.TESTEMAIL!,
+        firstName: "test",
+        lastName: "tester",
+        password: process.env.TESTPASSWORD!,
+        userType: userType.PLANNER,
+        dateOfBirth: null
+      }
+    })
+    await ctx.prisma.workout.create({
+      data: {
+        workoutID: "1",
+        workoutTitle: "test",
+        workoutDescription: "test",
+        plannerID: uuidPlanner
+      }
+    })
     await expect(workoutService.getWorkoutByPlanner("notindatabase@gmail.com", ctx)).rejects.toThrow("No workouts were found in the database with the specified planner.")
   })
 })

@@ -17,6 +17,9 @@ describe("Integration tests of the getWorkoutById function in the Workout Servic
     workoutService = new WorkoutService(prisma, userService)
     await ctx.prisma.workout.deleteMany()
     await ctx.prisma.user.deleteMany()
+  })
+
+  test("Should receive valid information about workout with corresponding id", async () => {
     await ctx.prisma.user.create({
       data: {
         userID: uuidPlanner,
@@ -36,9 +39,7 @@ describe("Integration tests of the getWorkoutById function in the Workout Servic
         plannerID: uuidPlanner
       }
     })
-  })
 
-  test("Should receive valid information about workout with corresponding id", async () => {
     const workout = {
       workoutID: uuidWorkout,
       workoutTitle: "test",
@@ -53,6 +54,25 @@ describe("Integration tests of the getWorkoutById function in the Workout Servic
   })
 
   test("Should not receive valid information about workout with corresponding id as workout does not exist", async () => {
+    await ctx.prisma.user.create({
+      data: {
+        userID: uuidPlanner,
+        email: process.env.TESTEMAIL!,
+        firstName: "test",
+        lastName: "tester",
+        password: process.env.TESTPASSWORD!,
+        userType: userType.PLANNER,
+        dateOfBirth: null
+      }
+    })
+    await ctx.prisma.workout.create({
+      data: {
+        workoutID: uuidWorkout,
+        workoutTitle: "test",
+        workoutDescription: "test",
+        plannerID: uuidPlanner
+      }
+    })
     await expect(workoutService.getWorkoutById("", ctx)).rejects.toThrow("No workouts were found in the database with the specified id.")
   })
 })

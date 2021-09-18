@@ -17,22 +17,23 @@ beforeEach(async () => {
   workoutService = new WorkoutService(prisma, userService)
   await ctx.prisma.exercise.deleteMany()
   await ctx.prisma.user.deleteMany()
-  const myUser = {
-    userID: userUUID,
-    email: process.env.TESTEMAIL!,
-    firstName: "test",
-    lastName: "tester",
-    password: process.env.TESTPASSWORD!,
-    userType: userType.PLANNER,
-    dateOfBirth: null
-  }
-
-  await ctx.prisma.user.create({
-    data: myUser
-  })
 })
 describe("Integration tests of the deleteWorkout function in the Workout Service", () => {
   test("Should delete workout", async () => {
+    const myUser = {
+      userID: userUUID,
+      email: process.env.TESTEMAIL!,
+      firstName: "test",
+      lastName: "tester",
+      password: process.env.TESTPASSWORD!,
+      userType: userType.PLANNER,
+      dateOfBirth: null
+    }
+
+    await ctx.prisma.user.create({
+      data: myUser
+    })
+
     const workoutUUID = uuidv4()
     const Workout = {
       workoutID: workoutUUID,
@@ -53,6 +54,20 @@ describe("Integration tests of the deleteWorkout function in the Workout Service
   })
 
   test("Should not delete workout [Parameters can not be left empty.]", async () => {
+    const myUser = {
+      userID: userUUID,
+      email: process.env.TESTEMAIL!,
+      firstName: "test",
+      lastName: "tester",
+      password: process.env.TESTPASSWORD!,
+      userType: userType.PLANNER,
+      dateOfBirth: null
+    }
+
+    await ctx.prisma.user.create({
+      data: myUser
+    })
+
     const workoutUUID = uuidv4()
     const Workout = {
       workoutID: workoutUUID,
@@ -68,6 +83,19 @@ describe("Integration tests of the deleteWorkout function in the Workout Service
   })
 
   test("Should not delete workout [Workout with provided ID does not exist]", async () => {
+    const myUser = {
+      userID: userUUID,
+      email: process.env.TESTEMAIL!,
+      firstName: "test",
+      lastName: "tester",
+      password: process.env.TESTPASSWORD!,
+      userType: userType.PLANNER,
+      dateOfBirth: null
+    }
+
+    await ctx.prisma.user.create({
+      data: myUser
+    })
     const workoutUUID = uuidv4()
     const Workout = {
       workoutID: workoutUUID,
