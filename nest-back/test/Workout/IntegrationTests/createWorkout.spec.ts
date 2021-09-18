@@ -24,6 +24,7 @@ describe("Integration test for createWorkout for the Workout Service", () => {
     await ctx.prisma.exercise.deleteMany()
     await ctx.prisma.user.deleteMany()
     await ctx.prisma.tag.deleteMany()
+    await ctx.prisma.workout.deleteMany()
   })
   afterAll(async () => {
     // await workoutService.removeCreatedFiles("./src/ExerciseImages/")

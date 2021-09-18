@@ -33,8 +33,7 @@ beforeEach(async () => {
   workoutService = new WorkoutService(prisma, userService)
   await ctx.prisma.exercise.deleteMany()
   await ctx.prisma.tag.deleteMany()
-
-
+  await ctx.prisma.workout.deleteMany()
 })
 afterAll(async () => {
   // await workoutService.removeCreatedFiles("./src/ExerciseImages/")
