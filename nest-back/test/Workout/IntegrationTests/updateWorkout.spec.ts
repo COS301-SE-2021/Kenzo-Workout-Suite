@@ -44,39 +44,41 @@ const exercise2 = {
   plannerID: userUUID,
   images: imagesX
 }
-beforeEach(async () => {
-  userService = new UserService(Jwt)
-  workoutService = new WorkoutService(prisma, userService)
-  await ctx.prisma.workout.deleteMany()
-  await ctx.prisma.exercise.deleteMany()
-  await ctx.prisma.user.deleteMany()
-  await ctx.prisma.tag.deleteMany()
-  const myUser = {
-    userID: userUUID,
-    email: process.env.TESTEMAIL!,
-    firstName: "test",
-    lastName: "tester",
-    password: process.env.TESTPASSWORD!,
-    userType: userType.PLANNER,
-    dateOfBirth: new Date("2000-05-30")
-  }
 
-  await ctx.prisma.user.create({
-    data: myUser
-  })
-  await ctx.prisma.exercise.create({
-    data: exercise
-  })
-  const emptyTags: Tag[] = []
-  await workoutService.updateExercise(exerciseUUID, exercise2.exerciseTitle, exercise2.exerciseDescription, exercise2.repRange, exercise2.sets, exercise2.poseDescription, exercise2.restPeriod, emptyTags, exercise2.duration, userUUID, exercise2.images, ctx)
-})
 afterAll(async () => {
-  await workoutService.removeCreatedFiles("./src/ExerciseImages/")
+  // await workoutService.removeCreatedFiles("./src/ExerciseImages/")
   await workoutService.removeCreatedFiles("./src/GeneratedWorkouts/")
   await workoutService.removeCreatedFiles("./src/videoGeneration/Videos")
 })
 describe("Integration tests of the updateWorkout function in the Workout Service", () => {
+  beforeEach(async () => {
+    userService = new UserService(Jwt)
+    workoutService = new WorkoutService(prisma, userService)
+    await ctx.prisma.workout.deleteMany()
+    await ctx.prisma.exercise.deleteMany()
+    await ctx.prisma.user.deleteMany()
+    await ctx.prisma.tag.deleteMany()
+  })
   test("Should not update workout [no exercises]", async () => {
+    const myUser = {
+      userID: userUUID,
+      email: process.env.TESTEMAIL!,
+      firstName: "test",
+      lastName: "tester",
+      password: process.env.TESTPASSWORD!,
+      userType: userType.PLANNER,
+      dateOfBirth: new Date("2000-05-30")
+    }
+
+    await ctx.prisma.user.create({
+      data: myUser
+    })
+    await ctx.prisma.exercise.create({
+      data: exercise
+    })
+    const emptyTags: Tag[] = []
+    await workoutService.updateExercise(exerciseUUID, exercise2.exerciseTitle, exercise2.exerciseDescription, exercise2.repRange, exercise2.sets, exercise2.poseDescription, exercise2.restPeriod, emptyTags, exercise2.duration, userUUID, exercise2.images, ctx)
+
     const workoutUUID = uuidv4()
     const Workout = {
       workoutID: workoutUUID,
@@ -95,27 +97,6 @@ describe("Integration tests of the updateWorkout function in the Workout Service
     const emptyExercise: Exercise[] = []
     await expect(workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, emptyExercise, 2, "chill", 1920, 1080, userUUID, ctx)).rejects.toThrow(
       "Parameters can not be left empty."
-    )
-  })
-
-  test("Should update new workout [With exercises]", async () => {
-    const workoutUUID = uuidv4()
-    const Workout = {
-      workoutID: workoutUUID,
-      workoutTitle: "Test2",
-      workoutDescription: "Test2",
-      planner: {
-        connect: {
-          userID: userUUID
-        }
-      }
-    }
-    await ctx.prisma.workout.create({
-      data: Workout
-    })
-    const fullExercise = [exercise2]
-    await expect(await workoutService.updateWorkout(workoutUUID, "WorkoutUpdateTest", Workout.workoutDescription, fullExercise, 2, "chill", 1920, 1080, userUUID, ctx)).toEqual(
-      "Workout Updated."
     )
   })
 })

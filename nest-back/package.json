@@ -20,7 +20,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "test:workoutIntegration": "jest --coverage --detectOpenHandles --forceExit --testPathPattern=test/Workout/IntegrationTests",
+    "test:workoutIntegration": "jest --coverage --detectOpenHandles --testPathPattern=test/Workout/IntegrationTests",
     "test:workoutTest": "jest --coverage --detectOpenHandles --forceExit --testPathPattern=test/Workout/UnitTest",
     "test:userTest": "jest --coverage --detectOpenHandles --forceExit --testPathPattern=test/User/UnitTest",
     "test:userIntegration": "jest --coverage --detectOpenHandles --forceExit --testPathPattern=test/User/IntegrationTests",
