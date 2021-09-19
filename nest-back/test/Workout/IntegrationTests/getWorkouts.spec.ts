@@ -11,7 +11,27 @@ let userService: UserService
 let prisma: PrismaClient
 
 const uuidPlanner = uuidv4()
-
+async function createTestData () {
+  await ctx.prisma.user.create({
+    data: {
+      userID: uuidPlanner,
+      email: process.env.TESTEMAIL!,
+      firstName: "test",
+      lastName: "tester",
+      password: process.env.TESTPASSWORD!,
+      userType: userType.PLANNER,
+      dateOfBirth: null
+    }
+  })
+  await ctx.prisma.workout.create({
+    data: {
+      workoutID: "1",
+      workoutTitle: "test",
+      workoutDescription: "test",
+      plannerID: uuidPlanner
+    }
+  })
+}
 describe("Integration tests of the getWorkouts function in the Workout Service", () => {
   beforeEach(async () => {
     workoutService = new WorkoutService(prisma, userService)
@@ -20,25 +40,7 @@ describe("Integration tests of the getWorkouts function in the Workout Service",
   })
 
   test("Should receive valid information about all workouts", async () => {
-    await ctx.prisma.user.create({
-      data: {
-        userID: uuidPlanner,
-        email: process.env.TESTEMAIL!,
-        firstName: "test",
-        lastName: "tester",
-        password: process.env.TESTPASSWORD!,
-        userType: userType.PLANNER,
-        dateOfBirth: null
-      }
-    })
-    await ctx.prisma.workout.create({
-      data: {
-        workoutID: "1",
-        workoutTitle: "test",
-        workoutDescription: "test",
-        plannerID: uuidPlanner
-      }
-    })
+    await createTestData()
     const workout = [{
       workoutID: "1",
       workoutTitle: "test",
