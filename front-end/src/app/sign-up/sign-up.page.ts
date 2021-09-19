@@ -10,11 +10,11 @@ import {UserService} from "../Services/UserService/user.service";
     styleUrls: ["./sign-up.page.scss"],
 })
 export class SignUpPage implements OnInit {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  confirmpassword: string;
+  firstName = "";
+  lastName = "";
+  email = "";
+  password = "";
+  confirmpassword = "";
   accountType = "PLANNER";
   url: string;
 
@@ -36,17 +36,33 @@ export class SignUpPage implements OnInit {
    * @author Jia Hui Wang, u18080449
    */
   async signUp() {
+      if(this.firstName==="" || this.lastName===""){
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Invalid Credentials",
+              message: "Please ensure your name and surname are filled in.",
+              buttons: ["Dismiss"]
+          });
+          await this.presentAlert(alert);
+          return;
+      }
+      if(!await this.validateEmail()){
+          return;
+      }
+      if(!await this.validatePassword()) {
+          return;
+      }
       if (this.password === this.confirmpassword) {
           const status = await this.userService.attemptSignUp(this.firstName, this.lastName, this.email, this.password, this.accountType);
           if (status < 400 && status >=200){
               const alert = await this.alertController.create({
                   cssClass: "kenzo-alert",
-                  header: "Sign up successful",
+                  header: "Sign up Successful",
                   message: "Your account has been registered successfully.",
-                  buttons: ["OK"]
+                  buttons: ["Sign In"]
               });
               await this.presentAlert(alert);
-              await this.route.navigate(["/sign-in"]);
+              await this.route.navigate(["/your-workouts"]);
               return 200;
           } else if (status >= 400 && status < 500) {
           //Invalid entry or already existent client email
@@ -61,7 +77,7 @@ export class SignUpPage implements OnInit {
           } else if (status >= 500) {
               const alert = await this.alertController.create({
                   cssClass: "kenzo-alert",
-                  header: "Server isn't responding",
+                  header: "Server isn't Responding",
                   message: "Please try again later.",
                   buttons: ["Dismiss"]
               });
@@ -71,6 +87,45 @@ export class SignUpPage implements OnInit {
       } else {
           await this.invalidPasswords(); //If passwords do not match, notify User through an alert.
       }
+  }
+  async validateEmail() {
+      const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if(!re.test(String(this.email).toLowerCase())){
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Email is Invalid",
+              message: "Please check your email's format.",
+              buttons: ["OK"]
+          });
+          await this.presentAlert(alert);
+          return false;
+      }
+      return true;
+  }
+  async validatePassword() {
+      // Validate Password
+      const re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+      if (!re.test(this.password)){
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Password is invalid",
+              message: "Please ensure that your password matches the criteria.",
+              buttons: ["OK"]
+          });
+          await this.presentAlert(alert);
+          return false;
+      }
+      if(this.password!==this.confirmpassword){
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Passwords do not match",
+              message: "Please ensure that your password matches the confirmation password.",
+              buttons: ["OK"]
+          });
+          await this.presentAlert(alert);
+          return false;
+      }
+      return true;
   }
 
   /**

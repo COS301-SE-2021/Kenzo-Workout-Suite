@@ -20,7 +20,7 @@ export class UpdateWorkoutPage implements OnInit {
   loop = 10; //seconds
   resolutionWidth = 1920;
   resolutionHeight = 1080;
-  genre: any;
+  genre: any = "upbeat";
 
   @ViewChild("searchBar", {static: false}) searchbar: IonSearchbar;
   id: string;
@@ -93,6 +93,16 @@ export class UpdateWorkoutPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async submitUpdateRequest() {
+      if(this.title==="" || this.description === "" || this.format(this.exercises).length===0){
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Please fill in all required fields.",
+              buttons: ["Dismiss"]
+          });
+
+          await this.presentAlert(alert);
+          return;
+      }
       const newWorkout = new Workout(this.title, this.description, []);
       const status = await this.workoutService.attemptUpdateWorkout(newWorkout, this.id, this.format(this.exercises), this.loop, this.genre, this.resolutionWidth, this.resolutionHeight);
 

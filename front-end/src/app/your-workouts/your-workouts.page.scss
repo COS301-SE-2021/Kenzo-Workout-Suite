@@ -21,6 +21,10 @@
     margin-top: 13px;
 }
 
+ion-icon:hover{
+  cursor: pointer;
+}
+
 .workouts{
   transition: border 0.1s;
   transition-timing-function: linear;

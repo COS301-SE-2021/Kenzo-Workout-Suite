@@ -197,15 +197,12 @@ export class PoseMakerPage implements OnInit {
           this.leftFoot = this.mesh.skeleton.bones[22];
 
           // Set initial pose positions
-          for (let i=0; i<this.mesh.skeleton.bones.length; i++) {
-              const bone = this.mesh.skeleton.bones[i];
-              this.originalCoordinates.push({value: i, x: bone.rotation.x, y: bone.rotation.y, z: bone.rotation.z});
-          }
           for (let i = 0; i < 4; i++) {
               if(this.skeletons[i].length===0) {
                   for (let j = 0; j < this.mesh.skeleton.bones.length; j++) {
                       const bone = this.mesh.skeleton.bones[j];
                       this.skeletons[i][j] = ({value: j, x: bone.rotation.x, y: bone.rotation.y, z: bone.rotation.z});
+                      this.originalCoordinates[j] = ({value: j, x: bone.rotation.x, y: bone.rotation.y, z: bone.rotation.z});
                   }
               }
           }
@@ -311,6 +308,10 @@ export class PoseMakerPage implements OnInit {
           this.mesh.skeleton.bones[this.selection].rotation.x = this.xCoordinate * 0.01;
           this.mesh.skeleton.bones[this.selection].rotation.y = this.yCoordinate * 0.01;
           this.mesh.skeleton.bones[this.selection].rotation.z = this.zCoordinate * 0.01;
+      } else{
+          if(this.mesh!=null) {
+              this.getCoordinates(0);
+          }
       }
 
       this.controls.update();
@@ -437,9 +438,9 @@ export class PoseMakerPage implements OnInit {
       if(this.selection===null) {
           return;
       }
-      this.xCoordinate = this.originalCoordinates[this.selection].x;
-      this.yCoordinate = this.originalCoordinates[this.selection].y;
-      this.zCoordinate = this.originalCoordinates[this.selection].z;
+      this.xCoordinate = this.originalCoordinates[this.selection].x * 100;
+      this.yCoordinate = this.originalCoordinates[this.selection].y * 100;
+      this.zCoordinate = this.originalCoordinates[this.selection].z * 100;
   }
 
   setBackground(value: any) {

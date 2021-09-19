@@ -263,7 +263,7 @@ export class YourWorkoutsPage implements OnInit {
    * @param id The id of the workout of which the pdf is to obtained for.
    * @author Jia Hui Wang, u18080449
    */
-  async getPDF(id: string){
+  async download(id: string){
       this.pdf = await this.workoutService.attemptGetPDF(id);
       if (this.pdf.status===200){
           await this.getVideo(id, this.pdf.data);
@@ -285,7 +285,7 @@ export class YourWorkoutsPage implements OnInit {
       }else if (this.video===400){
           const alert = await this.alertController.create({
               cssClass: "kenzo-alert",
-              header: "Generating workout...",
+              header: "Generating Workout",
               message: "Video of workout is still processing, please try again in a moment!",
               buttons: ["Dismiss"]
           });
@@ -327,7 +327,7 @@ export class YourWorkoutsPage implements OnInit {
    */
   async presentActionSheet(workoutID: string, procedure: any) {
       const actionSheet = await this.actionSheetController.create({
-          header: "Share documents",
+          header: "Share Documents",
           cssClass: "actionOptions",
           buttons: [{
               text: "Email PDF",
@@ -342,11 +342,11 @@ export class YourWorkoutsPage implements OnInit {
                   return true;
               }
           }, {
-              text: "Email video",
+              text: "Email Video",
               role: "selected",
               icon: "videocam-outline",
               handler: () => {
-                  if (procedure === "Submit all") {
+                  if (procedure === "Submit All") {
                       this.clientService.attemptEmailAllClientsVideo(workoutID);
                   }else{
                       this.clientService.attemptEmailClientsVideo(workoutID, procedure);
@@ -354,11 +354,11 @@ export class YourWorkoutsPage implements OnInit {
                   return true;
               }
           }, {
-              text: "Email PDF and video",
+              text: "Email PDF and Video",
               role: "selected",
               icon: "documents-sharp",
               handler: () => {
-                  if (procedure === "Submit all") {
+                  if (procedure === "Submit All") {
                       this.clientService.attemptEmailAllClientsMedia(workoutID);
                   }else{
                       this.clientService.attemptEmailClientsMedia(workoutID, procedure);
@@ -379,7 +379,7 @@ export class YourWorkoutsPage implements OnInit {
 
   async presentDownloadSheet(video: string, pdf: string) {
       const actionSheet = await this.actionSheetController.create({
-          header: "Download documents",
+          header: "Download Documents",
           cssClass: "actionOptions",
           buttons: [{
               text: "Download PDF",
@@ -394,7 +394,7 @@ export class YourWorkoutsPage implements OnInit {
                   return true;
               }
           }, {
-              text: "Download video",
+              text: "Download Video",
               role: "selected",
               icon: "download-outline",
               handler: () => {
