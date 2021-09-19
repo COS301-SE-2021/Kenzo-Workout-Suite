@@ -13,11 +13,6 @@
   <ion-button (click)="signIn()" mode="ios" class="send-req-button">Sign in</ion-button>
   <br>
   <a routerLink="/sign-up" mode="ios" class="text-link">Don't have an account? Sign up</a>
-
-  <ion-card class="sign-in-with">
-      <ion-label class="sign-in-with-text"> Or sign in with:</ion-label>
-      <div class="img-container">
-        <ion-img class="sign-in-with-img" src="./assets/google/btn_google_light_normal_ios@2x.png" alt="Kenzo" (click)="googleSignIn()"></ion-img>
-      </div>
-  </ion-card>
+  <ion-label class="sign-in-with-text"> – or –</ion-label>
+  <ion-img class="sign-in-with-img" src="./assets/google/btn_google_signin_light_normal_web@2x.png" alt="Kenzo" (click)="googleSignIn()"></ion-img>
 </ion-content>

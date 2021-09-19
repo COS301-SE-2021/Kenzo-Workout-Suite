@@ -90,8 +90,9 @@ export class SignInPage implements OnInit {
       // Server Error
           const alert = await this.alertController.create({
               cssClass: "kenzo-alert",
-              header: "Server isn't responding",
-              message: res["message"],
+              header: "Google Sign In Error",
+              message: "Please disable pop-up blocker. This issue can be fixed by enabling pop-ups, or " +
+                "is the result of closing the pop-up.",
               buttons: ["Dismiss"]
           });
           await this.presentAlert(alert);
