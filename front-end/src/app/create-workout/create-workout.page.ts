@@ -23,7 +23,7 @@ export class CreateWorkoutPage implements OnInit {
   loop = 10; //seconds
   resolutionWidth = 1920;
   resolutionHeight = 1080;
-  genre: any;
+  genre: any = "upbeat";
 
   constructor(private http: HttpClient,
               private route: Router,
@@ -65,6 +65,16 @@ export class CreateWorkoutPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async submitCreateRequest() {
+      if(this.title==="" || this.description === "" || this.format(this.exercises).length===0){
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Please fill in all required fields.",
+              buttons: ["Dismiss"]
+          });
+
+          await this.presentAlert(alert);
+          return;
+      }
       const newWorkout = new Workout(this.title, this.description, []);
       // console.log(this.format(this.exercises));
       // return ;

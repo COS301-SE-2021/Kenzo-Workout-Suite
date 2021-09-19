@@ -80,8 +80,8 @@ export class SignInPage implements OnInit {
       // Invalid Sign In
           const alert = await this.alertController.create({
               cssClass: "kenzo-alert",
-              header: "Incorrect login",
-              message: res["message"],
+              header: "Incorrect Login",
+              message: "This account already exists using email. Please sign in using email, and not Google.",
               buttons: ["OK"]
           });
           await this.presentAlert(alert);

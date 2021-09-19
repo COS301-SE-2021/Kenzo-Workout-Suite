@@ -92,7 +92,7 @@ export class UserService {
                   lastName: lastName,
                   accessToken: user["accessToken"]
               };
-              console.log(body);
+
               return this.http.post(url, body).toPromise().then(r => {
                   this.addToken(r["access_token"]);
                   return 200;
@@ -147,7 +147,10 @@ export class UserService {
           }
       };
 
-      return this.http.post(url, body).toPromise().then(() => 201).catch((error)=>{
+      return this.http.post(url, body).toPromise().then((r) => {
+          this.addToken(r["access_token"]);
+          return 201;
+      }).catch((error)=>{
           if(error.status===0) {
               return 500;
           }

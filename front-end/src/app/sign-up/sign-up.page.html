@@ -1,5 +1,5 @@
 <ion-content class="sign-up-background">
-<div class="container">
+<div class="container"(keydown.enter)="signUp()">
   <ion-img id="Sign-up-Kenzo-Logo" src="./assets/kenzo/Kenzo_logo.png" alt="Kenzo"></ion-img>
   <div class="input-div">
     <ion-label class="sign-up-label" >First Name</ion-label>
@@ -24,6 +24,10 @@
   <div class="input-div">
     <ion-label class="sign-up-label" >Confirm Password</ion-label>
     <ion-input [(ngModel)]="confirmpassword" class="sign-up-input" placeholder="  ***********" type="password"></ion-input>
+  </div>
+  <br>
+  <div class="input-div hint">
+    Passwords must be longer than 7 characters and contain at least one upper case letter, lower case letter, number and special character.
   </div>
   <br>
     <ion-button (click)="signUp()" mode="ios" id="SignUpButton" expand="block">Sign up</ion-button>

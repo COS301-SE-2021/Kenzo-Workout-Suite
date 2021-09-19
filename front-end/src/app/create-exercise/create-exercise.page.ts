@@ -59,7 +59,18 @@ export class CreateExercisePage implements OnInit {
    */
   async createExercise() {
       await this.syncFrames();
+      if(this.title==="" || this.description==="" || this.selected.length===0 || this.images.length===0 ||
+      this.poseDescription === ""){
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Could not Create Exercise",
+              message: "Please fill all of the required fields.",
+              buttons: ["Dismiss"]
+          });
 
+          await this.presentAlert(alert);
+          return ;
+      }
       const exercise = new Exercise(this.title, this.description, this.range, this.sets, this.poseDescription,
           this.rest, this.selected, this.duration*60, this.images);
       const status = await this.workoutService.attemptSubmitExercise(exercise);

@@ -27,7 +27,7 @@
   <ion-toolbar id="controls">
     <ion-item>
       <ion-label>Body Parts</ion-label>
-      <ion-select #val (ionChange)="getCoordinates(val.value)" placeholder="Choose" mode="ios">
+      <ion-select #val (ionChange)="getCoordinates(val.value)" value="0" mode="ios">
         <ion-select-option value="0">Whole Body</ion-select-option>
         <ion-select-option value="4">Neck</ion-select-option>
         <ion-select-option value="3">Upper Torso</ion-select-option>
