@@ -36,6 +36,16 @@ export class SignUpPage implements OnInit {
    * @author Jia Hui Wang, u18080449
    */
   async signUp() {
+      if(this.firstName==="" || this.lastName===""){
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Invalid Credentials",
+              message: "Please ensure your name and surname are filled in.",
+              buttons: ["Dismiss"]
+          });
+          await this.presentAlert(alert);
+          return;
+      }
       if(!await this.validateEmail()){
           return;
       }
