@@ -12,7 +12,7 @@ on:
      - development
 env:
   CI: 1
-  GOOGLE_CLIENT_ID: '201037185690-g3gkgbfa2m13iepgee7qljkkh5iol1b9.apps.googleusercontent.com'
+  GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
   GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
   JWT_SECRET: 'THESECRET'
   EXPIRY_TIME: '10800s'
