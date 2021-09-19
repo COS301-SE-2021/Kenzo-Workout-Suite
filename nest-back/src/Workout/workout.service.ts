@@ -211,7 +211,7 @@ export class WorkoutService {
           duration: true
         }
       })
-      if (exercise.length === 0) { // if JSON object is empty, send error code
+      if (exercise === undefined || exercise.length === 0) { // if JSON object is empty, send error code
         return Promise.reject(Error("No exercises were found in the database with the specified title."))
       }
       // add images for each exercise
@@ -834,10 +834,8 @@ export class WorkoutService {
 
       return container
     })
-    console.log(exerciseConnection)
     try {
-      console.log("here")
-      const updatedW = await ctx.prisma.workout.update({
+      await ctx.prisma.workout.update({
         where: {
           workoutID: workoutID
         },
@@ -846,7 +844,7 @@ export class WorkoutService {
           workoutTitle: workoutTitle,
           workoutDescription: workoutDescription,
           exercises: {
-            connect: exerciseConnection
+            set: exerciseConnection
           },
           planner: {
             connect: {
@@ -855,10 +853,7 @@ export class WorkoutService {
           }
         }
       })
-      console.log(updatedW)
-      console.log("here 2")
       const updatedWorkout = await this.getWorkoutById(workoutID, ctx)
-      console.log(updatedWorkout)
       await this.generatePrettyWorkoutPDF(updatedWorkout, ctx)
       await this.createVideo(updatedWorkout.workoutID, loop, songChoice, resolutionWidth, resolutionHeight, ctx)
       return ("Workout Updated.")

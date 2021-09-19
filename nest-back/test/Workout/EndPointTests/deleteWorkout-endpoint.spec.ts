@@ -45,13 +45,12 @@ describe("End point testing of the Workout subsystem", () => {
     await ctx.prisma.user.deleteMany()
     await ctx.prisma.exercise.deleteMany()
     await ctx.prisma.workout.deleteMany()
-
-    await ctx.prisma.user.create({
-      data: myUser
-    })
   })
 
   it("DeleteWorkout endpoint with valid data, should return 200", async () => {
+    await ctx.prisma.user.create({
+      data: myUser
+    })
     const Workout = {
       workoutID: workoutUUID,
       workoutTitle: "Test",
@@ -62,10 +61,12 @@ describe("End point testing of the Workout subsystem", () => {
     const created = await ctx.prisma.workout.create({
       data: Workout
     })
-
+    const response = await userServ.login(myUser)
+    const accessToken = response.access_token
     await userServ.login(myUser)
     return request(app.getHttpServer())
       .delete("/workout/deleteWorkout")
+      .set("Authorization", "Bearer " + accessToken)
       .send({
         workoutID: created.workoutID
       })
@@ -73,6 +74,9 @@ describe("End point testing of the Workout subsystem", () => {
   })
 
   it("DeleteWorkout endpoint with invalid data, should return 404", async () => {
+    await ctx.prisma.user.create({
+      data: myUser
+    })
     const Workout = {
       workoutID: workoutUUID,
       workoutTitle: "Test",
@@ -83,10 +87,12 @@ describe("End point testing of the Workout subsystem", () => {
     await ctx.prisma.workout.create({
       data: Workout
     })
-
+    const response = await userServ.login(myUser)
+    const accessToken = response.access_token
     await userServ.login(myUser)
     return request(app.getHttpServer())
       .delete("/workout/deleteWorkout")
+      .set("Authorization", "Bearer " + accessToken)
       .send({
         workoutID: "TestFail"
       })
