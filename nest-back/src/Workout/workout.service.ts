@@ -858,7 +858,7 @@ export class WorkoutService {
       await this.createVideo(updatedWorkout.workoutID, loop, songChoice, resolutionWidth, resolutionHeight, ctx)
       return ("Workout Updated.")
     } catch {
-      throw new BadRequestException("Cannot create workout.")
+      throw new BadRequestException("Cannot update workout.")
     }
   }
 
