@@ -14,6 +14,9 @@ describe("Integration tests of the getExercises function in the Workout Service"
   beforeEach(async () => {
     workoutService = new WorkoutService(prisma, userService)
     await ctx.prisma.exercise.deleteMany()
+  })
+
+  test("Should receive valid information about all exercises with no images", async () => {
     await ctx.prisma.exercise.create({
       data: {
         exerciseID: uuidExercise,
@@ -26,9 +29,6 @@ describe("Integration tests of the getExercises function in the Workout Service"
         duration: 2
       }
     })
-  })
-
-  test("Should receive valid information about all exercises with no images", async () => {
     const Exercise = [{
       exerciseID: uuidExercise,
       exerciseTitle: "TestExercise",

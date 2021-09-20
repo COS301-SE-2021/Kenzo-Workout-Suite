@@ -31,6 +31,8 @@ Kenzo Workout Suite is the ultimate Fitness Trainer application. With custom pos
 
 [Project Management](https://github.com/COS301-SE-2021/Kenzo-Workout-Suite/projects)
 
+[Testing Policy Document](https://drive.google.com/file/d/10cfwIpyErH_MT2RUJWsZi5Ew78prG6Kw/view?usp=sharing)
+
 ### Project Management Tools
 [GitHub](https://github.com/COS301-SE-2021/Kenzo-Workout-Suite)
 

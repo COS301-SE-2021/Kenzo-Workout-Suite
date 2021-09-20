@@ -13,12 +13,13 @@ let ctx: Context
 let userServ: UserService
 let Jwt : JwtService
 const userUUID = uuidv4()
+const exerciseUUID = uuidv4()
 const myUser = {
   userID: userUUID,
-  email: "test@gmail.com",
+  email: process.env.TESTEMAIL!,
   firstName: "test",
   lastName: "tester",
-  password: "Test123*",
+  password: process.env.TESTPASSWORD!,
   userType: userType.PLANNER,
   dateOfBirth: null
 }
@@ -43,41 +44,41 @@ describe("End point testing of the Workout subsystem", () => {
     userServ = new UserService(Jwt)
     await ctx.prisma.user.deleteMany()
     await ctx.prisma.exercise.deleteMany()
-
-    await ctx.prisma.user.create({
-      data: myUser
-    })
-  })
-
-  it("CreateWorkout endpoint with valid data, should return 201", async () => {
-    const response = await userServ.login(myUser)
-    const accessToken = response.access_token
-    const emptyExercise: Exercise[] = []
-    return request(app.getHttpServer())
-      .post("/workout/createWorkout")
-      .set("Authorization", "Bearer " + accessToken)
-      .send({
-        workoutTitle: "Test",
-        workoutDescription: "Test",
-        exercises: emptyExercise
-
-      })
-      .expect(201)
   })
 
   it("CreateWorkout endpoint with invalid data, should return 412", async () => {
+    await ctx.prisma.user.create({
+      data: myUser
+    })
+    const exercise = {
+      exerciseID: exerciseUUID,
+      exerciseTitle: "TestExercise",
+      exerciseDescription: "TestDescription",
+      repRange: "TestRange",
+      sets: 4,
+      poseDescription: "TestPDesc",
+      restPeriod: 2,
+      duration: 2,
+      plannerID: userUUID
+    }
+    await ctx.prisma.exercise.create({
+      data: exercise
+    })
     const response = await userServ.login(myUser)
     const accessToken = response.access_token
 
-    const emptyExercise: Exercise[] = []
+    const fullExercise: Exercise[] = [exercise]
     return request(app.getHttpServer())
       .post("/workout/createWorkout")
       .set("Authorization", "Bearer " + accessToken)
       .send({
         workoutTitle: null,
         workoutDescription: "Test",
-        exercises: emptyExercise
-
+        exercises: fullExercise,
+        loop: 0,
+        songChoice: "chill",
+        resolutionWidth: 1920,
+        resolutionHeight: 1080
       })
       .expect(404)
   })

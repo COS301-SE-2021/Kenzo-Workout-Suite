@@ -17,6 +17,10 @@ beforeEach(async () => {
   workoutService = new WorkoutService(prisma, userService)
   await ctx.prisma.exercise.deleteMany()
   await ctx.prisma.user.deleteMany()
+  await ctx.prisma.workout.deleteMany()
+})
+const workoutUUID = uuidv4()
+async function createTestData () {
   const myUser = {
     userID: userUUID,
     email: process.env.TESTEMAIL!,
@@ -30,55 +34,36 @@ beforeEach(async () => {
   await ctx.prisma.user.create({
     data: myUser
   })
-})
-describe("Integration tests of the deleteWorkout function in the Workout Service", () => {
-  test("Should delete workout", async () => {
-    const workoutUUID = uuidv4()
-    const Workout = {
-      workoutID: workoutUUID,
-      workoutTitle: "Test",
-      workoutDescription: "Test",
-      planner: {
-        connect: {
-          userID: userUUID
-        }
+
+  const Workout = {
+    workoutID: workoutUUID,
+    workoutTitle: "Test",
+    workoutDescription: "Test",
+    planner: {
+      connect: {
+        userID: userUUID
       }
     }
-    await ctx.prisma.workout.create({
-      data: Workout
-    })
+  }
+  await ctx.prisma.workout.create({
+    data: Workout
+  })
+}
+describe("Integration tests of the deleteWorkout function in the Workout Service", () => {
+  test("Should delete workout", async () => {
+    await createTestData()
     await expect(workoutService.deleteWorkout(workoutUUID, ctx)).resolves.toEqual(
       "Workout Deleted."
     )
   })
 
   test("Should not delete workout [Parameters can not be left empty.]", async () => {
-    const workoutUUID = uuidv4()
-    const Workout = {
-      workoutID: workoutUUID,
-      workoutTitle: "Test",
-      workoutDescription: "Test",
-      plannerID: userUUID
-    }
-
-    await ctx.prisma.workout.create({
-      data: Workout
-    })
+    await createTestData()
     await expect(workoutService.deleteWorkout("", ctx)).rejects.toThrow("Parameters can not be left empty.")
   })
 
   test("Should not delete workout [Workout with provided ID does not exist]", async () => {
-    const workoutUUID = uuidv4()
-    const Workout = {
-      workoutID: workoutUUID,
-      workoutTitle: "Test",
-      workoutDescription: "Test",
-      plannerID: userUUID
-    }
-
-    await ctx.prisma.workout.create({
-      data: Workout
-    })
+    await createTestData()
     await expect(workoutService.deleteWorkout("fake", ctx)).rejects.toThrow("Workout with provided ID does not exist")
   })
 })

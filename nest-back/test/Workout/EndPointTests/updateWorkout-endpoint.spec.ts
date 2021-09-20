@@ -14,12 +14,13 @@ let userServ: UserService
 let Jwt : JwtService
 const userUUID = uuidv4()
 const workoutUUID = uuidv4()
+const exerciseUUID = uuidv4()
 const myUser = {
   userID: userUUID,
-  email: "test@gmail.com",
+  email: process.env.TESTEMAIL!,
   firstName: "test",
   lastName: "tester",
-  password: "Test123*",
+  password: process.env.TESTPASSWORD!,
   userType: userType.PLANNER,
   dateOfBirth: null
 }
@@ -45,13 +46,12 @@ describe("End point testing of the Workout subsystem", () => {
     await ctx.prisma.user.deleteMany()
     await ctx.prisma.exercise.deleteMany()
     await ctx.prisma.workout.deleteMany()
+  })
 
+  it("Update Workout endpoint with invalid data, should return 404", async () => {
     await ctx.prisma.user.create({
       data: myUser
     })
-  })
-
-  it("Update Workout endpoint with valid data, should return 201", async () => {
     const Workout = {
       workoutID: workoutUUID,
       workoutTitle: "Test",
@@ -62,40 +62,24 @@ describe("End point testing of the Workout subsystem", () => {
     await ctx.prisma.workout.create({
       data: Workout
     })
-
-    const response = await userServ.login(myUser)
-    const accessToken = response.access_token
-
-    const emptyExercise: Exercise[] = []
-    return request(app.getHttpServer())
-      .put("/workout/updateWorkout")
-      .set("Authorization", "Bearer " + accessToken)
-      .send({
-        workoutID: workoutUUID,
-        workoutTitle: "TestUpdate",
-        workoutDescription: "TestUpdate",
-        exercises: emptyExercise
-
-      })
-      .expect(200)
-  })
-
-  it("Update Workout endpoint with invalid data, should return 201", async () => {
-    const Workout = {
-      workoutID: workoutUUID,
-      workoutTitle: "Test",
-      workoutDescription: "Test",
+    const exercise = {
+      exerciseID: exerciseUUID,
+      exerciseTitle: "TestExercise",
+      exerciseDescription: "TestDescription",
+      repRange: "TestRange",
+      sets: 4,
+      poseDescription: "TestPDesc",
+      restPeriod: 2,
+      duration: 2,
       plannerID: userUUID
     }
-
-    await ctx.prisma.workout.create({
-      data: Workout
+    await ctx.prisma.exercise.create({
+      data: exercise
     })
-
     const response = await userServ.login(myUser)
     const accessToken = response.access_token
 
-    const emptyExercise: Exercise[] = []
+    const fullExercise: Exercise[] = [exercise]
     return request(app.getHttpServer())
       .put("/workout/updateWorkout")
       .set("Authorization", "Bearer " + accessToken)
@@ -103,9 +87,12 @@ describe("End point testing of the Workout subsystem", () => {
         workoutID: workoutUUID,
         workoutTitle: "TestUpdate",
         workoutDescription: "TestUpdate",
-        exercises: emptyExercise
-
+        exercises: fullExercise,
+        loop: 0,
+        songChoice: "chill",
+        resolutionWidth: 1920,
+        resolutionHeight: 1080
       })
-      .expect(200)
+      .expect(404)
   })
 })

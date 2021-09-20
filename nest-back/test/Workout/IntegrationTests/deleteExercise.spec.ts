@@ -13,46 +13,50 @@ const userUUID = uuidv4()
 const exerciseUUID = uuidv4()
 const ctx = ActualPrisma()
 
+async function createTestData () {
+  const myUser = {
+    userID: userUUID,
+    email: process.env.TESTEMAIL!,
+    firstName: "test",
+    lastName: "tester",
+    password: process.env.TESTPASSWORD!,
+    userType: userType.PLANNER,
+    dateOfBirth: null
+  }
+  await ctx.prisma.user.create({
+    data: myUser
+  })
+  await ctx.prisma.exercise.deleteMany()
+  await ctx.prisma.exercise.create({
+    data: {
+      exerciseID: exerciseUUID,
+      exerciseTitle: "TestExercise",
+      exerciseDescription: "TestDescription",
+      repRange: "TestRange",
+      sets: 4,
+      poseDescription: "TestPDesc",
+      restPeriod: 2,
+      duration: 2,
+      plannerID: userUUID
+    }
+  })
+}
+
 describe("Integration tests of the deleteExercise function in the Workout Service", () => {
   beforeEach(async () => {
     workoutService = new WorkoutService(prisma, userService)
     await ctx.prisma.exercise.deleteMany()
     await ctx.prisma.user.deleteMany()
     await ctx.prisma.tag.deleteMany()
-    const myUser = {
-      userID: userUUID,
-      email: "test@gmail.com",
-      firstName: "test",
-      lastName: "tester",
-      password: "Test123*",
-      userType: userType.PLANNER,
-      dateOfBirth: null
-    }
-
-    await ctx.prisma.user.create({
-      data: myUser
-    })
-    await ctx.prisma.exercise.deleteMany()
-    await ctx.prisma.exercise.create({
-      data: {
-        exerciseID: exerciseUUID,
-        exerciseTitle: "TestExercise",
-        exerciseDescription: "TestDescription",
-        repRange: "TestRange",
-        sets: 4,
-        poseDescription: "TestPDesc",
-        restPeriod: 2,
-        duration: 2,
-        plannerID: userUUID
-      }
-    })
   })
 
   test("Null exercise ID passed in, should throw PreconditionFailedException", async () => {
+    await createTestData()
     await expect(workoutService.deleteExercise("", ctx)).rejects.toThrow("Parameter can not be left empty.")
   })
 
   test("Invalid exercise ID passed in, should throw NotFoundException", async () => {
+    await createTestData()
     await expect(workoutService.deleteExercise("invalid", ctx)).rejects.toThrow("")
   })
 })
