@@ -186,7 +186,7 @@ export class YourWorkoutsPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async loadExercises(){
-      const tempExercises = await this.workoutService.attemptGetExercises();
+      const tempExercises = await this.workoutService.attemptGetExercisesByPlanner();
       if (tempExercises.status===200){
           for (let i = 0; i < tempExercises.data.length; i++) {
               const images = new Array();
