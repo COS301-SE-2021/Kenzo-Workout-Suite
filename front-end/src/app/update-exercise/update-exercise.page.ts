@@ -44,7 +44,7 @@ export class UpdateExercisePage implements OnInit {
 
   async getDetails(){
       await this.getTags();
-      const exercises = await this.workoutService.attemptGetExercises();
+      const exercises = await this.workoutService.attemptGetExercisesByPlanner();
       const data = exercises["data"];
       let unit;
       for (let i = 0; i < data.length; i++) {
@@ -93,16 +93,7 @@ export class UpdateExercisePage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async submitUpdateRequest() {
-      if(this.title==="" || this.description==="" || this.selected.length===0 || this.images.length===0 ||
-      this.poseDescription === ""){
-          const alert = await this.alertController.create({
-              cssClass: "kenzo-alert",
-              header: "Could not Update Exercise",
-              message: "Please fill all of the required fields.",
-              buttons: ["Dismiss"]
-          });
-
-          await this.presentAlert(alert);
+      if(!await this.validate()){
           return ;
       }
       const exercise = new Exercise(this.title, this.description, this.range, this.sets, this.poseDescription,
@@ -144,6 +135,22 @@ export class UpdateExercisePage implements OnInit {
           await this.presentAlert(alert);
           throw new Error("Server is not responding.");
       }
+  }
+
+  async validate(){
+      if(this.title==="" || this.description==="" || this.selected.length===0 || this.images.length===0 ||
+      this.poseDescription === ""){
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Could not Create Exercise",
+              message: "Please fill all of the required fields.",
+              buttons: ["Dismiss"]
+          });
+
+          await this.presentAlert(alert);
+          return false;
+      }
+      return true;
   }
 
   /** This function uses the workout service to submit a request to delete an exercise.

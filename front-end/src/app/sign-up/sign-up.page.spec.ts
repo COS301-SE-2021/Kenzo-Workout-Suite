@@ -33,6 +33,10 @@ describe("SignUpPage", () => {
         fixture = TestBed.createComponent(SignUpPage);
         component = fixture.componentInstance;
         fixture.detectChanges();
+
+        spyOn(component, "validateEmail").and.resolveTo(true);
+        spyOn(component, "validatePassword").and.resolveTo(true);
+        spyOn(component, "validateCredentials").and.resolveTo(true);
     }));
 
     it("should create", () => {

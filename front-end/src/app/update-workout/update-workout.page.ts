@@ -93,14 +93,7 @@ export class UpdateWorkoutPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async submitUpdateRequest() {
-      if(this.title==="" || this.description === "" || this.format(this.exercises).length===0){
-          const alert = await this.alertController.create({
-              cssClass: "kenzo-alert",
-              header: "Please fill in all required fields.",
-              buttons: ["Dismiss"]
-          });
-
-          await this.presentAlert(alert);
+      if(!await this.validate()){
           return;
       }
       const newWorkout = new Workout(this.title, this.description, []);
@@ -142,6 +135,19 @@ export class UpdateWorkoutPage implements OnInit {
           await this.presentAlert(alert);
           throw new Error("Server is not responding.");
       }
+  }
+  async validate(){
+      if(this.title==="" || this.description === "" || this.format(this.exercises).length===0){
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Please fill in all required fields.",
+              buttons: ["Dismiss"]
+          });
+
+          await this.presentAlert(alert);
+          return false;
+      }
+      return true;
   }
 
   /** This function uses the workout service to submit a request to delete a workout.

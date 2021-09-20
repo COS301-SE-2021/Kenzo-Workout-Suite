@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { IonicModule } from "@ionic/angular";
+import {AlertController, IonicModule} from "@ionic/angular";
 
 import { YourWorkoutsPage } from "./your-workouts.page";
 import {WorkoutService} from "../Services/WorkoutService/workout.service";
@@ -13,6 +13,7 @@ describe("YourWorkoutsPage", () => {
     let component: YourWorkoutsPage;
     let fixture: ComponentFixture<YourWorkoutsPage>;
     let service: WorkoutService;
+    let alertController: AlertController;
 
 
     beforeEach(waitForAsync(() => {
@@ -27,6 +28,7 @@ describe("YourWorkoutsPage", () => {
             ]
         }).compileComponents();
 
+        alertController = TestBed.inject(AlertController);
         service = TestBed.inject(WorkoutService);
         fixture = TestBed.createComponent(YourWorkoutsPage);
         component = fixture.componentInstance;
@@ -62,7 +64,7 @@ describe("YourWorkoutsPage", () => {
     });
 
     it("should, given an empty database, fail to obtain exercises.", async () => {
-        spyOn(service, "attemptGetExercises").and.resolveTo({status: 404});
+        spyOn(service, "attemptGetExercisesByPlanner").and.resolveTo({status: 404});
         spyOn(component, "loadWorkouts").and.resolveTo(404);
         await component.loadExercises().then(error=>{
             expect(error).toEqual(404);
@@ -71,7 +73,7 @@ describe("YourWorkoutsPage", () => {
 
     it("should fail to get the exercises as server is not responding.", async () => {
         //spyOn(userService, 'attemptSignIn').and.stub();
-        spyOn(service, "attemptGetExercises").and.resolveTo({status:500});
+        spyOn(service, "attemptGetExercisesByPlanner").and.resolveTo({status:500});
         spyOn(component, "loadWorkouts").and.resolveTo(500);
         await component.loadExercises().catch(error=>{
             expect(error).toEqual(500);
@@ -79,7 +81,7 @@ describe("YourWorkoutsPage", () => {
     });
 
     it("should successfully obtain all exercises.", async () => {
-        spyOn(service, "attemptGetExercises").and.resolveTo({status: 200, data:[]});
+        spyOn(service, "attemptGetExercisesByPlanner").and.resolveTo({status: 200, data:[]});
         spyOn(component, "loadWorkouts").and.resolveTo(200);
         await component.loadExercises().then(data=>{
             expect(data).toEqual(200);
@@ -121,7 +123,7 @@ describe("YourWorkoutsPage", () => {
     it("should, given a data-store where the pdf of the workout doesn't exist, fail to obtain the PDF of the workout.", async () => {
         spyOn(service, "attemptGetPDF").and.resolveTo({status: 404});
         spyOn(component, "presentAlert").and.stub();
-        await component.getPDF(" ").then(error=>{
+        await component.download(" ").then(error=>{
             expect(error).toEqual(404);
         });
     });
@@ -129,7 +131,7 @@ describe("YourWorkoutsPage", () => {
     it("should fail to obtain the PDF of the workout as the server is not responding.", async () => {
         spyOn(service, "attemptGetPDF").and.resolveTo({status: 500});
         spyOn(component, "presentAlert").and.stub();
-        await component.getPDF(" ").then(error=>{
+        await component.download(" ").then(error=>{
             expect(error).toEqual(500);
         });
     });
@@ -138,7 +140,7 @@ describe("YourWorkoutsPage", () => {
         spyOn(service, "attemptGetPDF").and.resolveTo({status: 200});
         spyOn(component, "presentAlert").and.stub();
         spyOn(component, "getVideo").and.stub();
-        await component.getPDF(" ").then(error=>{
+        await component.download(" ").then(error=>{
             expect(error).toEqual(200);
         });
     });
@@ -155,6 +157,7 @@ describe("YourWorkoutsPage", () => {
 
     it("should, given a data-store where the video is still generating, fail to obtain the video of the workout.", async () => {
         spyOn(service, "attemptGetVideo").and.resolveTo(400);
+        spyOn(alertController, "create").and.stub();
         spyOn(component, "presentAlert").and.stub();
         spyOn(component, "presentDownloadSheet").and.stub();
         await component.getVideo(" ", " ").then(error=>{

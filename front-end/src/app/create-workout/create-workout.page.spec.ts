@@ -27,6 +27,7 @@ describe("CreateWorkoutPage", () => {
         fixture = TestBed.createComponent(CreateWorkoutPage);
         component = fixture.componentInstance;
         fixture.detectChanges();
+        spyOn(component, "validate").and.resolveTo(true);
     }));
 
     it("should create", () => {

@@ -36,14 +36,7 @@ export class SignUpPage implements OnInit {
    * @author Jia Hui Wang, u18080449
    */
   async signUp() {
-      if(this.firstName==="" || this.lastName===""){
-          const alert = await this.alertController.create({
-              cssClass: "kenzo-alert",
-              header: "Invalid Credentials",
-              message: "Please ensure your name and surname are filled in.",
-              buttons: ["Dismiss"]
-          });
-          await this.presentAlert(alert);
+      if(!await this.validateCredentials()){
           return;
       }
       if(!await this.validateEmail()){
@@ -87,6 +80,19 @@ export class SignUpPage implements OnInit {
       } else {
           await this.invalidPasswords(); //If passwords do not match, notify User through an alert.
       }
+  }
+  async validateCredentials(){
+      if(this.firstName==="" || this.lastName===""){
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Invalid Credentials",
+              message: "Please ensure your name and surname are filled in.",
+              buttons: ["Dismiss"]
+          });
+          await this.presentAlert(alert);
+          return false;
+      }
+      return true;
   }
   async validateEmail() {
       const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

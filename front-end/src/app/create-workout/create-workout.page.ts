@@ -14,8 +14,9 @@ export class CreateWorkoutPage implements OnInit {
   plannerID="";
   description="";
   title="";
-
   exercises = [];
+
+
 
   @ViewChild("searchBar", {static: false}) searchbar: IonSearchbar;
 
@@ -65,14 +66,7 @@ export class CreateWorkoutPage implements OnInit {
    * @author Luca Azmanov, u19004185
    */
   async submitCreateRequest() {
-      if(this.title==="" || this.description === "" || this.format(this.exercises).length===0){
-          const alert = await this.alertController.create({
-              cssClass: "kenzo-alert",
-              header: "Please fill in all required fields.",
-              buttons: ["Dismiss"]
-          });
-
-          await this.presentAlert(alert);
+      if(!await this.validate()) {
           return;
       }
       const newWorkout = new Workout(this.title, this.description, []);
@@ -116,6 +110,19 @@ export class CreateWorkoutPage implements OnInit {
           await this.presentAlert(alert);
           throw new Error("Server is not responding.");
       }
+  }
+  async validate(){
+      if(this.title==="" || this.description === "" || this.format(this.exercises).length===0){
+          const alert = await this.alertController.create({
+              cssClass: "kenzo-alert",
+              header: "Please fill in all required fields.",
+              buttons: ["Dismiss"]
+          });
+
+          await this.presentAlert(alert);
+          return false;
+      }
+      return true;
   }
 
   /**
