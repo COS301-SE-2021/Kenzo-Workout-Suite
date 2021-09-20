@@ -13,13 +13,21 @@ Kenzo Workout Suite is the ultimate Fitness Trainer application. With custom pos
 
 [SRS-Demo3](https://www.overleaf.com/read/qyhbmgvqjtgm)
 
+[SRS-Demo4](https://www.overleaf.com/read/tnssnkwzdpfh)
+
 [Architecture Design-Demo2](https://www.overleaf.com/read/vzbwdfzbvgmn)
 
 [Architecture Design-Demo3](https://www.overleaf.com/read/bkprvjhtqwhs)
 
+[Architecture Design-Demo4](https://www.overleaf.com/read/wjhbdtgsrnpg)
+
 [User Manual](https://drive.google.com/file/d/19-NhH-VR2d7IUQ2wNDWXxFrrSJqs_tZ9/view?usp=sharing)
 
+[User Manual V2](https://drive.google.com/file/d/101w4pOGzYqH_aapnrFdCIuFSDNNpWDj0/view?usp=sharing)
+
 [Installation Manual](https://drive.google.com/file/d/1bhReZAtTnbEFLeX08R5iXw02hZYLvglW/view?usp=sharing)
+
+[Installation Manual V2](https://drive.google.com/file/d/1rVHkV_GHjdwYWCV1WMYxHnbAJLWSbRF_/view?usp=sharing)
 
 [Coding Standards](https://drive.google.com/file/d/1u7-ijvgrohIEHsf3lMNy-TdPsvlBfijt/view?usp=sharing)
 
@@ -28,6 +36,8 @@ Kenzo Workout Suite is the ultimate Fitness Trainer application. With custom pos
 [CrackedStudios-Demo2](https://drive.google.com/drive/folders/1gj86A06fC_Pna694Nt6wo80G0pB5aQal?usp=sharing)
 
 [CrackedStudios-Demo3](https://drive.google.com/file/d/1xxcIkKX9OET_LhCdY6_SL4Yg1Hd32QSs/view?usp=sharing)
+
+[CrackedStudios-Demo4](https://drive.google.com/file/d/1Em-DwzGu3sgn4vZ2lx0aTTLuNLjCJNji/view?usp=sharing)
 
 [Project Management](https://github.com/COS301-SE-2021/Kenzo-Workout-Suite/projects)
 
