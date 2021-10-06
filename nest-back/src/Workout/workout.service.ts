@@ -1004,7 +1004,7 @@ export class WorkoutService {
             color: titleHeadingColour
           })
           // Description
-          currentPage.drawText("Exercise Description:", {
+          currentPage.drawText("Exercise Description", {
             x: 20,
             y: 710,
             size: 12,
@@ -1018,7 +1018,7 @@ export class WorkoutService {
             font: SFRegular
           })
           // Rep Range
-          currentPage.drawText("Rep Range: ", {
+          currentPage.drawText("Rep Range ", {
             x: 20,
             y: 620,
             size: 12,
@@ -1026,7 +1026,7 @@ export class WorkoutService {
             color: fieldsHeadingColour
           })
           let repRange = "Consult Personal Trainer."
-          if (workout.exercises[i].repRange !== null) {
+          if (workout.exercises[i].repRange !== '') {
             repRange = workout.exercises[i].repRange.toString()
           }
           currentPage.drawText(repRange, {
@@ -1036,9 +1036,9 @@ export class WorkoutService {
             font: SFRegular
           })
           // Sets
-          currentPage.drawText("Sets: ", {
+          currentPage.drawText("Sets ", {
             x: 20,
-            y: 600,
+            y: 590,
             size: 12,
             font: SFBold,
             color: fieldsHeadingColour
@@ -1049,14 +1049,14 @@ export class WorkoutService {
           }
           currentPage.drawText(sets, {
             x: 130,
-            y: 600,
+            y: 590,
             size: 12,
             font: SFRegular
           })
           // RestPeriod
-          currentPage.drawText("Rest Period: ", {
+          currentPage.drawText("Rest Period ", {
             x: 20,
-            y: 570,
+            y: 560,
             size: 12,
             font: SFBold,
             color: fieldsHeadingColour
@@ -1067,14 +1067,14 @@ export class WorkoutService {
           }
           currentPage.drawText(restPeriod, {
             x: 130,
-            y: 570,
+            y: 560,
             size: 12,
             font: SFRegular
           })
           // Exercise Duration
-          currentPage.drawText("Exercise Duration: ", {
+          currentPage.drawText("Exercise Duration ", {
             x: 20,
-            y: 540,
+            y: 530,
             size: 12,
             font: SFBold,
             color: fieldsHeadingColour
@@ -1085,21 +1085,21 @@ export class WorkoutService {
           }
           currentPage.drawText(duration, {
             x: 130,
-            y: 540,
+            y: 530,
             size: 12,
             font: SFRegular
           })
           // Planner
-          currentPage.drawText("Planner: ", {
+          currentPage.drawText("Planner ", {
             x: 20,
-            y: 510,
+            y: 500,
             size: 12,
             font: SFBold,
             color: fieldsHeadingColour
           })
           currentPage.drawText(userFirstLastName.toString(), {
             x: 130,
-            y: 510,
+            y: 500,
             size: 12,
             font: SFRegular
           })
@@ -1111,7 +1111,7 @@ export class WorkoutService {
               const currentImage = await pdfDoc.embedJpg(uint8Array)
               currentPage.drawImage(currentImage, {
                 x: 20 + (c * 150),
-                y: 400,
+                y: 390,
                 width: 120,
                 height: 90
               })
@@ -1127,7 +1127,7 @@ export class WorkoutService {
             font: SFBold,
             color: titleHeadingColour
           })
-          currentPage.drawText("Exercise Description:", {
+          currentPage.drawText("Exercise Description ", {
             x: 20,
             y: 340,
             size: 12,
@@ -1141,7 +1141,7 @@ export class WorkoutService {
             font: SFRegular
           })
           // Rep Range
-          currentPage.drawText("Rep Range: ", {
+          currentPage.drawText("Rep Range ", {
             x: 20,
             y: 250,
             size: 12,
@@ -1149,7 +1149,7 @@ export class WorkoutService {
             color: fieldsHeadingColour
           })
           let repRange = "Consult Personal Trainer."
-          if (workout.exercises[i].repRange !== null) {
+          if (workout.exercises[i].repRange !== '') {
             repRange = workout.exercises[i].repRange.toString()
           }
           currentPage.drawText(repRange, {
@@ -1195,7 +1195,7 @@ export class WorkoutService {
             font: SFRegular
           })
           // Exercise Duration
-          currentPage.drawText("Exercise Duration: ", {
+          currentPage.drawText("Exercise Duration ", {
             x: 20,
             y: 160,
             size: 12,
@@ -1213,7 +1213,7 @@ export class WorkoutService {
             font: SFRegular
           })
           // Planner
-          currentPage.drawText("Planner: ", {
+          currentPage.drawText("Planner ", {
             x: 20,
             y: 130,
             size: 12,
@@ -1235,7 +1235,7 @@ export class WorkoutService {
               currentPage.drawImage(currentImage, {
                 x: 20 + (c * 150),
                 y: 20,
-                width: 120,
+                width: 110,
                 height: 90
               })
             }
